@@ -1,0 +1,74 @@
+{
+    "FL" : {
+        "name" : "FL",
+        "position" : {
+            "x" : 10.375,
+            "y" : 12.375
+        },
+        "minvoltage" : 0.05,
+        "maxvoltage" : 4.95,
+        "driveChannel" : 3,
+        "steerChannel" : 4,
+        "resolverChannel" : 0,
+        "cvtChannel" : 0,
+		"offset" : 45,
+		"rpmMax" : 4828.572,
+        "reverseDrive" : true,
+        "reverseSteer" : true,
+        "reverseAngle" : true
+    },
+    "FR" : {
+        "name" : "FR",
+        "position" : {
+            "x" : 10.375,
+            "y" : -12.375
+        },
+        "minvoltage" : 0.05,
+        "maxvoltage" : 4.95,
+        "driveChannel" : 2,
+        "steerChannel" : 1,
+        "resolverChannel" : 2,
+        "cvtChannel" : 2,
+		"offset" : -45,
+		"rpmMax" : 4542.858,
+        "reverseDrive" : true,
+        "reverseSteer" : true,
+        "reverseAngle" : true
+    },
+    "BL" : {
+        "name" : "BL",
+        "position" : {
+            "x" : -10.375,
+            "y" : 12.375
+        },
+        "minvoltage" : 0.05,
+        "maxvoltage" : 4.95,
+        "driveChannel" : 18,
+        "steerChannel" : 17,
+        "resolverChannel" : 1,
+        "cvtChannel" : 1,
+		"offset" : 135,
+		"rpmMax" : 4240.000,
+        "reverseDrive" : true,
+        "reverseSteer" : true,
+        "reverseAngle" : true
+    },
+    "BR" : {
+        "name" : "BR",
+        "position" : {
+            "x" : -10.375,
+            "y" : -12.375
+        },
+        "minvoltage" : 0.05,
+        "maxvoltage" : 4.95,
+        "driveChannel" : 19,
+        "steerChannel" : 20,
+        "resolverChannel" : 3,
+        "cvtChannel" : 3,
+		"offset" : -135,
+		"rpmMax" : 5062.856,
+        "reverseDrive" : true,
+        "reverseSteer" : true,
+        "reverseAngle" : true
+    }
+}
