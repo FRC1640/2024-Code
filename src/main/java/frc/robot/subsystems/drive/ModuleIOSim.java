@@ -33,14 +33,14 @@ public class ModuleIOSim implements ModuleIO{
 
     @Override
     public void setSteerPercentage(double percentage) {
-        steerAppliedVolts = 12 * percentage;
-        steerSim.setInputVoltage(12 * percentage);
+        steerAppliedVolts = -12 * percentage;
+        steerSim.setInputVoltage(-12 * percentage);
     }
 
     @Override
     public void setSteerVoltage(double voltage) {
         steerAppliedVolts = MathUtil.clamp(voltage, -12.0, 12.0);
-        steerSim.setInputVoltage(steerAppliedVolts);
+        steerSim.setInputVoltage(-steerAppliedVolts);
     }
 
     @Override
@@ -49,15 +49,13 @@ public class ModuleIOSim implements ModuleIO{
         driveSim.update(LOOP_PERIOD_SECS);
         steerSim.update(LOOP_PERIOD_SECS);
 
-        System.out.println(driveSim.getAngularPositionRotations());
-
         inputs.drivePositionMeters += ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius * LOOP_PERIOD_SECS;
-        inputs.driveVelocityMetersPerSecond =  ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius;
+        inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius;
         inputs.driveAppliedVoltage = driveAppliedVolts;
         inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
         inputs.driveTempCelsius = SimulationConstants.roomTempCelsius;
 
-        inputs.steerAngleDegrees = Math.toDegrees(steerSim.getAngularPositionRad());
+        inputs.steerAngleDegrees += steerSim.getAngularVelocityRPM() / 60 * LOOP_PERIOD_SECS;
         inputs.steerAppliedVoltage = steerAppliedVolts;
         inputs.steerCurrentAmps = steerSim.getCurrentDrawAmps();
         inputs.steerTempCelsius = SimulationConstants.roomTempCelsius;

@@ -32,6 +32,8 @@ public class DriveSubsystem extends SubsystemBase{
     private Module backLeft;
     private Module backRight;
 
+    private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
+
 
       private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
@@ -80,16 +82,23 @@ public class DriveSubsystem extends SubsystemBase{
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drivePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    
+    xSpeed = xSpeed * maxSpeed;
+    ySpeed = ySpeed * maxSpeed;
+    rot = rot * maxSpeed;
+
     var swerveModuleStates = kinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
                 new Rotation2d(gyro.getAngleRotation2d().getRadians()))
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDriveDimensions.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
     frontLeft.setDesiredState(swerveModuleStates[0]);
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
+
+    Logger.recordOutput("Drive/DesiredSwerveStates", swerveModuleStates);
   }
 }

@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.subsystems.drive.PivotConfig.PivotId;
 
 public class Module{
@@ -14,9 +15,11 @@ public class Module{
     PivotId id;
     ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
     
-    public final PIDController drivePIDController = new PIDController(0.59818, 0.0, 0.0);
+    public final PIDController drivePIDController = new PIDController(0.59818, 0.0, 0.0); 
 
-	public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005);
+	// public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); //actual PID
+
+    public final PIDController turningPIDController = new PIDController(1,0,0); //sim PID
 
 	public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.10346, 2.9321, 0.11125); 
 
@@ -38,7 +41,7 @@ public class Module{
     public double getVelocity(){
         return inputs.driveVelocityMetersPerSecond;
     }
-    public void setDesiredState(SwerveModuleState state) {
+    public void setDesiredState(SwerveModuleState state) { //TODO: clean up this method?
 		double dAngle = state.angle.getDegrees() - inputs.steerAngleDegrees;
 		double dAngleAbs = Math.abs(dAngle) % 360;
 		boolean flipDriveTeleop = (90.0 <= dAngleAbs) && (dAngleAbs <= 270.0);
@@ -48,11 +51,11 @@ public class Module{
 
 		final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
 
-		if (Math.abs(targetSpeed) < 0.1) {
+		if (Math.abs(targetSpeed) / SwerveDriveDimensions.maxSpeed < 0.1) {
 			turnOutput = 0;
 		}
 
-		io.setDrivePercentage(targetSpeed);
+		io.setDrivePercentage(targetSpeed / SwerveDriveDimensions.maxSpeed);
 		io.setSteerPercentage(turnOutput);
 	}
 }
