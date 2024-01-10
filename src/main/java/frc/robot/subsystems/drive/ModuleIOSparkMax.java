@@ -22,7 +22,7 @@ public class ModuleIOSparkMax implements ModuleIO{
 	public Resolver steeringEncoder;
 
     private final double kWheelRadius = Constants.SwerveDriveDimensions.wheelRadius;
-    private final double kDriveGearRatio = Constants.SwerveDriveDimensions.driveGearRation;
+    private final double kDriveGearRatio = Constants.SwerveDriveDimensions.driveGearRatio;
 
 
 

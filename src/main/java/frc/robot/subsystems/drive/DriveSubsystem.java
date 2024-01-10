@@ -1,9 +1,12 @@
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -45,10 +48,10 @@ public class DriveSubsystem extends SubsystemBase{
                 break;
 
             case SIM:
-                frontLeft = new Module(new ModuleIO() {}, PivotId.FL);
-                frontRight = new Module(new ModuleIO() {}, PivotId.FR);
-                backLeft = new Module(new ModuleIO() {}, PivotId.BL);
-                backRight = new Module(new ModuleIO() {}, PivotId.BR);
+                frontLeft = new Module(new ModuleIOSim(), PivotId.FL);
+                frontRight = new Module(new ModuleIOSim(), PivotId.FR);
+                backLeft = new Module(new ModuleIOSim(), PivotId.BL);
+                backRight = new Module(new ModuleIOSim(), PivotId.BR);
                 break;
 
             default:
@@ -60,6 +63,15 @@ public class DriveSubsystem extends SubsystemBase{
         }  
     }
 
+    @Override
+    public void periodic(){
+        gyro.periodic();
+        frontLeft.periodic();
+        frontRight.periodic();
+        backLeft.periodic();
+        backRight.periodic();
+        Logger.recordOutput("Drive/SwerveStates", new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()});
+    }
     /**
    * Method to drive the robot using joystick info.
    *

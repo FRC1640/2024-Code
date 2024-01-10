@@ -9,6 +9,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -29,57 +31,57 @@ public class Robot extends LoggedRobot  {
 
   @Override
   public void robotInit() {
-    Logger logger = Logger.getInstance();
+    
 
     // Record metadata
-    logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    logger.recordMetadata("RuntimeType", getRuntimeType().toString());
-    logger.recordMetadata("RobotMode", getMode().toString());
-    logger.recordMetadata("MACAddress", getMACAddress());
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
+    Logger.recordMetadata("RobotMode", getMode().toString());
+    Logger.recordMetadata("MACAddress", getMACAddress());
     switch (BuildConstants.DIRTY) {
       case 0:
-        logger.recordMetadata("GitDirty", "All changes committed");
+        Logger.recordMetadata("GitDirty", "All changes committed");
         break;
       case 1:
-        logger.recordMetadata("GitDirty", "Uncomitted changes");
+        Logger.recordMetadata("GitDirty", "Uncomitted changes");
         break;
       default:
-        logger.recordMetadata("GitDirty", "Unknown");
+        Logger.recordMetadata("GitDirty", "Unknown");
         break;
     }
-
+    System.out.println(getMode().toString());
     // Set up data receivers & replay source
     switch (getMode()) {
       // Running on a real robot, log to a USB stick
       case REAL:
-        logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
-        logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
+        Logger.addDataReceiver(new NT4Publisher());
         break;
 
       // Running a physics simulator, log to local folder
       case SIM:
-        logger.addDataReceiver(new WPILOGWriter("logs"));
-        logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new WPILOGWriter("logs"));
+        Logger.addDataReceiver(new NT4Publisher());
         break;
 
       // Replaying a log, set up replay source
       case REPLAY:
         setUseTiming(false); // Run as fast as possible
         String logPath = LogFileUtil.findReplayLog();
-        logger.setReplaySource(new WPILOGReader(logPath));
-        logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
         break;
     }
 
     // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
     // Logger.getInstance().disableDeterministicTimestamps()
 
-    // Start AdvantageKit logger
-    logger.start();
+    // Start AdvantageKit Logger
+    Logger.start();
     m_robotContainer = new RobotContainer();
   }
 

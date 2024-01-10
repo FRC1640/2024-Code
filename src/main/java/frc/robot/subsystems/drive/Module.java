@@ -8,9 +8,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.subsystems.drive.PivotConfig.PivotId;
-import frc.util.periodics.PeriodicBase;
 
-public class Module extends PeriodicBase{
+public class Module{
     ModuleIO io;
     PivotId id;
     ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -25,7 +24,7 @@ public class Module extends PeriodicBase{
         this.io = io;
         this.id = id;
     }
-    @Override
+    
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Drive/Modules/" + id.getName().toString(), inputs);
