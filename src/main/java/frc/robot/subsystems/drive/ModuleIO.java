@@ -12,12 +12,10 @@ public interface ModuleIO extends AutoCloseable{
         public double driveAppliedVoltage;
         public double driveCurrentAmps;
         public double driveTempCelsius;
-        public boolean driveIdleModeIsBreak;
+        public boolean driveIdleModeIsBrake;
         public boolean driveIsFlipped;
 
-        public double steerAbsoluteAngleDegrees;
-        public double steerRelativeAngleDegrees;
-        public double steerVelocityRadiansPerSecond;
+        public double steerAngleDegrees;
         public double steerAppliedVoltage;
         public double steerCurrentAmps;
         public double steerTempCelsius;
@@ -38,9 +36,6 @@ public interface ModuleIO extends AutoCloseable{
     public default void setSteerPercentage(double percentage) {}
 
     public default void setSteerIdleMode(boolean brake) {}
-
-    public default void stopAllMotors() {}
-
     
 
     @Override
