@@ -11,11 +11,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.PivotId;
 import frc.robot.Robot.Mode;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
-import frc.robot.subsystems.drive.PivotConfig.PivotId;
 
 public class DriveSubsystem extends SubsystemBase{
     Gyro gyro;
@@ -34,7 +35,7 @@ public class DriveSubsystem extends SubsystemBase{
 
     private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
 
-    private SwerveModuleState[] desiredSwerveStates;
+    private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[]{};
 
 
     private final SwerveDriveKinematics kinematics =
@@ -45,10 +46,10 @@ public class DriveSubsystem extends SubsystemBase{
         this.gyro = gyro;
         switch (Robot.getMode()) {
             case REAL:
-                frontLeft = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.FL)), PivotId.FL);
-                frontRight = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.FR)), PivotId.FR);
-                backLeft = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.BL)), PivotId.BL);
-                backRight = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.BR)), PivotId.BR);
+                frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
+                frontRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.FR);
+                backLeft = new Module(new ModuleIOSparkMax(ModuleConstants.BL), PivotId.BL);
+                backRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.BR);
                 break;
 
             case SIM:
@@ -92,7 +93,7 @@ public class DriveSubsystem extends SubsystemBase{
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
-  public void drivePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     
     xSpeed = xSpeed * maxSpeed;
     ySpeed = ySpeed * maxSpeed;
@@ -111,5 +112,14 @@ public class DriveSubsystem extends SubsystemBase{
 
     desiredSwerveStates = swerveModuleStates;
     
+  }
+
+
+  public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative){
+    xSpeed = xSpeed * maxSpeed;
+    ySpeed = ySpeed * maxSpeed;
+    rot = rot * maxSpeed;
+
+
   }
 }
