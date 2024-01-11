@@ -15,7 +15,7 @@ public class ModuleIOSim implements ModuleIO{
     private static final double LOOP_PERIOD_SECS = 0.02;
 
     private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.driveGearRatio, 0.025);
-    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.steerGearRatio, 0.004);
+    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.steerGearRatio, 0.000000025);
     private double driveAppliedVolts = 0.0;
     private double steerAppliedVolts = 0.0;
 

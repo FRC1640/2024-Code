@@ -92,4 +92,6 @@ public class ModuleIOSparkMax implements ModuleIO{
         inputs.steerTempCelsius = steeringMotor.getMotorTemperature();
         inputs.steerIdleModeIsBrake = steeringMotor.getIdleMode().equals(IdleMode.kBrake);
     }
+
+    
 }

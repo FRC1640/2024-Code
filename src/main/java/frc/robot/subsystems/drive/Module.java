@@ -17,9 +17,9 @@ public class Module{
     
     public final PIDController drivePIDController = new PIDController(0.59818, 0.0, 0.0); 
 
-	// public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); //actual PID
+	public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); //actual PID
 
-    public final PIDController turningPIDController = new PIDController(1,0,0); //sim PID
+    // public final PIDController turningPIDController = new PIDController(1,0,0); //sim PID
 
 	public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.10346, 2.9321, 0.11125); 
 
