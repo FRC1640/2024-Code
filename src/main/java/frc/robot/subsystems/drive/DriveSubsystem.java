@@ -34,8 +34,10 @@ public class DriveSubsystem extends SubsystemBase{
 
     private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
 
+    private SwerveModuleState[] desiredSwerveStates;
 
-      private final SwerveDriveKinematics kinematics =
+
+    private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
@@ -72,7 +74,15 @@ public class DriveSubsystem extends SubsystemBase{
         frontRight.periodic();
         backLeft.periodic();
         backRight.periodic();
-        Logger.recordOutput("Drive/SwerveStates", new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()});
+        Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
+        Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
+    }
+
+    public SwerveModuleState[] getActualSwerveStates(){
+        return new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
+    }
+    public SwerveModuleState[] getDesiredSwerveStates(){
+        return desiredSwerveStates;
     }
     /**
    * Method to drive the robot using joystick info.
@@ -99,6 +109,7 @@ public class DriveSubsystem extends SubsystemBase{
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
 
-    Logger.recordOutput("Drive/DesiredSwerveStates", swerveModuleStates);
+    desiredSwerveStates = swerveModuleStates;
+    
   }
 }
