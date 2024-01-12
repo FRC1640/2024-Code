@@ -19,6 +19,7 @@ public class GyroIONavX implements GyroIO{
         inputs.isConnected = gyro.isConnected();
         inputs.isCalibrating = gyro.isCalibrating();
         inputs.angleDegrees = gyro.getRotation2d().getDegrees();
+        inputs.angleRadians = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
     }
     

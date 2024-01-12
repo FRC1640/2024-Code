@@ -87,7 +87,7 @@ public class JoystickDriveCommand extends Command {
 
         /* Increase rotational sensitivity */
         rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 3.0);
-        driveSubsystem.drivePercent(xSpeed, ySpeed, rot, fieldRelative);
+        driveSubsystem.drivePercentDoubleCone(xSpeed, ySpeed, rot, fieldRelative);
     }
     @Override
     public void end(boolean interrupted) { }

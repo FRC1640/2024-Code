@@ -8,6 +8,7 @@ public interface GyroIO {
         public boolean isConnected = false;
         public boolean isCalibrating = false;
         public double angleDegrees = 0.0;
+        public double angleRadians = 0.0;
         public double angularVelocityDegreesPerSecond = 0.0;
     }
 

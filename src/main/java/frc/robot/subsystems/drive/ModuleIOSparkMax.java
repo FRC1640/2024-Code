@@ -4,10 +4,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.PivotId;
 import frc.robot.sensors.Resolver;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -26,19 +29,23 @@ public class ModuleIOSparkMax implements ModuleIO{
 
 
 
-    public ModuleIOSparkMax(PivotConfig cfg){
-        driveMotor = new CANSparkMax(cfg.getDriveChannel(), MotorType.kBrushless);
-        steeringMotor = new CANSparkMax(cfg.getSteerChannel(), MotorType.kBrushless);
+    public ModuleIOSparkMax(ModuleInfo id){
+        driveMotor = new CANSparkMax(id.driveChannel, MotorType.kBrushless);
+        steeringMotor = new CANSparkMax(id.steerChannel, MotorType.kBrushless);
         driveMotor.setSmartCurrentLimit(60);
 		steeringMotor.setIdleMode(IdleMode.kCoast);
 		steeringMotor.setSmartCurrentLimit(40);
 		driveMotor.setIdleMode(IdleMode.kCoast);
+        steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+		driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 200);
         driveEncoder = driveMotor.getEncoder();
-		steeringEncoder = new Resolver(cfg.getResolverChannel(), cfg.getMinvoltage(), cfg.getMaxvoltage(),
-				cfg.getOffset(), cfg.isReverseAngle());
+		steeringEncoder = new Resolver(id.resolverChannel, ModuleConstants.minVoltage, ModuleConstants.maxVoltage,
+				id.angleOffset, id.reverseAngle);
 
-        driveMotor.setInverted(cfg.isReverseDrive());
-        steeringMotor.setInverted(cfg.isReverseSteer());
+        driveMotor.setInverted(id.reverseDrive);
+        steeringMotor.setInverted(id.reverseSteer);
     }
 
 

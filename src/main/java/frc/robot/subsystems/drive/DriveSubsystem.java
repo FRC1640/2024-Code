@@ -9,23 +9,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.PivotId;
 import frc.robot.Robot.Mode;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
-import frc.robot.subsystems.drive.PivotConfig.PivotId;
 
 public class DriveSubsystem extends SubsystemBase{
     Gyro gyro;
-    public static final double y = Constants.SwerveDriveDimensions.wheelYPos; // 10.375"
-    public static final double x = Constants.SwerveDriveDimensions.wheelXPos; // 12.375"
-
-    private final Translation2d frontLeftLocation = new Translation2d(x, y);
-    private final Translation2d frontRightLocation = new Translation2d(x, -y);
-    private final Translation2d backLeftLocation = new Translation2d(-x, y);
-    private final Translation2d backRightLocation = new Translation2d(-x, -y);
 
     private Module frontLeft;
     private Module frontRight;
@@ -34,19 +29,16 @@ public class DriveSubsystem extends SubsystemBase{
 
     private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
 
-
-      private final SwerveDriveKinematics kinematics =
-      new SwerveDriveKinematics(
-          frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
+    private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[]{};
 
     public DriveSubsystem(Gyro gyro){
         this.gyro = gyro;
         switch (Robot.getMode()) {
             case REAL:
-                frontLeft = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.FL)), PivotId.FL);
-                frontRight = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.FR)), PivotId.FR);
-                backLeft = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.BL)), PivotId.BL);
-                backRight = new Module(new ModuleIOSparkMax(PivotConfig.getConfig(PivotId.BR)), PivotId.BR);
+                frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
+                frontRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.FR);
+                backLeft = new Module(new ModuleIOSparkMax(ModuleConstants.BL), PivotId.BL);
+                backRight = new Module(new ModuleIOSparkMax(ModuleConstants.BR), PivotId.BR);
                 break;
 
             case SIM:
@@ -72,7 +64,15 @@ public class DriveSubsystem extends SubsystemBase{
         frontRight.periodic();
         backLeft.periodic();
         backRight.periodic();
-        Logger.recordOutput("Drive/SwerveStates", new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()});
+        Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
+        Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
+    }
+
+    public SwerveModuleState[] getActualSwerveStates(){
+        return new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
+    }
+    public SwerveModuleState[] getDesiredSwerveStates(){
+        return desiredSwerveStates;
     }
     /**
    * Method to drive the robot using joystick info.
@@ -82,23 +82,31 @@ public class DriveSubsystem extends SubsystemBase{
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
-  public void drivePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     
     xSpeed = xSpeed * maxSpeed;
     ySpeed = ySpeed * maxSpeed;
     rot = rot * maxSpeed;
 
-    var swerveModuleStates = kinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-                new Rotation2d(gyro.getAngleRotation2d().getRadians()))
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
+    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot, 
+        ()->gyro.getAngleRotation2d().getRadians(), fieldRelative);
+
     frontLeft.setDesiredState(swerveModuleStates[0]);
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
-
-    Logger.recordOutput("Drive/DesiredSwerveStates", swerveModuleStates);
+    desiredSwerveStates = swerveModuleStates;    
+  }
+  public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative){
+    xSpeed = xSpeed * maxSpeed;
+    ySpeed = ySpeed * maxSpeed;
+    rot = rot * maxSpeed;
+    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot, 
+        ()->gyro.getAngleRotation2d().getRadians(), fieldRelative);
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
+    desiredSwerveStates = swerveModuleStates;
   }
 }

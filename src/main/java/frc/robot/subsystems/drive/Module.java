@@ -7,8 +7,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.subsystems.drive.PivotConfig.PivotId;
 
 public class Module{
     ModuleIO io;
@@ -30,7 +30,7 @@ public class Module{
     
     public void periodic(){
         io.updateInputs(inputs);
-        Logger.processInputs("Drive/Modules/" + id.getName().toString(), inputs);
+        Logger.processInputs("Drive/Modules/" + id, inputs);
     }
     public SwerveModuleState getState(){
         return new SwerveModuleState(inputs.driveVelocityMetersPerSecond, new Rotation2d(Math.toRadians(inputs.steerAngleDegrees)));
