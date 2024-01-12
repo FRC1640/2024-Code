@@ -14,7 +14,6 @@ public class Module{
     ModuleIO io;
     PivotId id;
     ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-    
     public final PIDController drivePIDController = new PIDController(0.59818, 0.0, 0.0); 
 
 	public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); //actual PID

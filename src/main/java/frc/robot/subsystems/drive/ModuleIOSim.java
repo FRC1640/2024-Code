@@ -45,7 +45,7 @@ public class ModuleIOSim implements ModuleIO{
         driveSim.update(LOOP_PERIOD_SECS);
         steerSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePositionMeters += ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius * LOOP_PERIOD_SECS;
+        inputs.drivePositionMeters -= ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius * LOOP_PERIOD_SECS;
         inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius;
         inputs.driveAppliedVoltage = driveAppliedVolts;
         inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
