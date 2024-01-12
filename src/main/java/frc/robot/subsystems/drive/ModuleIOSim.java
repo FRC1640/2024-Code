@@ -1,11 +1,8 @@
 package frc.robot.subsystems.drive;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -14,8 +11,12 @@ public class ModuleIOSim implements ModuleIO{
 
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.driveGearRatio, 0.025);
-    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.steerGearRatio, 0.000000025);
+    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), 
+    SwerveDriveDimensions.driveGearRatio, 0.00019125); //Drive motor sim using moi
+
+    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNeo550(1), 
+    SwerveDriveDimensions.steerGearRatio, 0.002174375); //Steer motor sim using moi
+    
     private double driveAppliedVolts = 0.0;
     private double steerAppliedVolts = 0.0;
 
@@ -49,13 +50,14 @@ public class ModuleIOSim implements ModuleIO{
         driveSim.update(LOOP_PERIOD_SECS);
         steerSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePositionMeters += ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius * LOOP_PERIOD_SECS;
+        inputs.drivePositionMeters -= ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius * LOOP_PERIOD_SECS;
         inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius;
         inputs.driveAppliedVoltage = driveAppliedVolts;
         inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
         inputs.driveTempCelsius = SimulationConstants.roomTempCelsius;
 
-        inputs.steerAngleDegrees += steerSim.getAngularVelocityRPM() / 60 * LOOP_PERIOD_SECS;
+        inputs.steerAngleDegrees += (steerSim.getAngularVelocityRPM() * 360 / 60) * LOOP_PERIOD_SECS;
+        inputs.steerRPS = steerSim.getAngularVelocityRPM() / 60;
         inputs.steerAppliedVoltage = steerAppliedVolts;
         inputs.steerCurrentAmps = steerSim.getCurrentDrawAmps();
         inputs.steerTempCelsius = SimulationConstants.roomTempCelsius;

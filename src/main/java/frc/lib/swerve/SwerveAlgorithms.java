@@ -2,8 +2,6 @@ package frc.lib.swerve;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,16 +10,16 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.SwerveDriveDimensions;
 
 public class SwerveAlgorithms {
-    public static SwerveModuleState[] desaturated(double xSpeed, double ySpeed, double rot, Supplier<Double> currentAngleRadians, boolean fieldRelative){
+    public static SwerveModuleState[] desaturated(double xSpeed, double ySpeed, double rot, double currentAngleRadians, boolean fieldRelative){
         var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-                new Rotation2d(currentAngleRadians.get()))
+                new Rotation2d(currentAngleRadians))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveDriveDimensions.maxSpeed);
         return swerveModuleStates;
     }
-    public static SwerveModuleState[] doubleCone(double xSpeed, double ySpeed, double rot, Supplier<Double> currentAngleRadians, boolean fieldRelative){
+    public static SwerveModuleState[] doubleCone(double xSpeed, double ySpeed, double rot, double currentAngleRadians, boolean fieldRelative){
         double translationalSpeed = Math.hypot(xSpeed, ySpeed);
         double linearRotSpeed = Math.abs(rot * computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0)));
         double k;
@@ -35,7 +33,7 @@ public class SwerveAlgorithms {
         var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
             fieldRelative 
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, scale * rot, 
-                new Rotation2d(currentAngleRadians.get())) 
+                new Rotation2d(currentAngleRadians)) 
                 : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot * scale));
         return swerveModuleStates;
     }

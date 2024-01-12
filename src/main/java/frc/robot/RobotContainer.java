@@ -4,12 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
+import frc.robot.sensors.Gyro.GyroIOSim;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
 import frc.robot.subsystems.drive.commands.ResetGyro;
@@ -26,7 +31,10 @@ public class RobotContainer {
           break;
 
         case SIM:
-          gyro = new Gyro(new GyroIO() {});
+          gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
+            .toChassisSpeeds(
+            driveSubsystem.getActualSwerveStates())
+            .omegaRadiansPerSecond)));
           break;
 
         default:
@@ -40,6 +48,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
+    driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0,0, new Rotation2d(0))));
   }
 
   public Command getAutonomousCommand() {
