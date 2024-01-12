@@ -88,7 +88,7 @@ public class DriveSubsystem extends SubsystemBase{
     rot = rot * maxSpeed;
 
     SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot, 
-        ()->gyro.getAngleRotation2d().getRadians(), fieldRelative);
+        gyro.getAngleRotation2d().getRadians(), fieldRelative);
 
     frontLeft.setDesiredState(swerveModuleStates[0]);
     frontRight.setDesiredState(swerveModuleStates[1]);
@@ -101,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase{
     ySpeed = ySpeed * maxSpeed;
     rot = rot * maxSpeed;
     SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot, 
-        ()->gyro.getAngleRotation2d().getRadians(), fieldRelative);
+        gyro.getAngleRotation2d().getRadians(), fieldRelative);
     frontLeft.setDesiredState(swerveModuleStates[0]);
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
