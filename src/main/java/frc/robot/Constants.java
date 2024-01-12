@@ -13,7 +13,7 @@ public final class Constants {
         public static final double steerGearRatio = 0.02291666667;
         public static final double wheelYPos = Units.inchesToMeters(10.375);
         public static final double wheelXPos = Units.inchesToMeters(12.375);
-        public static final double maxSpeed = 4;
+        public static final double maxSpeed = 3.5;
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
