@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -10,8 +11,9 @@ public class ModuleIOSim implements ModuleIO{
 
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.driveGearRatio, 0.025);
-    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.steerGearRatio, 0.000000025);
+    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.driveGearRatio, 0.00019125); 
+    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNeo550(1), SwerveDriveDimensions.steerGearRatio, 0.00434875);
+    // private DCMotorSim steerSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(96.03,5), DCMotor.getNeo550(1), SwerveDriveDimensions.steerGearRatio);
     private double driveAppliedVolts = 0.0;
     private double steerAppliedVolts = 0.0;
 
