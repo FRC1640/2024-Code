@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.periodic.PeriodicScheduler;
 
 public class Robot extends LoggedRobot  {
     public static enum Mode { REAL, SIM, REPLAY };
@@ -87,6 +88,15 @@ public class Robot extends LoggedRobot  {
 
   @Override
   public void robotPeriodic() {
+    // Runs the PeriodicScheduler. This is responsible for running periodic()
+    // in all PeriodicBase instances.
+    PeriodicScheduler.getInstance().run();
+
+    // Runs the Scheduler. This is responsible for polling buttons, adding
+    // newly-scheduled commands, running already-scheduled commands, removing
+    // finished or interrupted commands, and running subsystem periodic() methods.
+    // This must be called from the robot's periodic block in order for anything in
+    // the Command-based framework to work.
     CommandScheduler.getInstance().run();
   }
 

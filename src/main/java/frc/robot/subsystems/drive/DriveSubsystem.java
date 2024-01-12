@@ -59,7 +59,6 @@ public class DriveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
-        gyro.periodic();
         frontLeft.periodic();
         frontRight.periodic();
         backLeft.periodic();

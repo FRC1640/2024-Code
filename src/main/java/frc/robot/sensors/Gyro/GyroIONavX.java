@@ -10,8 +10,7 @@ public class GyroIONavX implements GyroIO{
     @Override
     public void resetGyro() {
         gyro.zeroYaw();
-        gyro.reset();
-        
+        // TODO make sure don't need gyro.reset()
     }
 
     @Override
@@ -22,5 +21,4 @@ public class GyroIONavX implements GyroIO{
         inputs.angleRadians = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
     }
-    
 }
