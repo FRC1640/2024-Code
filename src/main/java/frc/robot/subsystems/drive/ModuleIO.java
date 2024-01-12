@@ -2,8 +2,6 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-
 public interface ModuleIO extends AutoCloseable{
     @AutoLog
     public static class ModuleIOInputs {

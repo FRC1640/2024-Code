@@ -5,15 +5,12 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.PivotId;
 import frc.robot.sensors.Resolver;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
 
 public class ModuleIOSparkMax implements ModuleIO{
