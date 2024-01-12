@@ -11,9 +11,12 @@ public class ModuleIOSim implements ModuleIO{
 
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), SwerveDriveDimensions.driveGearRatio, 0.00019125); 
-    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNeo550(1), SwerveDriveDimensions.steerGearRatio, 0.00434875);
-    // private DCMotorSim steerSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(96.03,5), DCMotor.getNeo550(1), SwerveDriveDimensions.steerGearRatio);
+    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), 
+    SwerveDriveDimensions.driveGearRatio, 0.00019125); //Drive motor sim using moi
+
+    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNeo550(1), 
+    SwerveDriveDimensions.steerGearRatio, 0.002174375); //Steer motor sim using moi
+    
     private double driveAppliedVolts = 0.0;
     private double steerAppliedVolts = 0.0;
 
@@ -53,7 +56,8 @@ public class ModuleIOSim implements ModuleIO{
         inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
         inputs.driveTempCelsius = SimulationConstants.roomTempCelsius;
 
-        inputs.steerAngleDegrees += steerSim.getAngularVelocityRPM() / 60 * LOOP_PERIOD_SECS;
+        inputs.steerAngleDegrees += (steerSim.getAngularVelocityRPM() * 360 / 60) * LOOP_PERIOD_SECS;
+        inputs.steerRPS = steerSim.getAngularVelocityRPM() / 60;
         inputs.steerAppliedVoltage = steerAppliedVolts;
         inputs.steerCurrentAmps = steerSim.getCurrentDrawAmps();
         inputs.steerTempCelsius = SimulationConstants.roomTempCelsius;

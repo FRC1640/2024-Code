@@ -13,6 +13,7 @@ public interface ModuleIO extends AutoCloseable{
         public boolean driveIdleModeIsBrake;;
 
         public double steerAngleDegrees;
+        public double steerRPS;
         public double steerAppliedVoltage;
         public double steerCurrentAmps;
         public double steerTempCelsius;
