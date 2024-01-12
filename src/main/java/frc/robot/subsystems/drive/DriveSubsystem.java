@@ -35,8 +35,6 @@ public class DriveSubsystem extends SubsystemBase{
 
     Pose2d odometryPose = new Pose2d();
 
-    double angularVelDegreesPerSecond;
-
     Rotation2d angleOffset = new Rotation2d(0);
 
     public DriveSubsystem(Gyro gyro){
@@ -114,7 +112,6 @@ public class DriveSubsystem extends SubsystemBase{
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
     desiredSwerveStates = swerveModuleStates;
-    angularVelDegreesPerSecond = Math.toDegrees(rot);
   }
    /**
    * Method to drive the robot using joystick info and double cone swerve algorithm.
@@ -135,7 +132,6 @@ public class DriveSubsystem extends SubsystemBase{
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
     desiredSwerveStates = swerveModuleStates;
-    angularVelDegreesPerSecond = Math.toDegrees(rot);
   }
 
   public void updateOdometry(){
@@ -143,9 +139,9 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void resetOdometry(Pose2d newPose){
-
-    odometry.resetPosition(gyro.getAngleRotation2d(), getModulePositionsArray(), newPose);
     angleOffset = new Rotation2d(0);
+    odometry.resetPosition(gyro.getAngleRotation2d(), getModulePositionsArray(), newPose);
+    
     odometryPose = newPose;
   }
 
@@ -163,10 +159,6 @@ public class DriveSubsystem extends SubsystemBase{
 
   public Command resetOdometryCommand(Pose2d newPose){
     return new InstantCommand(() -> resetOdometry(newPose));
-  }
-
-  public double getAngularVelDegreesPerSecond(){
-    return angularVelDegreesPerSecond;
   }
 
   public void setAngleOffset(Rotation2d offset){

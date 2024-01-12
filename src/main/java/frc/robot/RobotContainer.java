@@ -6,9 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -29,7 +31,10 @@ public class RobotContainer {
           break;
 
         case SIM:
-          gyro = new Gyro(new GyroIOSim(() -> driveSubsystem.getAngularVelDegreesPerSecond()));
+          gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
+            .toChassisSpeeds(
+            driveSubsystem.getActualSwerveStates())
+            .omegaRadiansPerSecond)));
           break;
 
         default:
