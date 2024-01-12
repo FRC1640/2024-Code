@@ -3,17 +3,21 @@ package frc.robot.sensors.Gyro;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.lib.periodic.PeriodicBase;
 
-public class Gyro{
-    GyroIO io;
-    GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
+public class Gyro extends PeriodicBase {
+    private GyroIO io;
+    private GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
+
     public Gyro(GyroIO io){
         this.io = io;
     }
+
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Gyro", inputs);
     }
+
     public void reset() {
         io.resetGyro();
     }
@@ -28,5 +32,17 @@ public class Gyro{
 
     public double getAngularVelDegreesPerSecond() {
         return inputs.angularVelocityDegreesPerSecond;
+    }
+
+    public boolean isTrustworthy() {
+        return isConnected() && !isCalibrating();
+    }
+
+    public boolean isConnected() {
+        return inputs.isConnected;
+    }
+
+    public boolean isCalibrating() {
+        return inputs.isCalibrating;
     }
 }
