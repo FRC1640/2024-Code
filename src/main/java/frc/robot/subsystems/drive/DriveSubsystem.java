@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -35,6 +36,8 @@ public class DriveSubsystem extends SubsystemBase{
     Pose2d odometryPose = new Pose2d();
 
     double angularVelDegreesPerSecond;
+
+    Rotation2d angleOffset = new Rotation2d(0);
 
     public DriveSubsystem(Gyro gyro){
         this.gyro = gyro;
@@ -136,10 +139,11 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void updateOdometry(){
-    odometryPose = odometry.update(gyro.getAngleRotation2d(), getModulePositionsArray());
+    odometryPose = odometry.update(gyro.getAngleRotation2d().plus(angleOffset), getModulePositionsArray());
   }
 
   public void resetOdometry(Pose2d newPose){
+
     odometry.resetPosition(gyro.getAngleRotation2d(), getModulePositionsArray(), newPose);
     odometryPose = newPose;
   }
@@ -162,5 +166,9 @@ public class DriveSubsystem extends SubsystemBase{
 
   public double getAngularVelDegreesPerSecond(){
     return angularVelDegreesPerSecond;
+  }
+
+  public void setAngleOffset(Rotation2d offset){
+    angleOffset = offset;
   }
 }
