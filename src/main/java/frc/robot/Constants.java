@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.ModuleInfo;
 
@@ -13,6 +14,17 @@ public final class Constants {
         public static final double wheelYPos = Units.inchesToMeters(10.375);
         public static final double wheelXPos = Units.inchesToMeters(12.375);
         public static final double maxSpeed = 4;
+
+        private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
+        private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
+        private static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
+        private static final Translation2d backRightLocation = new Translation2d(-wheelXPos, -wheelYPos);
+
+        public static final Translation2d[] positions = new Translation2d[]{frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation};
+
+        public static final SwerveDriveKinematics kinematics =
+            new SwerveDriveKinematics(
+            frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
     }
     public static class SimulationConstants{
         public static final double roomTempCelsius = 23;
@@ -36,7 +48,7 @@ public final class Constants {
             PivotId.FR, 
             2, 
             1, 
-            2, 
+            2,
             -45, 
             true, 
             true,

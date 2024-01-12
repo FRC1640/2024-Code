@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
@@ -20,13 +21,6 @@ import frc.robot.sensors.Gyro.GyroIONavX;
 
 public class DriveSubsystem extends SubsystemBase{
     Gyro gyro;
-    public static final double y = Constants.SwerveDriveDimensions.wheelYPos; // 10.375"
-    public static final double x = Constants.SwerveDriveDimensions.wheelXPos; // 12.375"
-
-    private final Translation2d frontLeftLocation = new Translation2d(x, y);
-    private final Translation2d frontRightLocation = new Translation2d(x, -y);
-    private final Translation2d backLeftLocation = new Translation2d(-x, y);
-    private final Translation2d backRightLocation = new Translation2d(-x, -y);
 
     private Module frontLeft;
     private Module frontRight;
@@ -37,11 +31,6 @@ public class DriveSubsystem extends SubsystemBase{
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[]{};
 
-
-    private final SwerveDriveKinematics kinematics =
-      new SwerveDriveKinematics(
-          frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
-
     public DriveSubsystem(Gyro gyro){
         this.gyro = gyro;
         switch (Robot.getMode()) {
@@ -49,7 +38,7 @@ public class DriveSubsystem extends SubsystemBase{
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
                 frontRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.FR);
                 backLeft = new Module(new ModuleIOSparkMax(ModuleConstants.BL), PivotId.BL);
-                backRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.BR);
+                backRight = new Module(new ModuleIOSparkMax(ModuleConstants.BR), PivotId.BR);
                 break;
 
             case SIM:
@@ -99,27 +88,25 @@ public class DriveSubsystem extends SubsystemBase{
     ySpeed = ySpeed * maxSpeed;
     rot = rot * maxSpeed;
 
-    var swerveModuleStates = kinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-                new Rotation2d(gyro.getAngleRotation2d().getRadians()))
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
+    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot, 
+        ()->gyro.getAngleRotation2d().getRadians(), fieldRelative);
+
     frontLeft.setDesiredState(swerveModuleStates[0]);
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
-
-    desiredSwerveStates = swerveModuleStates;
-    
+    desiredSwerveStates = swerveModuleStates;    
   }
-
-
   public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative){
     xSpeed = xSpeed * maxSpeed;
     ySpeed = ySpeed * maxSpeed;
     rot = rot * maxSpeed;
-
-
+    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot, 
+        ()->gyro.getAngleRotation2d().getRadians(), fieldRelative);
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
+    desiredSwerveStates = swerveModuleStates;
   }
 }

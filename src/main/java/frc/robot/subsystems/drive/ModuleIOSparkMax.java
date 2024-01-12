@@ -10,6 +10,7 @@ import frc.robot.sensors.Resolver;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -35,6 +36,10 @@ public class ModuleIOSparkMax implements ModuleIO{
 		steeringMotor.setIdleMode(IdleMode.kCoast);
 		steeringMotor.setSmartCurrentLimit(40);
 		driveMotor.setIdleMode(IdleMode.kCoast);
+        steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+		driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 200);
         driveEncoder = driveMotor.getEncoder();
 		steeringEncoder = new Resolver(id.resolverChannel, ModuleConstants.minVoltage, ModuleConstants.maxVoltage,
 				id.angleOffset, id.reverseAngle);
