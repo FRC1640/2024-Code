@@ -21,157 +21,156 @@ import frc.lib.periodic.PeriodicScheduler;
 
 public class Robot extends LoggedRobot  {
     public static enum Mode { REAL, SIM, REPLAY };
-  private Command m_autonomousCommand;
+    private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+    private RobotContainer m_robotContainer;
 
-  @Override
-  public void robotInit() {
+    @Override
+    public void robotInit() {
+        // Record metadata
+        Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+        Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+        Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+        Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+        Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+        Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
+        Logger.recordMetadata("RobotMode", getMode().toString());
+        Logger.recordMetadata("MACAddress", getMACAddress());
+        switch (BuildConstants.DIRTY) {
+            case 0:
+                Logger.recordMetadata("GitDirty", "All changes committed");
+                break;
+            case 1:
+                Logger.recordMetadata("GitDirty", "Uncomitted changes");
+                break;
+            default:
+                Logger.recordMetadata("GitDirty", "Unknown");
+                break;
+        }
+        System.out.println(getMode().toString());
+        // Set up data receivers & replay source
+        switch (getMode()) {
+            // Running on a real robot, log to a USB stick
+            case REAL:
+                Logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
+                Logger.addDataReceiver(new NT4Publisher());
+                break;
+
+            // Running a physics simulator, log to local folder
+            case SIM:
+                Logger.addDataReceiver(new WPILOGWriter("logs"));
+                Logger.addDataReceiver(new NT4Publisher());
+                break;
+
+            // Replaying a log, set up replay source
+            case REPLAY:
+                setUseTiming(false); // Run as fast as possible
+                String logPath = LogFileUtil.findReplayLog();
+                Logger.setReplaySource(new WPILOGReader(logPath));
+                Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+                break;
+        }
+
+        // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
+        // Logger.getInstance().disableDeterministicTimestamps()
+
+        // Start AdvantageKit Logger
+        Logger.start();
+        m_robotContainer = new RobotContainer();
+    }
+
+    @Override
+    public void robotPeriodic() {
+        // Runs the PeriodicScheduler. This is responsible for running periodic()
+        // in all PeriodicBase instances.
+        PeriodicScheduler.getInstance().run();
+
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled commands, running already-scheduled commands, removing
+        // finished or interrupted commands, and running subsystem periodic() methods.
+        // This must be called from the robot's periodic block in order for anything in
+        // the Command-based framework to work.
+        CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledInit() {}
+
+    @Override
+    public void disabledPeriodic() {}
+
+    @Override
+    public void disabledExit() {}
+
+    @Override
+    public void autonomousInit() {
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
+    }
+
+    @Override
+    public void autonomousPeriodic() {}
+
+    @Override
+    public void autonomousExit() {}
+
+    @Override
+    public void teleopInit() {
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+    }
+
+    @Override
+    public void teleopPeriodic() {}
+
+    @Override
+    public void teleopExit() {}
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
+    public void testPeriodic() {}
+
+    @Override
+    public void testExit() {}
     
-
-    // Record metadata
-    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
-    Logger.recordMetadata("RobotMode", getMode().toString());
-    Logger.recordMetadata("MACAddress", getMACAddress());
-    switch (BuildConstants.DIRTY) {
-      case 0:
-        Logger.recordMetadata("GitDirty", "All changes committed");
-        break;
-      case 1:
-        Logger.recordMetadata("GitDirty", "Uncomitted changes");
-        break;
-      default:
-        Logger.recordMetadata("GitDirty", "Unknown");
-        break;
-    }
-    System.out.println(getMode().toString());
-    // Set up data receivers & replay source
-    switch (getMode()) {
-      // Running on a real robot, log to a USB stick
-      case REAL:
-        Logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
-
-      // Running a physics simulator, log to local folder
-      case SIM:
-        Logger.addDataReceiver(new WPILOGWriter("logs"));
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
-
-      // Replaying a log, set up replay source
-      case REPLAY:
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog();
-        Logger.setReplaySource(new WPILOGReader(logPath));
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-        break;
-    }
-
-    // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
-    // Logger.getInstance().disableDeterministicTimestamps()
-
-    // Start AdvantageKit Logger
-    Logger.start();
-    m_robotContainer = new RobotContainer();
-  }
-
-  @Override
-  public void robotPeriodic() {
-    // Runs the PeriodicScheduler. This is responsible for running periodic()
-    // in all PeriodicBase instances.
-    PeriodicScheduler.getInstance().run();
-
-    // Runs the Scheduler. This is responsible for polling buttons, adding
-    // newly-scheduled commands, running already-scheduled commands, removing
-    // finished or interrupted commands, and running subsystem periodic() methods.
-    // This must be called from the robot's periodic block in order for anything in
-    // the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-  }
-
-  @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void disabledExit() {}
-
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void autonomousExit() {}
-
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
-
-  @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void teleopExit() {}
-
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void testExit() {}
-  public static boolean isReplay() {
-      String replay = System.getProperty("REPLAY");
-      return replay != null && replay.toLowerCase().equals("true");
+    public static boolean isReplay() {
+        String replay = System.getProperty("REPLAY");
+        return replay != null && replay.toLowerCase().equals("true");
     }
 
     public static Mode getMode() {
-      if (isReal()) {
-        return Mode.REAL;
-      }
+        if (isReal()) {
+            return Mode.REAL;
+        }
 
-      if (isReplay()) {
-        return Mode.REPLAY;
-      }
+        if (isReplay()) {
+            return Mode.REPLAY;
+        }
 
-      return Mode.SIM;
+        return Mode.SIM;
     }
 
     public static String getMACAddress() {
-      try {
-        InetAddress localHost = InetAddress.getLocalHost();
-        NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
-        byte[] hardwareAddress = ni.getHardwareAddress();
-        String[] hexadecimal = new String[hardwareAddress.length];
-        for (int i = 0; i < hardwareAddress.length; i++) {
-            hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
+            byte[] hardwareAddress = ni.getHardwareAddress();
+            String[] hexadecimal = new String[hardwareAddress.length];
+            for (int i = 0; i < hardwareAddress.length; i++) {
+                hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+            }
+            return String.join("-", hexadecimal);
+        } catch (UnknownHostException | SocketException e) {
+            e.printStackTrace();
+            return "Not found";
         }
-        return String.join("-", hexadecimal);
-      } catch (UnknownHostException | SocketException e) {
-        e.printStackTrace();
-        return "Not found";
-      }
     }
-  }
+}
