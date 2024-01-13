@@ -71,7 +71,8 @@ def includeDesktopSupport = false
 // Also defines JUnit 5.
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.20'
-	  annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
@@ -124,6 +125,8 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// Generate BuildConstants.java with version info
 project.compileJava.dependsOn(createVersionFile)
 gversion {
   srcDir       = "src/main/java/"

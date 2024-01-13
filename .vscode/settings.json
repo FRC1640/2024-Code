@@ -12,7 +12,8 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true,
-    "**/*~": true
+    "**/*~": true,
+    "**/.gradle/**": true
   },
   "java.test.config": [
     {

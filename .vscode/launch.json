@@ -16,6 +16,17 @@
       "name": "WPILib roboRIO Debug",
       "request": "launch",
       "desktop": false,
+    },
+    {
+      "type": "java",
+      "name": "Replay Mode",
+      "console": "integratedTerminal",
+      "mainClass": "frc.robot.Main",
+      "request": "launch",
+      "stopOnEntry": false,
+      "vmArgs": "-DREPLAY=true",
+      "env": { "Path": "${workspaceFolder}\\build\\jni\\release" },
+      "preLaunchTask": "Extract Release Native"
     }
   ]
 }
