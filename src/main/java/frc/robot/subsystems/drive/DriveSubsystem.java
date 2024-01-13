@@ -133,6 +133,19 @@ public class DriveSubsystem extends SubsystemBase{
     backRight.setDesiredState(swerveModuleStates[3]);
     desiredSwerveStates = swerveModuleStates;
   }
+  public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRotation){
+    xSpeed = xSpeed * maxSpeed;
+    ySpeed = ySpeed * maxSpeed;
+    rot = rot * maxSpeed / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0));
+    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot, 
+        gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
+    desiredSwerveStates = swerveModuleStates;
+  }
+
 
   public void updateOdometry(){
     odometryPose = odometry.update(gyro.getAngleRotation2d().plus(angleOffset), getModulePositionsArray());
