@@ -9,20 +9,25 @@ public class GyroIOSim implements GyroIO{
     Rotation2d angle = new Rotation2d();
     Supplier<Double> angularVelocityDegreesPerSecond;
 
+    double offset;
+
     public GyroIOSim(Supplier<Double> angularVelocityDegreesPerSecond){
         this.angularVelocityDegreesPerSecond = angularVelocityDegreesPerSecond;
     }
     @Override
-    public void resetGyro() {
-        angle = new Rotation2d(0);
+    public void resetGyro(GyroIOInputs inputs) {
+        offset = inputs.angleRadiansRaw;
     }
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-        double LOOP_PERIOD_SECS = 0.02;
-        inputs.angleDegrees = angle.getDegrees() + angularVelocityDegreesPerSecond.get() * LOOP_PERIOD_SECS;
-        inputs.angleRadians = angle.getRadians() +  Math.toRadians(angularVelocityDegreesPerSecond.get()) * LOOP_PERIOD_SECS;
-        angle = new Rotation2d(inputs.angleRadians);
+        final double LOOP_PERIOD_SECS = 0.02;
+        inputs.angleRadiansRaw = angle.getRadians() +  Math.toRadians(angularVelocityDegreesPerSecond.get()) * LOOP_PERIOD_SECS;
+        angle = new Rotation2d(inputs.angleRadiansRaw);
         inputs.angularVelocityDegreesPerSecond = angularVelocityDegreesPerSecond.get();
+    }
+    @Override
+    public double getActual(GyroIOInputs inputs){
+        return inputs.angleRadiansRaw - offset;
     }
 }

@@ -19,10 +19,8 @@ public class ResetGyro extends Command{
     @Override
     public void initialize() {
         Pose2d currentPose = driveSubsystem.getPose();
-        Rotation2d oldAngle = gyro.getAngleRotation2d();
         gyro.reset();
         driveSubsystem.resetOdometry(currentPose);
-        driveSubsystem.setAngleOffset(oldAngle);
     }
     
     @Override
