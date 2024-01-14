@@ -45,8 +45,6 @@ public class DriveSubsystem extends SubsystemBase{
 
     Pose2d odometryPose = new Pose2d();
 
-    Rotation2d angleOffset = new Rotation2d(0);
-
     public DriveSubsystem(Gyro gyro){
         this.gyro = gyro;
         
@@ -192,12 +190,11 @@ public class DriveSubsystem extends SubsystemBase{
 
 
   public void updateOdometry(){
-    odometryPose = odometry.update(gyro.getAngleRotation2d().plus(angleOffset), getModulePositionsArray());
+    odometryPose = odometry.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
   }
 
   public void resetOdometry(Pose2d newPose){
-    angleOffset = new Rotation2d(0);
-    odometry.resetPosition(gyro.getAngleRotation2d(), getModulePositionsArray(), newPose);
+    odometry.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
     
     odometryPose = newPose;
   }
@@ -216,9 +213,5 @@ public class DriveSubsystem extends SubsystemBase{
 
   public Command resetOdometryCommand(Pose2d newPose){
     return new InstantCommand(() -> resetOdometry(newPose));
-  }
-
-  public void setAngleOffset(Rotation2d offset){
-    angleOffset = offset;
   }
 }

@@ -6,19 +6,21 @@ import edu.wpi.first.wpilibj.SPI;
 
 public class GyroIONavX implements GyroIO{
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-
-    @Override
-    public void resetGyro() {
-        gyro.zeroYaw();
-        // TODO make sure don't need gyro.reset()
-    }
-
+    double offset = 0;
     @Override
     public void updateInputs(GyroIOInputs inputs) {
+        
         inputs.isConnected = gyro.isConnected();
         inputs.isCalibrating = gyro.isCalibrating();
-        inputs.angleDegrees = gyro.getRotation2d().getDegrees();
-        inputs.angleRadians = gyro.getRotation2d().getRadians();
+        inputs.angleRadiansRaw = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
+    }
+    @Override
+    public void resetGyro(GyroIOInputs inputs) {
+        offset = inputs.angleRadiansRaw;
+    }
+    @Override
+    public double getActual(GyroIOInputs inputs){
+        return inputs.angleRadiansRaw - offset;
     }
 }
