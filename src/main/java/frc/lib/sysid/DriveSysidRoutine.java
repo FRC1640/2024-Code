@@ -27,9 +27,9 @@ public class DriveSysidRoutine {
     // reallocation.
     private final MutableMeasure<Velocity<Distance>> velocity = mutable(MetersPerSecond.of(0));
 
-    public SysIdRoutine createNewRoutineSwerve(Module fl, Module fr, Module bl, Module br, SubsystemBase subsystem) {
+    public SysIdRoutine createNewRoutineSwerve(Module fl, Module fr, Module bl, Module br, SubsystemBase subsystem, SysIdRoutine.Config config) {
         return new SysIdRoutine(
-                new SysIdRoutine.Config(),
+                config,
                 new SysIdRoutine.Mechanism(
                         (Measure<Voltage> volts) -> {
                             fl.setDriveVoltage(volts.in(Volts));

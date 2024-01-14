@@ -82,7 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
                 break;
         }
         // create sysidroutine
-        sysIdRoutine = new DriveSysidRoutine().createNewRoutineSwerve(frontLeft,frontRight,backLeft,backRight,this);
+        sysIdRoutine = new DriveSysidRoutine().createNewRoutineSwerve(frontLeft,frontRight,backLeft,backRight,this, new SysIdRoutine.Config());
 
         // Create odometry
         odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),
