@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.robot.subsystems.drive.Module;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -57,4 +57,12 @@ public class Module{
 		io.setDrivePercentage(targetSpeed / SwerveDriveDimensions.maxSpeed);
 		io.setSteerPercentage(turnOutput);
 	}
+
+    public void setDriveVoltage(double volts){
+        io.setDriveVoltage(volts);
+    }
+
+    public double getDriveVoltage(){
+        return inputs.driveAppliedVoltage;
+    }
 }

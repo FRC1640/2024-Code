@@ -20,16 +20,23 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
+import frc.lib.sysid.DriveSysidRoutine;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.subsystems.drive.Module.ModuleIO;
+import frc.robot.subsystems.drive.Module.ModuleIOSim;
+import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
+import frc.robot.subsystems.drive.Module.Module;
+import frc.robot.subsystems.drive.Module.ModuleInfo;
 
-public class DriveSubsystem extends SubsystemBase{
+public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;
 
     private Module frontLeft;
@@ -39,14 +46,19 @@ public class DriveSubsystem extends SubsystemBase{
 
     private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
 
-    private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[]{};
+    private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
     SwerveDriveOdometry odometry;
 
     Pose2d odometryPose = new Pose2d();
 
-    public DriveSubsystem(Gyro gyro){
+    SysIdRoutine sysIdRoutine;
+
+    public DriveSubsystem(Gyro gyro) {
         this.gyro = gyro;
+
+        
+
         
         switch (Robot.getMode()) {
             case REAL:
@@ -64,154 +76,180 @@ public class DriveSubsystem extends SubsystemBase{
                 break;
 
             default:
-                frontLeft = new Module(new ModuleIO() {}, PivotId.FL);
-                frontRight = new Module(new ModuleIO() {}, PivotId.FR);
-                backLeft = new Module(new ModuleIO() {}, PivotId.BL);
-                backRight = new Module(new ModuleIO() {}, PivotId.BR);
+                frontLeft = new Module(new ModuleIO() {
+                }, PivotId.FL);
+                frontRight = new Module(new ModuleIO() {
+                }, PivotId.FR);
+                backLeft = new Module(new ModuleIO() {
+                }, PivotId.BL);
+                backRight = new Module(new ModuleIO() {
+                }, PivotId.BR);
                 break;
-        }  
+        }
+        // create sysidroutine
+        sysIdRoutine = new DriveSysidRoutine().createNewRoutineSwerve(frontLeft,frontRight,backLeft,backRight,this, new SysIdRoutine.Config());
 
+        // Create odometry
+        odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),
+                getModulePositionsArray());
 
-        //Create odometry
-        odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
-
-        //Configure pathplanner
+        // Configure pathplanner
         AutoBuilder.configureHolonomic(
-          this::getPose,
-          this::resetOdometry,
-          () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
-          this::driveChassisSpeedsNoScaling,
-          new HolonomicPathFollowerConfig(
-              SwerveDriveDimensions.maxSpeed, 
-              SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0)),
-              new ReplanningConfig()),
-          () ->
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red,
-          this);
-          Pathfinding.setPathfinder(new LocalADStarAK());
-          PathPlannerLogging.setLogActivePathCallback(
-              (activePath) -> {
-                Logger.recordOutput(
-                    "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-              });
-          PathPlannerLogging.setLogTargetPoseCallback(
-              (targetPose) -> {
-                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-              });
+                this::getPose,
+                this::resetOdometry,
+                () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
+                this::driveChassisSpeedsNoScaling,
+                new HolonomicPathFollowerConfig(
+                        SwerveDriveDimensions.maxSpeed,
+                        SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
+                        new ReplanningConfig()),
+                () -> DriverStation.getAlliance().isPresent()
+                        && DriverStation.getAlliance().get() == Alliance.Red,
+                this);
+        Pathfinding.setPathfinder(new LocalADStarAK());
+        PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                    Logger.recordOutput(
+                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                });
+        PathPlannerLogging.setLogTargetPoseCallback(
+                (targetPose) -> {
+                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
     }
 
     @Override
-    public void periodic(){
-        //Update modules
+    public void periodic() {
+        // Update modules
         frontLeft.periodic();
         frontRight.periodic();
         backLeft.periodic();
         backRight.periodic();
-        //Update odometry
+        // Update odometry
         updateOdometry();
-        //Log odometry
+        // Log odometry
         Logger.recordOutput("Drive/OdometryPosition", odometryPose);
-        //Log swerve states
+        // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
     }
 
-    public SwerveModuleState[] getActualSwerveStates(){
-        return new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
+    public SwerveModuleState[] getActualSwerveStates() {
+        return new SwerveModuleState[] { frontLeft.getState(), frontRight.getState(), backLeft.getState(),
+                backRight.getState() };
     }
-    public SwerveModuleState[] getDesiredSwerveStates(){
+
+    public SwerveModuleState[] getDesiredSwerveStates() {
         return desiredSwerveStates;
     }
-   /**
-   * Method to drive the robot using joystick info and desaturated swerve algorithm.
-   *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   */
-  public void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    
-    xSpeed = xSpeed * maxSpeed;
-    ySpeed = ySpeed * maxSpeed;
-    rot = rot * maxSpeed / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0));
 
-    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot, 
-        gyro.getAngleRotation2d().getRadians(), fieldRelative);
+    /**
+     * Method to drive the robot using joystick info and desaturated swerve
+     * algorithm.
+     *
+     * @param xSpeed        Speed of the robot in the x direction (forward).
+     * @param ySpeed        Speed of the robot in the y direction (sideways).
+     * @param rot           Angular rate of the robot.
+     * @param fieldRelative Whether the provided x and y speeds are relative to the
+     *                      field.
+     */
+    public void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 
-    frontLeft.setDesiredState(swerveModuleStates[0]);
-    frontRight.setDesiredState(swerveModuleStates[1]);
-    backLeft.setDesiredState(swerveModuleStates[2]);
-    backRight.setDesiredState(swerveModuleStates[3]);
-    desiredSwerveStates = swerveModuleStates;
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
+                gyro.getAngleRotation2d().getRadians(), fieldRelative);
+
+        frontLeft.setDesiredState(swerveModuleStates[0]);
+        frontRight.setDesiredState(swerveModuleStates[1]);
+        backLeft.setDesiredState(swerveModuleStates[2]);
+        backRight.setDesiredState(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
+    /**
+     * Method to drive the robot using joystick info and double cone swerve
+     * algorithm.
+     *
+     * @param xSpeed        Speed of the robot in the x direction (forward).
+     * @param ySpeed        Speed of the robot in the y direction (sideways).
+     * @param rot           Angular rate of the robot.
+     * @param fieldRelative Whether the provided x and y speeds are relative to the
+     *                      field.
+     */
+    public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
+                gyro.getAngleRotation2d().getRadians(), fieldRelative);
+        frontLeft.setDesiredState(swerveModuleStates[0]);
+        frontRight.setDesiredState(swerveModuleStates[1]);
+        backLeft.setDesiredState(swerveModuleStates[2]);
+        backRight.setDesiredState(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
+    public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+            Translation2d centerOfRotation) {
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
+        frontLeft.setDesiredState(swerveModuleStates[0]);
+        frontRight.setDesiredState(swerveModuleStates[1]);
+        backLeft.setDesiredState(swerveModuleStates[2]);
+        backRight.setDesiredState(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
+    public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) { // TODO: is this right? should I run an algorithm?
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+        frontLeft.setDesiredState(swerveModuleStates[0]);
+        frontRight.setDesiredState(swerveModuleStates[1]);
+        backLeft.setDesiredState(swerveModuleStates[2]);
+        backRight.setDesiredState(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
+    public void updateOdometry() {
+        odometryPose = odometry.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
+    }
+
+    public void resetOdometry(Pose2d newPose) {
+        odometry.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
+
+        odometryPose = newPose;
+    }
+
+    public Pose2d getPose() {
+        return odometryPose;
+    }
+
+    public SwerveModulePosition[] getModulePositionsArray() {
+        return new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition() };
+    }
+
+    public Command resetOdometryCommand(Pose2d newPose) {
+        return new InstantCommand(() -> resetOdometry(newPose));
+    }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysIdRoutine.quasistatic(direction);
   }
-   /**
-   * Method to drive the robot using joystick info and double cone swerve algorithm.
-   *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   */
-  public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative){
-    xSpeed = xSpeed * maxSpeed;
-    ySpeed = ySpeed * maxSpeed;
-    rot = rot * maxSpeed / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0));
-    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot, 
-        gyro.getAngleRotation2d().getRadians(), fieldRelative);
-    frontLeft.setDesiredState(swerveModuleStates[0]);
-    frontRight.setDesiredState(swerveModuleStates[1]);
-    backLeft.setDesiredState(swerveModuleStates[2]);
-    backRight.setDesiredState(swerveModuleStates[3]);
-    desiredSwerveStates = swerveModuleStates;
-  }
-  public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRotation){
-    xSpeed = xSpeed * maxSpeed;
-    ySpeed = ySpeed * maxSpeed;
-    rot = rot * maxSpeed / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0));
-    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot, 
-        gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
-    frontLeft.setDesiredState(swerveModuleStates[0]);
-    frontRight.setDesiredState(swerveModuleStates[1]);
-    backLeft.setDesiredState(swerveModuleStates[2]);
-    backRight.setDesiredState(swerveModuleStates[3]);
-    desiredSwerveStates = swerveModuleStates;
-  }
 
-  public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds){ //TODO: is this right? should I run an algorithm?
-    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond);
-    frontLeft.setDesiredState(swerveModuleStates[0]);
-    frontRight.setDesiredState(swerveModuleStates[1]);
-    backLeft.setDesiredState(swerveModuleStates[2]);
-    backRight.setDesiredState(swerveModuleStates[3]);
-    desiredSwerveStates = swerveModuleStates;
-  }
-
-
-  public void updateOdometry(){
-    odometryPose = odometry.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-  }
-
-  public void resetOdometry(Pose2d newPose){
-    odometry.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
-    
-    odometryPose = newPose;
-  }
-
-  public Pose2d getPose(){
-    return odometryPose;
-  }
-
-  public SwerveModulePosition[] getModulePositionsArray(){
-    return new SwerveModulePosition[] {
-        frontLeft.getPosition(), 
-        frontRight.getPosition(), 
-        backLeft.getPosition(), 
-        backRight.getPosition()};
-  }
-
-  public Command resetOdometryCommand(Pose2d newPose){
-    return new InstantCommand(() -> resetOdometry(newPose));
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysIdRoutine.dynamic(direction);
   }
 }
