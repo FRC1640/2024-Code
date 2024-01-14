@@ -23,8 +23,9 @@ public class RobotContainer {
   private Gyro gyro;
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
+  
   public RobotContainer() {
-    
+      DashboardInit.matchInit();
       switch (Robot.getMode()) {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
