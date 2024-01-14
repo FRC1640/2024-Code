@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.robot.subsystems.drive.Module;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -6,7 +6,6 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.sensors.Resolver;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;

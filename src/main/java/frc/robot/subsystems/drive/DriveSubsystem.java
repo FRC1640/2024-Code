@@ -30,6 +30,11 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.subsystems.drive.Module.ModuleIO;
+import frc.robot.subsystems.drive.Module.ModuleIOSim;
+import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
+import frc.robot.subsystems.drive.Module.Module;
+import frc.robot.subsystems.drive.Module.ModuleInfo;
 
 public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;

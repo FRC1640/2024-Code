@@ -15,7 +15,7 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.drive.Module;
+import frc.robot.subsystems.drive.Module.Module;
 
 public class DriveSysidRoutine {
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
