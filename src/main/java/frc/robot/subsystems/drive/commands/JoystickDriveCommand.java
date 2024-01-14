@@ -20,8 +20,8 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class JoystickDriveCommand extends Command {
-    final double SLOW_LINEAR_SPEED = 0.6;
-    final double SLOW_ROTATIONAL_SPEED = 0.55;
+    final double SLOW_LINEAR_SPEED = 0.5;
+    final double SLOW_ROTATIONAL_SPEED = 0.3;
 
     final double LOWER_DB = 0.15;
     final double UPPER_DB = 0.15;
