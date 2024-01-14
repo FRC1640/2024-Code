@@ -28,9 +28,10 @@ public class RobotContainer {
   private Gyro gyro;
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
+
   private final SendableChooser<Command> autoChooser;
   public RobotContainer() {
-    
+      DashboardInit.matchInit();
       switch (Robot.getMode()) {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
