@@ -3,7 +3,7 @@ package frc.robot.sensors.Vision;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.sensors.Gyro.GyroIO.GyroIOInputs;
-import frc.robot.sensors.Vision.LimelightVision;
+
 
 public class VisionIOLimelight implements VisionIO {
 
