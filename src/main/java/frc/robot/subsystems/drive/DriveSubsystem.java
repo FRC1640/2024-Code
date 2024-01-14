@@ -2,6 +2,16 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.Logger;
 
+// for pose est.
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.kinematics.WheelPositions;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -41,7 +51,8 @@ public class DriveSubsystem extends SubsystemBase{
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[]{};
 
-    SwerveDriveOdometry odometry;
+    //SwerveDriveOdometry odometry;
+    SwerveDrivePoseEstimator swervePoseEstimator; // swerve pose estimator is an alt. for swerve odometry
 
     Pose2d odometryPose = new Pose2d();
 
@@ -72,8 +83,15 @@ public class DriveSubsystem extends SubsystemBase{
         }  
 
 
-        //Create odometry
-        odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
+       //Create Pose Estimator
+        //odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
+        swervePoseEstimator = new SwerveDrivePoseEstimator(
+            SwerveDriveDimensions.kinematics, 
+            gyro.getAngleRotation2d(), 
+            getModulePositionsArray(), 
+            new Pose2d(),
+                VecBuilder.fill(0.05, 0.05, 0.05),
+                VecBuilder.fill(0.5, 0.5, 0.5));// THIS IS SUPPOSED TO BE THE starting pose estimate
 
         //Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -101,6 +119,42 @@ public class DriveSubsystem extends SubsystemBase{
               });
     }
 
+      /**
+   * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+   * while still accounting for measurement noise.
+   *
+   * <p>This method can be called as infrequently as you want, as long as you are calling {@link
+   * PoseEstimator#update} every loop.
+   *
+   * <p>To promote stability of the pose estimate and make it robust to bad vision data, we
+   * recommend only adding vision measurements that are already within one meter or so of the
+   * current pose estimate.
+   *
+   * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+   * @param timestampSeconds The timestamp of the vision measurement in seconds. Note that if you
+   *     don't use your own time source by calling {@link
+   *     PoseEstimator#updateWithTime(double,Rotation2d,WheelPositions)} then you must use a
+   *     timestamp with an epoch since FPGA startup (i.e., the epoch of this timestamp is the same
+   *     epoch as {@link edu.wpi.first.wpilibj.Timer#getFPGATimestamp()}.) This means that you
+   *     should use {@link edu.wpi.first.wpilibj.Timer#getFPGATimestamp()} as your time source or
+   *     sync the epochs.
+   */
+
+   public void addVisionPoseEstimate(Pose2d pose, double timestamp) {
+    swervePoseEstimator.addVisionMeasurement(pose, timestamp);
+}
+
+
+  /** 
+* SAME THING WITH STANDARD DEVIATION
+* @param visionMeasurementStdDevs Standard deviations of the vision pose measurement (x position
+*     in meters, y position in meters, and heading in radians). Increase these numbers to trust
+*     the vision pose measurement less.
+*/
+public void addVisionPoseEstimate(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
+    swervePoseEstimator.addVisionMeasurement(pose, timestamp, stdDevs);
+}
+   
     @Override
     public void periodic(){
         //Update modules
@@ -116,6 +170,8 @@ public class DriveSubsystem extends SubsystemBase{
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
     }
+
+
 
     public SwerveModuleState[] getActualSwerveStates(){
         return new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
@@ -190,11 +246,11 @@ public class DriveSubsystem extends SubsystemBase{
 
 
   public void updateOdometry(){
-    odometryPose = odometry.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
+    odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
   }
 
   public void resetOdometry(Pose2d newPose){
-    odometry.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
+    swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
     
     odometryPose = newPose;
   }
