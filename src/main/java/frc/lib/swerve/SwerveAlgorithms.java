@@ -31,6 +31,10 @@ public class SwerveAlgorithms {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveDriveDimensions.maxSpeed);
         return swerveModuleStates;
     }
+    public static SwerveModuleState[] rawSpeeds(double xSpeed, double ySpeed, double rot){
+        var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, rot));
+        return swerveModuleStates;
+    }
     public static SwerveModuleState[] doubleCone(double xSpeed, double ySpeed, double rot, 
     double currentAngleRadians, boolean fieldRelative){
 

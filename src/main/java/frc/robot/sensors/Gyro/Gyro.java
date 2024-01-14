@@ -19,15 +19,19 @@ public class Gyro extends PeriodicBase {
     }
 
     public void reset() {
-        io.resetGyro();
-    }
-
-    public double getAngleDegrees() {
-        return inputs.angleDegrees;
+        io.resetGyro(inputs);
     }
 
     public Rotation2d getAngleRotation2d() {
-        return Rotation2d.fromDegrees((getAngleDegrees()));
+        return new Rotation2d(io.getActual(inputs));
+    }
+
+    public double getRawAngleRadians(){
+        return inputs.angleRadiansRaw;
+    }
+
+    public Rotation2d getRawAngleRotation2d(){
+        return new Rotation2d(inputs.angleRadiansRaw);
     }
 
     public double getAngularVelDegreesPerSecond() {

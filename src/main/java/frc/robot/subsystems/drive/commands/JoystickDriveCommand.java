@@ -20,8 +20,8 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class JoystickDriveCommand extends Command {
-    final double SLOW_LINEAR_SPEED = 0.6;
-    final double SLOW_ROTATIONAL_SPEED = 0.55;
+    final double SLOW_LINEAR_SPEED = 0.5;
+    final double SLOW_ROTATIONAL_SPEED = 0.3;
 
     final double LOWER_DB = 0.15;
     final double UPPER_DB = 0.15;
@@ -45,6 +45,8 @@ public class JoystickDriveCommand extends Command {
     double xSpeed;
     double ySpeed;
     double rot;
+
+    boolean hold = false;
 
     public JoystickDriveCommand(DriveSubsystem driveSubsystem, Gyro gyro, CommandXboxController driveController) {
         this.driveSubsystem = driveSubsystem;
@@ -93,10 +95,16 @@ public class JoystickDriveCommand extends Command {
 
         /* Increase rotational sensitivity */
         rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 3.0);
-        
-        driverController.leftTrigger().onTrue(new InstantCommand(() -> iXSpeed = xSpeed)
-            .alongWith(new InstantCommand(() -> iYSpeed = ySpeed))
-            .alongWith(new InstantCommand(() -> offset = -gyro.getAngleRotation2d().getRadians())));
+    
+        if (!hold && leftTrigger.getAsBoolean()){
+            iXSpeed = xSpeed;
+            iYSpeed = ySpeed;
+            offset = -gyro.getAngleRotation2d().getRadians();
+            hold = true;
+        }
+        if (!leftTrigger.getAsBoolean()){
+            hold = false;
+        }
         angle = (Math.atan2(iYSpeed, iXSpeed) + offset); //add gyro offset to angle
         if (leftTrigger.getAsBoolean()){ //drive with center of rot around closest pivot
             Translation2d a = Arrays.stream(SwerveDriveDimensions.positions)

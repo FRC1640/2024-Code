@@ -2,15 +2,25 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -34,8 +44,6 @@ public class DriveSubsystem extends SubsystemBase{
     SwerveDriveOdometry odometry;
 
     Pose2d odometryPose = new Pose2d();
-
-    Rotation2d angleOffset = new Rotation2d(0);
 
     public DriveSubsystem(Gyro gyro){
         this.gyro = gyro;
@@ -66,6 +74,31 @@ public class DriveSubsystem extends SubsystemBase{
 
         //Create odometry
         odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
+
+        //Configure pathplanner
+        AutoBuilder.configureHolonomic(
+          this::getPose,
+          this::resetOdometry,
+          () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
+          this::driveChassisSpeedsNoScaling,
+          new HolonomicPathFollowerConfig(
+              SwerveDriveDimensions.maxSpeed, 
+              SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0)),
+              new ReplanningConfig()),
+          () ->
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Red,
+          this);
+          Pathfinding.setPathfinder(new LocalADStarAK());
+          PathPlannerLogging.setLogActivePathCallback(
+              (activePath) -> {
+                Logger.recordOutput(
+                    "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+              });
+          PathPlannerLogging.setLogTargetPoseCallback(
+              (targetPose) -> {
+                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+              });
     }
 
     @Override
@@ -146,14 +179,22 @@ public class DriveSubsystem extends SubsystemBase{
     desiredSwerveStates = swerveModuleStates;
   }
 
+  public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds){ //TODO: is this right? should I run an algorithm?
+    SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond);
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
+    desiredSwerveStates = swerveModuleStates;
+  }
+
 
   public void updateOdometry(){
-    odometryPose = odometry.update(gyro.getAngleRotation2d().plus(angleOffset), getModulePositionsArray());
+    odometryPose = odometry.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
   }
 
   public void resetOdometry(Pose2d newPose){
-    angleOffset = new Rotation2d(0);
-    odometry.resetPosition(gyro.getAngleRotation2d(), getModulePositionsArray(), newPose);
+    odometry.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
     
     odometryPose = newPose;
   }
@@ -172,9 +213,5 @@ public class DriveSubsystem extends SubsystemBase{
 
   public Command resetOdometryCommand(Pose2d newPose){
     return new InstantCommand(() -> resetOdometry(newPose));
-  }
-
-  public void setAngleOffset(Rotation2d offset){
-    angleOffset = offset;
   }
 }
