@@ -38,22 +38,22 @@ public class DriveSysidRoutine {
                             br.setDriveVoltage(volts.in(Volts));
                         }, log -> {
                             log.motor("frontLeft")
-                                    .voltage(appliedVoltage.mut_replace(fl.getDriveVoltage() * RobotController.getBatteryVoltage(),
+                                    .voltage(appliedVoltage.mut_replace(fl.getDriveVoltage(),
                                             Volts))
                                     .linearPosition(distance.mut_replace(fl.getPosition().distanceMeters, Meters))
                                     .linearVelocity(velocity.mut_replace(fl.getVelocity(), MetersPerSecond));
                             log.motor("frontRight")
-                                    .voltage(appliedVoltage.mut_replace(fr.getDriveVoltage() * RobotController.getBatteryVoltage(),
+                                    .voltage(appliedVoltage.mut_replace(fr.getDriveVoltage(),
                                             Volts))
                                     .linearPosition(distance.mut_replace(fr.getPosition().distanceMeters, Meters))
                                     .linearVelocity(velocity.mut_replace(fr.getVelocity(), MetersPerSecond));
                             log.motor("backLeft")
-                                    .voltage(appliedVoltage.mut_replace(bl.getDriveVoltage() * RobotController.getBatteryVoltage(),
+                                    .voltage(appliedVoltage.mut_replace(bl.getDriveVoltage(),
                                             Volts))
                                     .linearPosition(distance.mut_replace(bl.getPosition().distanceMeters, Meters))
                                     .linearVelocity(velocity.mut_replace(bl.getVelocity(), MetersPerSecond));
                             log.motor("backRight")
-                                    .voltage(appliedVoltage.mut_replace(br.getDriveVoltage() * RobotController.getBatteryVoltage(),
+                                    .voltage(appliedVoltage.mut_replace(br.getDriveVoltage(),
                                             Volts))
                                     .linearPosition(distance.mut_replace(br.getPosition().distanceMeters, Meters))
                                     .linearVelocity(velocity.mut_replace(br.getVelocity(), MetersPerSecond));
