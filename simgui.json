@@ -1,7 +1,10 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Auto/SendableChooser[2]": "String Chooser",
+      "/Shuffleboard/Sysid/SendableChooser[1]": "String Chooser",
+      "/Shuffleboard/Test Chooser/SendableChooser[0]": "String Chooser"
     }
   },
   "NetworkTables": {

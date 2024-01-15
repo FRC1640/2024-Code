@@ -9,7 +9,6 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -23,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
-import frc.lib.sysid.DriveSysidRoutine;
+import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
@@ -34,7 +33,6 @@ import frc.robot.subsystems.drive.Module.ModuleIO;
 import frc.robot.subsystems.drive.Module.ModuleIOSim;
 import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
 import frc.robot.subsystems.drive.Module.Module;
-import frc.robot.subsystems.drive.Module.ModuleInfo;
 
 public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;
@@ -57,9 +55,6 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem(Gyro gyro) {
         this.gyro = gyro;
 
-        
-
-        
         switch (Robot.getMode()) {
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -87,7 +82,8 @@ public class DriveSubsystem extends SubsystemBase {
                 break;
         }
         // create sysidroutine
-        sysIdRoutine = new DriveSysidRoutine().createNewRoutineSwerve(frontLeft,frontRight,backLeft,backRight,this, new SysIdRoutine.Config());
+        sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
+                new SysIdRoutine.Config());
 
         // Create odometry
         odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),
@@ -209,7 +205,7 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) { // TODO: is this right? should I run an algorithm?
+    public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
         frontLeft.setDesiredState(swerveModuleStates[0]);
@@ -245,11 +241,11 @@ public class DriveSubsystem extends SubsystemBase {
         return new InstantCommand(() -> resetOdometry(newPose));
     }
 
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return sysIdRoutine.quasistatic(direction);
-  }
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
 
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysIdRoutine.dynamic(direction);
-  }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
+    }
 }
