@@ -9,7 +9,6 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -34,7 +33,6 @@ import frc.robot.subsystems.drive.Module.ModuleIO;
 import frc.robot.subsystems.drive.Module.ModuleIOSim;
 import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
 import frc.robot.subsystems.drive.Module.Module;
-import frc.robot.subsystems.drive.Module.ModuleInfo;
 
 public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;
@@ -207,7 +205,7 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) { // TODO: is this right? should I run an algorithm?
+    public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
         frontLeft.setDesiredState(swerveModuleStates[0]);
