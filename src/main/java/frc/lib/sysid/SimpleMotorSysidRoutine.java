@@ -27,17 +27,19 @@ public class SimpleMotorSysidRoutine {
     // Mutable holder for unit-safe linear velocity values, persisted to avoid
     // reallocation.
     private final MutableMeasure<Velocity<Distance>> velocity = mutable(MetersPerSecond.of(0));
-        /**
+
+    /**
      * Creates a new sysid routine with swerve modules
      *
-     * @param setVoltage    consumer for motor voltage
-     * @param getVoltage    supplier to get motor voltage
-     * @param getPositionMeters supplier for motor position
+     * @param setVoltage                 consumer for motor voltage
+     * @param getVoltage                 supplier to get motor voltage
+     * @param getPositionMeters          supplier for motor position
      * @param getVelocityMetersPerSecond supplier for motor velocity
-     * @param subsystem subsystem for requirements 
-     * @param config    config for sysid
+     * @param subsystem                  subsystem for requirements
+     * @param config                     config for sysid
      */
-    public SysIdRoutine createNewRoutine(Consumer<Double> setVoltage, Supplier<Double> getVoltage, Supplier<Double> getPositionMeters,Supplier<Double> getVelocityMetersPerSecond, SubsystemBase subsystem,
+    public SysIdRoutine createNewRoutine(Consumer<Double> setVoltage, Supplier<Double> getVoltage,
+            Supplier<Double> getPositionMeters, Supplier<Double> getVelocityMetersPerSecond, SubsystemBase subsystem,
             SysIdRoutine.Config config) {
         return new SysIdRoutine(
                 config,
@@ -57,18 +59,20 @@ public class SimpleMotorSysidRoutine {
                                             MetersPerSecond));
                         }, subsystem));
     }
-            /**
+
+    /**
      * Creates a new sysid routine with swerve modules
      *
-     * @param setVoltage    consumer for motor voltage
-     * @param getVoltage    supplier to get motor voltage
-     * @param getPositionMeters supplier for motor position
+     * @param setVoltage                 consumer for motor voltage
+     * @param getVoltage                 supplier to get motor voltage
+     * @param getPositionMeters          supplier for motor position
      * @param getVelocityMetersPerSecond supplier for motor velocity
-     * @param subsystem subsystem for requirements 
-     * @param config    config for sysid
-     * @param motorName name of motor
+     * @param subsystem                  subsystem for requirements
+     * @param config                     config for sysid
+     * @param motorName                  name of motor
      */
-    public SysIdRoutine createNewRoutine(Consumer<Double> setVoltage, Supplier<Double> getVoltage, Supplier<Double> getPositionMeters,Supplier<Double> getVelocityMetersPerSecond, SubsystemBase subsystem,
+    public SysIdRoutine createNewRoutine(Consumer<Double> setVoltage, Supplier<Double> getVoltage,
+            Supplier<Double> getPositionMeters, Supplier<Double> getVelocityMetersPerSecond, SubsystemBase subsystem,
             SysIdRoutine.Config config, String motorName) {
         return new SysIdRoutine(
                 config,

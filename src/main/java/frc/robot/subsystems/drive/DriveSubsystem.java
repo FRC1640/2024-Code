@@ -57,9 +57,6 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem(Gyro gyro) {
         this.gyro = gyro;
 
-        
-
-        
         switch (Robot.getMode()) {
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -87,7 +84,8 @@ public class DriveSubsystem extends SubsystemBase {
                 break;
         }
         // create sysidroutine
-        sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft,frontRight,backLeft,backRight,this, new SysIdRoutine.Config());
+        sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
+                new SysIdRoutine.Config());
 
         // Create odometry
         odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),
@@ -245,11 +243,11 @@ public class DriveSubsystem extends SubsystemBase {
         return new InstantCommand(() -> resetOdometry(newPose));
     }
 
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return sysIdRoutine.quasistatic(direction);
-  }
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
 
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysIdRoutine.dynamic(direction);
-  }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
+    }
 }
