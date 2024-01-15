@@ -43,9 +43,9 @@ public class RobotContainer {
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro);
-        driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
+            driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
             configureBindings();
         }
     }
