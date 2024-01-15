@@ -106,11 +106,11 @@ public class DriveSubsystem extends SubsystemBase {
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(
-                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                            "Drive/Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
                 });
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> {
-                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                    Logger.recordOutput("Drive/Odometry/TrajectorySetpoint", targetPose);
                 });
     }
 
@@ -124,7 +124,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Update odometry
         updateOdometry();
         // Log odometry
-        Logger.recordOutput("Drive/OdometryPosition", odometryPose);
+        Logger.recordOutput("Drive/Odometry/OdometryPosition", odometryPose);
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
