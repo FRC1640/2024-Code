@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot.TestMode;
@@ -68,13 +69,13 @@ public class DashboardInit {
         Command swerveSysid = new SequentialCommandGroup(
                 driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
                         .until(controller.a()),
-                new WaitCommand(1.5),
+                new WaitUntilCommand(controller.b()),
                 driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
                         .until(controller.a()),
-                new WaitCommand(1.5),
+                new WaitUntilCommand(controller.b()),
                 driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward)
                         .until(controller.a()),
-                new WaitCommand(1.5),
+                new WaitUntilCommand(controller.b()),
                 driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse)
                         .until(controller.a()));
         swerveSysid.setName("SwerveSysID");

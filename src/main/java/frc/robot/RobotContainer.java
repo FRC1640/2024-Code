@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -44,7 +45,9 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro);
         driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
         DashboardInit.init(driveSubsystem, driveController);
-        configureBindings();
+        if (DashboardInit.getTestMode() != TestMode.SYSID){
+            configureBindings();
+        }
     }
 
     private void configureBindings() {
