@@ -19,10 +19,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.periodic.PeriodicScheduler;
 
-public class Robot extends LoggedRobot  {
-    public static enum Mode { REAL, SIM, REPLAY };
+public class Robot extends LoggedRobot {
+    public static enum Mode {
+        REAL, SIM, REPLAY
+    };
 
-    public static enum TestMode { SYSID, NONE };
+    public static enum TestMode {
+        NONE, SYSID
+    };
+
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
@@ -96,13 +101,16 @@ public class Robot extends LoggedRobot  {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+    }
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+    }
 
     @Override
-    public void disabledExit() {}
+    public void disabledExit() {
+    }
 
     @Override
     public void autonomousInit() {
@@ -114,10 +122,12 @@ public class Robot extends LoggedRobot  {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
-    public void autonomousExit() {}
+    public void autonomousExit() {
+    }
 
     @Override
     public void teleopInit() {
@@ -127,29 +137,39 @@ public class Robot extends LoggedRobot  {
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+    }
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+    }
 
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
-        switch (DashboardInit.getTestMode()){
+        switch (DashboardInit.getTestMode()) {
             case NONE:
                 System.out.println("Nothing is happening!");
             case SYSID:
-                System.out.println("Running sysid on "); //TODO
-
+                System.out.println("Running sysid on: " + DashboardInit.getSelectedSysid().getName());
+                DashboardInit.getSelectedSysid().schedule();
         }
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+        switch (DashboardInit.getTestMode()) {
+            case NONE:
+                
+            case SYSID:
+                
+        }
+    }
 
     @Override
-    public void testExit() {}
-    
+    public void testExit() {
+    }
+
     public static boolean isReplay() {
         String replay = System.getProperty("REPLAY");
         return replay != null && replay.toLowerCase().equals("true");
