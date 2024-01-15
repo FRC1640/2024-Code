@@ -20,12 +20,16 @@ import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
 import frc.robot.sensors.Gyro.GyroIOSim;
+import frc.robot.sensors.Vision.Vision;
+import frc.robot.sensors.Vision.VisionIO;
+import frc.robot.sensors.Vision.VisionIOLimelight;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
 import frc.robot.subsystems.drive.commands.ResetGyro;
 
 public class RobotContainer {
   private Gyro gyro;
+  private Vision vision;
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
   private final SendableChooser<Command> autoChooser;
@@ -34,6 +38,7 @@ public class RobotContainer {
       switch (Robot.getMode()) {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
+          vision = new Vision(new VisionIOLimelight());
           break;
 
         case SIM:
@@ -41,13 +46,17 @@ public class RobotContainer {
             .toChassisSpeeds(
             driveSubsystem.getActualSwerveStates())
             .omegaRadiansPerSecond)));
+          
+          //vision = new Vision(new VisionIOSim(() -> ));
           break;
 
         default:
           gyro = new Gyro(new GyroIO() {});
+          vision = new Vision(new VisionIOLimelight());
+
           break;
     }
-    driveSubsystem = new DriveSubsystem(gyro);
+    driveSubsystem = new DriveSubsystem(gyro, vision);
     driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
 
     //add pathplanner autochooser

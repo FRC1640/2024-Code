@@ -42,7 +42,7 @@ import frc.robot.sensors.Vision.Vision;
 
 public class DriveSubsystem extends SubsystemBase{
     Gyro gyro;
-    Vision limelight;
+    Vision vision;
 
     private Module frontLeft;
     private Module frontRight;
@@ -58,8 +58,9 @@ public class DriveSubsystem extends SubsystemBase{
 
     Pose2d odometryPose = new Pose2d();
 
-    public DriveSubsystem(Gyro gyro){
+    public DriveSubsystem(Gyro gyro, Vision vision){
         this.gyro = gyro;
+        this.vision = vision;
         
         switch (Robot.getMode()) {
             case REAL:
@@ -249,7 +250,7 @@ public void addVisionPoseEstimate(Pose2d pose, double timestamp, Matrix<N3, N1> 
 
   public void updateOdometry(){
     odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-    limelight.addVisionMeasurement(swervePoseEstimator);
+    vision.addVisionMeasurement(swervePoseEstimator);
   }
 
   public void resetOdometry(Pose2d newPose){
