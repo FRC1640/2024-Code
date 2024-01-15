@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Robot.TestMode;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
@@ -66,20 +68,9 @@ public class DashboardInit {
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
         ShuffleboardTab sysidTab = Shuffleboard.getTab("Sysid");
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
-        Command swerveSysid = new SequentialCommandGroup(
-                driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
-                        .until(controller.a()),
-                new WaitUntilCommand(controller.b()),
-                driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
-                        .until(controller.a()),
-                new WaitUntilCommand(controller.b()),
-                driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward)
-                        .until(controller.a()),
-                new WaitUntilCommand(controller.b()),
-                driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse)
-                        .until(controller.a()));
-        swerveSysid.setName("SwerveSysID");
-        sysidChooser.addOption("SwerveSysID", swerveSysid);
+        sysidChooser.addOption("SwerveSysID",
+                CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
+                        "SwerveSysId", controller.a(), controller.b()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
     }
 
