@@ -21,6 +21,9 @@ public class DashboardInit {
     private static SendableChooser<TestMode> testModeChooser = new SendableChooser<TestMode>();
     private static SendableChooser<Command> sysidChooser = new SendableChooser<Command>();
 
+    private static DriveSubsystem driveSubsystem;
+    private static CommandXboxController controller;
+
     public DashboardInit() {
 
     }
@@ -30,7 +33,8 @@ public class DashboardInit {
         autonInit();
         matchInit();
         testInit();
-        sysidInit(driveSubsystem, controller);
+        DashboardInit.driveSubsystem = driveSubsystem;
+        DashboardInit.controller = controller;
     }
 
     private static void autonInit() {
@@ -48,6 +52,18 @@ public class DashboardInit {
             testModeChooser.addOption(TestMode.values()[i].toString(), TestMode.values()[i]);
         }
         testTab.add(testModeChooser).withSize(5, 5).withPosition(1, 1);
+        testModeChooser.onChange(DashboardInit::onTestChange);
+    }
+
+    private static void onTestChange(TestMode mode){
+        switch (mode) {
+            case SYSID:
+                sysidInit(driveSubsystem, controller);
+                break;
+        
+            default:
+                break;
+        }
     }
 
     private static void matchInit() {
