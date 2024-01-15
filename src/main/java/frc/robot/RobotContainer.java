@@ -26,51 +26,46 @@ import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
 import frc.robot.subsystems.drive.commands.ResetGyro;
 
 public class RobotContainer {
-  private Gyro gyro;
-  private DriveSubsystem driveSubsystem;
-  private final CommandXboxController driveController = new CommandXboxController(0);
+    private Gyro gyro;
+    private DriveSubsystem driveSubsystem;
+    private final CommandXboxController driveController = new CommandXboxController(0);
 
-  private final SendableChooser<Command> autoChooser;
-  public RobotContainer() {
-      DashboardInit.matchInit();
-      switch (Robot.getMode()) {
-        case REAL:
-          gyro = new Gyro(new GyroIONavX());
-          break;
+    public RobotContainer() {
+        // Dashboard init
+        
+        switch (Robot.getMode()) {
+            case REAL:
+                gyro = new Gyro(new GyroIONavX());
+                break;
 
-        case SIM:
-          gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
-            .toChassisSpeeds(
-            driveSubsystem.getActualSwerveStates())
-            .omegaRadiansPerSecond)));
-          break;
+            case SIM:
+                gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
+                        .toChassisSpeeds(
+                                driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
+                break;
 
-        default:
-          gyro = new Gyro(new GyroIO() {});
-          break;
+            default:
+                gyro = new Gyro(new GyroIO() {
+                });
+                break;
+        }
+        driveSubsystem = new DriveSubsystem(gyro);
+        driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
+        DashboardInit.init(driveSubsystem, driveController);
+        configureBindings();
     }
-    driveSubsystem = new DriveSubsystem(gyro);
-    driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
 
-    //add pathplanner autochooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
-    autoTab.add(autoChooser).withSize(5, 5).withPosition(1, 1);
+    private void configureBindings() {
+        driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
+        driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
 
-    configureBindings();
-  }
+        // driveController.a().whileTrue(driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // driveController.b().whileTrue(driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // driveController.x().whileTrue(driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // driveController.y().whileTrue(driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    }
 
-  private void configureBindings() {
-    driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
-    driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0,0, new Rotation2d(0))));
-
-    driveController.a().whileTrue(driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driveController.b().whileTrue(driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driveController.x().whileTrue(driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driveController.y().whileTrue(driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-  }
-
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-  }
+    public Command getAutonomousCommand() {
+        return DashboardInit.getAutoChooserCommand();
+    }
 }

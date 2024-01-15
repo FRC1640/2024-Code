@@ -21,6 +21,8 @@ import frc.lib.periodic.PeriodicScheduler;
 
 public class Robot extends LoggedRobot  {
     public static enum Mode { REAL, SIM, REPLAY };
+
+    public static enum TestMode { SYSID, NONE };
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
@@ -133,6 +135,13 @@ public class Robot extends LoggedRobot  {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+        switch (DashboardInit.getTestMode()){
+            case NONE:
+                System.out.println("Nothing is happening!");
+            case SYSID:
+                System.out.println("Running sysid on "); //TODO
+
+        }
     }
 
     @Override
