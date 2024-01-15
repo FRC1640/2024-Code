@@ -38,9 +38,11 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.sensors.Vision.Vision;
 
 public class DriveSubsystem extends SubsystemBase{
     Gyro gyro;
+    Vision limelight;
 
     private Module frontLeft;
     private Module frontRight;
@@ -247,6 +249,7 @@ public void addVisionPoseEstimate(Pose2d pose, double timestamp, Matrix<N3, N1> 
 
   public void updateOdometry(){
     odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
+    limelight.addVisionMeasurement(swervePoseEstimator);
   }
 
   public void resetOdometry(Pose2d newPose){
