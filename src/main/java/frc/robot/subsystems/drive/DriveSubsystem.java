@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
-import frc.lib.sysid.DriveSysidRoutine;
+import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
@@ -87,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
                 break;
         }
         // create sysidroutine
-        sysIdRoutine = new DriveSysidRoutine().createNewRoutineSwerve(frontLeft,frontRight,backLeft,backRight,this, new SysIdRoutine.Config());
+        sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft,frontRight,backLeft,backRight,this, new SysIdRoutine.Config());
 
         // Create odometry
         odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),

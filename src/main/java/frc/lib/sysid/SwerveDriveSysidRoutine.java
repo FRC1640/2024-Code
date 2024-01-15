@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Module.Module;
 
-public class DriveSysidRoutine {
+public class SwerveDriveSysidRoutine {
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     private final MutableMeasure<Voltage> appliedVoltage = mutable(Volts.of(0));
     // Mutable holder for unit-safe linear distance values, persisted to avoid
@@ -26,8 +26,17 @@ public class DriveSysidRoutine {
     // Mutable holder for unit-safe linear velocity values, persisted to avoid
     // reallocation.
     private final MutableMeasure<Velocity<Distance>> velocity = mutable(MetersPerSecond.of(0));
-
-    public SysIdRoutine createNewRoutineSwerve(Module fl, Module fr, Module bl, Module br, SubsystemBase subsystem, SysIdRoutine.Config config) {
+    /**
+     * Creates a new sysid routine with swerve modules
+     *
+     * @param fl        front left module
+     * @param fr        front right module
+     * @param bl        back left module
+     * @param br        front right module
+     * @param subsystem subsystem for requirments
+     * @param config    config for sysid
+     */
+    public SysIdRoutine createNewRoutine(Module fl, Module fr, Module bl, Module br, SubsystemBase subsystem, SysIdRoutine.Config config) {
         return new SysIdRoutine(
                 config,
                 new SysIdRoutine.Mechanism(
