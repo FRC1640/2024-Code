@@ -17,10 +17,14 @@ import frc.robot.sensors.Gyro.GyroIOSim;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
 import frc.robot.subsystems.drive.commands.ResetGyro;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
     private Gyro gyro;
     private DriveSubsystem driveSubsystem;
+    private ShooterSubsystem shooterSubsystem;
     private final CommandXboxController driveController = new CommandXboxController(0);
 
     public RobotContainer() {
@@ -29,17 +33,19 @@ public class RobotContainer {
         switch (Robot.getMode()) {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
+                shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 break;
 
             case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
                         .toChassisSpeeds(
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
+                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 break;
 
             default:
-                gyro = new Gyro(new GyroIO() {
-                });
+                gyro = new Gyro(new GyroIO(){});
+                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro);
