@@ -47,12 +47,12 @@ public class RobotContainer {
             driveSubsystem.getActualSwerveStates())
             .omegaRadiansPerSecond)));
           
-          //vision = new Vision(new VisionIOSim(() -> ));
+          vision = new Vision(new VisionIO() {});
           break;
 
         default:
           gyro = new Gyro(new GyroIO() {});
-          vision = new Vision(new VisionIOLimelight());
+          vision = new Vision(new VisionIO() {});
 
           break;
     }
