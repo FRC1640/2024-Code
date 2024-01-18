@@ -2,6 +2,16 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.Logger;
 
+// for pose est.
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.kinematics.WheelPositions;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -29,6 +39,7 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.sensors.Vision.Vision;
 import frc.robot.subsystems.drive.Module.ModuleIO;
 import frc.robot.subsystems.drive.Module.ModuleIOSim;
 import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
@@ -36,6 +47,7 @@ import frc.robot.subsystems.drive.Module.Module;
 
 public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;
+    Vision vision;
 
     private Module frontLeft;
     private Module frontRight;
@@ -46,15 +58,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
-    SwerveDriveOdometry odometry;
-
-    Pose2d odometryPose = new Pose2d();
-
+    //SwerveDriveOdometry odometry;
+    SwerveDrivePoseEstimator swervePoseEstimator; // swerve pose estimator is an alt. for swerve odometry
     SysIdRoutine sysIdRoutine;
-
-    public DriveSubsystem(Gyro gyro) {
+    Pose2d odometryPose = new Pose2d();
+    public DriveSubsystem(Gyro gyro, Vision vision){
         this.gyro = gyro;
-
+        this.vision = vision;
         switch (Robot.getMode()) {
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -85,11 +95,18 @@ public class DriveSubsystem extends SubsystemBase {
         sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
                 new SysIdRoutine.Config());
 
-        // Create odometry
-        odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),
-                getModulePositionsArray());
 
-        // Configure pathplanner
+       //Create Pose Estimator
+        //odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
+        swervePoseEstimator = new SwerveDrivePoseEstimator(
+            SwerveDriveDimensions.kinematics, 
+            gyro.getAngleRotation2d(), 
+            getModulePositionsArray(), 
+            new Pose2d(),
+                VecBuilder.fill(0.05, 0.05, 0.05),
+                VecBuilder.fill(0.5, 0.5, 0.5));// THIS IS SUPPOSED TO BE THE starting standard deviations
+
+        //Configure pathplanner
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::resetOdometry,
@@ -114,6 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
                 });
     }
 
+
     @Override
     public void periodic() {
         // Update modules
@@ -129,7 +147,6 @@ public class DriveSubsystem extends SubsystemBase {
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
     }
-
     public SwerveModuleState[] getActualSwerveStates() {
         return new SwerveModuleState[] { frontLeft.getState(), frontRight.getState(), backLeft.getState(),
                 backRight.getState() };
@@ -138,6 +155,35 @@ public class DriveSubsystem extends SubsystemBase {
     public SwerveModuleState[] getDesiredSwerveStates() {
         return desiredSwerveStates;
     }
+
+
+  public void updateOdometry(){
+    odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
+    vision.addVisionMeasurement(swervePoseEstimator);
+  }
+
+  public void resetOdometry(Pose2d newPose){
+    swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
+    
+    odometryPose = newPose;
+  }
+
+  public Pose2d getPose(){
+    return odometryPose;
+  }
+
+  public SwerveModulePosition[] getModulePositionsArray(){
+    return new SwerveModulePosition[] {
+        frontLeft.getPosition(), 
+        frontRight.getPosition(), 
+        backLeft.getPosition(), 
+        backRight.getPosition()};
+  }
+
+  public Command resetOdometryCommand(Pose2d newPose){
+    return new InstantCommand(() -> resetOdometry(newPose));
+  }
+
 
     /**
      * Method to drive the robot using joystick info and desaturated swerve
@@ -215,32 +261,6 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    public void updateOdometry() {
-        odometryPose = odometry.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-    }
-
-    public void resetOdometry(Pose2d newPose) {
-        odometry.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
-
-        odometryPose = newPose;
-    }
-
-    public Pose2d getPose() {
-        return odometryPose;
-    }
-
-    public SwerveModulePosition[] getModulePositionsArray() {
-        return new SwerveModulePosition[] {
-                frontLeft.getPosition(),
-                frontRight.getPosition(),
-                backLeft.getPosition(),
-                backRight.getPosition() };
-    }
-
-    public Command resetOdometryCommand(Pose2d newPose) {
-        return new InstantCommand(() -> resetOdometry(newPose));
-    }
-
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
     }
@@ -248,4 +268,5 @@ public class DriveSubsystem extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
+
 }

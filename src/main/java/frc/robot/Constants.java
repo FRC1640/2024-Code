@@ -7,6 +7,15 @@ import frc.robot.subsystems.drive.Module.ModuleInfo;
 
 public final class Constants {
     public static enum PivotId { FL, FR, BL, BR;}
+
+    public static class LimelightConstants {
+        public static final double limelightAngle = 0.0;
+        public static final double limelightLensHeight = 0.0;
+        public static final double horizontalResolution = 0.0;
+        public static final double verticalResolution = 0.0;
+
+
+    }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = 0.053975;
         public static final double driveGearRatio = 7.73;
