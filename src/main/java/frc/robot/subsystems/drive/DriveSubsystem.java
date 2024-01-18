@@ -3,14 +3,8 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.Logger;
 
 // for pose est.
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.kinematics.WheelPositions;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -21,7 +15,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -158,13 +151,15 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   public void updateOdometry(){
+    if (vision.isTarget()){
+        swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency());
+    }
     odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-    vision.addVisionMeasurement(swervePoseEstimator);
+    
   }
 
   public void resetOdometry(Pose2d newPose){
     swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
-    
     odometryPose = newPose;
   }
 
