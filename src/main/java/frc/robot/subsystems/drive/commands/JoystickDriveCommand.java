@@ -11,7 +11,6 @@ import frc.robot.subsystems.drive.JoystickCleaner;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.OptionalDouble;
 
 import org.littletonrobotics.junction.Logger;
 
