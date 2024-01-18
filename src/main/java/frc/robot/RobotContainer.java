@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -29,7 +30,6 @@ public class RobotContainer {
   private Vision vision;
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
-  private final SendableChooser<Command> autoChooser;
   private ShooterSubsystem shooterSubsystem;
   public RobotContainer() {
     
@@ -53,7 +53,7 @@ public class RobotContainer {
                 vision = new Vision(new VisionIO() {});
                 break;
         }
-        driveSubsystem = new DriveSubsystem(gyro);
+        driveSubsystem = new DriveSubsystem(gyro, vision);
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
             driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));

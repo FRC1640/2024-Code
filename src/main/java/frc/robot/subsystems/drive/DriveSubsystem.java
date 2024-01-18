@@ -95,9 +95,6 @@ public class DriveSubsystem extends SubsystemBase {
         sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
                 new SysIdRoutine.Config());
 
-        // Create odometry
-        odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(),
-                getModulePositionsArray());
 
        //Create Pose Estimator
         //odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
