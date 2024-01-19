@@ -43,7 +43,7 @@ public class RobotContainer {
                         .toChassisSpeeds(
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
+                aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
                 break;
 
          default:
