@@ -10,10 +10,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 
-public class VisionIOLimelight implements VisionIO {
+public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
     @Override
-    public void updateInputs(VisionIOInputs inputs) {
+    public void updateInputs(AprilTagVisionIOInputs inputs) {
         NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
         double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0 };
         double[] botPose = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);

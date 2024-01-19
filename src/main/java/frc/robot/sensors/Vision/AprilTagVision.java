@@ -5,17 +5,17 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
 
-public class Vision extends PeriodicBase {
-    private VisionIO io;
-    private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+public class AprilTagVision extends PeriodicBase {
+    private AprilTagVisionIO io;
+    private AprilTagVisionIOInputsAutoLogged inputs = new AprilTagVisionIOInputsAutoLogged();
 
-    public Vision(VisionIO io) {
+    public AprilTagVision(AprilTagVisionIO io) {
         this.io = io;
     }
 
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Vision", inputs);
+        Logger.processInputs("AprilTagVision", inputs);
     }
 
     public Pose2d getAprilTagPose2d(){

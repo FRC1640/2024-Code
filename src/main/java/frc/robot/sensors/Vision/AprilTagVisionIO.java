@@ -4,15 +4,15 @@ import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Pose2d;
 
-public interface VisionIO {
+public interface AprilTagVisionIO {
     @AutoLog
-    public static class VisionIOInputs {
+    public static class AprilTagVisionIOInputs {
         public double latency;
         public Pose2d aprilTagPose;
         public boolean isTarget;
         public double id;
         public double aprilTagDistance;
     }
-    public default void updateInputs(VisionIOInputs inputs) {
+    public default void updateInputs(AprilTagVisionIOInputs inputs) {
     }
 }
