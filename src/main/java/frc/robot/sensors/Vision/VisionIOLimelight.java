@@ -12,9 +12,9 @@ public class VisionIOLimelight implements VisionIO {
     @Override
     public void updateInputs(VisionIOInputs inputs) {
         NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
-        double[] emptyArray = { 0, 0, 0, 0, 0, 0 };
+        double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0 };
         double[] botPose = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
-        inputs.latency = Timer.getFPGATimestamp() - (botPose[5] / 1000.0);
+        inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
         Rotation2d aprilTagBotRotation2d = new Rotation2d(botPose[3], botPose[4]);
         inputs.aprilTagPose = new Pose2d(aprilTagBotTran2d, aprilTagBotRotation2d);
