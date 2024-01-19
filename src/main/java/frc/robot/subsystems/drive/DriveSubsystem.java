@@ -31,6 +31,7 @@ import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.Vision;
 import frc.robot.subsystems.drive.Module.ModuleIO;
@@ -97,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
             getModulePositionsArray(), 
             new Pose2d(),
                 VecBuilder.fill(0.05, 0.05, 0.05),
-                VecBuilder.fill(0.5, 0.5, 0.5));// THIS IS SUPPOSED TO BE THE starting standard deviations
+                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));// THIS IS SUPPOSED TO BE THE starting standard deviations
 
         //Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -152,7 +153,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void updateOdometry(){
     if (vision.isTarget()){
-        swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency());
+
+        double distConst = Math.pow(vision.getDistance(), 2.0);
+        swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(), 
+        VecBuilder.fill(VisionConstants.xyStdDev * distConst, 
+        VisionConstants.xyStdDev * distConst, VisionConstants.thetaStdDev * distConst));
     }
     odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
     

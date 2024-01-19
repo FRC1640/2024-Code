@@ -27,4 +27,7 @@ public class Vision extends PeriodicBase {
     public boolean isTarget(){
         return inputs.isTarget;
     }
+    public double getDistance(){
+        return inputs.aprilTagDistance;
+    }
 }
