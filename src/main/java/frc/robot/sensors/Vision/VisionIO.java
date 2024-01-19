@@ -2,11 +2,13 @@ package frc.robot.sensors.Vision;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 public interface VisionIO {
     @AutoLog
     public static class VisionIOInputs {
-        public double[] botPose = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };// (x,y,z in meters, roll, pitch, yaw in
-                                                                        // degrees, and cl+tl (total latency)).
+        public double latency;
+        public Pose2d aprilTagPose;
         public boolean isTarget;
     }
     public default void updateInputs(VisionIOInputs inputs) {
