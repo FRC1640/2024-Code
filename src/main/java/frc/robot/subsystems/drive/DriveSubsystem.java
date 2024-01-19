@@ -33,7 +33,7 @@ import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.sensors.Gyro.Gyro;
-import frc.robot.sensors.Vision.Vision;
+import frc.robot.sensors.Vision.AprilTagVision;
 import frc.robot.subsystems.drive.Module.ModuleIO;
 import frc.robot.subsystems.drive.Module.ModuleIOSim;
 import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
@@ -41,7 +41,7 @@ import frc.robot.subsystems.drive.Module.Module;
 
 public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;
-    Vision vision;
+    AprilTagVision vision;
 
     private Module frontLeft;
     private Module frontRight;
@@ -56,7 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDrivePoseEstimator swervePoseEstimator; // swerve pose estimator is an alt. for swerve odometry
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
-    public DriveSubsystem(Gyro gyro, Vision vision){
+    public DriveSubsystem(Gyro gyro, AprilTagVision vision){
         this.gyro = gyro;
         this.vision = vision;
         switch (Robot.getMode()) {
