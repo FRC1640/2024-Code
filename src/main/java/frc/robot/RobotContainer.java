@@ -14,6 +14,10 @@ import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
 import frc.robot.sensors.Gyro.GyroIOSim;
+import frc.robot.sensors.Vision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVisionIO;
+import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
+import frc.robot.sensors.Vision.AprilTagVisionIOSim;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
 import frc.robot.subsystems.drive.commands.ResetGyro;
@@ -22,34 +26,34 @@ import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
-    private Gyro gyro;
-    private DriveSubsystem driveSubsystem;
-    private ShooterSubsystem shooterSubsystem;
-    private final CommandXboxController driveController = new CommandXboxController(0);
 
-    public RobotContainer() {
-        // Dashboard init
-        
-        switch (Robot.getMode()) {
-            case REAL:
-                gyro = new Gyro(new GyroIONavX());
-                shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
-                break;
-
-            case SIM:
+  private Gyro gyro;
+  private AprilTagVision aprilTagVision;
+  private DriveSubsystem driveSubsystem;
+  private final CommandXboxController driveController = new CommandXboxController(0);
+  private ShooterSubsystem shooterSubsystem;
+  public RobotContainer() {
+      switch (Robot.getMode()) {
+        case REAL:
+          gyro = new Gyro(new GyroIONavX());
+          aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
+          shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+          break;
+        case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
                         .toChassisSpeeds(
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 break;
 
-            default:
+         default:
                 gyro = new Gyro(new GyroIO(){});
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
                 break;
         }
-        driveSubsystem = new DriveSubsystem(gyro);
-        
+        driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
             driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
