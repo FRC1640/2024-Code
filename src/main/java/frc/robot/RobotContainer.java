@@ -29,7 +29,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         // Dashboard init
-
+        
         switch (Robot.getMode()) {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
@@ -49,9 +49,11 @@ public class RobotContainer {
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro);
+        
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
             driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
+            shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
             configureBindings();
         }
     }
@@ -59,6 +61,7 @@ public class RobotContainer {
     private void configureBindings() {
         driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
+        driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
     }
 
     public Command getAutonomousCommand() {
