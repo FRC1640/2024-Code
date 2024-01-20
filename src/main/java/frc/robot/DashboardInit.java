@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Robot.TestMode;
-import frc.robot.subsystems.drive.DriveSubsystem;
 
 /**
  * Writes various pieces of match data to Shuffleboard.

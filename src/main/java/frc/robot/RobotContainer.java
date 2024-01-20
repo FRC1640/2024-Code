@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Gyro.Gyro;
@@ -18,12 +19,10 @@ import frc.robot.sensors.Vision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
-import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
-import frc.robot.subsystems.drive.commands.ResetGyro;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.drive.JoystickDriveCommand;
 
 public class RobotContainer {
   private Gyro gyro;
@@ -56,13 +55,13 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
-            driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
+            driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro));
             configureBindings();
         }
     }
 
     private void configureBindings() {
-        driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
+        driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
     }
 
