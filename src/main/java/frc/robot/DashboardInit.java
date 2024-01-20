@@ -70,13 +70,16 @@ public class DashboardInit {
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
-                .withSize(3, 3).withPosition(0, 1);
+                .withSize(1, 3)
+                .withPosition(0, 1);
         // MATCH TIMER
-        teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000).withSize(2, 1)
+        teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000)
+                .withSize(1, 1)
                 .withPosition(0, 0);
         // LIMELIGHT STREAM?
-        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg").withSize(3,2)
-                .withPosition(4,0);
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
+                .withSize(4,4)
+                .withPosition(1,0);
         //position/size info to be altered on test- just making sure I didn't forget to add it
         //note from limelight docs: You will now be access your config panel at 10.TE.AM.11:5801, and your camera stream at 10.TE.AM.11:5800
     }
