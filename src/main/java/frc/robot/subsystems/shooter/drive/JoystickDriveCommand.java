@@ -6,12 +6,15 @@ import java.util.NoSuchElementException;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,6 +33,10 @@ public class JoystickDriveCommand {
     final double SLOW_ROTATIONAL_SPEED = 0.3;
 
     Translation2d centerOfRot;
+
+    PIDController pid = new PIDController(1,0,0);
+
+    PIDController pidr = new PIDController(1,0,0);
 
     final double LOWER_DB = 0.15;
     final double UPPER_DB = 0.15;
@@ -52,14 +59,25 @@ public class JoystickDriveCommand {
 
     ChassisSpeeds speeds= new ChassisSpeeds();
 
-    public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro) {
+    public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro, Pose2d pose) {
         Command c = Commands.race(
-                new RunCommand(() -> setChassisSpeeds(driverController, gyro), new Subsystem[]{}),
+                driverController.rightBumper().getAsBoolean()?
+                new RunCommand(() -> setChassisSpeeds(driverController, gyro, pose, driveSubsystem))
+                :new RunCommand(() -> setChassisSpeeds(driverController, gyro), new Subsystem[]{}),
                 driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot)
                 .andThen(driveSubsystem.driveDoubleConeCommand(() -> 
                 new ChassisSpeeds(0,0,0), () -> new Translation2d(0,0))));
         c.addRequirements(driveSubsystem);
         return c;
+    }
+
+    public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro, Pose2d pose, DriveSubsystem driveSubsystem){
+        setChassisSpeeds(driverController, gyro);
+        double angle = Math.atan2(pose.getY() - driveSubsystem.getPose().getY(), pose.getX() - driveSubsystem.getPose().getX());
+        double dist = driveSubsystem.getPose().getTranslation().getDistance(pose.getTranslation());
+        double s = pid.calculate(dist, 0);
+        double o = pidr.calculate(driveSubsystem.getPose().getRotation().getRadians(), pose.getRotation().getRadians());
+        speeds.plus(new ChassisSpeeds(Math.cos(angle) * s / dist,Math.sin(angle) * s / dist,o / dist));
     }
 
     public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro) {
