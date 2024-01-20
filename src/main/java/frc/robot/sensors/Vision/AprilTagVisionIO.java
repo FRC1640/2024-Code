@@ -10,7 +10,6 @@ public interface AprilTagVisionIO {
         public double latency;
         public Pose2d aprilTagPose;
         public boolean isTarget;
-        public double id;
         public double aprilTagDistance;
     }
     public default void updateInputs(AprilTagVisionIOInputs inputs) {
