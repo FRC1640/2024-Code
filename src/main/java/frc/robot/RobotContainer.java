@@ -25,13 +25,13 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.drive.JoystickDriveCommand;
 
 public class RobotContainer {
+
   private Gyro gyro;
   private AprilTagVision aprilTagVision;
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
   private ShooterSubsystem shooterSubsystem;
   public RobotContainer() {
-    
       switch (Robot.getMode()) {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
@@ -55,6 +55,7 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
+            shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
             driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro));
             configureBindings();
         }
@@ -63,6 +64,7 @@ public class RobotContainer {
     private void configureBindings() {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
+        driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
     }
 
     public Command getAutonomousCommand() {
