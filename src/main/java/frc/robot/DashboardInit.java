@@ -70,10 +70,16 @@ public class DashboardInit {
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
-                .withSize(3, 3).withPosition(0, 1);
+                .withSize(1, 3)
+                .withPosition(0, 1);
         // MATCH TIMER
-        teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000).withSize(2, 1)
+        teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000)
+                .withSize(1, 1)
                 .withPosition(0, 0);
+        // LIMELIGHT STREAM?
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
+                .withSize(4,4)
+                .withPosition(1,0);
     }
 
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
