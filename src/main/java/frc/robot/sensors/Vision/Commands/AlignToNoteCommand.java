@@ -58,23 +58,17 @@ public class AlignToNoteCommand extends Command{
 
         verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
         horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
-        angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : horizontalVelocity;
+        angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
 
        // m_drivetrainSubsystem.drive(
                // m_verticalVelocity,
                // m_horizontalVelocity,
                 //m_angularVelocity,);
         
-        //driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, angController, false);
+        driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, angularVelocity, false);
 
 
-    }
-
-    public void turnAndDrive (){
-        new InstantCommand(() ->  driveSubsystem.drivePercentDoubleCone(0, 0, angularVelocity, false));
-        new InstantCommand(() ->  driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, 0, false));
-
-    }
+        }
 
     /**
      * @return True if the command is considered finished (when the robot is within
@@ -83,7 +77,7 @@ public class AlignToNoteCommand extends Command{
      */
 
     public boolean isFinished() {
-        if (Math.abs(MLVision.getTX()) > isFinishedTolerance
+        if (Math.abs(MLVision.getTX()) > isFinishedTolerance // dont get this...
                 || (Math.abs(MLVision.getDistance() - desiredDistanceToNote) > isFinishedTolerance / 5)) {
             return false;
         }

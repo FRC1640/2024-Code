@@ -3,6 +3,8 @@ package frc.robot.sensors.Vision;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
 import frc.robot.Constants;
@@ -30,7 +32,7 @@ public class MLVision extends PeriodicBase {
     }
 
     public double getTX(){
-        return inputs.tx;
+        return inputs.tx; // just... hope for point of interest tracking
     }
     
     public double getTY(){
@@ -51,4 +53,5 @@ public class MLVision extends PeriodicBase {
         
         return trigDistance;
     }
+
 }
