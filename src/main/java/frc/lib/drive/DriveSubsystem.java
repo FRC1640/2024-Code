@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.lib.drive;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -29,6 +29,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.drive.Module.Module;
+import frc.lib.drive.Module.ModuleIO;
+import frc.lib.drive.Module.ModuleIOSim;
+import frc.lib.drive.Module.ModuleIOSparkMax;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
@@ -40,10 +44,6 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.AprilTagVision;
-import frc.robot.subsystems.drive.Module.Module;
-import frc.robot.subsystems.drive.Module.ModuleIO;
-import frc.robot.subsystems.drive.Module.ModuleIOSim;
-import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
 
 public class DriveSubsystem extends SubsystemBase {
 

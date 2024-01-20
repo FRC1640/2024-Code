@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive.Module;
+package frc.lib.drive.Module;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.subsystems.drive.Module.ModuleIOInputsAutoLogged;
 
 public class Module{
     ModuleIO io;
