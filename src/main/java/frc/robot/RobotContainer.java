@@ -19,8 +19,6 @@ import frc.robot.sensors.Vision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.commands.JoystickDriveCommand;
-import frc.robot.subsystems.drive.commands.ResetGyro;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -56,13 +54,13 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
-            driveSubsystem.setDefaultCommand(new JoystickDriveCommand(driveSubsystem, gyro, driveController));
+            driveSubsystem.setDefaultCommand(driveSubsystem.joystickDriveCommand(driveController));
             configureBindings();
         }
     }
 
     private void configureBindings() {
-        driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
+        driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
     }
 
