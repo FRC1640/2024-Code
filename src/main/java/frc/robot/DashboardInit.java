@@ -80,8 +80,6 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
                 .withSize(4,4)
                 .withPosition(1,0);
-        //position/size info to be altered on test- just making sure I didn't forget to add it
-        //note from limelight docs: You will now be access your config panel at 10.TE.AM.11:5801, and your camera stream at 10.TE.AM.11:5800
     }
 
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
