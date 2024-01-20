@@ -3,14 +3,8 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.Logger;
 
 // for pose est.
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.kinematics.WheelPositions;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -21,7 +15,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,8 +31,9 @@ import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.sensors.Gyro.Gyro;
-import frc.robot.sensors.Vision.Vision;
+import frc.robot.sensors.Vision.AprilTagVision;
 import frc.robot.subsystems.drive.Module.ModuleIO;
 import frc.robot.subsystems.drive.Module.ModuleIOSim;
 import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
@@ -47,7 +41,7 @@ import frc.robot.subsystems.drive.Module.Module;
 
 public class DriveSubsystem extends SubsystemBase {
     Gyro gyro;
-    Vision vision;
+    AprilTagVision vision;
 
     private Module frontLeft;
     private Module frontRight;
@@ -62,7 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDrivePoseEstimator swervePoseEstimator; // swerve pose estimator is an alt. for swerve odometry
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
-    public DriveSubsystem(Gyro gyro, Vision vision){
+    public DriveSubsystem(Gyro gyro, AprilTagVision vision){
         this.gyro = gyro;
         this.vision = vision;
         switch (Robot.getMode()) {
@@ -104,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
             getModulePositionsArray(), 
             new Pose2d(),
                 VecBuilder.fill(0.05, 0.05, 0.05),
-                VecBuilder.fill(0.5, 0.5, 0.5));// THIS IS SUPPOSED TO BE THE starting standard deviations
+                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));// THIS IS SUPPOSED TO BE THE starting standard deviations
 
         //Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -158,13 +152,19 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   public void updateOdometry(){
+    if (vision.isTarget()){
+
+        double distConst = Math.pow(vision.getDistance(), 2.0);
+        swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(), 
+        VecBuilder.fill(VisionConstants.xyStdDev * distConst, 
+        VisionConstants.xyStdDev * distConst, VisionConstants.thetaStdDev * distConst));
+    }
     odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-    vision.addVisionMeasurement(swervePoseEstimator);
+    
   }
 
   public void resetOdometry(Pose2d newPose){
     swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
-    
     odometryPose = newPose;
   }
 
