@@ -93,7 +93,7 @@ public class JoystickDriveCommand {
         double o = pidr.calculate(driveSubsystem.getPose().getRotation().getRadians(), pose.getRotation().getRadians());
 
         o = MathUtil.clamp(o, -1, 1);
-        speeds = speeds.plus(new ChassisSpeeds(-Math.cos(angle) * s / (dist+1), -Math.sin(angle) * s / (dist+1), o));
+        speeds = speeds.plus(new ChassisSpeeds(-Math.cos(angle) * s / (dist/5+1), -Math.sin(angle) * s / (dist/5+1), o));
         Logger.recordOutput("Drive/Speeds", speeds);
         System.out.println(s);
     }
