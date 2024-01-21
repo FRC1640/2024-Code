@@ -10,7 +10,13 @@
   "NetworkTables": {
     "transitory": {
       "AdvantageKit": {
-        "Gyro": {
+        "open": true
+      },
+      "limelight": {
+        "double[]##v_/limelight/botpose_wpiblue": {
+          "open": true
+        },
+        "double[]##v_/limelight/targetpose_robotspace": {
           "open": true
         },
         "open": true

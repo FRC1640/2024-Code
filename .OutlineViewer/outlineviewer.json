@@ -1,0 +1,16 @@
+{
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "127.0.0.1"
+  },
+  "createNonCanonical": true,
+  "precision": 10,
+  "transitory": {
+    "limelight": {
+      "double[]##v_/limelight/botpose_wpiblue": {
+        "open": true
+      },
+      "open": true
+    }
+  }
+}

@@ -1,5 +1,4 @@
 package frc.robot;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -7,15 +6,16 @@ import frc.robot.subsystems.drive.Module.ModuleInfo;
 
 public final class Constants {
     public static enum PivotId { FL, FR, BL, BR;}
-
     public static class LimelightConstants {
         public static final double limelightAngle = 0.0;
         public static final double limelightLensHeight = 0.0;
         public static final double horizontalResolution = 0.0;
         public static final double verticalResolution = 0.0;
         public static final double noteHeightCentimers = 0.0;
-
-
+    }
+    public static class VisionConstants{
+        public static final double xyStdDev = 0.5;
+        public static final double thetaStdDev = 0.5;
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = 0.053975;
@@ -84,5 +84,4 @@ public final class Constants {
             true,
             true);
     }
-
 }
