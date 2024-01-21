@@ -87,7 +87,7 @@ public class DashboardInit {
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
-                        "SwerveSysId", controller.a(), controller.b()));
+                        "SwerveSysId", ()->controller.a().getAsBoolean(), ()->controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
     }
 

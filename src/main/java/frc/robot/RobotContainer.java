@@ -54,11 +54,9 @@ public class RobotContainer {
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
-        if (DashboardInit.getTestMode() != TestMode.SYSID){
-            shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
-            driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro));
-            configureBindings();
-        }
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
+        driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro));
+        configureBindings();
     }
 
     private void configureBindings() {
@@ -72,5 +70,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return DashboardInit.getAutoChooserCommand();
+    }
+    public void removeAllDefaultCommands(){
+        driveSubsystem.removeDefaultCommand();
+        shooterSubsystem.removeDefaultCommand();
     }
 }
