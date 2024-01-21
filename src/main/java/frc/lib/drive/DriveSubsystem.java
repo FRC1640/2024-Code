@@ -241,27 +241,31 @@ public class DriveSubsystem extends SubsystemBase {
      *                      field.
      */
     private void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        rot = rot
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative);
-        frontLeft.setDesiredStatePercent(swerveModuleStates[0]);
-        frontRight.setDesiredStatePercent(swerveModuleStates[1]);
-        backLeft.setDesiredStatePercent(swerveModuleStates[2]);
-        backRight.setDesiredStatePercent(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
     private void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation) {
-        rot = rot
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
-        frontLeft.setDesiredStatePercent(swerveModuleStates[0]);
-        frontRight.setDesiredStatePercent(swerveModuleStates[1]);
-        backLeft.setDesiredStatePercent(swerveModuleStates[2]);
-        backRight.setDesiredStatePercent(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 

@@ -71,9 +71,9 @@ public class JoystickDriveCommand {
         return c;
     }
 
-    public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro, Pose2d pose) {
+    public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro, Pose2d pose, boolean rotateOnly) {
         Command c = Commands.race(
-                new RunCommand(() -> setChassisSpeeds(driverController, gyro, pose, driveSubsystem), new Subsystem[]{}),
+                new RunCommand(() -> setChassisSpeeds(driverController, gyro, pose, driveSubsystem, rotateOnly), new Subsystem[]{}),
                 driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot)
                 .andThen(driveSubsystem.driveDoubleConeCommand(() -> 
                 new ChassisSpeeds(0,0,0), () -> new Translation2d(0,0))));
@@ -82,20 +82,31 @@ public class JoystickDriveCommand {
     }
 
     public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro, Pose2d pose,
-            DriveSubsystem driveSubsystem) {
+            DriveSubsystem driveSubsystem, boolean rotateOnly) {
         setChassisSpeeds(driverController, gyro);
         double angle = Math.atan2(pose.getY() - driveSubsystem.getPose().getY(),
-                pose.getX() - driveSubsystem.getPose().getX()) + gyro.getAngleRotation2d().getRadians();
+                pose.getX() - driveSubsystem.getPose().getX()) - gyro.getOffset();
         double dist = driveSubsystem.getPose().getTranslation().getDistance(pose.getTranslation());
-        double s = pid.calculate(dist, 0);
+        double s = 0;
+        double o =0;
+        double scale = 0;
+        if (!rotateOnly){
+            s = pid.calculate(dist, 0);
+            
+            o = pidr.calculate(-SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), pose.getRotation().getRadians()),0);
+            scale = (dist/5+1);
+        }
+        else{
+            o = pidr.calculate(-SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), (angle + gyro.getOffset()) ), 0);
+            scale = 1;
+        }
+
+        
         s = MathUtil.clamp(s, -1, 1);
-
-        double o = pidr.calculate(driveSubsystem.getPose().getRotation().getRadians(), pose.getRotation().getRadians());
-
         o = MathUtil.clamp(o, -1, 1);
-        speeds = speeds.plus(new ChassisSpeeds(-Math.cos(angle) * s / (dist/5+1), -Math.sin(angle) * s / (dist/5+1), o));
+        speeds = speeds.plus(new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o/ scale));
         Logger.recordOutput("Drive/Speeds", speeds);
-        System.out.println(s);
+        System.out.println(driveSubsystem.getPose());
     }
 
     public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro) {
