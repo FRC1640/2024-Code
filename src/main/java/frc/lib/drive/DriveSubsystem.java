@@ -221,6 +221,23 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
+    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRot) {
+
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRot);
+
+        frontLeft.setDesiredState(swerveModuleStates[0]);
+        frontRight.setDesiredState(swerveModuleStates[1]);
+        backLeft.setDesiredState(swerveModuleStates[2]);
+        backRight.setDesiredState(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
     /**
      * Method to drive the robot using joystick info and double cone swerve
      * algorithm.

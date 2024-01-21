@@ -56,8 +56,7 @@ public class RobotContainer {
         DashboardInit.init(driveSubsystem, driveController);
         if (DashboardInit.getTestMode() != TestMode.SYSID){
             shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
-            driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro, 
-            new Pose2d(0,0,new Rotation2d(0))));
+            driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro));
             configureBindings();
         }
     }
@@ -65,7 +64,9 @@ public class RobotContainer {
     private void configureBindings() {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
-        driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
+        // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
+        driveController.rightBumper().whileTrue(new JoystickDriveCommand().create(driveSubsystem,
+         driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
     }
 
     public Command getAutonomousCommand() {

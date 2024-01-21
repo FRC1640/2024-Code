@@ -32,11 +32,11 @@ public class JoystickDriveCommand {
     final double SLOW_LINEAR_SPEED = 0.5;
     final double SLOW_ROTATIONAL_SPEED = 0.3;
 
-    Translation2d centerOfRot;
+    Translation2d centerOfRot = new Translation2d(0,0);
 
-    PIDController pid = new PIDController(1,0,0);
+    PIDController pid = new PIDController(1, 0, 0);
 
-    PIDController pidr = new PIDController(1,0,0);
+    PIDController pidr = new PIDController(1, 0, 0);
 
     final double LOWER_DB = 0.15;
     final double UPPER_DB = 0.15;
@@ -57,13 +57,23 @@ public class JoystickDriveCommand {
 
     boolean hold = false;
 
-    ChassisSpeeds speeds= new ChassisSpeeds();
+    ChassisSpeeds speedsTemp = new ChassisSpeeds();
+
+    ChassisSpeeds speeds = new ChassisSpeeds();
+
+    public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro) {
+        Command c = Commands.race(
+                new RunCommand(() -> setChassisSpeeds(driverController, gyro), new Subsystem[] {}),
+                driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot)
+                        .andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(0, 0, 0),
+                                () -> new Translation2d(0, 0))));
+        c.addRequirements(driveSubsystem);
+        return c;
+    }
 
     public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro, Pose2d pose) {
         Command c = Commands.race(
-                driverController.rightBumper().getAsBoolean()?
-                new RunCommand(() -> setChassisSpeeds(driverController, gyro, pose, driveSubsystem))
-                :new RunCommand(() -> setChassisSpeeds(driverController, gyro), new Subsystem[]{}),
+                new RunCommand(() -> setChassisSpeeds(driverController, gyro, pose, driveSubsystem), new Subsystem[]{}),
                 driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot)
                 .andThen(driveSubsystem.driveDoubleConeCommand(() -> 
                 new ChassisSpeeds(0,0,0), () -> new Translation2d(0,0))));
@@ -71,13 +81,21 @@ public class JoystickDriveCommand {
         return c;
     }
 
-    public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro, Pose2d pose, DriveSubsystem driveSubsystem){
+    public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro, Pose2d pose,
+            DriveSubsystem driveSubsystem) {
         setChassisSpeeds(driverController, gyro);
-        double angle = Math.atan2(pose.getY() - driveSubsystem.getPose().getY(), pose.getX() - driveSubsystem.getPose().getX());
+        double angle = Math.atan2(pose.getY() - driveSubsystem.getPose().getY(),
+                pose.getX() - driveSubsystem.getPose().getX()) + gyro.getAngleRotation2d().getRadians();
         double dist = driveSubsystem.getPose().getTranslation().getDistance(pose.getTranslation());
         double s = pid.calculate(dist, 0);
+        s = MathUtil.clamp(s, -1, 1);
+
         double o = pidr.calculate(driveSubsystem.getPose().getRotation().getRadians(), pose.getRotation().getRadians());
-        speeds.plus(new ChassisSpeeds(Math.cos(angle) * s / dist,Math.sin(angle) * s / dist,o / dist));
+
+        o = MathUtil.clamp(o, -1, 1);
+        speeds = speeds.plus(new ChassisSpeeds(-Math.cos(angle) * s / (dist+1), -Math.sin(angle) * s / (dist+1), o));
+        Logger.recordOutput("Drive/Speeds", speeds);
+        System.out.println(s);
     }
 
     public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro) {
@@ -135,7 +153,7 @@ public class JoystickDriveCommand {
             Logger.recordOutput("Drive/CoR", a);
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
-            centerOfRot = new Translation2d(0,0);
+            centerOfRot = new Translation2d(0, 0);
         }
     }
 }
