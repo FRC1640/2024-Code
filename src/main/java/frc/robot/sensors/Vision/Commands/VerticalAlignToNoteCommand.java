@@ -36,6 +36,11 @@ public class VerticalAlignToNoteCommand extends Command{
     public void execute() {
         verticalVelocity = verticalPIDController.calculate((MLVision.getDistance()) * 100); // cant be ty uh
         verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
+        
+        if(!MLVision.isTarget()){
+            verticalVelocity = 0; //CONSTANT
+        }
+
         driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, 0, false);
     }
 
