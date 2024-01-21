@@ -65,8 +65,8 @@ public class RobotContainer {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
-        driveController.rightBumper().whileTrue(new JoystickDriveCommand().create(driveSubsystem,
-         driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
+        // driveController.rightBumper().whileTrue(new JoystickDriveCommand().create(driveSubsystem,
+        //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
     }
 
     public Command getAutonomousCommand() {
