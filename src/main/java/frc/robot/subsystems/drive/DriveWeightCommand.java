@@ -21,7 +21,7 @@ public class DriveWeightCommand {
 
     public Command create(DriveSubsystem driveSubsystem) {
         Command c = Commands.race(new RunCommand(() ->getAllSpeeds()),
-                driveSubsystem.driveDesaturatedCommand(() -> speeds, () -> centerOfRot));
+                driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot));
         c.addRequirements(driveSubsystem);
         return c;
     }
@@ -47,14 +47,23 @@ public class DriveWeightCommand {
         }
     }
 
-    public ChassisSpeeds getAllSpeeds() {
+    public void getAllSpeeds() {
         speeds = new ChassisSpeeds();
         centerOfRot = new Translation2d();
         for (DriveWeight driveWeight : weights) {
             speeds = speeds.plus(driveWeight.getSpeeds());
+            speeds = decreaseSpeeds(speeds);
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
-            
         }
+    }
+    
+    public ChassisSpeeds decreaseSpeeds(ChassisSpeeds speeds){
+        double max = Math.max(Math.hypot(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond),speeds.omegaRadiansPerSecond);
+        if (max > 1){
+            speeds = speeds.times(1/max);
+            // System.out.println(speeds);
+        }
+        
         return speeds;
     }
 }
