@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -19,7 +20,9 @@ import frc.robot.sensors.Vision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
-import frc.robot.subsystems.drive.JoystickDriveCommand;
+import frc.robot.subsystems.drive.DriveWeightCommand;
+import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
+import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -55,7 +58,8 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
-        driveSubsystem.setDefaultCommand(new JoystickDriveCommand().create(driveSubsystem, driveController, gyro));
+        driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
+        DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         configureBindings();
     }
 
@@ -63,8 +67,10 @@ public class RobotContainer {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
-        driveController.b().whileTrue(new JoystickDriveCommand().create(driveSubsystem,
-            driveController, gyro, new Pose2d(0,0,new Rotation2d(0)), true));
+        driveController.b().onTrue(new InstantCommand(()->
+            DriveWeightCommand.addWeight(new RotateLockWeight(()->new Pose2d(), driveSubsystem::getPose, gyro))));
+        driveController.b().onFalse(new InstantCommand(()->
+            DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
     }
 
