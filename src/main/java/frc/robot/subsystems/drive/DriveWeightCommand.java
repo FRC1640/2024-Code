@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -22,7 +21,7 @@ public class DriveWeightCommand {
 
     public Command create(DriveSubsystem driveSubsystem) {
         Command c = Commands.race(new RunCommand(() ->getAllSpeeds()),
-                driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot));
+                driveSubsystem.driveDesaturatedCommand(() -> speeds, () -> centerOfRot));
         c.addRequirements(driveSubsystem);
         return c;
     }
@@ -56,8 +55,6 @@ public class DriveWeightCommand {
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
             
         }
-
-        
         return speeds;
     }
 }

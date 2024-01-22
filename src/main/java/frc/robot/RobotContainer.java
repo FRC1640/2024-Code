@@ -21,6 +21,7 @@ import frc.robot.sensors.Vision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
 import frc.robot.subsystems.drive.DriveWeightCommand;
+import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
@@ -68,9 +69,9 @@ public class RobotContainer {
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.b().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new RotateLockWeight(()->new Pose2d(), driveSubsystem::getPose, gyro))));
+            DriveWeightCommand.addWeight(new AutoDriveWeight(()->new Pose2d(), driveSubsystem::getPose, gyro))));
         driveController.b().onFalse(new InstantCommand(()->
-            DriveWeightCommand.removeWeight("RotateLockWeight")));
+            DriveWeightCommand.removeWeight("AutoDriveWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
     }
 
