@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Robot.TestMode;
-import frc.robot.subsystems.drive.DriveSubsystem;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -70,10 +70,16 @@ public class DashboardInit {
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
-                .withSize(3, 3).withPosition(0, 1);
+                .withSize(1, 3)
+                .withPosition(0, 1);
         // MATCH TIMER
-        teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000).withSize(2, 1)
+        teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000)
+                .withSize(1, 1)
                 .withPosition(0, 0);
+        // LIMELIGHT STREAM?
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
+                .withSize(4,4)
+                .withPosition(1,0);
     }
 
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
@@ -81,7 +87,7 @@ public class DashboardInit {
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
-                        "SwerveSysId", controller.a(), controller.b()));
+                        "SwerveSysId", ()->controller.a().getAsBoolean(), ()->controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
     }
 

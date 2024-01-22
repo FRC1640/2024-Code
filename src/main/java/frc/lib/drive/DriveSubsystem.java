@@ -1,10 +1,8 @@
-package frc.robot.subsystems.drive;
+package frc.lib.drive;
+
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-
-// for pose est.
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -12,6 +10,9 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+// for pose est.
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -21,25 +22,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.drive.Module.Module;
+import frc.lib.drive.Module.ModuleIO;
+import frc.lib.drive.Module.ModuleIOSim;
+import frc.lib.drive.Module.ModuleIOSparkMax;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.AprilTagVision;
-import frc.robot.subsystems.drive.Module.ModuleIO;
-import frc.robot.subsystems.drive.Module.ModuleIOSim;
-import frc.robot.subsystems.drive.Module.ModuleIOSparkMax;
-import frc.robot.subsystems.drive.Module.Module;
 
 public class DriveSubsystem extends SubsystemBase {
+
     Gyro gyro;
     AprilTagVision vision;
 
@@ -52,11 +56,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
-    //SwerveDriveOdometry odometry;
-    SwerveDrivePoseEstimator swervePoseEstimator; // swerve pose estimator is an alt. for swerve odometry
+    
+
+    // SwerveDriveOdometry odometry;
+    SwerveDrivePoseEstimator swervePoseEstimator; 
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
-    public DriveSubsystem(Gyro gyro, AprilTagVision vision){
+
+    public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
         this.gyro = gyro;
         this.vision = vision;
         switch (Robot.getMode()) {
@@ -89,23 +96,23 @@ public class DriveSubsystem extends SubsystemBase {
         sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
                 new SysIdRoutine.Config());
 
-
-       //Create Pose Estimator
-        //odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics, gyro.getAngleRotation2d(), getModulePositionsArray());
+        // Create Pose Estimator
+        // odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics,
+        // gyro.getAngleRotation2d(), getModulePositionsArray());
         swervePoseEstimator = new SwerveDrivePoseEstimator(
-            SwerveDriveDimensions.kinematics, 
-            gyro.getAngleRotation2d(), 
-            getModulePositionsArray(), 
-            new Pose2d(),
+                SwerveDriveDimensions.kinematics,
+                gyro.getAngleRotation2d(),
+                getModulePositionsArray(),
+                new Pose2d(),
                 VecBuilder.fill(0.05, 0.05, 0.05),
-                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));// THIS IS SUPPOSED TO BE THE starting standard deviations
+                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));
 
-        //Configure pathplanner
+        // Configure pathplanner
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::resetOdometry,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
-                this::driveChassisSpeedsNoScaling,
+                this::driveChassisSpeedsNoScaling, //TODO is this right? maybe desaturate?
                 new HolonomicPathFollowerConfig(
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
@@ -117,14 +124,13 @@ public class DriveSubsystem extends SubsystemBase {
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(
-                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                            "Drive/Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
                 });
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> {
-                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                    Logger.recordOutput("Drive/Odometry/TrajectorySetpoint", targetPose);
                 });
     }
-
 
     @Override
     public void periodic() {
@@ -136,11 +142,12 @@ public class DriveSubsystem extends SubsystemBase {
         // Update odometry
         updateOdometry();
         // Log odometry
-        Logger.recordOutput("Drive/OdometryPosition", odometryPose);
+        Logger.recordOutput("Drive/Odometry/OdometryPosition", odometryPose);
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
     }
+
     public SwerveModuleState[] getActualSwerveStates() {
         return new SwerveModuleState[] { frontLeft.getState(), frontRight.getState(), backLeft.getState(),
                 backRight.getState() };
@@ -150,40 +157,34 @@ public class DriveSubsystem extends SubsystemBase {
         return desiredSwerveStates;
     }
 
+    private void updateOdometry() {
+        if (vision.isTarget()) {
 
-  public void updateOdometry(){
-    if (vision.isTarget()){
+            double distConst = Math.pow(vision.getDistance(), 2.0);
+            swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                    VecBuilder.fill(VisionConstants.xyStdDev * distConst,
+                            VisionConstants.xyStdDev * distConst, VisionConstants.thetaStdDev * distConst));
+        }
+        odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
 
-        double distConst = Math.pow(vision.getDistance(), 2.0);
-        swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(), 
-        VecBuilder.fill(VisionConstants.xyStdDev * distConst, 
-        VisionConstants.xyStdDev * distConst, VisionConstants.thetaStdDev * distConst));
     }
-    odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-    
-  }
 
-  public void resetOdometry(Pose2d newPose){
-    swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
-    odometryPose = newPose;
-  }
+    private void resetOdometry(Pose2d newPose) {
+        swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
+        odometryPose = newPose;
+    }
 
-  public Pose2d getPose(){
-    return odometryPose;
-  }
+    public Pose2d getPose() {
+        return odometryPose;
+    }
 
-  public SwerveModulePosition[] getModulePositionsArray(){
-    return new SwerveModulePosition[] {
-        frontLeft.getPosition(), 
-        frontRight.getPosition(), 
-        backLeft.getPosition(), 
-        backRight.getPosition()};
-  }
-
-  public Command resetOdometryCommand(Pose2d newPose){
-    return new InstantCommand(() -> resetOdometry(newPose));
-  }
-
+    public SwerveModulePosition[] getModulePositionsArray() {
+        return new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition() };
+    }
 
     /**
      * Method to drive the robot using joystick info and desaturated swerve
@@ -195,7 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fieldRelative Whether the provided x and y speeds are relative to the
      *                      field.
      */
-    public void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
@@ -205,10 +206,27 @@ public class DriveSubsystem extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative);
 
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStatePercent(swerveModuleStates[0]);
+        frontRight.setDesiredStatePercent(swerveModuleStates[1]);
+        backLeft.setDesiredStatePercent(swerveModuleStates[2]);
+        backRight.setDesiredStatePercent(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
+    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRot) {
+
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRot);
+
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
@@ -222,43 +240,53 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fieldRelative Whether the provided x and y speeds are relative to the
      *                      field.
      */
-    public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    private void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
         rot = rot * maxSpeed
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative);
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
-    public void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+    private void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation) {
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
         rot = rot * maxSpeed
-                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
-    public void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
+    private void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
+    }
+
+    // Commands
+    public Command resetGyroCommand() {
+        Command c = new InstantCommand(() -> {
+            gyro.reset();
+            resetOdometry(getPose());
+        });
+        c.addRequirements(this);
+        return c;
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -268,5 +296,20 @@ public class DriveSubsystem extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
+    public Command resetOdometryCommand(Pose2d newPose) {
+        Command c = new InstantCommand(() -> resetOdometry(newPose));
+        c.addRequirements(this);
+        return c;
+    }
 
+    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
+        return new RunCommand(() -> 
+        drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
+        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+    }
+    public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
+        return new RunCommand(() -> 
+        drivePercentDesaturated(speeds.get().vxMetersPerSecond,
+        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+    }
 }
