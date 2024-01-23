@@ -18,18 +18,13 @@ public class IntakeSubsystem extends SubsystemBase{
         Command c = new Command() {
 
             @Override
-            public void initialize() {
-                
-            }
-
-            @Override
             public void execute() {
                 io.setSpeedPercent(speed);
             }
 
             @Override
             public void end(boolean interrupted) {
-                
+                io.setSpeedPercent(0);
             }
 
             @Override
@@ -42,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase{
         return c;
     }
 
-    public boolean getHasNote() {
+    public boolean hasNote() {
         return inputs.hasNote;
     }
 }
