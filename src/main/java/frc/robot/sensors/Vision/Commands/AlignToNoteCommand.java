@@ -4,10 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.sensors.Vision.MLVision;
-import frc.robot.subsystems.drive.DriveSubsystem;
+//import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class AlignToNoteCommand extends Command{
-    private DriveSubsystem driveSubsystem;
+    //private DriveSubsystem driveSubsystem;
     private MLVision MLVision;
 
     private PIDController horizontalPIDController;
@@ -23,11 +23,11 @@ public class AlignToNoteCommand extends Command{
     private double isFinishedTolerance;
 
 
-    public AlignToNoteCommand(DriveSubsystem driveSubsystem, MLVision MLVision) {
-        this.driveSubsystem = driveSubsystem;
+    public AlignToNoteCommand( MLVision MLVision) {
+        //this.driveSubsystem = driveSubsystem;
         this.MLVision = MLVision;
 
-        addRequirements(driveSubsystem);
+        //addRequirements(driveSubsystem);
     }
 
 
@@ -65,7 +65,7 @@ public class AlignToNoteCommand extends Command{
                // m_horizontalVelocity,
                 //m_angularVelocity,);
         
-        driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, angularVelocity, false);
+        //driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, angularVelocity, false);
 
 
         }

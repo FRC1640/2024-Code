@@ -307,6 +307,15 @@ public class DriveSubsystem extends SubsystemBase {
         drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
         speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
     }
+
+    // overload with no center of rot parameter
+    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds){
+        return new RunCommand(() -> 
+        drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
+        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true), new Subsystem[]{});
+    }
+
+    
     public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
         return new RunCommand(() -> 
         drivePercentDesaturated(speeds.get().vxMetersPerSecond,

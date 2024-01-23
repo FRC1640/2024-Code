@@ -11,14 +11,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class MLVision extends PeriodicBase {
     private MLVisionIO io;
     private MLVisionIOInputsAutoLogged inputs = new MLVisionIOInputsAutoLogged();
     private double trigDistance;
 
-    private DriveSubsystem driveSubsystem;
     private double isFinishedTolerance;
  
     private PIDController angController;
@@ -72,28 +70,6 @@ public class MLVision extends PeriodicBase {
         
         return trigDistance;
     }
-
-    //Align to Note Command
-    public Command angularAlignToNoteCommand(DriveSubsystem driveSubsystem) {
-        this.driveSubsystem = driveSubsystem;
-        angController = new PIDController(kP, 0, 0);
-
-        angularVelocity = angController.calculate(getTX());
-        angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
-
-        return new RunCommand(()->driveSubsystem.drivePercentDoubleCone(0, 0, angularVelocity, false))
-                .until(()->Math.abs(getTX()) <= isFinishedTolerance);
-    }
-    public Command driveToNoteCommand(DriveSubsystem driveSubsystem) {
-        this.driveSubsystem = driveSubsystem;
-        //verticalPIDController = new PIDController(kP, 0, 0);
-
-        //verticalVelocity = verticalPIDController.calculate((getDistance()) * 100); // cant be ty uh
-        //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
-        verticalVelocity = 0; // ADD CONSTANT
-        return new RunCommand(()-> driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, 0, false));
-    }
-
   
 
 }
