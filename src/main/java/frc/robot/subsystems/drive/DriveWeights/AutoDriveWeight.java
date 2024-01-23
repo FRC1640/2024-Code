@@ -7,13 +7,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.lib.swerve.SwerveAlgorithms;
+import frc.robot.Constants.PIDConstants;
 import frc.robot.sensors.Gyro.Gyro;
 
 public class AutoDriveWeight implements DriveWeight {
     Supplier<Pose2d> pose;
     Supplier<Pose2d> getPose;
-    PIDController pid = new PIDController(1, 0, 0);
-    PIDController pidr = new PIDController(1, 0, 0);
+    PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID);
+    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
     Gyro gyro;
 
     public AutoDriveWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro) {
