@@ -1,4 +1,5 @@
 package frc.robot;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -80,5 +81,15 @@ public final class Constants {
 
     public static class IntakeConstants{
         public static final int intakeCanId = 15;
+    }
+
+    public static class PIDConstants{
+        public static PIDController constructPID(PIDController controller){
+            return new PIDController(controller.getP(), controller.getI(), controller.getD());
+        }
+
+        //controllers
+        public static PIDController rotPID = new PIDController(1, 0, 0);
+        public static PIDController driveForwardPID = new PIDController(1, 0, 0);
     }
 }
