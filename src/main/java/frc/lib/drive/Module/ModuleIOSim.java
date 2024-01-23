@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive.Module;
+package frc.lib.drive.Module;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
