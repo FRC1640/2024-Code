@@ -73,7 +73,7 @@ public class RobotContainer {
     private void configureBindings() {
         driveController.start().onTrue(new ResetGyro(driveSubsystem, gyro));
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
-        new Trigger(() -> intakeSubsystem.getHasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0));
+        new Trigger(() -> !intakeSubsystem.getHasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0));
     }
 
     public Command getAutonomousCommand() {
