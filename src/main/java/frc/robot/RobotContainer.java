@@ -77,7 +77,7 @@ public class RobotContainer {
     private void configureBindings() {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
-        new Trigger(() -> !intakeSubsystem.getHasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0));
+        new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.b().onTrue(new InstantCommand(()->
             DriveWeightCommand.addWeight(new AutoDriveWeight(()->new Pose2d(), driveSubsystem::getPose, gyro))));

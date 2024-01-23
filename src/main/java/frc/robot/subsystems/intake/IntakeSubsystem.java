@@ -14,22 +14,19 @@ public class IntakeSubsystem extends SubsystemBase{
         io.updateInputs(inputs);
     }
 
-    public Command intakeCommand(double speed) {
+    public Command intakeCommand(double speedIntake, double speedIndexer) {
         Command c = new Command() {
 
             @Override
-            public void initialize() {
-                
-            }
-
-            @Override
             public void execute() {
-                io.setSpeedPercent(speed);
+                io.setIntakeSpeedPercent(speedIntake);
+                io.setIndexerSpeedPercent(speedIndexer);
             }
 
             @Override
             public void end(boolean interrupted) {
-                
+                io.setIntakeSpeedPercent(0);
+                io.setIndexerSpeedPercent(0);
             }
 
             @Override
@@ -42,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase{
         return c;
     }
 
-    public boolean getHasNote() {
+    public boolean hasNote() {
         return inputs.hasNote;
     }
 }
