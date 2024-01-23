@@ -77,4 +77,8 @@ public final class Constants {
             true,
             true);
     }
+
+    public static class IntakeConstants{
+        public static final int intakeCanId = 15;
+    }
 }

@@ -4,12 +4,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
 
     public IntakeIOSparkMax() {
-        intakeMotor = new CANSparkMax(-3, MotorType.kBrushless); // TODO ids
+        intakeMotor = new CANSparkMax(IntakeConstants.intakeCanId, MotorType.kBrushless); // TODO ids
     }
 
     @Override
@@ -30,5 +31,4 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.intakeTempCelsius = intakeMotor.getMotorTemperature();
         inputs.hasNote = false; // TODO sensing
     }
-
 }
