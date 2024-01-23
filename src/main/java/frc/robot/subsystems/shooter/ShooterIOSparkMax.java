@@ -4,13 +4,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topShooter, bottomShooter;
 
     public ShooterIOSparkMax() {
-        topShooter = new CANSparkMax(5, MotorType.kBrushless); // TODO ids
-        bottomShooter = new CANSparkMax(6, MotorType.kBrushless);
+        topShooter = new CANSparkMax(ShooterConstants.topCanID, MotorType.kBrushless); // TODO ids
+        bottomShooter = new CANSparkMax(ShooterConstants.bottomCanID, MotorType.kBrushless);
     }
 
     @Override

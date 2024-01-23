@@ -80,7 +80,13 @@ public final class Constants {
     }
 
     public static class IntakeConstants{
-        public static final int intakeCanId = 15;
+        public static final int intakeCanID = 15;
+        public static final int indexerCanID = 16;
+    }
+
+    public static class ShooterConstants{
+        public static final int topCanID = 5;
+        public static final int bottomCanID = 6;
     }
 
     public static class PIDConstants{
