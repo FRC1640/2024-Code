@@ -56,8 +56,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
+    
+
     // SwerveDriveOdometry odometry;
-    SwerveDrivePoseEstimator swervePoseEstimator; // swerve pose estimator is an alt. for swerve odometry
+    SwerveDrivePoseEstimator swervePoseEstimator; 
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
@@ -103,22 +105,14 @@ public class DriveSubsystem extends SubsystemBase {
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.05, 0.05, 0.05),
-                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));// THIS
-                                                                                                                  // IS
-                                                                                                                  // SUPPOSED
-                                                                                                                  // TO
-                                                                                                                  // BE
-                                                                                                                  // THE
-                                                                                                                  // starting
-                                                                                                                  // standard
-                                                                                                                  // deviations
+                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::resetOdometry,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
-                this::driveChassisSpeedsNoScaling,
+                this::driveChassisSpeedsNoScaling, //TODO is this right? maybe desaturate?
                 new HolonomicPathFollowerConfig(
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
@@ -212,10 +206,27 @@ public class DriveSubsystem extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative);
 
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStatePercent(swerveModuleStates[0]);
+        frontRight.setDesiredStatePercent(swerveModuleStates[1]);
+        backLeft.setDesiredStatePercent(swerveModuleStates[2]);
+        backRight.setDesiredStatePercent(swerveModuleStates[3]);
+        desiredSwerveStates = swerveModuleStates;
+    }
+
+    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRot) {
+
+        xSpeed = xSpeed * maxSpeed;
+        ySpeed = ySpeed * maxSpeed;
+        rot = rot * maxSpeed
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRot);
+
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
@@ -236,10 +247,10 @@ public class DriveSubsystem extends SubsystemBase {
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative);
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
@@ -248,23 +259,23 @@ public class DriveSubsystem extends SubsystemBase {
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
         rot = rot * maxSpeed
-                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
     private void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
                 speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
-        frontLeft.setDesiredState(swerveModuleStates[0]);
-        frontRight.setDesiredState(swerveModuleStates[1]);
-        backLeft.setDesiredState(swerveModuleStates[2]);
-        backRight.setDesiredState(swerveModuleStates[3]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
@@ -294,6 +305,11 @@ public class DriveSubsystem extends SubsystemBase {
     public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
         return new RunCommand(() -> 
         drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
+        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+    }
+    public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
+        return new RunCommand(() -> 
+        drivePercentDesaturated(speeds.get().vxMetersPerSecond,
         speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
     }
 }

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter.drive;
+package frc.robot.subsystems.drive.DriveWeights;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -9,60 +9,50 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.drive.DriveSubsystem;
 import frc.lib.drive.JoystickCleaner;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 
-public class JoystickDriveCommand {
+public class JoystickDriveWeight implements DriveWeight {
     // DRIVE COMMAND VARIABLES:
-    JoystickCleaner joystickCleaner = new JoystickCleaner();
+    private JoystickCleaner joystickCleaner = new JoystickCleaner();
 
-    final double SLOW_LINEAR_SPEED = 0.5;
-    final double SLOW_ROTATIONAL_SPEED = 0.3;
+    private final double SLOW_LINEAR_SPEED = 0.5;
+    private final double SLOW_ROTATIONAL_SPEED = 0.3;
 
-    Translation2d centerOfRot;
+    private final double LOWER_DB = 0.15;
+    private final double UPPER_DB = 0.15;
 
-    final double LOWER_DB = 0.15;
-    final double UPPER_DB = 0.15;
+    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+    private boolean fieldRelative = true;
 
-    final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
-    final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
-    final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
-    boolean fieldRelative = true;
-
-    double iXSpeed;
-    double iYSpeed;
-    double angle;
-    double offset;
+    private double iXSpeed;
+    private double iYSpeed;
+    private double angle;
+    private double offset;
 
     double xSpeed;
-    double ySpeed;
-    double rot;
+    private double ySpeed;
+    private double rot;
 
-    boolean hold = false;
+    private boolean hold = false;
 
-    ChassisSpeeds speeds= new ChassisSpeeds();
+    private Translation2d centerOfRot = new Translation2d();
 
-    public Command create(DriveSubsystem driveSubsystem, CommandXboxController driverController, Gyro gyro) {
-        Command c = Commands.race(
-                new RunCommand(() -> setChassisSpeeds(driverController, gyro), new Subsystem[]{}),
-                driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot)
-                .andThen(driveSubsystem.driveDoubleConeCommand(() -> 
-                new ChassisSpeeds(0,0,0), () -> new Translation2d(0,0))));
-        c.addRequirements(driveSubsystem);
-        return c;
+    private CommandXboxController driverController;
+    Gyro gyro;
+    public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro){
+        this.driverController = driverController;
+        this.gyro = gyro;
     }
-
-    public void setChassisSpeeds(CommandXboxController driverController, Gyro gyro) {
+    @Override
+    public ChassisSpeeds getSpeeds() {
         driverController.back().onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
 
         Trigger leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
@@ -112,12 +102,18 @@ public class JoystickDriveCommand {
                                                             ? current
                                                             : best)
                     .orElseThrow(() -> new NoSuchElementException("No closest pivot."));
-            centerOfRot = a;
-            speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
             Logger.recordOutput("Drive/CoR", a);
+            centerOfRot = a;
+            return new ChassisSpeeds(xSpeed, ySpeed, rot);
+            
         } else {
-            speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
             centerOfRot = new Translation2d(0,0);
+            return new ChassisSpeeds(xSpeed, ySpeed, rot);
+            
         }
+    }
+    @Override
+    public Translation2d getCenterOfRot() {
+        return centerOfRot;
     }
 }
