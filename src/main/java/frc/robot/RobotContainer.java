@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Robot.TestMode;
@@ -20,6 +21,10 @@ import frc.robot.sensors.Vision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
@@ -35,12 +40,14 @@ public class RobotContainer {
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
   private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
   public RobotContainer() {
       switch (Robot.getMode()) {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
           aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
           shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+          intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
           break;
         case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
@@ -48,12 +55,14 @@ public class RobotContainer {
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
                 break;
 
          default:
                 gyro = new Gyro(new GyroIO(){});
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+                intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
@@ -67,6 +76,7 @@ public class RobotContainer {
     private void configureBindings() {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
+        new Trigger(() -> !intakeSubsystem.getHasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.b().onTrue(new InstantCommand(()->
             DriveWeightCommand.addWeight(new AutoDriveWeight(()->new Pose2d(), driveSubsystem::getPose, gyro))));
@@ -78,8 +88,10 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return DashboardInit.getAutoChooserCommand();
     }
+
     public void removeAllDefaultCommands(){
         driveSubsystem.removeDefaultCommand();
         shooterSubsystem.removeDefaultCommand();
+        intakeSubsystem.removeDefaultCommand();
     }
 }
