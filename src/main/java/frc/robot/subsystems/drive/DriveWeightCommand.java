@@ -16,8 +16,8 @@ import frc.robot.subsystems.drive.DriveWeights.DriveWeight;
 public class DriveWeightCommand {
 
     static ArrayList<DriveWeight> weights = new ArrayList<>();
-    Translation2d centerOfRot;
-    ChassisSpeeds speeds;
+    Translation2d centerOfRot = new Translation2d();
+    ChassisSpeeds speeds = new ChassisSpeeds();
 
     public Command create(DriveSubsystem driveSubsystem) {
         Command c = Commands.race(new RunCommand(() ->getAllSpeeds()),
@@ -52,9 +52,13 @@ public class DriveWeightCommand {
         centerOfRot = new Translation2d();
         for (DriveWeight driveWeight : weights) {
             speeds = speeds.plus(driveWeight.getSpeeds());
-            speeds = decreaseSpeeds(speeds);
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
         }
+        speeds = decreaseSpeeds(speeds);
+    }
+
+    public static ArrayList<DriveWeight> getWeights(){
+        return weights;
     }
     
     public ChassisSpeeds decreaseSpeeds(ChassisSpeeds speeds){
