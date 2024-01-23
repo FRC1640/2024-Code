@@ -9,8 +9,8 @@ public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topShooter, bottomShooter;
 
     public ShooterIOSparkMax() {
-        topShooter = new CANSparkMax(-2, MotorType.kBrushless); // TODO ids
-        bottomShooter = new CANSparkMax(-1, MotorType.kBrushless);
+        topShooter = new CANSparkMax(5, MotorType.kBrushless); // TODO ids
+        bottomShooter = new CANSparkMax(6, MotorType.kBrushless);
     }
 
     @Override

@@ -49,4 +49,7 @@ public class Gyro extends PeriodicBase {
     public boolean isCalibrating() {
         return inputs.isCalibrating;
     }
+    public double getOffset(){
+        return io.getOffset();
+    }
 }

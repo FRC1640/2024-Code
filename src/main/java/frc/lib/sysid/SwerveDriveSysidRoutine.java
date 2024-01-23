@@ -12,7 +12,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.drive.Module.Module;
+import frc.lib.drive.Module.Module;
 
 public class SwerveDriveSysidRoutine {
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.

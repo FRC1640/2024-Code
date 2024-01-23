@@ -30,4 +30,8 @@ public class GyroIOSim implements GyroIO{
     public double getActual(GyroIOInputs inputs){
         return inputs.angleRadiansRaw - offset;
     }
+    @Override
+    public double getOffset(){
+        return offset;
+    }
 }

@@ -17,6 +17,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.drive.DriveSubsystem;
 import frc.lib.periodic.PeriodicScheduler;
 
 public class Robot extends LoggedRobot {
@@ -151,8 +153,12 @@ public class Robot extends LoggedRobot {
             case NONE:
                 System.out.println("Nothing is happening!");
             case SYSID:
-                System.out.println("Running sysid on: " + DashboardInit.getSelectedSysid().getName());
-                DashboardInit.getSelectedSysid().schedule();
+                if (DashboardInit.getSelectedSysid() != null){
+                    System.out.println("Running sysid on: " + DashboardInit.getSelectedSysid().getName());
+                    DashboardInit.getSelectedSysid().schedule();
+                    CommandScheduler.getInstance().getActiveButtonLoop().clear();
+                    m_robotContainer.removeAllDefaultCommands();
+                }
         }
     }
 
