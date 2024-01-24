@@ -9,6 +9,7 @@ public final class Constants {
     public static class LimelightConstants {
         public static final double limelightAngle = 0.0;
         public static final double limelightLensHeight = 0.0;
+        public static final double limelightLensHorrizontalDisplacement = 0.0;
         public static final double horizontalResolution = 0.0;
         public static final double verticalResolution = 0.0;
         public static final double noteHeightCentimers = 0.0;

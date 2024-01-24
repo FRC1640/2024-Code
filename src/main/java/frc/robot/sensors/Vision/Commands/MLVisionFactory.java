@@ -2,6 +2,7 @@ package frc.robot.sensors.Vision.Commands;
 
 import org.opencv.ml.Ml;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -41,6 +42,8 @@ public class MLVisionFactory {
 
         angularVelocity = angularController.calculate(vision.getTX());
         angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
+        angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
+
 
         ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
         return chassisSpeedsToTurn;
