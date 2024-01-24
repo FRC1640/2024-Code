@@ -95,7 +95,7 @@ public final class Constants {
         }
 
         //controllers
-        public static PIDController rotPID = new PIDController(1, 0, 0);
-        public static PIDController driveForwardPID = new PIDController(1, 0, 0);
+        public static PIDController rotPID = new PIDController(0.7, 0, 0.07);
+        public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
     }
 }

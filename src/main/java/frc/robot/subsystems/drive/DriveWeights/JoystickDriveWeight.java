@@ -67,7 +67,7 @@ public class JoystickDriveWeight implements DriveWeight {
 
         Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
 
-        if (!rightTrigger.getAsBoolean()) {
+        if (!leftTrigger.getAsBoolean()) {
             xSpeed = -driverController.getLeftY() * SLOW_LINEAR_SPEED;
             ySpeed = -driverController.getLeftX() * SLOW_LINEAR_SPEED;
             rot = -driverController.getRightX() * SLOW_ROTATIONAL_SPEED;
@@ -98,36 +98,37 @@ public class JoystickDriveWeight implements DriveWeight {
         else{
             lastAngle = gyro.getRawAngleRadians();
         }
+        return new ChassisSpeeds(xSpeed, ySpeed, rot);
 
-        if (!hold && leftTrigger.getAsBoolean()) {
-            iXSpeed = xSpeed;
-            iYSpeed = ySpeed;
-            offset = -gyro.getAngleRotation2d().getRadians();
-            hold = true;
-        }
-        if (!leftTrigger.getAsBoolean()) {
-            hold = false;
-        }
-        angle = (Math.atan2(iYSpeed, iXSpeed) + offset); // add gyro offset to angle
-        if (leftTrigger.getAsBoolean()) { // drive with center of rot around closest pivot
-            Translation2d a = Arrays.stream(SwerveDriveDimensions.positions)
-                    .reduce((best,
-                            current) -> Math.abs((SwerveAlgorithms
-                                    .angleDistance(Math.atan2(current.getY(), current.getX()), angle))) < Math
-                                            .abs((SwerveAlgorithms.angleDistance(
-                                                    Math.atan2(best.getY(), best.getX()), angle)))
-                                                            ? current
-                                                            : best)
-                    .orElseThrow(() -> new NoSuchElementException("No closest pivot."));
-            Logger.recordOutput("Drive/CoR", a);
-            centerOfRot = a;
-            return new ChassisSpeeds(xSpeed, ySpeed, rot);
+        // if (!hold && leftTrigger.getAsBoolean()) {
+        //     iXSpeed = xSpeed;
+        //     iYSpeed = ySpeed;
+        //     offset = -gyro.getAngleRotation2d().getRadians();
+        //     hold = true;
+        // }
+        // if (!leftTrigger.getAsBoolean()) {
+        //     hold = false;
+        // }
+        // angle = (Math.atan2(iYSpeed, iXSpeed) + offset); // add gyro offset to angle
+        // if (leftTrigger.getAsBoolean()) { // drive with center of rot around closest pivot
+        //     Translation2d a = Arrays.stream(SwerveDriveDimensions.positions)
+        //             .reduce((best,
+        //                     current) -> Math.abs((SwerveAlgorithms
+        //                             .angleDistance(Math.atan2(current.getY(), current.getX()), angle))) < Math
+        //                                     .abs((SwerveAlgorithms.angleDistance(
+        //                                             Math.atan2(best.getY(), best.getX()), angle)))
+        //                                                     ? current
+        //                                                     : best)
+        //             .orElseThrow(() -> new NoSuchElementException("No closest pivot."));
+        //     Logger.recordOutput("Drive/CoR", a);
+        //     centerOfRot = a;
+        //     return new ChassisSpeeds(xSpeed, ySpeed, rot);
             
-        } else {
-            centerOfRot = new Translation2d(0,0);
-            return new ChassisSpeeds(xSpeed, ySpeed, rot);
+        // } else {
+        //     centerOfRot = new Translation2d(0,0);
+        //     return new ChassisSpeeds(xSpeed, ySpeed, rot);
             
-        }
+        // }
     }
     @Override
     public Translation2d getCenterOfRot() {
