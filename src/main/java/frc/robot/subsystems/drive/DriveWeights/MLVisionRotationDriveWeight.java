@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

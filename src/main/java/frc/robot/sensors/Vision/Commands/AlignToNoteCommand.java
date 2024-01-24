@@ -2,12 +2,9 @@ package frc.robot.sensors.Vision.Commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.sensors.Vision.MLVision;
-//import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class AlignToNoteCommand extends Command{
-    //private DriveSubsystem driveSubsystem;
     private MLVision MLVision;
 
     private PIDController horizontalPIDController;
@@ -24,10 +21,7 @@ public class AlignToNoteCommand extends Command{
 
 
     public AlignToNoteCommand( MLVision MLVision) {
-        //this.driveSubsystem = driveSubsystem;
         this.MLVision = MLVision;
-
-        //addRequirements(driveSubsystem);
     }
 
 
@@ -64,9 +58,6 @@ public class AlignToNoteCommand extends Command{
                // m_verticalVelocity,
                // m_horizontalVelocity,
                 //m_angularVelocity,);
-        
-        //driveSubsystem.drivePercentDoubleCone(0, verticalVelocity, angularVelocity, false);
-
 
         }
 

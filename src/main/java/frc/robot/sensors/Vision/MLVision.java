@@ -3,12 +3,6 @@ package frc.robot.sensors.Vision;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
 import frc.robot.Constants;
 
@@ -16,17 +10,6 @@ public class MLVision extends PeriodicBase {
     private MLVisionIO io;
     private MLVisionIOInputsAutoLogged inputs = new MLVisionIOInputsAutoLogged();
     private double trigDistance;
-
-    private double isFinishedTolerance;
- 
-    private PIDController angController;
-    private double angularVelocity;
-
-    private PIDController verticalPIDController;
-    private double verticalVelocity;
- 
-    private double kP; // PID constant
-    private double deadband; // velocity deadband
 
 
     public MLVision(MLVisionIO io) {
@@ -49,7 +32,7 @@ public class MLVision extends PeriodicBase {
     }
 
     public double getTX(){
-        return inputs.tx; // just... hope for point of interest tracking
+        return inputs.tx;
     }
     
     public double getTY(){
@@ -70,6 +53,8 @@ public class MLVision extends PeriodicBase {
         
         return trigDistance;
     }
+
+
   
 
 }
