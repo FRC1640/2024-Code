@@ -28,6 +28,9 @@ public class RotateLockWeight implements DriveWeight {
                 pose.get().getX() - getPose.get().getX()) - gyro.getOffset();
         double o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
                 (angle + gyro.getOffset())), 0);
+        if (o < 0.01) {
+            o = 0;
+        }
         double scale = 1;
         o = MathUtil.clamp(o, -1, 1);
         return new ChassisSpeeds(0, 0, o / scale);

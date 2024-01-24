@@ -6,13 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -78,11 +79,18 @@ public class RobotContainer {
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
-        // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
-        driveController.b().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new AutoDriveWeight(()->new Pose2d(), driveSubsystem::getPose, gyro))));
-        driveController.b().onFalse(new InstantCommand(()->
+        driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
+        driveController.rightBumper().onTrue(new InstantCommand(()->
+            DriveWeightCommand.addWeight(new AutoDriveWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
+            new Pose2d(1.859, 7.803, new Rotation2d(Math.PI/2)):new Pose2d(14.667, 7.8, new Rotation2d(Math.PI/2)), driveSubsystem::getPose, gyro))));
+        driveController.rightBumper().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("AutoDriveWeight")));
+
+        driveController.a().onTrue(new InstantCommand(()->
+            DriveWeightCommand.addWeight(new RotateLockWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
+            new Pose2d(1.328, 5.555, new Rotation2d()):new Pose2d(15.214, 5.555, new Rotation2d()), driveSubsystem::getPose, gyro))));
+        driveController.a().onFalse(new InstantCommand(()->
+            DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
     }
 

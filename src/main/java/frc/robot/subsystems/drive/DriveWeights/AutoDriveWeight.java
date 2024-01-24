@@ -31,9 +31,15 @@ public class AutoDriveWeight implements DriveWeight {
         double s = pid.calculate(dist, 0);
         double o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
                 pose.get().getRotation().getRadians()), 0);
-        double scale = (dist / 5 + 1);
+        double scale = (dist / 4 + 1);
         s = MathUtil.clamp(s, -1, 1);
         o = MathUtil.clamp(o, -1, 1);
-        return new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o / scale);
+        if (o < 0.01) {
+            o = 0;
+        }
+        if (s < 0.01) {
+            s = 0;
+        }
+        return new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o);
     }
 }

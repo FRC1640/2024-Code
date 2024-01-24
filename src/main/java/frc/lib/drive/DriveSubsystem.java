@@ -158,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateOdometry() {
-        if (vision.isTarget()) {
+        if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
 
             double distConst = Math.pow(vision.getDistance(), 2.0);
             swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),

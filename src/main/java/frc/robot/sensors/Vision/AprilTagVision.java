@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
+import frc.robot.Constants.FieldConstants;
 
 public class AprilTagVision extends PeriodicBase {
     private AprilTagVisionIO io;
@@ -29,5 +30,9 @@ public class AprilTagVision extends PeriodicBase {
     }
     public double getDistance(){
         return inputs.aprilTagDistance;
+    }
+
+    public boolean isPoseValid(Pose2d pose){
+        return FieldConstants.width >= pose.getX() && FieldConstants.height >= pose.getY() && pose.getX() >= 0 && pose.getY() >= 0;
     }
 }
