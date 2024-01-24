@@ -34,6 +34,12 @@ public class AutoDriveWeight implements DriveWeight {
         double scale = (dist / 4 + 1);
         s = MathUtil.clamp(s, -1, 1);
         o = MathUtil.clamp(o, -1, 1);
+        if (o < 0.01) {
+            o = 0;
+        }
+        if (s < 0.01) {
+            s = 0;
+        }
         return new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o);
     }
 }

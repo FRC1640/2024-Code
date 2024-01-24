@@ -1,10 +1,5 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -16,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.JoystickCleaner;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 
@@ -35,16 +29,16 @@ public class JoystickDriveWeight implements DriveWeight {
     private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
     private boolean fieldRelative = true;
 
-    private double iXSpeed;
-    private double iYSpeed;
-    private double angle;
-    private double offset;
+    // private double iXSpeed;
+    // private double iYSpeed;
+    // private double angle;
+    // private double offset;
 
     double xSpeed;
     private double ySpeed;
     private double rot;
 
-    private boolean hold = false;
+    // private boolean hold = false;
 
     private Translation2d centerOfRot = new Translation2d();
 
@@ -65,7 +59,7 @@ public class JoystickDriveWeight implements DriveWeight {
 
         Trigger leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
 
-        Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
+        // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
 
         if (!leftTrigger.getAsBoolean()) {
             xSpeed = -driverController.getLeftY() * SLOW_LINEAR_SPEED;
@@ -74,7 +68,7 @@ public class JoystickDriveWeight implements DriveWeight {
         } else {
             xSpeed = -m_xspeedLimiter.calculate(driverController.getLeftY());
             ySpeed = -m_yspeedLimiter.calculate(driverController.getLeftX());
-            rot = -m_rotLimiter.calculate(driverController.getRightX());
+            rot = -m_rotLimiter.calculate(driverController.getRightX()) * 0.8;
         }
 
         /* Apply linear deadband */
@@ -88,12 +82,15 @@ public class JoystickDriveWeight implements DriveWeight {
         rot = MathUtil.applyDeadband(rot, LOWER_DB);
 
         /* Increase rotational sensitivity */
-        rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 3.0);
+        rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 2.0);
 
         /* Gyro correction */
         if (Math.abs(rot) == 0 && DriveWeightCommand.getWeights().size() == 1){
             rot = rotPID.calculate(SwerveAlgorithms.angleDistance(lastAngle, gyro.getRawAngleRadians()), 0);
             rot = MathUtil.clamp(rot, -1, 1);
+            if (rot < 0.01){
+                rot = 0;
+            }
         }
         else{
             lastAngle = gyro.getRawAngleRadians();
