@@ -98,4 +98,8 @@ public final class Constants {
         public static PIDController rotPID = new PIDController(0.7, 0, 0.07);
         public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
     }
+    public static class FieldConstants{
+        public static double height = 8.21;
+        public static double width = 16.54;
+    }
 }
