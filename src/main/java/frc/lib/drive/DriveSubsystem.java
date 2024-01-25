@@ -56,10 +56,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
-    
-
     // SwerveDriveOdometry odometry;
-    SwerveDrivePoseEstimator swervePoseEstimator; 
+    SwerveDrivePoseEstimator swervePoseEstimator;
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
@@ -112,7 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getPose,
                 this::resetOdometry,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
-                this::driveChassisSpeedsNoScaling, //TODO is this right? maybe desaturate?
+                this::driveChassisSpeedsNoScaling, // TODO is this right? maybe desaturate?
                 new HolonomicPathFollowerConfig(
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
@@ -160,10 +158,13 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
 
-            double distConst = Math.pow(vision.getDistance(), 2.0);
+            double distConst = Math.pow(vision.getDistance(), 2.0); // TODO: TUNE
+            double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                    getActualSwerveStates()).vxMetersPerSecond,
+                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
             swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                    VecBuilder.fill(VisionConstants.xyStdDev * distConst,
-                            VisionConstants.xyStdDev * distConst, VisionConstants.thetaStdDev * distConst));
+                    VecBuilder.fill(VisionConstants.xyStdDev * distConst * velConst,
+                            VisionConstants.xyStdDev * distConst * velConst, VisionConstants.thetaStdDev * distConst * velConst));
         }
         odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
 
@@ -213,7 +214,8 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRot) {
+    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+            Translation2d centerOfRot) {
 
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
@@ -296,20 +298,24 @@ public class DriveSubsystem extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
+
     public Command resetOdometryCommand(Pose2d newPose) {
         Command c = new InstantCommand(() -> resetOdometry(newPose));
         c.addRequirements(this);
         return c;
     }
 
-    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
-        return new RunCommand(() -> 
-        drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
-        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot) {
+        return new RunCommand(() -> drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
+                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get()),
+                new Subsystem[] {})
+                .andThen(new InstantCommand(()->driveDesaturatedCommand(()->new ChassisSpeeds(), ()->new Translation2d())));
     }
-    public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
-        return new RunCommand(() -> 
-        drivePercentDesaturated(speeds.get().vxMetersPerSecond,
-        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+
+    public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot) {
+        return new RunCommand(() -> drivePercentDesaturated(speeds.get().vxMetersPerSecond,
+                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get()),
+                new Subsystem[] {})
+        .andThen(new InstantCommand(()->driveDesaturatedCommand(()->new ChassisSpeeds(), ()->new Translation2d())));
     }
 }
