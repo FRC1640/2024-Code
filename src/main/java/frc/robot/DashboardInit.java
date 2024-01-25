@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Robot.TestMode;
+import frc.robot.sensors.Vision.AprilTagVision;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -29,9 +30,9 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision) {
         autonInit();
-        matchInit();
+        matchInit(vision);
         testInit();
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.controller = controller;
@@ -66,7 +67,7 @@ public class DashboardInit {
         }
     }
 
-    private static void matchInit() {
+    private static void matchInit(AprilTagVision vision) { // TODO Limelight feed appears only when Shuffleboard is running before sim starts. Why?
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -80,6 +81,9 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
                 .withSize(4,4)
                 .withPosition(1,0);
+        teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
+                .withSize(1, 2)
+                .withPosition(5, 2);
     }
 
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
