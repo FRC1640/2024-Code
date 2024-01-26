@@ -82,13 +82,11 @@ public class RobotContainer {
     private void configureBindings() {
         
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,0.1,0.25)
-        .alongWith(intakeSubsystem.intakeCommand(0, 0.5, //run note into shooter
-            ()-> shooterSubsystem.isSpeedAccurate(0.05)))); //amp shot
+        .alongWith(new InstantCommand(()->generateIntakeCommand().schedule()))); //amp shot
         
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new Pose2d(0, 0, new Rotation2d(0))));
-        driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.5, //run note into shooter
-            ()-> shooterSubsystem.isSpeedAccurate(0.05))); //TODO: make sure angle is correct
+        driveController.leftBumper().whileTrue(new InstantCommand(()->generateIntakeCommand().schedule())); //TODO: make sure angle is correct
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.rightBumper().onTrue(new InstantCommand(()->
@@ -124,5 +122,9 @@ public class RobotContainer {
             return DriverStation.getAlliance().get();
         }
         return Alliance.Blue;
+    }
+    private Command generateIntakeCommand(){
+        return intakeSubsystem.intakeCommand(0, 0.5,
+            ()-> shooterSubsystem.isSpeedAccurate(0.05));
     }
 }
