@@ -82,7 +82,8 @@ public class RobotContainer {
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,0.1,0.25)); //amp shot
         
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-        driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
+        // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new Pose2d(0, 0, new Rotation2d(0))));
+        driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.5));//run note into shooter
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.rightBumper().onTrue(new InstantCommand(()->
