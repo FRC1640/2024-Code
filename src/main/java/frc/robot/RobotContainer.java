@@ -78,18 +78,19 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // x is amp boom zap yippeE
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
-        driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
+        // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.rightBumper().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new AutoDriveWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
-            new Pose2d(1.859, 7.803, new Rotation2d(Math.PI/2)):new Pose2d(14.667, 7.8, new Rotation2d(Math.PI/2)), driveSubsystem::getPose, gyro))));
+            DriveWeightCommand.addWeight(new AutoDriveWeight(()-> ((getAlliance() == Alliance.Blue)?
+            new Pose2d(1.859, 7.803, new Rotation2d(Math.PI/2)):new Pose2d(14.667, 7.8, new Rotation2d(Math.PI/2))), driveSubsystem::getPose, gyro))));
         driveController.rightBumper().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("AutoDriveWeight")));
 
         driveController.a().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new RotateLockWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
+            DriveWeightCommand.addWeight(new RotateLockWeight(()->(getAlliance() == Alliance.Blue) ?
             new Pose2d(1.328, 5.555, new Rotation2d()):new Pose2d(15.214, 5.555, new Rotation2d()), driveSubsystem::getPose, gyro))));
         driveController.a().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("RotateLockWeight")));
@@ -104,5 +105,11 @@ public class RobotContainer {
         driveSubsystem.removeDefaultCommand();
         shooterSubsystem.removeDefaultCommand();
         intakeSubsystem.removeDefaultCommand();
+    }
+    private Alliance getAlliance(){
+        if (DriverStation.getAlliance().isPresent()){
+            return DriverStation.getAlliance().get();
+        }
+        return Alliance.Blue;
     }
 }
