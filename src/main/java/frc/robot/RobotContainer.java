@@ -42,6 +42,7 @@ public class RobotContainer {
   private AprilTagVision aprilTagVision;
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
   private ShooterSubsystem shooterSubsystem;
   private IntakeSubsystem intakeSubsystem;
   public RobotContainer() {

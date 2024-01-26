@@ -97,9 +97,15 @@ public final class Constants {
         //controllers
         public static PIDController rotPID = new PIDController(0.7, 0.000001, 0.008);
         public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
+        public static PIDController targetingPID = new PIDController(0.1, 0, 0);
     }
     public static class FieldConstants{
         public static double height = 8.21;
         public static double width = 16.54;
+    }
+
+    public static class TargetingConstants {
+        public static int leftTargetingMotorId = 12;
+        public static int rightTargetingMotorId = 14;
     }
 }
