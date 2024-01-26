@@ -11,7 +11,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
@@ -79,16 +81,24 @@ public class RobotContainer {
 
     private void configureBindings() {
         
-        driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,0.1,0.25)); //amp shot
+        driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,0.1,0.25)
+        .alongWith(intakeSubsystem.intakeCommand(0, 0.5, //run note into shooter
+            ()-> shooterSubsystem.isSpeedAccurate(0.05)))); //amp shot
         
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new Pose2d(0, 0, new Rotation2d(0))));
-        driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.5));//run note into shooter
+        driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.5, //run note into shooter
+            ()-> shooterSubsystem.isSpeedAccurate(0.05))); //TODO: make sure angle is correct
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.rightBumper().onTrue(new InstantCommand(()->
             DriveWeightCommand.addWeight(new AutoDriveWeight(()-> ((getAlliance() == Alliance.Blue)?
-            new Pose2d(1.859, 7.803, new Rotation2d(Math.PI/2)):new Pose2d(14.667, 7.8, new Rotation2d(Math.PI/2))), driveSubsystem::getPose, gyro))));
+            new Pose2d(1.859, 7.803, new Rotation2d(Math.PI/2)):new Pose2d(14.667, 7.8,
+             new Rotation2d(Math.PI/2))), driveSubsystem::getPose, gyro))))
+             .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+                .andThen(Commands.race(
+                    shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25),
+                    new WaitCommand(5)))); //wait before changing the spinup for the shooter so there is time to fire. 
         driveController.rightBumper().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("AutoDriveWeight")));
 

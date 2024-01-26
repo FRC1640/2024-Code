@@ -34,22 +34,22 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.topLeftSpeedPercent = topLeftShooter.get();
+        inputs.topLeftSpeedPercent = topLeftShooter.getAppliedOutput();
         inputs.topLeftAppliedVoltage = topLeftShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.topLeftCurrentAmps = topLeftShooter.getOutputCurrent();
         inputs.topLeftTempCelsius = topLeftShooter.getMotorTemperature();
 
-        inputs.bottomLeftSpeedPercent = bottomLeftShooter.get();
+        inputs.bottomLeftSpeedPercent = bottomLeftShooter.getAppliedOutput();
         inputs.bottomLeftAppliedVoltage = bottomLeftShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
         inputs.bottomLeftCurrentAmps = bottomLeftShooter.getOutputCurrent();
         inputs.bottomLeftTempCelsius = bottomLeftShooter.getMotorTemperature();
 
-        inputs.topRightSpeedPercent = topRightShooter.get();
+        inputs.topRightSpeedPercent = topRightShooter.getAppliedOutput();
         inputs.topRightAppliedVoltage = topRightShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.topRightCurrentAmps = topRightShooter.getOutputCurrent();
         inputs.topRightTempCelsius = topRightShooter.getMotorTemperature();
 
-        inputs.bottomRightSpeedPercent = bottomRightShooter.get();
+        inputs.bottomRightSpeedPercent = bottomRightShooter.getAppliedOutput();
         inputs.bottomRightAppliedVoltage = bottomRightShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
         inputs.bottomRightCurrentAmps = bottomRightShooter.getOutputCurrent();
         inputs.bottomRightTempCelsius = bottomRightShooter.getMotorTemperature();
