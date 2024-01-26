@@ -7,36 +7,51 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
-    private final CANSparkMax topShooter, bottomShooter;
+    private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topShooter = new CANSparkMax(ShooterConstants.topCanID, MotorType.kBrushless); // TODO ids
-        bottomShooter = new CANSparkMax(ShooterConstants.bottomCanID, MotorType.kBrushless);
+        topLeftShooter = new CANSparkMax(ShooterConstants.topLeftCanID, MotorType.kBrushless); // TODO ids
+        bottomLeftShooter = new CANSparkMax(ShooterConstants.bottomLeftCanID, MotorType.kBrushless);
+        topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); // TODO ids
+        bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
     }
 
     @Override
-    public void setSpeedPercent(double top, double bottom) {
-        topShooter.set(top);
-        bottomShooter.set(bottom);
+    public void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        topLeftShooter.set(topLeft);
+        bottomLeftShooter.set(bottomLeft);
+        topRightShooter.set(topRight);
+        bottomRightShooter.set(bottomRight);
     }
 
     @Override
-    public void setVoltage(double top, double bottom) {
-        topShooter.setVoltage(top);
-        bottomShooter.setVoltage(bottom);
+    public void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        topLeftShooter.setVoltage(topLeft);
+        bottomLeftShooter.setVoltage(bottomLeft);
+        topRightShooter.setVoltage(topRight);
+        bottomRightShooter.setVoltage(bottomRight);
     }
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.topSpeedPercent = topShooter.get();
-        inputs.topAppliedVoltage = topShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
-        inputs.topCurrentAmps = topShooter.getOutputCurrent();
-        inputs.topTempCelsius = topShooter.getMotorTemperature();
+        inputs.topLeftSpeedPercent = topLeftShooter.get();
+        inputs.topLeftAppliedVoltage = topLeftShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
+        inputs.topLeftCurrentAmps = topLeftShooter.getOutputCurrent();
+        inputs.topLeftTempCelsius = topLeftShooter.getMotorTemperature();
 
-        inputs.bottomSpeedPercent = bottomShooter.get();
-        inputs.bottomAppliedVoltage = bottomShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
-        inputs.bottomCurrentAmps = bottomShooter.getOutputCurrent();
-        inputs.bottomTempCelsius = bottomShooter.getMotorTemperature();
-        
+        inputs.bottomLeftSpeedPercent = bottomLeftShooter.get();
+        inputs.bottomLeftAppliedVoltage = bottomLeftShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
+        inputs.bottomLeftCurrentAmps = bottomLeftShooter.getOutputCurrent();
+        inputs.bottomLeftTempCelsius = bottomLeftShooter.getMotorTemperature();
+
+        inputs.topRightSpeedPercent = topRightShooter.get();
+        inputs.topRightAppliedVoltage = topRightShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
+        inputs.topRightCurrentAmps = topRightShooter.getOutputCurrent();
+        inputs.topRightTempCelsius = topRightShooter.getMotorTemperature();
+
+        inputs.bottomRightSpeedPercent = bottomRightShooter.get();
+        inputs.bottomRightAppliedVoltage = bottomRightShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
+        inputs.bottomRightCurrentAmps = bottomRightShooter.getOutputCurrent();
+        inputs.bottomRightTempCelsius = bottomRightShooter.getMotorTemperature();
     }
 }

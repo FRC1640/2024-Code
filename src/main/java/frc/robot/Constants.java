@@ -85,8 +85,10 @@ public final class Constants {
     }
 
     public static class ShooterConstants{
-        public static final int topCanID = 5;
-        public static final int bottomCanID = 6;
+        public static final int topLeftCanID = 5;
+        public static final int bottomLeftCanID = 6;
+        public static final int topRightCanID = 13;
+        public static final int bottomRightCanID = 14;
     }
 
     public static class PIDConstants{
