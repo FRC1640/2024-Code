@@ -70,7 +70,7 @@ public class RobotContainer {
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5,0.5,0.5));
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8,0.7,0.7));
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
         
@@ -80,7 +80,7 @@ public class RobotContainer {
     private void configureBindings() {
         
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,0.1,0.25)); //amp shot
-
+        
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
