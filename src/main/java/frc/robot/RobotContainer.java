@@ -29,6 +29,7 @@ import frc.robot.sensors.Vision.AprilTagVisionIOSim;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
+import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionRotationDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
@@ -89,9 +90,9 @@ public class RobotContainer {
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
        
         driveController.rightTrigger().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new MLVisionRotationDriveWeight(mlVision))));
+            DriveWeightCommand.addWeight(new MLVisionAngularAndHorizDriveWeight(mlVision))));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
-            DriveWeightCommand.removeWeight("MLVisionRotationDriveWeight")));
+            DriveWeightCommand.removeWeight("MLVisionAngularAndHorizDriveWeight")));
     }
 
     public Command getAutonomousCommand() {
