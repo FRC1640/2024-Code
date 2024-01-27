@@ -1,15 +1,24 @@
 {
-  "NetworkTables Settings": {
-    "mode": "Client (NT4)",
-    "serverTeam": "127.0.0.1"
+  "Connections": {
+    "open": true
   },
-  "createNonCanonical": true,
-  "precision": 10,
+  "Persistent Values": {
+    "open": false
+  },
+  "Retained Values": {
+    "open": false
+  },
+  "Transitory Values": {
+    "open": false
+  },
   "transitory": {
     "limelight": {
       "double[]##v_/limelight/botpose_wpiblue": {
-        "open": true
+        "open": false
       },
+      "open": false
+    },
+    "limelight-ml": {
       "open": true
     }
   }

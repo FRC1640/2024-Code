@@ -22,6 +22,7 @@ import frc.robot.sensors.Gyro.GyroIOSim;
 import frc.robot.sensors.Vision.AprilTagVision;
 import frc.robot.sensors.Vision.MLVision;
 import frc.robot.sensors.Vision.MLVisionIOLimelight;
+import frc.robot.sensors.Vision.MLVisionIOSim;
 import frc.robot.sensors.Vision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
@@ -57,6 +58,8 @@ public class RobotContainer {
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+                MLVision = new MLVision(new MLVisionIOSim());
+
                 break;
 
          default:
