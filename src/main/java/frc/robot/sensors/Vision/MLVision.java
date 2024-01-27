@@ -19,6 +19,7 @@ public class MLVision extends PeriodicBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("ML Vision", inputs);
+        Logger.recordOutput("Distance to note", getDistance());
     }
 
 
@@ -46,11 +47,15 @@ public class MLVision extends PeriodicBase {
     public double getDistance(){
         // Using data points and trigonometry for distance calculations from the
         // Limelight to the object detected.
-        
-        trigDistance = Units.inchesToMeters( // "d = (h2-h1) / tan(a1+a2)"
+        if (!inputs.isTarget){
+            trigDistance = -1;
+        }
+        else{
+            trigDistance = Units.inchesToMeters( // "d = (h2-h1) / tan(a1+a2)"
                 (Constants.LimelightConstants.noteHeightInches - Constants.LimelightConstants.limelightLensHeight)
                         / Math.tan(Math.toRadians(inputs.ty + Constants.LimelightConstants.limelightAngle)));
         
+        }
         return trigDistance;
     }
 

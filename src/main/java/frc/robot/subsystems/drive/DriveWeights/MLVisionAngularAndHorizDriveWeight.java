@@ -26,11 +26,12 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         velocity = (Math.abs(velocity) < deadband) ? 0 : velocity;
         velocity = MathUtil.clamp(velocity, -1, 1);
         
-        if (Math.abs(vision.getTX()) > distanceLim ){
-          chassisSpeedsToTurn = new ChassisSpeeds(0, 0, velocity); }
-        else {          
-           chassisSpeedsToTurn = new ChassisSpeeds(velocity, 0, 0);
-        }
+        //if (Math.abs(vision.getTX()) > distanceLim ){
+          chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0.75*  velocity); 
+        //}
+        //else {          
+         //  chassisSpeedsToTurn = new ChassisSpeeds(velocity, 0, 0);
+        //}
         
         return chassisSpeedsToTurn;
     }

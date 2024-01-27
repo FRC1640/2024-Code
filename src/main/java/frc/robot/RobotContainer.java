@@ -44,20 +44,20 @@ public class RobotContainer {
 
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
-  private ShooterSubsystem shooterSubsystem;
+  //private ShooterSubsystem shooterSubsystem;
   public RobotContainer() {
       switch (Robot.getMode()) {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
           aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
           mlVision = new MLVision(new MLVisionIOLimelight());
-          shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+          //shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
           break;
         case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
                         .toChassisSpeeds(
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
-                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                //shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 mlVision = new MLVision(new MLVisionIOSim());
 
@@ -65,7 +65,7 @@ public class RobotContainer {
 
          default:
                 gyro = new Gyro(new GyroIO(){});
-                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                //shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
                 mlVision = new MLVision(new MLVisionIOLimelight());
 
@@ -73,7 +73,7 @@ public class RobotContainer {
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
+        //shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         configureBindings();
@@ -100,6 +100,6 @@ public class RobotContainer {
     }
     public void removeAllDefaultCommands(){
         driveSubsystem.removeDefaultCommand();
-        shooterSubsystem.removeDefaultCommand();
+        //shooterSubsystem.removeDefaultCommand();
     }
 }
