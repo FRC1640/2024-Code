@@ -117,9 +117,9 @@ public class RobotContainer {
         driveController.a().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
-        new Trigger(() -> operatorController.leftTrigger().getAsBoolean())
+        operatorController.leftTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
-        new Trigger(() -> operatorController.rightTrigger().getAsBoolean())
+        operatorController.rightTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
         new Trigger(() -> intakeSubsystem.hasNote())
         .onTrue(new InstantCommand(
