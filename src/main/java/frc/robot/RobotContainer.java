@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -106,6 +107,13 @@ public class RobotContainer {
         driveController.a().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
+
+        new Trigger(() -> intakeSubsystem.hasNote())
+        .onTrue(new InstantCommand(
+            () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
+        new Trigger(() -> intakeSubsystem.hasNote())
+        .onFalse(new InstantCommand(
+            () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
     }
 
     public Command getAutonomousCommand() {
