@@ -36,7 +36,7 @@ public class MLVisionFactory {
     }
    
     //Align to Note Command
-    private ChassisSpeeds calculateAngularSpeeds(){
+    public ChassisSpeeds calculateAngularSpeeds(){
 
         angularVelocity = angularController.calculate(vision.getTX());
         angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
@@ -47,7 +47,7 @@ public class MLVisionFactory {
         return chassisSpeedsToTurn;
     }
 
-    private Command angularAlignToNoteCommand() {
+    public Command angularAlignToNoteCommand() {
         return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateAngularSpeeds()).until(()->Math.abs(vision.getTX()) <= isFinishedTolerance));
     }
     
