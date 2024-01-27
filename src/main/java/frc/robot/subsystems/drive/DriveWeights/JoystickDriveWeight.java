@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -95,6 +97,7 @@ public class JoystickDriveWeight implements DriveWeight {
         else{
             lastAngle = gyro.getRawAngleRadians();
         }
+        Logger.recordOutput("Drive/JoystickChassisSpeeds", new ChassisSpeeds(xSpeed, ySpeed, rot));
         return new ChassisSpeeds(xSpeed, ySpeed, rot);
 
         // if (!hold && leftTrigger.getAsBoolean()) {
