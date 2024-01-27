@@ -36,6 +36,9 @@ import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.targeting.TargetingIO;
+import frc.robot.subsystems.targeting.TargetingIOSim;
+import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class RobotContainer {
@@ -55,6 +58,7 @@ public class RobotContainer {
           aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
           shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
           intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+          targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
           break;
         case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
@@ -63,6 +67,7 @@ public class RobotContainer {
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+                targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
                 break;
 
          default:
@@ -70,6 +75,7 @@ public class RobotContainer {
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
+                targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
