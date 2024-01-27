@@ -87,8 +87,11 @@ public class RobotContainer {
         driveController.b().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("AutoDriveWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
+       
         driveController.rightTrigger().onTrue(new InstantCommand(()->
             DriveWeightCommand.addWeight(new MLVisionRotationDriveWeight(MLVision))));
+        driveController.rightTrigger().onFalse(new InstantCommand(()->
+            DriveWeightCommand.removeWeight(new MLVisionRotationDriveWeight(MLVision))));
     }
 
     public Command getAutonomousCommand() {
