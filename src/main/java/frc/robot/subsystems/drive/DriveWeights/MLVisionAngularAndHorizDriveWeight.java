@@ -7,7 +7,7 @@ import frc.robot.sensors.Vision.MLVision;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
-    PIDController controller = new PIDController(1, 0, 0);
+    PIDController controller = new PIDController(0.01, 0, 0);
     double velocity;
     MLVision vision;
     double deadband = 0.1;
@@ -26,12 +26,17 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         velocity = (Math.abs(velocity) < deadband) ? 0 : velocity;
         velocity = MathUtil.clamp(velocity, -1, 1);
         
+        if (vision.getTX() == 0){
+           chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+        }
+        else{
         //if (Math.abs(vision.getTX()) > distanceLim ){
-          chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0.75*  velocity); 
+          chassisSpeedsToTurn = new ChassisSpeeds(0, 0, velocity); 
         //}
         //else {          
          //  chassisSpeedsToTurn = new ChassisSpeeds(velocity, 0, 0);
         //}
+        }
         
         return chassisSpeedsToTurn;
     }
