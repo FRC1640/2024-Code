@@ -38,12 +38,12 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.intakeSpeedPercent = intakeMotor.get();
+        inputs.intakeSpeedPercent = intakeMotor.getAppliedOutput();
         inputs.intakeAppliedVoltage = intakeMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
         inputs.intakeTempCelsius = intakeMotor.getMotorTemperature();
 
-        inputs.indexerSpeedPercent = indexerMotor.get();
+        inputs.indexerSpeedPercent = indexerMotor.getAppliedOutput();
         inputs.indexerAppliedVoltage = indexerMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
