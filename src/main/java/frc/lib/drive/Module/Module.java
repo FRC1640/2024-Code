@@ -15,7 +15,7 @@ public class Module {
     ModuleIO io;
     PivotId id;
     ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-    public final PIDController drivePIDController = new PIDController(0.025, 0.0, 0);
+    public final PIDController drivePIDController = new PIDController(0, 0.0, 0);
 
     public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); // actual PID
 
@@ -56,13 +56,19 @@ public class Module {
         sin = (flipDriveTeleop) ? -sin : sin;
         double turnOutput = turningPIDController.calculate(sin, 0);
 
-        final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
+        double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
+        targetSpeed = targetSpeed * SwerveDriveDimensions.maxSpeed;
+        double pidSpeed = (driveFeedforward.calculate(targetSpeed) + 
+            drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
 
-        if (Math.abs(targetSpeed) < 0.1) {
+
+        pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
+
+        if (Math.abs(pidSpeed) < 0.05) {
             turnOutput = 0;
         }
 
-        io.setDrivePercentage(targetSpeed);
+        io.setDriveVoltage(pidSpeed);
         io.setSteerPercentage(turnOutput);
     }
 
@@ -76,11 +82,18 @@ public class Module {
 
         final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
 
-        if (Math.abs(targetSpeed) / SwerveDriveDimensions.maxSpeed < 0.1) {
+
+        double pidSpeed = (driveFeedforward.calculate(targetSpeed) + 
+            drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
+
+
+        pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
+
+        if (Math.abs(pidSpeed) < 0.05) {
             turnOutput = 0;
         }
 
-        io.setDrivePercentage(targetSpeed/ SwerveDriveDimensions.maxSpeed);
+        io.setDriveVoltage(pidSpeed);
         io.setSteerPercentage(turnOutput);
     }
 
@@ -97,7 +110,7 @@ public class Module {
         //targetSpeed = targetSpeed / SwerveDriveDimensions.maxSpeed;
 
         double pidSpeed = (driveFeedforward.calculate(targetSpeed) + 
-            drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, state.speedMetersPerSecond)); 
+            drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
 
 
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
