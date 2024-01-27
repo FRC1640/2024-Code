@@ -88,7 +88,7 @@ public class JoystickDriveWeight implements DriveWeight {
         if (Math.abs(rot) == 0 && DriveWeightCommand.getWeights().size() == 1){
             rot = rotPID.calculate(SwerveAlgorithms.angleDistance(lastAngle, gyro.getRawAngleRadians()), 0);
             rot = MathUtil.clamp(rot, -1, 1);
-            if (rot < 0.01){
+            if (Math.abs(rot) < 0.01){
                 rot = 0;
             }
         }

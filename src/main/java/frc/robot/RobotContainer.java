@@ -10,8 +10,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
@@ -81,7 +84,7 @@ public class RobotContainer {
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8,0.7,0.7));
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
         targetingSubsystem.setDefaultCommand(DriverStation.getAlliance().get() == Alliance.Blue ?
@@ -96,18 +99,33 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        
+        driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,0.1,0.25)
+        .alongWith(new InstantCommand(()->generateIntakeCommand().schedule()))); //amp shot
+        
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-        driveController.leftBumper().onTrue(driveSubsystem.resetOdometryCommand(new Pose2d(0, 0, new Rotation2d(0))));
+        // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new Pose2d(0, 0, new Rotation2d(0))));
+        driveController.leftBumper().whileTrue(new InstantCommand(()->generateIntakeCommand().schedule())); //TODO: make sure angle is correct
         new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
-        driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
+        // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.rightBumper().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new AutoDriveWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
-            new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI/2)):new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI/2)), driveSubsystem::getPose, gyro))));
+            DriveWeightCommand.addWeight(new AutoDriveWeight(
+                ()->DriverStation.getAlliance().get() == Alliance.Blue ?
+            new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI/2)):
+            new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI/2)),
+             driveSubsystem::getPose, gyro))))
+             .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+                .andThen(Commands.race(
+                    shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25),
+                    new WaitCommand(5))));
         driveController.rightBumper().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("AutoDriveWeight")));
         driveController.a().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new RotateLockWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
-            new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d()):new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()), driveSubsystem::getPose, gyro))));
+            DriveWeightCommand.addWeight(new RotateLockWeight(
+                ()->DriverStation.getAlliance().get() == Alliance.Blue ?
+            new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d()):
+            new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()), 
+            driveSubsystem::getPose, gyro))));
         driveController.a().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
@@ -115,6 +133,12 @@ public class RobotContainer {
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
         new Trigger(() -> operatorController.rightTrigger().getAsBoolean())
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+        new Trigger(() -> intakeSubsystem.hasNote())
+        .onTrue(new InstantCommand(
+            () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
+        new Trigger(() -> intakeSubsystem.hasNote())
+        .onFalse(new InstantCommand(
+            () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
     }
 
     public Command getAutonomousCommand() {
@@ -125,5 +149,15 @@ public class RobotContainer {
         driveSubsystem.removeDefaultCommand();
         shooterSubsystem.removeDefaultCommand();
         intakeSubsystem.removeDefaultCommand();
+    }
+    private Alliance getAlliance(){
+        if (DriverStation.getAlliance().isPresent()){
+            return DriverStation.getAlliance().get();
+        }
+        return Alliance.Blue;
+    }
+    private Command generateIntakeCommand(){
+        return intakeSubsystem.intakeCommand(0, 0.5,
+            ()-> shooterSubsystem.isSpeedAccurate(0.05));
     }
 }
