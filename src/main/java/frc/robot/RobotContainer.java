@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class RobotContainer {
 
@@ -45,6 +47,7 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(1);
   private ShooterSubsystem shooterSubsystem;
   private IntakeSubsystem intakeSubsystem;
+  private TargetingSubsystem targetingSubsystem;
   public RobotContainer() {
       switch (Robot.getMode()) {
         case REAL:
@@ -95,6 +98,10 @@ public class RobotContainer {
         driveController.a().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
+        new Trigger(() -> operatorController.leftTrigger().getAsBoolean())
+                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
+        new Trigger(() -> operatorController.rightTrigger().getAsBoolean())
+                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
     }
 
     public Command getAutonomousCommand() {

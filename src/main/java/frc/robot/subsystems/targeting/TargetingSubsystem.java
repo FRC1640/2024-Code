@@ -28,7 +28,7 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     private double getPIDSpeed(double position) {
-        double speed = pid.calculate(getTargetingPosition(), position);
+        double speed = pid.calculate(inputs.targetingPositionAverage, position);
         speed = MathUtil.clamp(speed, -1, 1);
         if (Math.abs(speed) < 0.1) {
             speed = 0;
@@ -52,9 +52,5 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command setVoltageCommand(double voltage) {
         return new RunCommand(() -> setVoltage(voltage), this)
                 .andThen(new InstantCommand(() -> setVoltage(0), this));
-    }
-
-    public double getTargetingPosition() {
-        return (inputs.leftTargetingPosition + inputs.rightTargetingPosition)/2;
     }
 }

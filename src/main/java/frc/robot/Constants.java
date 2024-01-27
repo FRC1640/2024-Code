@@ -106,6 +106,9 @@ public final class Constants {
 
     public static class TargetingConstants {
         public static int leftTargetingMotorId = 12;
-        public static int rightTargetingMotorId = 14;
+        public static int rightTargetingMotorId = 14; // TODO replace all of these constants
+        public static double targetingLowerLimit = -10;
+        public static double targetingUpperLimit = 10;
+        public static double targetingManualSpeed = 0.5; // 
     }
 }
