@@ -48,8 +48,8 @@ public class MLVision extends PeriodicBase {
         // Limelight to the object detected.
         
         trigDistance = Units.inchesToMeters( // "d = (h2-h1) / tan(a1+a2)"
-                (Constants.LimelightConstants.noteHeightCentimers - Constants.LimelightConstants.limelightLensHeight)
-                        / Math.tan(Math.toRadians(inputs.ta + Constants.LimelightConstants.limelightAngle)));
+                (Constants.LimelightConstants.noteHeightInches - Constants.LimelightConstants.limelightLensHeight)
+                        / Math.tan(Math.toRadians(inputs.ty + Constants.LimelightConstants.limelightAngle)));
         
         return trigDistance;
     }
