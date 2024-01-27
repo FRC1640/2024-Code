@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Gyro.Gyro;
@@ -83,6 +84,13 @@ public class RobotContainer {
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
+        targetingSubsystem.setDefaultCommand(DriverStation.getAlliance().get() == Alliance.Blue ?
+                targetingSubsystem.targetFocusPosition((11.2319 * Math.pow(0.865498, (Math.hypot
+                (driveSubsystem.getPose().getX() - FieldConstants.speakerPositionBlue.getX(),
+                driveSubsystem.getPose().getY() - FieldConstants.speakerPositionBlue.getY())) - 9)
+                + 28.2788)) : targetingSubsystem.targetFocusPosition((11.2319 * Math.pow(0.865498,
+                (Math.hypot(driveSubsystem.getPose().getX() - FieldConstants.speakerPositionRed.getX(),
+                driveSubsystem.getPose().getY() - FieldConstants.speakerPositionRed.getY())) - 9) + 28.2788)));
         
         configureBindings();
     }
@@ -94,13 +102,12 @@ public class RobotContainer {
         driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1, 1));
         driveController.rightBumper().onTrue(new InstantCommand(()->
             DriveWeightCommand.addWeight(new AutoDriveWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
-            new Pose2d(1.859, 7.803, new Rotation2d(Math.PI/2)):new Pose2d(14.667, 7.8, new Rotation2d(Math.PI/2)), driveSubsystem::getPose, gyro))));
+            new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI/2)):new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI/2)), driveSubsystem::getPose, gyro))));
         driveController.rightBumper().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("AutoDriveWeight")));
-
         driveController.a().onTrue(new InstantCommand(()->
             DriveWeightCommand.addWeight(new RotateLockWeight(()->DriverStation.getAlliance().get() == Alliance.Blue ?
-            new Pose2d(1.328, 5.555, new Rotation2d()):new Pose2d(15.214, 5.555, new Rotation2d()), driveSubsystem::getPose, gyro))));
+            new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d()):new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()), driveSubsystem::getPose, gyro))));
         driveController.a().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("RotateLockWeight")));
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));

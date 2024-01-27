@@ -52,8 +52,8 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.rightTargetingTempCelsius = rightTargetingMotor.getMotorTemperature();
         inputs.rightTargetingPositionDegrees = encoderToDegrees(rightTargetingMotor);
 
-        inputs.targetingPositionAverage = getPositionAverage(leftTargetingMotor.getEncoder().getPosition(),
-                rightTargetingMotor.getEncoder().getPosition());
+        inputs.targetingPositionAverage = getPositionAverage(encoderToDegrees(leftTargetingMotor),
+                encoderToDegrees(rightTargetingMotor));
     }
 
     public double encoderToDegrees(CANSparkMax motor) { // TODO conversion

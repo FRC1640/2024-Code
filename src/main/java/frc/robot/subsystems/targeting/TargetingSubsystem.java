@@ -22,8 +22,14 @@ public class TargetingSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public Command targetFocusPosition(double position) {
-        return new RunCommand(() -> setSpeed(getPIDSpeed(position)), this)
+    /**
+     * Sets the angle of the arm.
+     * 
+     * @param angle The angle to move to.
+     * @return A new RunCommand that sets the speed, setting the speed to 0 if the command is canceled.
+     */
+    public Command targetFocusPosition(double angle) {
+        return new RunCommand(() -> setSpeed(getPIDSpeed(angle)), this)
                 .andThen(new InstantCommand(() -> setSpeed(0), this));
     }
 
