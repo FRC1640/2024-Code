@@ -39,7 +39,7 @@ public class RobotContainer {
 
   private Gyro gyro;
   private AprilTagVision aprilTagVision;
-  private MLVision MLVision;
+  private MLVision mlVision;
 
   private DriveSubsystem driveSubsystem;
   private final CommandXboxController driveController = new CommandXboxController(0);
@@ -49,7 +49,7 @@ public class RobotContainer {
         case REAL:
           gyro = new Gyro(new GyroIONavX());
           aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
-          MLVision = new MLVision(new MLVisionIOLimelight());
+          mlVision = new MLVision(new MLVisionIOLimelight());
           shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
           break;
         case SIM:
@@ -58,7 +58,7 @@ public class RobotContainer {
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-                MLVision = new MLVision(new MLVisionIOSim());
+                mlVision = new MLVision(new MLVisionIOSim());
 
                 break;
 
@@ -66,7 +66,7 @@ public class RobotContainer {
                 gyro = new Gyro(new GyroIO(){});
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
-                MLVision = new MLVision(new MLVisionIOLimelight());
+                mlVision = new MLVision(new MLVisionIOLimelight());
 
                 break;
         }
@@ -89,9 +89,9 @@ public class RobotContainer {
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
        
         driveController.rightTrigger().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new MLVisionRotationDriveWeight(MLVision))));
+            DriveWeightCommand.addWeight(new MLVisionRotationDriveWeight(mlVision))));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
-            DriveWeightCommand.removeWeight(new MLVisionRotationDriveWeight(MLVision))));
+            DriveWeightCommand.removeWeight(new MLVisionRotationDriveWeight(mlVision))));
     }
 
     public Command getAutonomousCommand() {

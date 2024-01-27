@@ -10,7 +10,7 @@ public class MLVisionRotationDriveWeight implements DriveWeight {
     PIDController angularController = new PIDController(1, 0, 0);
     double angularVelocity;
     MLVision vision;
-    double deadband;
+    double deadband = 0.1;
 
 
     public MLVisionRotationDriveWeight(MLVision vision) {
