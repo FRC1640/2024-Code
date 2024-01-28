@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -107,9 +113,18 @@ public class RobotContainer {
         // - 9)
         // + 28.2788)));
 
+        // targetingSubsystem.setDefaultCommand(targetingSubsystem
+        // .targetFocusPosition(() -> 11.2319 * Math.pow(0.865498,
+        // driveSubsystem.getPose().minus(getSpeakerPos()).getTranslation().getNorm() -
+        // 9) + 28.2788));
+
         targetingSubsystem.setDefaultCommand(targetingSubsystem
-                .targetFocusPosition(() -> 11.2319 * Math.pow(0.865498,
-                        driveSubsystem.getPose().minus(getSpeakerPos()).getTranslation().getNorm() - 9) + 28.2788));
+                .targetFocusPosition(
+                        () -> -0.956635
+                                * Math.toDegrees(
+                                        Math.asin(-0.778591 * Units.metersToFeet(2.11)
+                                                / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
+                                -2.01438));
 
         configureBindings();
     }
@@ -180,12 +195,21 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(1));
+                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(0.1));
     }
 
     public Pose2d getSpeakerPos() {
         return (getAlliance() == Alliance.Blue
                 ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
                 : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
+    }
+
+    public double get3dDistance(Supplier<Pose2d> speakerPos) {
+        Logger.recordOutput("Drive/DistanceToSpeaker",
+                new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
+                        speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm());
+        return new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
+                speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
+
     }
 }
