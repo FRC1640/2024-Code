@@ -56,7 +56,7 @@ public class MLVisionFactory {
 
         verticalVelocity = verticalPIDController.calculate((vision.getDistance()) * 100); // cant be ty uh
         verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
-        verticalVelocity = 0; // ADD CONSTANTS
+        verticalVelocity = 0.2; // ADD CONSTANTS
 
         ChassisSpeeds chassisSpeedsToDrive = new ChassisSpeeds(0, verticalVelocity, 0);
         return chassisSpeedsToDrive;

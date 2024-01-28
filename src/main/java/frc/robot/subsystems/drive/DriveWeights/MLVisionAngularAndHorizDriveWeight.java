@@ -13,8 +13,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     double angularVelocity;
     double verticalVelocity;
     MLVision vision;
-    double deadband = 0.1;
-    double distanceLim = 7;
+    double deadband = 0; //0.1;
+    double distanceLim = 0;
     ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
 
     double calculatedEndTime = 0;
@@ -33,25 +33,23 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
         //verticalVelocity = verticalController.calculate((vision.getDistance()) * 100); // cant be ty uh
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
-        verticalVelocity = 0.2; // ADD CONSTANT
+        verticalVelocity = 0.5; // ADD CONSTANT
         
-        if (vision.getTX() == 0){
-           chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
-        }
-        else{
-            if (Math.abs(vision.getTX()) > distanceLim ){
-                chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity); 
-            }
-            else if (!isDriveToNoteFinished()) {          
-              chassisSpeedsToTurn = new ChassisSpeeds(angularVelocity, verticalVelocity, 0);
-            }
-            else{
-              chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
-            }
+        //if (!vision.isTarget()){
+            //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+            //return chassisSpeedsToTurn;
+        //}
 
-        }
+        //if (Math.abs(vision.getTX()) > distanceLim ){
+            chassisSpeedsToTurn = new ChassisSpeeds(0,0,angularVelocity);
+            return chassisSpeedsToTurn;    
+       // else if (!isDriveToNoteFinished()) {          
+            //chassisSpeedsToTurn = new ChassisSpeeds(angularVelocity,verticalVelocity,0);
+            //return chassisSpeedsToTurn;        }
         
-        return chassisSpeedsToTurn;
+        //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+        //return chassisSpeedsToTurn;     
+        
     }
     
     
