@@ -44,19 +44,19 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.leftTargetingAppliedVoltage = leftTargetingMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.leftTargetingCurrentAmps = leftTargetingMotor.getOutputCurrent();
         inputs.leftTargetingTempCelsius = leftTargetingMotor.getMotorTemperature();
-        inputs.leftTargetingPositionDegrees = encoderToDegrees(leftTargetingMotor);
+        inputs.leftTargetingPositionDegrees = encoderToDegrees(leftTargetingMotor.getEncoder().getPosition());
 
         inputs.rightTargetingSpeedPercent = rightTargetingMotor.getAppliedOutput();
         inputs.rightTargetingAppliedVoltage = rightTargetingMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.rightTargetingCurrentAmps = rightTargetingMotor.getOutputCurrent();
         inputs.rightTargetingTempCelsius = rightTargetingMotor.getMotorTemperature();
-        inputs.rightTargetingPositionDegrees = encoderToDegrees(rightTargetingMotor);
+        inputs.rightTargetingPositionDegrees = encoderToDegrees(rightTargetingMotor.getEncoder().getPosition());
 
-        inputs.targetingPositionAverage = getPositionAverage(encoderToDegrees(leftTargetingMotor),
-                encoderToDegrees(rightTargetingMotor));
+        inputs.targetingPositionAverage = getPositionAverage(encoderToDegrees(leftTargetingMotor.getEncoder().getPosition()),
+                encoderToDegrees(rightTargetingMotor.getEncoder().getPosition()));
     }
 
-    public double encoderToDegrees(CANSparkMax motor) { // TODO conversion
-        return motor.getEncoder().getPosition();
+    public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
+        return motorEncoderValue;
     }
 }
