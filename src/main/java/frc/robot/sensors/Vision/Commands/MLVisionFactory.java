@@ -70,7 +70,7 @@ public class MLVisionFactory {
         else if(!vision.isTarget()){
             if (calculatedEndTime == 0){
                //lostNoteVisualTime = Timer.getFPGATimestamp();
-               calculatedEndTime = Timer.getFPGATimestamp() + 3; // idk makes the program run 3 more seconds to intake... probs change when we have a sensor in the intake
+               calculatedEndTime = Timer.getFPGATimestamp() + 0.5; // idk makes the program run 3 more seconds to intake... probs change when we have a sensor in the intake
                return false;
             }
             else if(Timer.getFPGATimestamp() <= calculatedEndTime){
