@@ -51,7 +51,7 @@ public final class Constants {
         public static final ModuleInfo FR = new ModuleInfo(
             PivotId.FR, 
             2, 
-            1, 
+            5, 
             2,
             -45, 
             true, 
@@ -80,12 +80,12 @@ public final class Constants {
     }
 
     public static class IntakeConstants{
-        public static final int intakeCanID = 15;
+        public static final int intakeCanID = 6;
         public static final int indexerCanID = 16;
     }
 
     public static class ShooterConstants{
-        public static final int topLeftCanID = 5;
+        public static final int topLeftCanID = 21; 
         public static final int bottomLeftCanID = 6;
         public static final int topRightCanID = 13;
         public static final int bottomRightCanID = 14;
@@ -97,7 +97,7 @@ public final class Constants {
         }
 
         //controllers
-        public static PIDController rotPID = new PIDController(0.7, 0.000001, 0.008);
+        public static PIDController rotPID = new PIDController(0.0001, 0.00000, 0.00);
         public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
     }

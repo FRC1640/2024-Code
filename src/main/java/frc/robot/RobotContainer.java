@@ -118,6 +118,8 @@ public class RobotContainer {
         // driveSubsystem.getPose().minus(getSpeakerPos()).getTranslation().getNorm() -
         // 9) + 28.2788));
 
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));
+
         targetingSubsystem.setDefaultCommand(targetingSubsystem
                 .targetFocusPosition(
                         () -> -0.956635
@@ -138,7 +140,7 @@ public class RobotContainer {
         // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new
         // Pose2d(0, 0, new Rotation2d(0))));
         driveController.leftBumper().whileTrue(new InstantCommand(() -> generateIntakeCommand().schedule()));
-        new Trigger(() -> !intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(1.0, 1.0));
+        new Trigger(() -> intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(0, 0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,
         // 1));
         driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(new AutoDriveWeight(

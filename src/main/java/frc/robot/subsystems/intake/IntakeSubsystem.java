@@ -1,6 +1,9 @@
 package frc.robot.subsystems.intake;
 
 import java.util.function.BooleanSupplier;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,6 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+        Logger.processInputs("Inputs", inputs);
     }
 
     public Command intakeCommand(double speedIntake, double speedIndexer, BooleanSupplier runIntake) {
@@ -45,6 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean hasNote() {
+        // System.out.println(inputs.hasNote);
         return inputs.hasNote;
     }
 
@@ -55,6 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
             public void execute() {
                 io.setIntakeSpeedPercent(speedIntake);
                 io.setIndexerSpeedPercent(speedIndexer);
+                System.out.println(speedIntake);
             }
 
             @Override
