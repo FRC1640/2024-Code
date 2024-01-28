@@ -1,8 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import java.util.function.BooleanSupplier;
-
-import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 

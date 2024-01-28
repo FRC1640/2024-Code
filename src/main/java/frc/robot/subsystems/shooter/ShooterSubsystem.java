@@ -1,12 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
-
-import frc.robot.Constants.PIDConstants;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -33,14 +28,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         io.setVoltage(topLeft, bottomLeft, topRight, bottomRight);
-    }
-
-    public Command setSpeedPIDCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
-        PIDController speedPID = PIDConstants.constructPID(PIDConstants.speedFromVoltagePID);
-        return new RunCommand(() -> setVoltageCommand(speedPID.calculate(inputs.topLeftSpeedPercent, topLeft) * 12,
-                speedPID.calculate(inputs.bottomLeftSpeedPercent, bottomLeft) * 12,
-                speedPID.calculate(inputs.topRightSpeedPercent, topRight) * 12,
-                speedPID.calculate(inputs.bottomRightSpeedPercent, bottomRight) * 12), this);
     }
 
     public Command setSpeedCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
