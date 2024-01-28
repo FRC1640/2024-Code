@@ -94,15 +94,22 @@ public class RobotContainer {
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
-        targetingSubsystem.setDefaultCommand(getAlliance()== Alliance.Blue
-                ? targetingSubsystem.targetFocusPosition(()->(11.2319 * Math.pow(0.865498,
-                        (Math.hypot(driveSubsystem.getPose().getX() - FieldConstants.speakerPositionBlue.getX(),
-                                driveSubsystem.getPose().getY() - FieldConstants.speakerPositionBlue.getY())) - 9)
-                        + 28.2788))
-                : targetingSubsystem.targetFocusPosition(()->(11.2319 * Math.pow(0.865498,
-                        (Math.hypot(driveSubsystem.getPose().getX() - FieldConstants.speakerPositionRed.getX(),
-                                driveSubsystem.getPose().getY() - FieldConstants.speakerPositionRed.getY())) - 9)
-                        + 28.2788)));
+
+        // targetingSubsystem.setDefaultCommand(targetingSubsystem.targetFocusPosition(()
+        // -> (11.2319 * Math.pow(0.865498,
+        // (Math.hypot(
+        // driveSubsystem.getPose().getX() - (getAlliance() == Alliance.Blue)
+        // ? FieldConstants.speakerPositionBlue.getX()
+        // : FieldConstants.speakerPositionRed.getX(),
+        // driveSubsystem.getPose().getY() - (getAlliance() == Alliance.Blue
+        // ? FieldConstants.speakerPositionBlue.getY()
+        // : FieldConstants.speakerPositionRed.getY())))
+        // - 9)
+        // + 28.2788)));
+
+        targetingSubsystem.setDefaultCommand(targetingSubsystem
+                .targetFocusPosition(() -> 11.2319 * Math.pow(0.865498,
+                        driveSubsystem.getPose().minus(getSpeakerPos()).getTranslation().getNorm() - 9) + 28.2788));
 
         configureBindings();
     }
@@ -111,8 +118,7 @@ public class RobotContainer {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                 .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
-                    .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
-
+                        .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new
         // Pose2d(0, 0, new Rotation2d(0))));
@@ -121,20 +127,24 @@ public class RobotContainer {
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,
         // 1));
         driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(new AutoDriveWeight(
-                () -> getAlliance() == Alliance.Blue
+                () -> (getAlliance() == Alliance.Blue
                         ? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
-                        : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2)),
+                        : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
                 driveSubsystem::getPose, gyro))))
                 .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                        .andThen(Commands.race(
-                                shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25),
-                                new WaitCommand(5))));
+                        .alongWith(targetingSubsystem.targetFocusPosition(60)));
+
         driveController.rightBumper()
-                .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight("AutoDriveWeight")));
+                .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight("AutoDriveWeight"))
+                        .alongWith(Commands.race(
+                                shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+                                        .alongWith(targetingSubsystem.targetFocusPosition(60)),
+                                new WaitCommand(2))));
+
         driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(new RotateLockWeight(
-                () -> getAlliance() == Alliance.Blue
+                () -> (getAlliance() == Alliance.Blue
                         ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
-                        : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()),
+                        : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
                 driveSubsystem::getPose, gyro))));
         driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight("RotateLockWeight")));
         // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
@@ -163,7 +173,7 @@ public class RobotContainer {
 
     private Alliance getAlliance() {
         if (DriverStation.getAlliance().isPresent()) {
-            return getAlliance();
+            return DriverStation.getAlliance().get();
         }
         return Alliance.Blue;
     }
@@ -171,5 +181,11 @@ public class RobotContainer {
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
                 () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(1));
+    }
+
+    public Pose2d getSpeakerPos() {
+        return (getAlliance() == Alliance.Blue
+                ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
+                : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
     }
 }

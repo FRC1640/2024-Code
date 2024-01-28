@@ -21,12 +21,10 @@ public class TargetingIOSim implements TargetingIO {
     private double leftPositon;
     private double rightPosition;
 
-    private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
-    private MechanismLigament2d angler = new MechanismLigament2d("angler", 1, 0);
+
 
     public TargetingIOSim() {
-        MechanismRoot2d root = targetVisualization.getRoot("targeter", 2, 2);
-        root.append(angler);
+
     }
 
     @Override
@@ -71,9 +69,6 @@ public class TargetingIOSim implements TargetingIO {
         rightPosition = inputs.rightTargetingPositionDegrees;
 
         inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
-
-        angler.setAngle(getPositionAverage(leftPositon, rightPosition));
-        Logger.recordOutput("Targeting/mech", targetVisualization);
     }
 
     public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
