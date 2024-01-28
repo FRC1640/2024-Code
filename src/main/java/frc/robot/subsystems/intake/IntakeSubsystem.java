@@ -60,7 +60,6 @@ public class IntakeSubsystem extends SubsystemBase {
             public void execute() {
                 io.setIntakeSpeedPercent(speedIntake);
                 io.setIndexerSpeedPercent(speedIndexer);
-                System.out.println(speedIntake);
             }
 
             @Override

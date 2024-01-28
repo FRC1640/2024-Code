@@ -156,6 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
+            System.out.println("vision");
             // TODO: TUNE
             double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
             // velocity standard deviation constant
@@ -241,7 +242,7 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
-    
+
     private void driveDoubleConePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation) {
         xSpeed = xSpeed * maxSpeed;

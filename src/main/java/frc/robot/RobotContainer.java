@@ -68,9 +68,10 @@ public class RobotContainer {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
-                shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
-                targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+                targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
+                });
                 break;
             case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
@@ -137,8 +138,8 @@ public class RobotContainer {
                 .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
                         .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-        // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new
-        // Pose2d(0, 0, new Rotation2d(0))));
+        driveController.y().onTrue(driveSubsystem.resetOdometryCommand(new
+        Pose2d(0, 0, new Rotation2d(0))));
         driveController.leftBumper().whileTrue(new InstantCommand(() -> generateIntakeCommand().schedule()));
         new Trigger(() -> intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(0, 0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,
