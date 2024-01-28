@@ -2,7 +2,7 @@ package frc.robot.subsystems.targeting;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.MathUtil; 
 
 public interface TargetingIO {
     @AutoLog

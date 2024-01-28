@@ -1,6 +1,7 @@
 {
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/Targeting/mech": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Auto/SendableChooser[2]": "String Chooser",
       "/Shuffleboard/Sysid/SendableChooser[1]": "String Chooser",
