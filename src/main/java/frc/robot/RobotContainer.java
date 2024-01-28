@@ -110,7 +110,8 @@ public class RobotContainer {
     private void configureBindings() {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule()))); // amp shot
+                .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
+                    .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
 
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         // driveController.leftBumper().onTrue(driveSubsystem.resetOdometryComand(new
