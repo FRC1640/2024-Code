@@ -19,7 +19,7 @@ public class TargetingIOSparkMax implements TargetingIO {
 
     @Override
     public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
-        double speedClamped = 0;
+        double speedClamped = speed;
         double averagePosition = getPositionAverage(leftTargetingMotor.getEncoder().getPosition(),
                 rightTargetingMotor.getEncoder().getPosition());
         averagePosition = encoderToDegrees(averagePosition);

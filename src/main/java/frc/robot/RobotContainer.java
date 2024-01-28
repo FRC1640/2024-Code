@@ -94,12 +94,12 @@ public class RobotContainer {
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
-        targetingSubsystem.setDefaultCommand(getAlliance() == Alliance.Blue
-                ? targetingSubsystem.targetFocusPosition((11.2319 * Math.pow(0.865498,
+        targetingSubsystem.setDefaultCommand(getAlliance()== Alliance.Blue
+                ? targetingSubsystem.targetFocusPosition(()->(11.2319 * Math.pow(0.865498,
                         (Math.hypot(driveSubsystem.getPose().getX() - FieldConstants.speakerPositionBlue.getX(),
                                 driveSubsystem.getPose().getY() - FieldConstants.speakerPositionBlue.getY())) - 9)
                         + 28.2788))
-                : targetingSubsystem.targetFocusPosition((11.2319 * Math.pow(0.865498,
+                : targetingSubsystem.targetFocusPosition(()->(11.2319 * Math.pow(0.865498,
                         (Math.hypot(driveSubsystem.getPose().getX() - FieldConstants.speakerPositionRed.getX(),
                                 driveSubsystem.getPose().getY() - FieldConstants.speakerPositionRed.getY())) - 9)
                         + 28.2788)));
@@ -170,6 +170,6 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(2));
+                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(1));
     }
 }

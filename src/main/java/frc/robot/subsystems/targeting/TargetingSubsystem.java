@@ -1,9 +1,12 @@
 package frc.robot.subsystems.targeting;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -36,11 +39,15 @@ public class TargetingSubsystem extends SubsystemBase {
         return new RunCommand(() -> setSpeed(getPIDSpeed(angle)), this)
                 .andThen(new InstantCommand(() -> setSpeed(0), this));
     }
+        public Command targetFocusPosition(DoubleSupplier angle) {
+        return new RunCommand(() -> setSpeed(getPIDSpeed(angle.getAsDouble())), this)
+                .andThen(new InstantCommand(() -> setSpeed(0), this));
+    }
 
     private double getPIDSpeed(double position) {
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
         speed = MathUtil.clamp(speed, -1, 1);
-        if (Math.abs(speed) < 0.1) {
+        if (Math.abs(speed) < 0.01) {
             speed = 0;
         }
         setpoint = position;
@@ -62,9 +69,11 @@ public class TargetingSubsystem extends SubsystemBase {
 
     private void setSpeed(double speed) {
         io.setTargetingSpeedPercent(speed);
+        
     }
 
     public Command setSpeedCommand(double speed) {
+        
         return new RunCommand(() -> setSpeed(speed), this)
                 .andThen(new InstantCommand(() -> setSpeed(0), this));
     }

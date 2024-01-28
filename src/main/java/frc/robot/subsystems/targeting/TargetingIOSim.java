@@ -7,28 +7,28 @@ import frc.robot.Constants.TargetingConstants;
 
 public class TargetingIOSim implements TargetingIO {
     private DCMotorSim leftTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
-        0.05, 0.00019125);
+        50, 0.00019125);
     private DCMotorSim rightTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
-        0.05, 0.00019125);
+        50, 0.00019125);
 
     private double leftMotorVoltage = 0.0;
     private double rightMotorVoltage = 0.0;
 
+    private double leftPositon;
+    private double rightPosition;
     public TargetingIOSim() {
     }
 
     @Override
     public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
-        double speedClamped = 0;
-        double averagePosition = getPositionAverage(leftTargetingMotorSimulated.getAngularPositionRad(),
-            rightTargetingMotorSimulated.getAngularPositionRad());
-        averagePosition = Math.toDegrees(averagePosition);
-        if (averagePosition < TargetingConstants.targetingLowerLimit) {
-            speedClamped = Math.max(speed, 0);
-        }
-        if (averagePosition > TargetingConstants.targetingUpperLimit) {
-            speedClamped = Math.min(speed, 0);
-        }
+        double speedClamped = speed;
+        double averagePosition = getPositionAverage(leftPositon, rightPosition);
+        // if (averagePosition < TargetingConstants.targetingLowerLimit) {
+        //     speedClamped = Math.max(speed, 0);
+        // }
+        // if (averagePosition > TargetingConstants.targetingUpperLimit) {
+        //     speedClamped = Math.min(speed, 0);
+        // }
         setTargetingVoltage(speedClamped * 12);
 
     }
@@ -51,15 +51,16 @@ public class TargetingIOSim implements TargetingIO {
         inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
         inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
         inputs.leftTargetingCurrentAmps = leftTargetingMotorSimulated.getCurrentDrawAmps();
-        inputs.leftTargetingPositionDegrees = Math.toDegrees(leftTargetingMotorSimulated.getAngularPositionRad());
+        inputs.leftTargetingPositionDegrees += leftTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
+        leftPositon = inputs.leftTargetingPositionDegrees;
 
         inputs.rightTargetingSpeedPercent = rightMotorVoltage/12;
         inputs.rightTargetingAppliedVoltage = rightMotorVoltage;
         inputs.rightTargetingCurrentAmps = rightTargetingMotorSimulated.getCurrentDrawAmps();
-        inputs.rightTargetingPositionDegrees = Math.toDegrees(rightTargetingMotorSimulated.getAngularPositionRad());
+        inputs.rightTargetingPositionDegrees += rightTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
+        rightPosition = inputs.rightTargetingPositionDegrees;
 
-        inputs.targetingPositionAverage = getPositionAverage(Math.toDegrees(leftTargetingMotorSimulated.getAngularPositionRad()),
-                Math.toDegrees(rightTargetingMotorSimulated.getAngularPositionRad()));
+        inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
     }
 
     public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
