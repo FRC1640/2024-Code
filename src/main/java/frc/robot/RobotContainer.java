@@ -169,6 +169,6 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> shooterSubsystem.isSpeedAccurate(0.05));
+                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(2));
     }
 }

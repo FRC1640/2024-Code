@@ -12,6 +12,7 @@ public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
     PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID);
+    public double setpoint = 0.0;
 
     public TargetingSubsystem(TargetingIO io) {
         this.io = io;
@@ -39,7 +40,16 @@ public class TargetingSubsystem extends SubsystemBase {
         if (Math.abs(speed) < 0.1) {
             speed = 0;
         }
+        setpoint = position;
         return speed;
+    }
+
+    public double getSetpoint() {
+        return setpoint;
+    }
+
+    public boolean isPositionAccurate(double error) {
+        return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error;
     }
 
     private void setVoltage(double voltage) {
