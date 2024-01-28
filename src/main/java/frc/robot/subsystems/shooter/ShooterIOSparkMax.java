@@ -40,7 +40,7 @@ public class ShooterIOSparkMax implements ShooterIO {
         inputs.topLeftTempCelsius = topLeftShooter.getMotorTemperature();
 
         inputs.bottomLeftSpeedPercent = bottomLeftShooter.getAppliedOutput();
-        inputs.bottomLeftAppliedVoltage = bottomLeftShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
+        inputs.bottomLeftAppliedVoltage = bottomLeftShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.bottomLeftCurrentAmps = bottomLeftShooter.getOutputCurrent();
         inputs.bottomLeftTempCelsius = bottomLeftShooter.getMotorTemperature();
 
@@ -50,7 +50,7 @@ public class ShooterIOSparkMax implements ShooterIO {
         inputs.topRightTempCelsius = topRightShooter.getMotorTemperature();
 
         inputs.bottomRightSpeedPercent = bottomRightShooter.getAppliedOutput();
-        inputs.bottomRightAppliedVoltage = bottomRightShooter.getAppliedOutput() * RobotController.getBatteryVoltage();;
+        inputs.bottomRightAppliedVoltage = bottomRightShooter.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.bottomRightCurrentAmps = bottomRightShooter.getOutputCurrent();
         inputs.bottomRightTempCelsius = bottomRightShooter.getMotorTemperature();
     }
