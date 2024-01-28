@@ -97,32 +97,6 @@ public class Module {
         io.setSteerPercentage(turnOutput);
     }
 
-    public void setDesiredStateMetersPerSecondAuto(SwerveModuleState state) { // TODO: clean up this method?
-        double dAngle = state.angle.getDegrees() - inputs.steerAngleDegrees;
-        double dAngleAbs = Math.abs(dAngle) % 360;
-        boolean flipDriveTeleop = (90.0 <= dAngleAbs) && (dAngleAbs <= 270.0);
-        double sin = Math.sin(Math.toRadians(dAngle));
-        sin = (flipDriveTeleop) ? -sin : sin;
-        double turnOutput = turningPIDController.calculate(sin, 0);
-
-        double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
-
-        //targetSpeed = targetSpeed / SwerveDriveDimensions.maxSpeed;
-
-        double pidSpeed = (driveFeedforward.calculate(targetSpeed) + 
-            drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
-
-
-        pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
-
-        if (Math.abs(pidSpeed) < 0.05) {
-            turnOutput = 0;
-        }
-
-        io.setDriveVoltage(pidSpeed);
-        io.setSteerPercentage(turnOutput);
-    }
-
     public void setDriveVoltage(double volts) {
         io.setDriveVoltage(volts);
     }
