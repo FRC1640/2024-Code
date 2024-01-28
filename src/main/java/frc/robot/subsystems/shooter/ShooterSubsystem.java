@@ -1,16 +1,14 @@
 package frc.robot.subsystems.shooter;
 
-import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
     ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     ShooterIO io;
-    double[] targetSpeed = new double[]{0,0,0,0};
+    double[] targetSpeed = new double[] { 0, 0, 0, 0 };
+
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
     }
@@ -25,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         io.setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight);
-        targetSpeed = new double[]{topLeft, bottomLeft, topRight, bottomRight};
+        targetSpeed = new double[] { topLeft, bottomLeft, topRight, bottomRight };
     }
 
     private void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
@@ -84,16 +82,19 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-    public double[] getSpeeds(){
-        return new double[]{inputs.topLeftSpeedPercent,inputs.bottomLeftSpeedPercent,inputs.topRightSpeedPercent,inputs.bottomRightSpeedPercent};
+    public double[] getSpeeds() {
+        return new double[] { inputs.topLeftSpeedPercent, inputs.bottomLeftSpeedPercent, inputs.topRightSpeedPercent,
+                inputs.bottomRightSpeedPercent };
     }
-    public double[] getTargetSpeeds(){
+
+    public double[] getTargetSpeeds() {
         return targetSpeed;
     }
-    public boolean isSpeedAccurate(double percentError){
+
+    public boolean isSpeedAccurate(double percentError) {
         int count = 0;
         for (double d : getTargetSpeeds()) {
-            if (Math.abs(d - getSpeeds()[count]) > percentError){
+            if (Math.abs(d - getSpeeds()[count]) > percentError) {
                 return false;
             }
             count += 1;

@@ -44,6 +44,7 @@ import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingIO;
@@ -75,8 +76,7 @@ public class RobotContainer {
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
                         .toChassisSpeeds(
                                 driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
-                shooterSubsystem = new ShooterSubsystem(new ShooterIO() {
-                });
+                shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
@@ -184,6 +184,7 @@ public class RobotContainer {
         driveSubsystem.removeDefaultCommand();
         shooterSubsystem.removeDefaultCommand();
         intakeSubsystem.removeDefaultCommand();
+        targetingSubsystem.removeDefaultCommand();
     }
 
     private Alliance getAlliance() {
