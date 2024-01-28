@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import frc.robot.Constants.TargetingConstants;
 
 public class TargetingIOSim implements TargetingIO {
     private DCMotorSim leftTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
@@ -31,12 +32,12 @@ public class TargetingIOSim implements TargetingIO {
     public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
         double averagePosition = getPositionAverage(leftPositon, rightPosition);
-        // if (averagePosition < TargetingConstants.targetingLowerLimit) {
-        //     speedClamped = Math.max(speed, 0);
-        // }
-        // if (averagePosition > TargetingConstants.targetingUpperLimit) {
-        //     speedClamped = Math.min(speed, 0);
-        // }
+        if (averagePosition < TargetingConstants.targetingLowerLimit) {
+            speedClamped = Math.max(speed, 0);
+        }
+        if (averagePosition > TargetingConstants.targetingUpperLimit) {
+            speedClamped = Math.min(speed, 0);
+        }
         setTargetingVoltage(speedClamped * 12);
 
     }
