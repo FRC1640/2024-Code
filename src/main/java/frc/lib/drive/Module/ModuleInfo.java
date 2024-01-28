@@ -1,7 +1,7 @@
 package frc.lib.drive.Module;
 
 import frc.robot.Constants.PivotId;
-
+//class to store constants for a module
 public class ModuleInfo{
     
     PivotId id;

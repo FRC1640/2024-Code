@@ -50,20 +50,24 @@ public class Module {
     }
 
     public void setDesiredStateMetersPerSecond(SwerveModuleState state) {
-        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians());
-        
-        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
+        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians()); //gets angle delta
+
+        // determines if drive should be flipped so max delta angle is 90 degrees
+        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2); 
+
+        // pid calculation
         double sin = Math.sin(dAngle);
         sin = (flipDriveTeleop) ? -sin : sin;
         double turnOutput = turningPIDController.calculate(sin, 0);
 
+        // flips drive
         final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
 
-
+        //calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed) + 
             drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
 
-
+        //pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
 
         if (Math.abs(pidSpeed) < 0.05) {

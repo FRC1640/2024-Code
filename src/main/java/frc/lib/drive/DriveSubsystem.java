@@ -64,7 +64,7 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
         this.gyro = gyro;
         this.vision = vision;
-        switch (Robot.getMode()) {
+        switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
                 frontRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.FR);
@@ -95,8 +95,6 @@ public class DriveSubsystem extends SubsystemBase {
                 new SysIdRoutine.Config());
 
         // Create Pose Estimator
-        // odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics,
-        // gyro.getAngleRotation2d(), getModulePositionsArray());
         swervePoseEstimator = new SwerveDrivePoseEstimator(
                 SwerveDriveDimensions.kinematics,
                 gyro.getAngleRotation2d(),
@@ -118,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> DriverStation.getAlliance().isPresent()
                         && DriverStation.getAlliance().get() == Alliance.Red,
                 this);
+        //setup pathplanning logs
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
@@ -157,8 +156,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
-
-            double distConst = Math.pow(vision.getDistance(), 2.0); // TODO: TUNE
+            // TODO: TUNE
+            double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+            // velocity standard deviation constant
             double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                     getActualSwerveStates()).vxMetersPerSecond,
                     SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
@@ -167,6 +167,7 @@ public class DriveSubsystem extends SubsystemBase {
                             VisionConstants.xyStdDev * distConst * velConst,
                             VisionConstants.thetaStdDev * distConst * velConst));
         }
+        // update odometry
         odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
 
     }
@@ -240,7 +241,7 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
-
+    
     private void driveDoubleConePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation) {
         xSpeed = xSpeed * maxSpeed;
