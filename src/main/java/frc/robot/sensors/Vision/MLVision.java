@@ -20,7 +20,10 @@ public class MLVision extends PeriodicBase {
         io.updateInputs(inputs);
         Logger.processInputs("ML Vision", inputs);
         Logger.recordOutput("Distance to note", getDistance());
-    }
+        io.takeSnapshot(inputs);
+        
+        }
+    
 
 
     // Getters 

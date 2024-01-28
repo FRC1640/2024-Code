@@ -2,21 +2,25 @@
   "Connections": {
     "open": true
   },
+  "NetworkTables Settings": {
+    "mode": "Client (NT3)"
+  },
   "Persistent Values": {
     "open": false
   },
   "Retained Values": {
     "open": false
   },
-  "Transitory Values": {
-    "open": false
-  },
   "transitory": {
+    "AdvantageKit": {
+      "ML Vision": {
+        "open": true
+      }
+    },
     "limelight": {
       "double[]##v_/limelight/botpose_wpiblue": {
         "open": false
-      },
-      "open": false
+      }
     },
     "limelight-ml": {
       "open": true

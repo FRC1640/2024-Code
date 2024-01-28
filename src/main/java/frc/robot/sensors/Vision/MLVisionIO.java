@@ -12,7 +12,11 @@ public interface MLVisionIO {
         public double tx;
         public double ty;
         public double ta;
+        
     }
     public default void updateInputs(MLVisionIOInputs inputs) {
+    }
+
+    public default void takeSnapshot(MLVisionIOInputs inputs){
     }
 }
