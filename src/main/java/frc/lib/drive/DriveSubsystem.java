@@ -110,7 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getPose,
                 this::resetOdometry,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
-                this::driveChassisSpeedsNoScaling, // TODO is this right? maybe desaturate?
+                this::driveChassisSpeedsDesaturated, // TODO is this right? maybe desaturate?
                 new HolonomicPathFollowerConfig(
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
@@ -271,13 +271,13 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    private void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
-        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
-                speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
-        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
-        frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
-        backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
-        backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
+    private void driveChassisSpeedsDesaturated(ChassisSpeeds speeds) {
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, 0, false);
+        frontLeft.setDesiredStateMetersPerSecondAuto(swerveModuleStates[0]);
+        frontRight.setDesiredStateMetersPerSecondAuto(swerveModuleStates[1]);
+        backLeft.setDesiredStateMetersPerSecondAuto(swerveModuleStates[2]);
+        backRight.setDesiredStateMetersPerSecondAuto(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;
     }
 
