@@ -22,6 +22,7 @@ public class TargetingIOSparkMax implements TargetingIO {
         double speedClamped = 0;
         double averagePosition = getPositionAverage(leftTargetingMotor.getEncoder().getPosition(),
                 rightTargetingMotor.getEncoder().getPosition());
+        averagePosition = encoderToDegrees(averagePosition);
         if (averagePosition < TargetingConstants.targetingLowerLimit) {
             speedClamped = Math.max(speed, 0);
         }
