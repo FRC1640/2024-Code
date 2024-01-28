@@ -3,16 +3,21 @@ package frc.robot.subsystems.drive.DriveWeights;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.sensors.Vision.MLVision;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
-    PIDController controller = new PIDController(0.01, 0, 0);
-    double velocity;
+    PIDController angularController = new PIDController(0.01, 0, 0);
+    
+    double angularVelocity;
+    double verticalVelocity;
     MLVision vision;
     double deadband = 0.1;
     double distanceLim = 7;
     ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+
+    double calculatedEndTime = 0;
 
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision) {
@@ -22,23 +27,51 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     @Override
     public ChassisSpeeds getSpeeds() {
        
-        velocity = controller.calculate(vision.getTX());
-        velocity = (Math.abs(velocity) < deadband) ? 0 : velocity;
-        velocity = MathUtil.clamp(velocity, -1, 1);
+        angularVelocity = angularController.calculate(vision.getTX());
+        angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
+        angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
+
+        //verticalVelocity = verticalController.calculate((vision.getDistance()) * 100); // cant be ty uh
+        //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
+        verticalVelocity = 0.2; // ADD CONSTANT
         
         if (vision.getTX() == 0){
            chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
         }
         else{
-        //if (Math.abs(vision.getTX()) > distanceLim ){
-          chassisSpeedsToTurn = new ChassisSpeeds(0, 0, velocity); 
-        //}
-        //else {          
-         //  chassisSpeedsToTurn = new ChassisSpeeds(velocity, 0, 0);
-        //}
+            if (Math.abs(vision.getTX()) > distanceLim ){
+                chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity); 
+            }
+            else if (!isDriveToNoteFinished()) {          
+              chassisSpeedsToTurn = new ChassisSpeeds(angularVelocity, verticalVelocity, 0);
+            }
+            else{
+              chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+            }
+
         }
         
         return chassisSpeedsToTurn;
+    }
+    
+    
+    public boolean isDriveToNoteFinished() { // add intake limit later
+        
+        if (vision.isTarget()){
+            return false;
+        }
+        else if(!vision.isTarget()){
+            if (calculatedEndTime == 0){
+               //lostNoteVisualTime = Timer.getFPGATimestamp();
+               calculatedEndTime = Timer.getFPGATimestamp() + 0.5; // idk makes the program run 3 more seconds to intake... probs change when we have a sensor in the intake
+               return false;
+            }
+            else if(Timer.getFPGATimestamp() <= calculatedEndTime){
+                return false;
+            }
+            return true;
+        }
+        return true;
     }
 
 
