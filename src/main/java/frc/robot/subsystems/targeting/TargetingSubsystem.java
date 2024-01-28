@@ -1,5 +1,7 @@
 package frc.robot.subsystems.targeting;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +23,7 @@ public class TargetingSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+        Logger.processInputs("Targeting", inputs);
     }
 
     /**
@@ -49,7 +52,8 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     public boolean isPositionAccurate(double error) {
-        return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error;
+        return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error
+        ;
     }
 
     private void setVoltage(double voltage) {
