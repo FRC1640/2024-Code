@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.JoystickCleaner;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 
@@ -48,6 +49,7 @@ public class JoystickDriveWeight implements DriveWeight {
 
     private double lastAngle;
 
+    private boolean firstRun = true;
     private CommandXboxController driverController;
     Gyro gyro;
     public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro){
@@ -57,6 +59,10 @@ public class JoystickDriveWeight implements DriveWeight {
     }
     @Override
     public ChassisSpeeds getSpeeds() {
+        if (firstRun){
+            lastAngle = gyro.getRawAngleRadians();
+            firstRun = false;
+        }
         driverController.back().onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
 
         Trigger leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
@@ -87,9 +93,11 @@ public class JoystickDriveWeight implements DriveWeight {
         rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 2.0);
 
         /* Gyro correction */
-        if (Math.abs(rot) == 0 && DriveWeightCommand.getWeights().size() == 1){
+        if (Math.abs(rot) == 0 && DriveWeightCommand.getWeights().size() == 1 && 
+            (Math.abs(xSpeed) > 0 || Math.abs(ySpeed) > 0)){
             rot = rotPID.calculate(SwerveAlgorithms.angleDistance(lastAngle, gyro.getRawAngleRadians()), 0);
             rot = MathUtil.clamp(rot, -1, 1);
+            
             if (Math.abs(rot) < 0.01){
                 rot = 0;
             }
