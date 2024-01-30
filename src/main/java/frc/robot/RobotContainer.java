@@ -63,6 +63,10 @@ public class RobotContainer {
     private IntakeSubsystem intakeSubsystem;
     private TargetingSubsystem targetingSubsystem;
 
+    RotateLockWeight rotateLockWeight;
+
+    AutoDriveWeight autoDriveWeight;
+
     public RobotContainer() {
         switch (Robot.getMode()) {
             case REAL:
@@ -104,23 +108,6 @@ public class RobotContainer {
         DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-        // targetingSubsystem.setDefaultCommand(targetingSubsystem.targetFocusPosition(()
-        // -> (11.2319 * Math.pow(0.865498,
-        // (Math.hypot(
-        // driveSubsystem.getPose().getX() - (getAlliance() == Alliance.Blue)
-        // ? FieldConstants.speakerPositionBlue.getX()
-        // : FieldConstants.speakerPositionRed.getX(),
-        // driveSubsystem.getPose().getY() - (getAlliance() == Alliance.Blue
-        // ? FieldConstants.speakerPositionBlue.getY()
-        // : FieldConstants.speakerPositionRed.getY())))
-        // - 9)
-        // + 28.2788)));
-
-        // targetingSubsystem.setDefaultCommand(targetingSubsystem
-        // .targetFocusPosition(() -> 11.2319 * Math.pow(0.865498,
-        // driveSubsystem.getPose().minus(getSpeakerPos()).getTranslation().getNorm() -
-        // 9) + 28.2788));
-
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));
 
         targetingSubsystem.setDefaultCommand(targetingSubsystem
@@ -130,6 +117,21 @@ public class RobotContainer {
                                         Math.asin(-0.778591 * Units.metersToFeet(2.11)
                                                 / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
                                 -2.01438));
+
+
+        //configure weights
+
+        rotateLockWeight = new RotateLockWeight(
+                () -> (getAlliance() == Alliance.Blue
+                        ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
+                        : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
+                driveSubsystem::getPose, gyro);
+
+        autoDriveWeight = new AutoDriveWeight(
+                () -> (getAlliance() == Alliance.Blue
+                        ? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
+                        : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
+                driveSubsystem::getPose, gyro);
 
         configureBindings();
     }
@@ -146,27 +148,19 @@ public class RobotContainer {
         new Trigger(() -> intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(0, 0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,
         // 1));
-        driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(new AutoDriveWeight(
-                () -> (getAlliance() == Alliance.Blue
-                        ? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
-                        : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
-                driveSubsystem::getPose, gyro))))
+        driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
                 .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                         .alongWith(targetingSubsystem.targetFocusPosition(60)));
 
         driveController.rightBumper()
-                .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight("AutoDriveWeight"))
+                .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
                         .alongWith(Commands.race(
                                 shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                                         .alongWith(targetingSubsystem.targetFocusPosition(60)),
                                 new WaitCommand(2))));
 
-        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(new RotateLockWeight(
-                () -> (getAlliance() == Alliance.Blue
-                        ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
-                        : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-                driveSubsystem::getPose, gyro))));
-        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight("RotateLockWeight")));
+        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight)));
+        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight)));
         // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
         operatorController.leftTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));

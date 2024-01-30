@@ -1,10 +1,6 @@
 package frc.robot.subsystems.drive;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,15 +31,6 @@ public class DriveWeightCommand {
     public static void removeWeight(DriveWeight weight) {
         if (weights.contains(weight)) {
             weights.remove(weight);
-        }
-    }
-
-    public static void removeWeight(String className) {
-        Optional<Object> weight = Arrays.stream(weights.toArray())
-                .filter(obj -> obj.getClass().getSimpleName().equals(className))
-                .findFirst();
-        if (weight.isPresent()){
-            weights.remove(weight.get());
         }
     }
 
