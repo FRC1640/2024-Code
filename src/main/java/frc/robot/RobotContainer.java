@@ -68,10 +68,12 @@ public class RobotContainer {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
-                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                // shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
-                targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
-                });
+                targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+                // targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
+                // });
                 break;
             case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics

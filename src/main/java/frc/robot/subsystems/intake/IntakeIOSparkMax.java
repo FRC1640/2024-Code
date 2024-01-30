@@ -8,12 +8,12 @@ import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
-    // private final CANSparkMax indexerMotor;
+    private final CANSparkMax indexerMotor;
 
     public IntakeIOSparkMax() {
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless); // TODO ids
         
-        // indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
+        indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
     }
 
     @Override
@@ -28,12 +28,12 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     @Override
     public void setIndexerSpeedPercent(double speed) {
-        // indexerMotor.set(speed);
+        indexerMotor.set(speed);
     }
 
     @Override
     public void setIndexerVoltage(double voltage) {
-        // indexerMotor.setVoltage(voltage);
+        indexerMotor.setVoltage(voltage);
     }
 
     @Override
@@ -43,10 +43,10 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
         inputs.intakeTempCelsius = intakeMotor.getMotorTemperature();
 
-        // inputs.indexerSpeedPercent = indexerMotor.getAppliedOutput();
-        // inputs.indexerAppliedVoltage = indexerMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
-        // inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
-        // inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
+        inputs.indexerSpeedPercent = indexerMotor.getAppliedOutput();
+        inputs.indexerAppliedVoltage = indexerMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
+        inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
+        inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
         inputs.hasNote = false; // TODO sensing
     }
 }
