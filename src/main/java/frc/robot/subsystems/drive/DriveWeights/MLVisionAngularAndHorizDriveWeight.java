@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.sensors.Vision.MLVision;
+import frc.robot.subsystems.drive.DriveWeightCommand;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
@@ -14,10 +15,10 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     double verticalVelocity;
     MLVision vision;
     double deadband = 0; //0.1;
-    double distanceLim = 0;
+    double distanceLim = 10;
     ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
 
-    double calculatedEndTime = 0;
+    double initTime = 0;
 
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision) {
@@ -35,20 +36,25 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
         verticalVelocity = 0.5; // ADD CONSTANT
         
-        //if (!vision.isTarget()){
-            //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
-            //return chassisSpeedsToTurn;
-        //}
+        if (!vision.isTarget()){
+            chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+            return chassisSpeedsToTurn;
+        }
 
-        //if (Math.abs(vision.getTX()) > distanceLim ){
+        else if (Math.abs(vision.getTX()) > distanceLim ){
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,angularVelocity);
-            return chassisSpeedsToTurn;    
-       // else if (!isDriveToNoteFinished()) {          
-            //chassisSpeedsToTurn = new ChassisSpeeds(angularVelocity,verticalVelocity,0);
-            //return chassisSpeedsToTurn;        }
-        
-        //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
-        //return chassisSpeedsToTurn;     
+            return chassisSpeedsToTurn;
+        }    
+        else if (!isDriveToNoteFinished()) {          
+            chassisSpeedsToTurn = new ChassisSpeeds(verticalVelocity,angularVelocity, 0);        
+            return chassisSpeedsToTurn;        
+    
+        } 
+        else{
+            //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+            DriveWeightCommand.removeWeight(this);
+        }
+            return chassisSpeedsToTurn;        
         
     }
     
@@ -59,17 +65,18 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             return false;
         }
         else if(!vision.isTarget()){
-            if (calculatedEndTime == 0){
-               //lostNoteVisualTime = Timer.getFPGATimestamp();
-               calculatedEndTime = Timer.getFPGATimestamp() + 0.5; // idk makes the program run 3 more seconds to intake... probs change when we have a sensor in the intake
-               return false;
-            }
-            else if(Timer.getFPGATimestamp() <= calculatedEndTime){
+            if (initTime == 0){
+                initTime = System.currentTimeMillis();
                 return false;
             }
-            return true;
+
+            if (initTime + 500 > System.currentTimeMillis()){
+                initTime = 0;
+                return true;
+            }
+
         }
-        return true;
+        return false;
     }
 
 
