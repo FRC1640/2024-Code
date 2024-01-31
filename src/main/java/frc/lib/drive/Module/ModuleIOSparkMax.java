@@ -94,6 +94,7 @@ public class ModuleIOSparkMax implements ModuleIO{
         inputs.steerCurrentAmps = steeringMotor.getOutputCurrent();
         inputs.steerTempCelsius = steeringMotor.getMotorTemperature();
         inputs.steerIdleModeIsBrake = steeringMotor.getIdleMode().equals(IdleMode.kBrake);
+        inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
     }
 
     

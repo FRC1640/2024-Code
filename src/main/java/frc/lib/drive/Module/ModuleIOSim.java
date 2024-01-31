@@ -60,6 +60,7 @@ public class ModuleIOSim implements ModuleIO{
         inputs.steerAppliedVoltage = steerAppliedVolts;
         inputs.steerCurrentAmps = steerSim.getCurrentDrawAmps();
         inputs.steerTempCelsius = SimulationConstants.roomTempCelsius;
+        inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
 
     }
     
