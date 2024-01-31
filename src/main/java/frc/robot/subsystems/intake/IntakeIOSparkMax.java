@@ -8,20 +8,20 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
     private final CANSparkMax indexerMotor;
     private AnalogOutput proximityAnalogOutput;
-    private static final double PROXIMITY_VOLTAGE_THRESHOLD = 4.0;
-    private static final int PROXIMITY_SENSOR_CHANNEL = 0;
+    
 
     public IntakeIOSparkMax() {
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless); // TODO ids
         
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
-        proximityAnalogOutput = new AnalogOutput(PROXIMITY_SENSOR_CHANNEL);
+        proximityAnalogOutput = new AnalogOutput(Constants.IntakeConstants.proximitySensorChannel);
 
          
     }
@@ -59,6 +59,6 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
 
         
-        inputs.hasNote = proximityAnalogOutput.getVoltage() > PROXIMITY_VOLTAGE_THRESHOLD; // TODO sensing
+        inputs.hasNote = proximityAnalogOutput.getVoltage() > Constants.IntakeConstants.proximityVoltageThreshold; // TODO sensing
     } 
 }
