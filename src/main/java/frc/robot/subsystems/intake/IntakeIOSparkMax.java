@@ -21,7 +21,7 @@ public class IntakeIOSparkMax implements IntakeIO {
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless); // TODO ids
         
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
-        proximityAnalogOutput = new AnalogOutput(Constants.IntakeConstants.proximitySensorChannel);
+        proximityAnalogOutput = new AnalogOutput(IntakeConstants.proximitySensorChannel);
 
          
     }
@@ -59,6 +59,6 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
 
         
-        inputs.hasNote = proximityAnalogOutput.getVoltage() > Constants.IntakeConstants.proximityVoltageThreshold; // TODO sensing
+        inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold; // TODO sensing
     } 
 }
