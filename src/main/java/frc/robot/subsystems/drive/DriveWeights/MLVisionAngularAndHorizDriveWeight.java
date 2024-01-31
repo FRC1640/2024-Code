@@ -27,6 +27,9 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     @Override
     public ChassisSpeeds getSpeeds() {
+        return new ChassisSpeeds(0,0,0);}
+/* 
+        System.out.println("TX: " + vision.getTX());
        
         angularVelocity = angularController.calculate(vision.getTX());
         angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
@@ -34,27 +37,33 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
         //verticalVelocity = verticalController.calculate((vision.getDistance()) * 100); // cant be ty uh
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
-        verticalVelocity = 0.01; // ADD CONSTANT
+        verticalVelocity = 0.08; // ADD CONSTANT
         
         if (!vision.isTarget()){
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+            //System.out.println("1");
             return chassisSpeedsToTurn;
         }
 
         else if (Math.abs(vision.getTX()) > distanceLim ){
+            //System.out.println("2");
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,angularVelocity);
             return chassisSpeedsToTurn;
         }    
         else if (!isDriveToNoteFinished()) {          
-            chassisSpeedsToTurn = new ChassisSpeeds(verticalVelocity,angularVelocity, 0);        
+            chassisSpeedsToTurn = new ChassisSpeeds(0,angularVelocity, 0);  
+            //System.out.println("3");      
+            //System.out.println("lowkey moving forward");
             return chassisSpeedsToTurn;        
     
         } 
         else{
             //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+            System.out.println("4");
             DriveWeightCommand.removeWeight(this);
         }
-            return chassisSpeedsToTurn;        
+        System.out.println("5");
+        return chassisSpeedsToTurn;        
         
     }
     
@@ -79,5 +88,5 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         return false;
     }
 
-
+ */
 }
