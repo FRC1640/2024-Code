@@ -18,6 +18,7 @@ public interface ModuleIO extends AutoCloseable{
         public double steerCurrentAmps;
         public double steerTempCelsius;
         public boolean steerIdleModeIsBrake;
+        public double steerAngleRadians;
     }
 
     

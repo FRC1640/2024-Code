@@ -7,13 +7,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.lib.swerve.SwerveAlgorithms;
+import frc.robot.Constants.PIDConstants;
 import frc.robot.sensors.Gyro.Gyro;
 
 public class AutoDriveWeight implements DriveWeight {
     Supplier<Pose2d> pose;
     Supplier<Pose2d> getPose;
-    PIDController pid = new PIDController(1, 0, 0);
-    PIDController pidr = new PIDController(1, 0, 0);
+    PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID);
+    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
     Gyro gyro;
 
     public AutoDriveWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro) {
@@ -30,9 +31,16 @@ public class AutoDriveWeight implements DriveWeight {
         double s = pid.calculate(dist, 0);
         double o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
                 pose.get().getRotation().getRadians()), 0);
-        double scale = (dist / 5 + 1);
+        double scale = (dist / 4 + 1);
         s = MathUtil.clamp(s, -1, 1);
         o = MathUtil.clamp(o, -1, 1);
-        return new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o / scale);
+        if (Math.abs(o) < 0.01) {
+            o = 0;
+        }
+        if (Math.abs(s) < 0.01) {
+            s = 0;
+        }
+        // System.out.println(s);
+        return new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o);
     }
 }

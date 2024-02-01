@@ -56,17 +56,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
-    
-
     // SwerveDriveOdometry odometry;
-    SwerveDrivePoseEstimator swervePoseEstimator; 
+    SwerveDrivePoseEstimator swervePoseEstimator;
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
     public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
         this.gyro = gyro;
         this.vision = vision;
-        switch (Robot.getMode()) {
+        switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
                 frontRight = new Module(new ModuleIOSparkMax(ModuleConstants.FR), PivotId.FR);
@@ -97,8 +95,6 @@ public class DriveSubsystem extends SubsystemBase {
                 new SysIdRoutine.Config());
 
         // Create Pose Estimator
-        // odometry = new SwerveDriveOdometry(SwerveDriveDimensions.kinematics,
-        // gyro.getAngleRotation2d(), getModulePositionsArray());
         swervePoseEstimator = new SwerveDrivePoseEstimator(
                 SwerveDriveDimensions.kinematics,
                 gyro.getAngleRotation2d(),
@@ -112,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getPose,
                 this::resetOdometry,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
-                this::driveChassisSpeedsNoScaling, //TODO is this right? maybe desaturate?
+                this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
@@ -120,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> DriverStation.getAlliance().isPresent()
                         && DriverStation.getAlliance().get() == Alliance.Red,
                 this);
+        //setup pathplanning logs
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
@@ -158,13 +155,20 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateOdometry() {
-        if (vision.isTarget()) {
-
-            double distConst = Math.pow(vision.getDistance(), 2.0);
+        if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
+            System.out.println("vision");
+            // TODO: TUNE
+            double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+            // velocity standard deviation constant
+            double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                    getActualSwerveStates()).vxMetersPerSecond,
+                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
             swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                    VecBuilder.fill(VisionConstants.xyStdDev * distConst,
-                            VisionConstants.xyStdDev * distConst, VisionConstants.thetaStdDev * distConst));
+                    VecBuilder.fill(VisionConstants.xyStdDev * distConst * velConst,
+                            VisionConstants.xyStdDev * distConst * velConst,
+                            VisionConstants.thetaStdDev * distConst * velConst));
         }
+        // update odometry
         odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
 
     }
@@ -187,7 +191,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Method to drive the robot using joystick info and desaturated swerve
+     * Method to drive the robot using joystick info and desaturated
      * algorithm.
      *
      * @param xSpeed        Speed of the robot in the x direction (forward).
@@ -196,24 +200,9 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fieldRelative Whether the provided x and y speeds are relative to the
      *                      field.
      */
-    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 
-        xSpeed = xSpeed * maxSpeed;
-        ySpeed = ySpeed * maxSpeed;
-        rot = rot * maxSpeed
-                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
-
-        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(xSpeed, ySpeed, rot,
-                gyro.getAngleRotation2d().getRadians(), fieldRelative);
-
-        frontLeft.setDesiredStatePercent(swerveModuleStates[0]);
-        frontRight.setDesiredStatePercent(swerveModuleStates[1]);
-        backLeft.setDesiredStatePercent(swerveModuleStates[2]);
-        backRight.setDesiredStatePercent(swerveModuleStates[3]);
-        desiredSwerveStates = swerveModuleStates;
-    }
-
-    private void drivePercentDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOfRot) {
+    private void driveDesaturated(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+            Translation2d centerOfRot) {
 
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
@@ -240,13 +229,13 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fieldRelative Whether the provided x and y speeds are relative to the
      *                      field.
      */
-    private void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        xSpeed = xSpeed * maxSpeed;
-        ySpeed = ySpeed * maxSpeed;
-        rot = rot * maxSpeed
-                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0));
+
+    private void driveDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+            Translation2d centerOfRotation) {
+        rot = rot
+                / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
-                gyro.getAngleRotation2d().getRadians(), fieldRelative);
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
         frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
         frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
         backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
@@ -254,7 +243,7 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    private void drivePercentDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+    private void driveDoubleConePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation) {
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
@@ -269,9 +258,12 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    private void driveChassisSpeedsNoScaling(ChassisSpeeds speeds) {
-        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.rawSpeeds(speeds.vxMetersPerSecond,
-                speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    /**
+     * Method to drive the robot using chassis speeds and desaturated algorithm.
+     */
+    private void driveChassisSpeedsDesaturated(ChassisSpeeds speeds) {
+        SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.desaturated(speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, 0, false);
         frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
         frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
         backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
@@ -296,29 +288,26 @@ public class DriveSubsystem extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
+
     public Command resetOdometryCommand(Pose2d newPose) {
         Command c = new InstantCommand(() -> resetOdometry(newPose));
         c.addRequirements(this);
         return c;
     }
 
-    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
-        return new RunCommand(() -> 
-        drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
-        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot) {
+        return new RunCommand(() -> driveDoubleConePercent(speeds.get().vxMetersPerSecond,
+                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get()),
+                new Subsystem[] {})
+                .andThen(new InstantCommand(
+                        () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));
     }
 
-    // overload with no center of rot parameter
-    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds){
-        return new RunCommand(() -> 
-        drivePercentDoubleCone(speeds.get().vxMetersPerSecond,
-        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true), new Subsystem[]{});
-    }
-
-    
-    public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot){
-        return new RunCommand(() -> 
-        drivePercentDesaturated(speeds.get().vxMetersPerSecond,
-        speeds.get().vyMetersPerSecond,speeds.get().omegaRadiansPerSecond,true, centerOfRot.get()), new Subsystem[]{});
+    public Command driveDesaturatedCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot) {
+        return new RunCommand(() -> driveDesaturated(speeds.get().vxMetersPerSecond,
+                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get()),
+                new Subsystem[] {})
+                .andThen(new InstantCommand(
+                        () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));
     }
 }

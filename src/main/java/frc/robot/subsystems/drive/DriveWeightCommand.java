@@ -1,10 +1,6 @@
 package frc.robot.subsystems.drive;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,8 +12,8 @@ import frc.robot.subsystems.drive.DriveWeights.DriveWeight;
 public class DriveWeightCommand {
 
     static ArrayList<DriveWeight> weights = new ArrayList<>();
-    Translation2d centerOfRot;
-    ChassisSpeeds speeds;
+    Translation2d centerOfRot = new Translation2d();
+    ChassisSpeeds speeds = new ChassisSpeeds();
 
     public Command create(DriveSubsystem driveSubsystem) {
         Command c = Commands.race(new RunCommand(() ->getAllSpeeds()),
@@ -38,23 +34,18 @@ public class DriveWeightCommand {
         }
     }
 
-    public static void removeWeight(String className) {
-        Optional<Object> weight = Arrays.stream(weights.toArray())
-                .filter(obj -> obj.getClass().getSimpleName().equals(className))
-                .findFirst();
-        if (weight.isPresent()){
-            weights.remove(weight.get());
-        }
-    }
-
     public void getAllSpeeds() {
         speeds = new ChassisSpeeds();
         centerOfRot = new Translation2d();
         for (DriveWeight driveWeight : weights) {
             speeds = speeds.plus(driveWeight.getSpeeds());
-            speeds = decreaseSpeeds(speeds);
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
         }
+        speeds = decreaseSpeeds(speeds);
+    }
+
+    public static ArrayList<DriveWeight> getWeights(){
+        return weights;
     }
     
     public ChassisSpeeds decreaseSpeeds(ChassisSpeeds speeds){
