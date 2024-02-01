@@ -53,6 +53,12 @@ public class TargetingSubsystem extends SubsystemBase {
                 .andThen(new InstantCommand(() -> setSpeed(0), this));
     }
 
+    /**
+     * Calculates the speed to reach the setpoint angle using a PID.
+     * 
+     * @param position the position to move to.
+     * @return The calculated speed.
+     */
     private double getPIDSpeed(double position) {
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
         speed = MathUtil.clamp(speed, -1, 1);
@@ -63,30 +69,65 @@ public class TargetingSubsystem extends SubsystemBase {
         return speed;
     }
 
+    /**
+     * Gets the setpoint of the targeting.
+     * 
+     * @return The setpoint.
+     */
     public double getSetpoint() {
         return setpoint;
     }
 
+    /**
+     * Returns whether the position of the targeting is within the inputted margin of error from the setpoint.
+     * 
+     * @param error the allowed degree error for the arm.
+     * @return Whether the angle is within the margin of error as a boolean.
+     */
     public boolean isPositionAccurate(double error) {
         return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error
         ;
     }
 
+    /**
+     * Sets the motor voltage.
+     * 
+     * @param voltage the voltage to set the motors to.
+     */
     private void setVoltage(double voltage) {
         io.setTargetingVoltage(voltage);
     }
 
+    /**
+     * Sets the motor speed.
+     * 
+     * @param speed the speed to set the motors to.
+     */
     private void setSpeed(double speed) {
         io.setTargetingSpeedPercent(speed);
         
     }
 
+    /**
+     * Returns a RunCommand which sets the motors to a speed,
+     *  setting the speed to 0 if the command is canceled.
+     * 
+     * @param speed the speed to set the motors to.
+     * @return New RunCommand.
+     */
     public Command setSpeedCommand(double speed) {
         
         return new RunCommand(() -> setSpeed(speed), this)
                 .andThen(new InstantCommand(() -> setSpeed(0), this));
     }
 
+    /**
+     * Returns a RunCommand which sets the motors to a voltage,
+     *  setting the voltage to 0 if the command is canceled.
+     * 
+     * @param voltage the voltage to set the motors to.
+     * @return New RunCommand.
+     */
     public Command setVoltageCommand(double voltage) {
         return new RunCommand(() -> setVoltage(voltage), this)
                 .andThen(new InstantCommand(() -> setVoltage(0), this));
