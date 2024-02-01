@@ -74,9 +74,8 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController);
         //shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.5, 0.5));
-        DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
-        
+        DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
         configureBindings();
     }
 
@@ -91,7 +90,7 @@ public class RobotContainer {
         //  driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
        
         driveController.rightTrigger().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new MLVisionAngularAndHorizDriveWeight(mlVision))));
+            DriveWeightCommand.addWeight(new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d))));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
             DriveWeightCommand.removeWeight("MLVisionAngularAndHorizDriveWeight")));
     }

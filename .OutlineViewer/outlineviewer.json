@@ -3,7 +3,8 @@
     "open": true
   },
   "NetworkTables Settings": {
-    "mode": "Client (NT3)"
+    "mode": "Client (NT4)",
+    "serverTeam": "127.0.0.1"
   },
   "Persistent Values": {
     "open": false
