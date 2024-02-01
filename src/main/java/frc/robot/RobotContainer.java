@@ -69,7 +69,7 @@ public class RobotContainer {
     private DriveSubsystem driveSubsystem;
     private final CommandXboxController driveController = new CommandXboxController(0);
     private final CommandXboxController operatorController = new CommandXboxController(1);
-    //private ShooterSubsystem shooterSubsystem;
+    private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private TargetingSubsystem targetingSubsystem;
 
@@ -77,18 +77,20 @@ public class RobotContainer {
 
     AutoDriveWeight autoDriveWeight;
 
+    MLVisionAngularAndHorizDriveWeight mlVisionWeight;
+
     public RobotContainer() {
         switch (Robot.getMode()) {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
-                // shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 mlVision = new MLVision(new MLVisionIOLimelight());
-          //shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
-                targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
-                // targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
-                // });
+                // shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                //intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+                intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
+                // targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+                targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
                 break;
             case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
@@ -147,6 +149,8 @@ public class RobotContainer {
                         ? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
                         : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
                 driveSubsystem::getPose, gyro);
+        
+        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
         configureBindings();
     }
@@ -189,9 +193,9 @@ public class RobotContainer {
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
        
         driveController.rightTrigger().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d))));
+            DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
-            DriveWeightCommand.removeWeight("MLVisionAngularAndHorizDriveWeight")));
+            DriveWeightCommand.removeWeight(mlVisionWeight)));
     }
 
     public Command getAutonomousCommand() {
