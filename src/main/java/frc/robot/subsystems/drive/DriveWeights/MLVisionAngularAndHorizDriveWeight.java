@@ -39,7 +39,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
         //verticalVelocity = verticalController.calculate((vision.getDistance()) * 100); // cant be ty uh
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
-        verticalVelocity = 0.5; // ADD CONSTANT
+        verticalVelocity = 0.3; // ADD CONSTANT
         
         if (!vision.isTarget()){
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
