@@ -3,7 +3,6 @@ package frc.robot.subsystems.targeting;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Constants.TargetingConstants;
 
 public class TargetingIOSim implements TargetingIO {
     private DCMotorSim leftTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
@@ -62,6 +61,12 @@ public class TargetingIOSim implements TargetingIO {
         inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
     }
 
+    /**
+     * Converts the value of the encoder to a measurement in degrees.
+     * 
+     * @param motorEncoderValue the encoder value to convert.
+     * @return The position of the encoder in degrees.
+     */
     public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
         return motorEncoderValue;
     }
