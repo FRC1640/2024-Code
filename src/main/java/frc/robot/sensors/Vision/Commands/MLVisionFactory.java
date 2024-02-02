@@ -2,6 +2,7 @@ package frc.robot.sensors.Vision.Commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,7 +49,7 @@ public class MLVisionFactory {
     }
 
     public Command angularAlignToNoteCommand() {
-        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateAngularSpeeds()).until(()->Math.abs(vision.getTX()) <= isFinishedTolerance));
+        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateAngularSpeeds(), () -> new Translation2d()).until(()->Math.abs(vision.getTX()) <= isFinishedTolerance));
     }
     
     //Align to Note Command
@@ -82,7 +83,7 @@ public class MLVisionFactory {
     }
     
     private Command driveToNoteCommand() {
-        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateVerticalSpeeds())
+        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateVerticalSpeeds(), () -> new Translation2d())
             .until(()->isDriveToNoteFinished()));
     }
 
