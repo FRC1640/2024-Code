@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -168.11923996683015,
     "rotateFast": false
   },
   "reversed": false,
