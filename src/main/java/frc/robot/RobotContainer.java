@@ -193,9 +193,9 @@ public class RobotContainer {
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
        
         driveController.rightTrigger().onTrue(new InstantCommand(()->
-            DriveWeightCommand.addWeight(mlVisionWeight)));
+             DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
-            DriveWeightCommand.removeWeight(mlVisionWeight)));
+             DriveWeightCommand.removeWeight(mlVisionWeight)));
     }
 
     public Command getAutonomousCommand() {

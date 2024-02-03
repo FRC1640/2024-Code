@@ -13,9 +13,11 @@ import frc.robot.subsystems.drive.DriveWeightCommand;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
-    PIDController angularController = Constants.PIDConstants.rotPID;
-    
+    PIDController angularController = new PIDController(0.0075, 0, 0); //Constants.PIDConstants.rotPID;
+    PIDController horizontalController = new PIDController(0.01, 0, 0); //Constants.PIDConstants.rotPID;
+
     double angularVelocity;
+    private double horizontalVelocity;
     double verticalVelocity;
     MLVision vision;
     private Supplier<Rotation2d> angleSupplier;
@@ -35,14 +37,19 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     @Override
     public ChassisSpeeds getSpeeds() {
-       
         angularVelocity = angularController.calculate(vision.getTX());
         angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
         angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
 
+        horizontalVelocity = horizontalController.calculate(vision.getTX());
+        horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
+        horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
+
+
+
         //verticalVelocity = verticalController.calculate((vision.getDistance()) * 100); // cant be ty uh
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
-        verticalVelocity = 0.5; // ADD CONSTANT
+        verticalVelocity = 0.2; // ADD CONSTANT
         
         if (!vision.isTarget()){
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
@@ -50,23 +57,18 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         }
 
         else if (Math.abs(vision.getTX()) > distanceLim ){
-            chassisSpeedsToTurn = new ChassisSpeeds(0,0,angularVelocity);
+            chassisSpeedsToTurn = new ChassisSpeeds(0,0, angularVelocity);
             return chassisSpeedsToTurn;
         }    
         else if (!isDriveToNoteFinished()) {          
             chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                new ChassisSpeeds(-verticalVelocity,-angularVelocity, 0),
-                angleSupplier.get().unaryMinus()
+                new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
+                angleSupplier.get()
             );
-            return chassisSpeedsToTurn;        
-    
-        } 
-        else{
-            //chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
-            DriveWeightCommand.removeWeight(this);
+            return chassisSpeedsToTurn;
         }
-            return chassisSpeedsToTurn;        
         
+        return chassisSpeedsToTurn;
     }
     
     
