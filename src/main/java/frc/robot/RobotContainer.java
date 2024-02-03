@@ -39,6 +39,9 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
@@ -61,6 +64,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
+    private ClimberSubsystem climberSubsystem;
     private TargetingSubsystem targetingSubsystem;
 
     RotateLockWeight rotateLockWeight;
@@ -75,6 +79,7 @@ public class RobotContainer {
                 // shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+                climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
                 // targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
                 // });
@@ -86,6 +91,7 @@ public class RobotContainer {
                 shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+                climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
                 break;
 
@@ -166,6 +172,10 @@ public class RobotContainer {
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+        operatorController.rightBumper()
+                .whileTrue(climberSubsystem.runClimberCommand(0.1));
+        operatorController.leftBumper()
+                .whileTrue(climberSubsystem.runClimberCommand(-0.1));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
