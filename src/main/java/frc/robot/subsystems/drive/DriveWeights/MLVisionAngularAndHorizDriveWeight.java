@@ -10,24 +10,26 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.sensors.Vision.MLVision;
 import frc.robot.subsystems.drive.DriveWeightCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
-    PIDController angularController = new PIDController(0.0075, 0, 0); //Constants.PIDConstants.rotPID;
-    PIDController horizontalController = new PIDController(0.008, 0, 0); //Constants.PIDConstants.rotPID;
+    private PIDController angularController = new PIDController(0.0075, 0, 0); //Constants.PIDConstants.rotPID;
+    private PIDController horizontalController = new PIDController(0.008, 0, 0); //Constants.PIDConstants.rotPID;
 
-    double angularVelocity;
+    private double angularVelocity;
     private double horizontalVelocity;
-    double verticalVelocity;
-    MLVision vision;
+    private double verticalVelocity;
+    private MLVision vision;
     private Supplier<Rotation2d> angleSupplier;
     //private Supplier<Rotation2d> correctedAngleSupplier;
 
-    double deadband = 0; //0.1;
-    double distanceLim = 10;
-    ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
+    private double deadband = 0; //0.1;
+    private double distanceLim = 10;
+    private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
 
-    double initTime = 0;
+    private double initTime = 0;
 
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier) {
