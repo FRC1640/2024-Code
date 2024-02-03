@@ -14,7 +14,7 @@ import frc.robot.subsystems.drive.DriveWeightCommand;
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
     PIDController angularController = new PIDController(0.0075, 0, 0); //Constants.PIDConstants.rotPID;
-    PIDController horizontalController = new PIDController(0.01, 0, 0); //Constants.PIDConstants.rotPID;
+    PIDController horizontalController = new PIDController(0.008, 0, 0); //Constants.PIDConstants.rotPID;
 
     double angularVelocity;
     private double horizontalVelocity;
@@ -51,7 +51,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
         verticalVelocity = 0.2; // ADD CONSTANT
         
-        if (!vision.isTarget()){
+        if (!vision.isTarget() ){ //|| vision.getTA() < 2.7
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
             return chassisSpeedsToTurn;
         }
