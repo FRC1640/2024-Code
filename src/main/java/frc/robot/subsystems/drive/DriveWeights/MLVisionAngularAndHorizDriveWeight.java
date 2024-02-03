@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.sensors.Vision.MLVision;
 import frc.robot.subsystems.drive.DriveWeightCommand;
@@ -23,6 +24,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private double verticalVelocity;
     private MLVision vision;
     private Supplier<Rotation2d> angleSupplier;
+
+    private XboxController driveController;
     //private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; //0.1;
@@ -32,9 +35,10 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private double initTime = 0;
 
 
-    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier) {
+    public MLVisionAngularAndHorizDriveWeight(MLVision vision, XboxController driveController, Supplier<Rotation2d> angleSupplier) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;
+        this.driveController = driveController;
     }
 
     @Override
@@ -53,21 +57,21 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         //verticalVelocity = (Math.abs(verticalVelocity) < deadband) ? 0 : verticalVelocity;
         verticalVelocity = 0.2; // ADD CONSTANT
         
-        if (!vision.isTarget() ){ //|| vision.getTA() < 2.7
+        if (!vision.isTarget() ){ 
             chassisSpeedsToTurn = new ChassisSpeeds(0,0,0);
-            return chassisSpeedsToTurn;
+            //return chassisSpeedsToTurn;
         }
 
         else if (Math.abs(vision.getTX()) > distanceLim ){
             chassisSpeedsToTurn = new ChassisSpeeds(0,0, angularVelocity);
-            return chassisSpeedsToTurn;
+            //return chassisSpeedsToTurn;
         }    
         else if (!isDriveToNoteFinished()) {          
             chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                 new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
                 angleSupplier.get()
             );
-            return chassisSpeedsToTurn;
+            //return chassisSpeedsToTurn;
         }
         
         return chassisSpeedsToTurn;
