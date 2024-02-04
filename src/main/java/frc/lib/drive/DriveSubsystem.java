@@ -159,18 +159,18 @@ public class DriveSubsystem extends SubsystemBase {
             System.out.println("vision");
             // TODO: TUNE
             
-            //double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+            double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
             
             // velocity standard deviation constant
           
-            //double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                    //getActualSwerveStates()).vxMetersPerSecond,
-                    //SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
+            double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                    getActualSwerveStates()).vxMetersPerSecond,
+                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
             
-                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency()
-                    //VecBuilder.fill(VisionConstants.xyStdDev * distConst * velConst,
-                            //VisionConstants.xyStdDev * distConst * velConst,
-                            //VisionConstants.thetaStdDev * distConst * velConst)
+                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                    VecBuilder.fill(VisionConstants.xyStdDev * distConst * velConst,
+                            VisionConstants.xyStdDev * distConst * velConst,
+                            VisionConstants.thetaStdDev * distConst * velConst)
                             );
         }
         // update odometry
