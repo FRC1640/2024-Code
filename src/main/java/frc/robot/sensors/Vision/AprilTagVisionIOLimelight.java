@@ -20,6 +20,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         Rotation2d aprilTagBotRotation2d = Rotation2d.fromDegrees(botPose[5]);
         inputs.aprilTagPose = new Pose2d(aprilTagBotTran2d, aprilTagBotRotation2d);
         inputs.isTarget = networkTable.getEntry("tv").getDouble(0) > 0;
+       
         double[] robotPoseArray = networkTable.getEntry("targetpose_robotspace").getDoubleArray(emptyArray);
         Translation3d robotPoseTranslation = new Translation3d(robotPoseArray[0], robotPoseArray[1], robotPoseArray[2]);
         inputs.aprilTagDistance = robotPoseTranslation.getNorm();
