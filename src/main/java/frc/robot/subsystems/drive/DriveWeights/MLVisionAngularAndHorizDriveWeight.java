@@ -25,7 +25,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private MLVision vision;
     private Supplier<Rotation2d> angleSupplier;
 
-    private XboxController driveController;
+    private CommandXboxController driveController;
     //private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; //0.1;
@@ -35,7 +35,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private double initTime = 0;
 
 
-    public MLVisionAngularAndHorizDriveWeight(MLVision vision, XboxController driveController, Supplier<Rotation2d> angleSupplier) {
+    public MLVisionAngularAndHorizDriveWeight(MLVision vision, CommandXboxController driveController, Supplier<Rotation2d> angleSupplier) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;
         this.driveController = driveController;
