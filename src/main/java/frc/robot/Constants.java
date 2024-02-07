@@ -7,6 +7,14 @@ import frc.lib.drive.Module.ModuleInfo;
 
 public final class Constants {
     public static enum PivotId { FL, FR, BL, BR;}
+    public static class LimelightConstants {
+        public static final double limelightAngle = -10.0;
+        public static final double limelightLensHeight = 11.0;
+        public static final double limelightLensHorrizontalDisplacement = 0.0;
+        public static final double horizontalResolution = 0.0;
+        public static final double verticalResolution = 0.0;
+        public static final double noteHeightInches = 2.0;
+    }
     public static class VisionConstants{
         public static final double xyStdDev = 0.5;
         public static final double thetaStdDev = 0.5;
