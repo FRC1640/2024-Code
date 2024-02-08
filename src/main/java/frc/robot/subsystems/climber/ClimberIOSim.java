@@ -20,10 +20,12 @@ public class ClimberIOSim implements ClimberIO{
         inputs.leftSpeedPercent = leftMotorVoltage/12;
         inputs.leftAppliedVoltage = leftMotorVoltage;
         inputs.leftCurrentAmps = leftClimbingMotorSimulated.getCurrentDrawAmps();
+        inputs.leftClimberPositionDegrees += leftClimbingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
 
         inputs.rightSpeedPercent = rightMotorVoltage/12;
         inputs.rightAppliedVoltage = rightMotorVoltage;
         inputs.rightCurrentAmps = rightClimbingMotorSimulated.getCurrentDrawAmps();
+        inputs.rightClimberPositionDegrees += rightClimbingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
     }
 
     @Override

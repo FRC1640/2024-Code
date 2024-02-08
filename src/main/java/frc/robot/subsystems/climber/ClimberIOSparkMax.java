@@ -41,10 +41,12 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.leftAppliedVoltage = leftMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.leftCurrentAmps = leftMotor.getOutputCurrent();
         inputs.leftTempCelcius = leftMotor.getMotorTemperature();
+        inputs.leftClimberPositionDegrees = leftMotor.getEncoder().getPosition();
 
         inputs.rightSpeedPercent = rightMotor.getAppliedOutput();
         inputs.rightAppliedVoltage = rightMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.rightCurrentAmps = rightMotor.getOutputCurrent();
         inputs.rightTempCelcius = rightMotor.getMotorTemperature();
+        inputs.rightClimberPositionDegrees = rightMotor.getEncoder().getPosition();
     }
 }

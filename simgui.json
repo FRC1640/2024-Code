@@ -1,6 +1,7 @@
 {
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/Climber/ClimberMechanism": "Mechanism2d",
       "/AdvantageKit/RealOutputs/Targeting/mech": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Auto/SendableChooser[2]": "String Chooser",

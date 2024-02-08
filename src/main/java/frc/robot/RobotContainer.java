@@ -39,6 +39,7 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -105,6 +106,8 @@ public class RobotContainer {
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
                 });
                 targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
+                });
+                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
                 });
                 break;
         }
@@ -173,9 +176,9 @@ public class RobotContainer {
         operatorController.rightTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
         operatorController.rightBumper()
-                .whileTrue(climberSubsystem.runClimberCommand(0.1));
+                .whileTrue(climberSubsystem.runClimberCommand(1));
         operatorController.leftBumper()
-                .whileTrue(climberSubsystem.runClimberCommand(-0.1));
+                .whileTrue(climberSubsystem.runClimberCommand(-1));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
