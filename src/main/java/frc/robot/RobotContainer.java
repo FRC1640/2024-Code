@@ -175,10 +175,15 @@ public class RobotContainer {
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
-        operatorController.rightBumper()
-                .whileTrue(climberSubsystem.runClimberCommand(1));
-        operatorController.leftBumper()
-                .whileTrue(climberSubsystem.runClimberCommand(-1));
+        // operatorController.rightBumper()
+        //         .whileTrue(climberSubsystem.runClimberCommand(1));
+        // operatorController.leftBumper()
+        //         .whileTrue(climberSubsystem.runClimberCommand(-1));
+        new Trigger(() -> operatorController.getLeftY() > .2).whileTrue(climberSubsystem.runClimberLeft(-0.5));
+        new Trigger(() -> operatorController.getLeftY() < -.2).whileTrue(climberSubsystem.runClimberLeft(0.5));
+        new Trigger(() -> operatorController.getRightY() > .2).whileTrue(climberSubsystem.runClimberRight(-0.5));
+        new Trigger(() -> operatorController.getRightY() < .2).whileTrue(climberSubsystem.runClimberRight(0.5));
+        //note: test speeds!!! set as middle ish rn but make sure to change
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));

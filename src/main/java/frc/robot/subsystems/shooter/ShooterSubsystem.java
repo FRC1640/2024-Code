@@ -99,6 +99,7 @@ public class ShooterSubsystem extends SubsystemBase {
             }
             count += 1;
         }
+     
         return true;
     }
 }
