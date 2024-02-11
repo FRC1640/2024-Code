@@ -8,8 +8,6 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import java.time.Instant;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,7 +20,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -43,21 +40,17 @@ import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
-import frc.robot.subsystems.drive.DriveWeights.MLVisionRotationDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
-import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class RobotContainer {
@@ -196,6 +189,8 @@ public class RobotContainer {
              DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
              DriveWeightCommand.removeWeight(mlVisionWeight)));
+
+        operatorController.x().whileTrue(targetingSubsystem.extendToPosition(targetingSubsystem.getIO().getExtensionPosition() + 10));
     }
 
     public Command getAutonomousCommand() {

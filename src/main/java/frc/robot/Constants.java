@@ -109,7 +109,10 @@ public final class Constants {
         //controllers
         public static PIDController rotPID = new PIDController(0.45, 0.00000, 0.00);
         public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
-        public static PIDController targetingPID = new PIDController(0.1, 0, 0);
+        public static PIDController targetingPID = new PIDController(0.1, 0, 0); // TODO tune
+        public static PIDController limSwitchMovePID = new PIDController(0.1, 0, 0); // TODO tune
+        public static PIDController limSwitchFreezePID = new PIDController(0.1, 0, 0); // TODO tune
+        public static PIDController extensionPID = new PIDController(0.1, 1, 0); // TODO tune
     }
     public static class FieldConstants{
         public static double height = 8.21;
@@ -125,6 +128,15 @@ public final class Constants {
         public static int rightTargetingMotorId = 14; // TODO replace all of these constants
         public static double targetingLowerLimit = 0;
         public static double targetingUpperLimit = 90;
-        public static double targetingManualSpeed = 0.5; // 
+        public static double targetingManualSpeed = 0.5; // TODO speed
+
+        public static int targetingLimitSwitchId = 0; // TODO id
+
+        public static final int extensionMotorId = 15;
+        public static double extensionLowerLimit = 0.0; // TODO limit
+        public static double extensionUpperLimit = 0.0; // TODO limit
+
+        public static final double targetingMinVoltage = 0.05;
+        public static final double targetingMaxVoltage = 4.95;
     }
 }

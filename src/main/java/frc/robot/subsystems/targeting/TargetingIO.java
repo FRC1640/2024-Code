@@ -21,6 +21,12 @@ public interface TargetingIO {
         public double rightTargetingPositionDegrees = 0.0;
 
         public double targetingPositionAverage = 0.0;
+
+        public double extensionSpeedPercent = 0.0;
+        public double extensionAppliedVoltage = 0.0;
+        public double extensionCurrentAmps = 0.0;
+        public double extensionTempCelsius = 0.0;
+        public double extensionPosition = 0.0;
     }
 
     /**
@@ -32,9 +38,9 @@ public interface TargetingIO {
     }
 
     /**
-     * Sets the voltage of the motors.
+     * Sets the voltage of the targeting motors.
      *  
-     * @param voltage the voltage to set the motor to.
+     * @param voltage the voltage to set the motors to.
      */
     public default void setTargetingVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
@@ -42,11 +48,29 @@ public interface TargetingIO {
     }
 
     /**
-     * Sets the speed of the motors as a percent.
+     * Sets the voltage of the extension motor.
+     *  
+     * @param voltage the voltage to set the motor to.
+     */
+    public default void setExtensionVoltage(double voltage) {
+        voltage = MathUtil.clamp(voltage, -12, 12);
+        setTargetingSpeedPercent(voltage / 12);
+    }
+
+    /**
+     * Sets the percent output of of the targeting motors.
+     * 
+     * @param percentOutput the percent output to set the motors to.
+     */
+    public default void setTargetingSpeedPercent(double percentOutput) {
+    }
+
+    /**
+     * Sets the percent output of the extension motor.
      * 
      * @param percentOutput the percent output to set the motor to.
      */
-    public default void setTargetingSpeedPercent(double percentOutput) {
+    public default void setExtensionSpeedPercent(double percentOutput) {
     }
 
     /**
@@ -61,13 +85,13 @@ public interface TargetingIO {
     }
 
     /**
-     * Modifies the inputted speed so as to not move out of limits, applying a deadband as well.
+     * Modifies the inputted speed so as to not move out of targeting limits.
      * 
      * @param pos the current position.
      * @param speed the base speed to cap.
      * @return Capped speed.
      */
-    public default double clampSpeeds(double pos, double speed) {
+    public default double clampSpeedsTargeting(double pos, double speed) {
         double speedClamped = speed;
         if (pos < TargetingConstants.targetingLowerLimit) {
             speedClamped = Math.max(speed, 0);
@@ -76,5 +100,33 @@ public interface TargetingIO {
             speedClamped = Math.min(speed, 0);
         }
         return speedClamped;
+    }
+
+    /**
+     * Modifies the inputted speed so as to not move out of extension limits.
+     * 
+     * @param pos the current position.
+     * @param speed the base speed to cap.
+     * @return Capped speed.
+     */
+    public default double clampSpeedsExtension(double pos, double speed) {
+        double speedClamped = speed;
+        if (pos < TargetingConstants.extensionLowerLimit) {
+            speedClamped = Math.max(speed, 0);
+        }
+        if (pos > TargetingConstants.extensionUpperLimit) {
+            speedClamped = Math.min(speed, 0);
+        }
+        return speedClamped;
+    }
+
+    /**
+     * Sets the encoder value to 0.
+     */
+    public default void resetEncoderValue() {
+    }
+
+    public default double getExtensionPosition() {
+        return 0;
     }
 }

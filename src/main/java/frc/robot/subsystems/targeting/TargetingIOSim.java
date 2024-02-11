@@ -9,13 +9,16 @@ public class TargetingIOSim implements TargetingIO {
         50, 0.00019125);
     private DCMotorSim rightTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
         50, 0.00019125);
-
+    private DCMotorSim extensionMotorSimulated = new DCMotorSim(DCMotor.getNEO(1),
+        50, 0.00019125);
+    
     private double leftMotorVoltage = 0.0;
     private double rightMotorVoltage = 0.0;
+    private double extensionMotorVoltage = 0.0;
 
     private double leftPositon;
     private double rightPosition;
-
+    private double extensionPosition;
 
 
     public TargetingIOSim() {
@@ -26,9 +29,16 @@ public class TargetingIOSim implements TargetingIO {
     public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
         double averagePosition = getPositionAverage(leftPositon, rightPosition);
-        speedClamped = clampSpeeds(averagePosition, speedClamped);
+        speedClamped = clampSpeedsTargeting(averagePosition, speedClamped);
         setTargetingVoltage(speedClamped * 12);
 
+    }
+
+    @Override
+    public void setExtensionSpeedPercent(double speed) {
+        double speedClamped = speed;
+        speedClamped = clampSpeedsExtension(extensionPosition, speedClamped);
+        setExtensionVoltage(speedClamped * 12);
     }
 
     @Override
@@ -38,6 +48,13 @@ public class TargetingIOSim implements TargetingIO {
         rightMotorVoltage = voltage;
         leftTargetingMotorSimulated.setInputVoltage(voltage);
         rightTargetingMotorSimulated.setInputVoltage(voltage);
+    }
+
+    @Override
+    public void setExtensionVoltage(double voltage) {
+        voltage = MathUtil.clamp(voltage, -12, 12);
+        extensionMotorVoltage = voltage;
+        extensionMotorSimulated.setInputVoltage(voltage);
     }
 
     @Override
@@ -59,6 +76,11 @@ public class TargetingIOSim implements TargetingIO {
         rightPosition = inputs.rightTargetingPositionDegrees;
 
         inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
+
+        inputs.extensionSpeedPercent = extensionMotorVoltage/12;
+        inputs.extensionAppliedVoltage = extensionMotorVoltage;
+        inputs.extensionCurrentAmps = extensionMotorSimulated.getCurrentDrawAmps();
+        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4 / 1000; // TODO gears
     }
 
     /**
@@ -69,5 +91,10 @@ public class TargetingIOSim implements TargetingIO {
      */
     public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
         return motorEncoderValue;
+    }
+
+    @Override
+    public double getExtensionPosition() {
+        return extensionPosition;
     }
 }
