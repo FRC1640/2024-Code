@@ -19,6 +19,7 @@ public class TargetingIOSim implements TargetingIO {
     private double leftPositon;
     private double rightPosition;
     private double extensionPosition;
+    private double cappedExtensionSpeed;
 
 
     public TargetingIOSim() {
@@ -39,6 +40,7 @@ public class TargetingIOSim implements TargetingIO {
         double speedClamped = speed;
         speedClamped = clampSpeedsExtension(extensionPosition, speedClamped);
         setExtensionVoltage(speedClamped * 12);
+        cappedExtensionSpeed = speedClamped;
     }
 
     @Override
@@ -62,6 +64,7 @@ public class TargetingIOSim implements TargetingIO {
 
         leftTargetingMotorSimulated.update(0.02);
         rightTargetingMotorSimulated.update(0.02);
+        extensionMotorSimulated.update(0.02);
 
         inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
         inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
@@ -80,7 +83,8 @@ public class TargetingIOSim implements TargetingIO {
         inputs.extensionSpeedPercent = extensionMotorVoltage/12;
         inputs.extensionAppliedVoltage = extensionMotorVoltage;
         inputs.extensionCurrentAmps = extensionMotorSimulated.getCurrentDrawAmps();
-        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4 / 1000; // TODO gears
+        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4; // TODO gears
+        extensionPosition = inputs.extensionPosition;
     }
 
     /**
@@ -96,5 +100,10 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public double getExtensionPosition() {
         return extensionPosition;
+    }
+
+    @Override
+    public double getCappedExtensionSpeed() {
+        return cappedExtensionSpeed;
     }
 }

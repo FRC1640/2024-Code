@@ -133,8 +133,8 @@ public final class Constants {
         public static int targetingLimitSwitchId = 0; // TODO id
 
         public static final int extensionMotorId = 15;
-        public static double extensionLowerLimit = 0.0; // TODO limit
-        public static double extensionUpperLimit = 0.0; // TODO limit
+        public static double extensionLowerLimit = 0; // TODO limit
+        public static double extensionUpperLimit = 1; // TODO limit
 
         public static final double targetingMinVoltage = 0.05;
         public static final double targetingMaxVoltage = 4.95;

@@ -129,4 +129,8 @@ public interface TargetingIO {
     public default double getExtensionPosition() {
         return 0;
     }
+
+    public default double getCappedExtensionSpeed() {
+        return 0;
+    }
 }

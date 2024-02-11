@@ -21,10 +21,12 @@ public class TargetingSubsystem extends SubsystemBase {
 
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
+
     PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID);
-    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID);
     public double setpoint = 0.0;
+    
     public double extensionSetpoint = 0.0;
+    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID);
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
     private MechanismLigament2d angler = new MechanismLigament2d("angler", 1, 0);
@@ -42,12 +44,14 @@ public class TargetingSubsystem extends SubsystemBase {
         root.append(angler);
     }
 
+    // TODO better names
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Targeting", inputs);
         angler.setAngle(inputs.targetingPositionAverage);
-        angler.setLength(Math.max(0.1, inputs.extensionPosition * 1000));
+        angler.setLength(inputs.extensionPosition + 0.5);
         Logger.recordOutput("Targeting/mech", targetVisualization);
     }
 
@@ -142,7 +146,16 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     private void setExtensionSpeedPercent(double speed) {
-        io.setExtensionVoltage(speed);
+        io.setExtensionSpeedPercent(speed);
+    }
+
+    public Command setExtensionSpeedCommand(double speed) {
+        return new RunCommand(() -> setExtensionSpeedPercent(speed), this);
+    }
+
+    public Command setExtensionVoltageCommand(double voltage) {
+        return new RunCommand(() -> setExtensionVoltage(voltage), this)
+                .andThen(new InstantCommand(() -> setExtensionVoltage(0), this));
     }
 
     /**
@@ -184,7 +197,7 @@ public class TargetingSubsystem extends SubsystemBase {
                 .andThen(new InstantCommand(() -> setSpeed(0)))
                 .andThen(new InstantCommand(() -> io.resetEncoderValue()))
                 .andThen(zeroLockCommand = new RunCommand(() -> setSpeed(encoderFreezePID.calculate(
-                inputs.targetingPositionAverage, 0))));
+                inputs.targetingPositionAverage, 0)))); // TODO get rid of releaseZeroLock()
     }
 
     /**
