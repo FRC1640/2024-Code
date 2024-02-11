@@ -122,7 +122,7 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
-        DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
+        DriveWeightCommand.addPersistentWeight(new JoystickDriveWeight(driveController, gyro));
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));

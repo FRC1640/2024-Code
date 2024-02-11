@@ -10,6 +10,7 @@ import frc.lib.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveWeights.DriveWeight;
 
 public class DriveWeightCommand {
+    static ArrayList<DriveWeight> persistentWeights = new ArrayList<>();
 
     static ArrayList<DriveWeight> weights = new ArrayList<>();
     Translation2d centerOfRot = new Translation2d();
@@ -34,10 +35,32 @@ public class DriveWeightCommand {
         }
     }
 
+    public static void addPersistentWeight(DriveWeight weight){
+        if (!persistentWeights.contains(weight)) {
+            persistentWeights.add(weight);
+        }
+    }
+
+    public static void removePersistentWeight(DriveWeight weight) {
+        if (persistentWeights.contains(weight)) {
+            persistentWeights.remove(weight);
+        }
+    }
+
+    public static void removeAllWeights(){
+        weights.clear();
+    }
+
+
+
     public void getAllSpeeds() {
         speeds = new ChassisSpeeds();
         centerOfRot = new Translation2d();
         for (DriveWeight driveWeight : weights) {
+            speeds = speeds.plus(driveWeight.getSpeeds());
+            centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
+        }
+        for (DriveWeight driveWeight : persistentWeights) {
             speeds = speeds.plus(driveWeight.getSpeeds());
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
         }

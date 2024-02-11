@@ -28,10 +28,10 @@ public class AutoDriveWeight implements DriveWeight {
         double angle = Math.atan2(pose.get().getY() - getPose.get().getY(),
                 pose.get().getX() - getPose.get().getX()) - gyro.getOffset();
         double dist = getPose.get().getTranslation().getDistance(pose.get().getTranslation());
-        double s = pid.calculate(dist, 0);
+        double s = pid.calculate(-dist, 0);
         double o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
                 pose.get().getRotation().getRadians()), 0);
-        double scale = (dist / 4 + 1);
+        double scale = (dist / 3 + 1);
         s = MathUtil.clamp(s, -1, 1);
         o = MathUtil.clamp(o, -1, 1);
         if (Math.abs(o) < 0.01) {
