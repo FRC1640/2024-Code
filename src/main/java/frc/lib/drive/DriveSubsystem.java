@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -165,11 +166,11 @@ public class DriveSubsystem extends SubsystemBase {
           
             double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                     getActualSwerveStates()).vxMetersPerSecond,
-                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
+                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 1);
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency()
-                    ,VecBuilder.fill(VisionConstants.xyStdDev * distConst,
-                            VisionConstants.xyStdDev * distConst,
-                            VisionConstants.thetaStdDev)
+                    ,VecBuilder.fill(VisionConstants.xyStdDev * distConst + velConst / 5,
+                            VisionConstants.xyStdDev * distConst + velConst / 5,
+                            VisionConstants.thetaStdDev * distConst + velConst / 5)
                             );
         }
         // update odometry
