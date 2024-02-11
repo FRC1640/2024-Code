@@ -43,7 +43,7 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
         Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
         Logger.recordMetadata("RobotMode", getMode().toString());
-        Logger.recordMetadata("MACAddress", getMACAddress());
+        // Logger.recordMetadata("MACAddress", getMACAddress());
         switch (BuildConstants.DIRTY) {
             case 0:
                 Logger.recordMetadata("GitDirty", "All changes committed");
