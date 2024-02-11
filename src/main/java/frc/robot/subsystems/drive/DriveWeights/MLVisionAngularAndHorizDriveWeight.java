@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
-    private PIDController angularController = new PIDController(0.0075, 0, 0); //Constants.PIDConstants.rotPID;
+    private PIDController angularController = new PIDController(0.004, 0, 0); //Constants.PIDConstants.rotPID;
     private PIDController horizontalController = new PIDController(0.008, 0, 0); //Constants.PIDConstants.rotPID;
 
     private double angularVelocity;
