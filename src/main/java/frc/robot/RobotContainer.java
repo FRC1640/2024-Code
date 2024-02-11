@@ -164,8 +164,7 @@ public class RobotContainer {
                 .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
                         .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-        driveController.y().onTrue(driveSubsystem.resetOdometryCommand(new
-        Pose2d(0, 0, new Rotation2d(0))));
+        driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
         driveController.leftBumper().whileTrue(new InstantCommand(() -> generateIntakeCommand().schedule()));
         new Trigger(() -> intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(0, 0));
         // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,

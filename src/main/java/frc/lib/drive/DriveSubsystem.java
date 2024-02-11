@@ -315,4 +315,7 @@ public class DriveSubsystem extends SubsystemBase {
                 .andThen(new InstantCommand(
                         () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));
     }
+    public Command resetOdometryAprilTag(){
+        return new InstantCommand(() -> resetOdometry(vision.isTarget() ? vision.getAprilTagPose2d():getPose()));
+    }
 }
