@@ -36,6 +36,7 @@ import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.robot.Constants;
+import frc.robot.DashboardInit;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -145,6 +146,8 @@ public class DriveSubsystem extends SubsystemBase {
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
+
+        DashboardInit.setFieldPos(getPose());
     }
 
     public SwerveModuleState[] getActualSwerveStates() {
