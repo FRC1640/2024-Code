@@ -18,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Inputs", inputs);
+        Logger.processInputs("Intake", inputs);
     }
 
     public Command intakeCommand(double speedIntake, double speedIndexer, BooleanSupplier runIntake) {

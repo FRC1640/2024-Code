@@ -102,7 +102,7 @@ public class RobotContainer {
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 mlVision = new MLVision(new MLVisionIOSim());
 
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
                 break;
 
@@ -162,7 +162,11 @@ public class RobotContainer {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                 .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
+                        .alongWith(targetingSubsystem.targetFocusPosition(60))));
+                        // amp shot
+
+        driveController.x().onFalse(intakeSubsystem.intakeCommand(0, 0));
+        driveController.leftBumper().onFalse(intakeSubsystem.intakeCommand(0, 0));
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
         driveController.leftBumper().whileTrue(new InstantCommand(() -> generateIntakeCommand().schedule()));
