@@ -186,9 +186,11 @@ public class RobotContainer {
                 .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
         // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
         operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed))
+                .onFalse(targetingSubsystem.setSpeedCommand(0));
         operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed))
+                .onFalse(targetingSubsystem.setSpeedCommand(0));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
