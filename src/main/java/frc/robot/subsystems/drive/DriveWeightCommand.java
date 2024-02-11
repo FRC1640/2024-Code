@@ -57,11 +57,11 @@ public class DriveWeightCommand {
         speeds = new ChassisSpeeds();
         centerOfRot = new Translation2d();
         for (DriveWeight driveWeight : weights) {
-            speeds = speeds.plus(driveWeight.getSpeeds());
+            speeds = speeds.plus(driveWeight.getSpeeds().times(driveWeight.getWeight()));
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
         }
         for (DriveWeight driveWeight : persistentWeights) {
-            speeds = speeds.plus(driveWeight.getSpeeds());
+            speeds = speeds.plus(driveWeight.getSpeeds().times(driveWeight.getWeight()));
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
         }
         speeds = decreaseSpeeds(speeds);

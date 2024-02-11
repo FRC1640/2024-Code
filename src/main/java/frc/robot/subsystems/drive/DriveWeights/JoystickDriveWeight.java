@@ -40,6 +40,7 @@ public class JoystickDriveWeight implements DriveWeight {
     double xSpeed;
     private double ySpeed;
     private double rot;
+    private double weight = 1;
 
     // private boolean hold = false;
 
@@ -141,5 +142,17 @@ public class JoystickDriveWeight implements DriveWeight {
     @Override
     public Translation2d getCenterOfRot() {
         return centerOfRot;
+    }
+
+    @Override
+    public void setWeight(double weight){
+        this.weight = weight;
+    }
+    @Override 
+    public double getWeight(){
+        return weight;
+    }
+    public double getTranslationalSpeed(){
+        return Math.hypot(xSpeed,ySpeed);
     }
 }

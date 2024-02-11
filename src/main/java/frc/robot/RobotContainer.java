@@ -79,6 +79,8 @@ public class RobotContainer {
 
     MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 
+    JoystickDriveWeight joystickDriveWeight;
+
     public RobotContainer() {
         switch (Robot.getMode()) {
             case REAL:
@@ -122,7 +124,8 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
-        DriveWeightCommand.addPersistentWeight(new JoystickDriveWeight(driveController, gyro));
+        joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
+        DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));
@@ -142,7 +145,7 @@ public class RobotContainer {
                 () -> (getAlliance() == Alliance.Blue
                         ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
                         : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-                driveSubsystem::getPose, gyro);
+                driveSubsystem::getPose, gyro, ()->joystickDriveWeight.getTranslationalSpeed());
 
         autoDriveWeight = new AutoDriveWeight(
                 () -> (getAlliance() == Alliance.Blue
@@ -178,8 +181,10 @@ public class RobotContainer {
                                         .alongWith(targetingSubsystem.targetFocusPosition(60)),
                                 new WaitCommand(2))));
 
-        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight)));
-        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight)));
+        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
+                .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(0.5))));
+        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
+                .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
         // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
         operatorController.leftTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
