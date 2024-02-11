@@ -1,5 +1,6 @@
 package frc.lib.drive;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -46,7 +47,7 @@ import frc.robot.sensors.Vision.AprilTagVision;
 public class DriveSubsystem extends SubsystemBase {
 
     Gyro gyro;
-    AprilTagVision vision;
+    ArrayList<AprilTagVision> visions = new ArrayList<AprilTagVision>();
 
     private Module frontLeft;
     private Module frontRight;
@@ -64,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
         this.gyro = gyro;
-        this.vision = vision;
+        visions.add(vision);
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -117,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> DriverStation.getAlliance().isPresent()
                         && DriverStation.getAlliance().get() == Alliance.Red,
                 this);
-        //setup pathplanning logs
+        // setup pathplanning logs
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
@@ -156,22 +157,25 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateOdometry() {
-        if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
-            // System.out.println("vision");
-            // TODO: TUNE
-            
-            double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
-            
-            // velocity standard deviation constant
-          
-            double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                    getActualSwerveStates()).vxMetersPerSecond,
-                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 1);
-                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency()
-                    ,VecBuilder.fill(VisionConstants.xyStdDev * distConst + velConst / 5,
-                            VisionConstants.xyStdDev * distConst + velConst / 5,
-                            VisionConstants.thetaStdDev * distConst + velConst / 5)
-                            );
+        for (AprilTagVision vision : visions) {
+            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
+                // System.out.println("vision");
+                // TODO: TUNE
+
+                double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+
+                // velocity standard deviation constant
+
+                double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                        getActualSwerveStates()).vxMetersPerSecond,
+                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
+                        1);
+                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                        VecBuilder.fill(VisionConstants.xyStdDev * distConst + velConst / 5,
+                                VisionConstants.xyStdDev * distConst + velConst / 5,
+                                VisionConstants.thetaStdDev * distConst + velConst / 5));
+            }
+
         }
         // update odometry
         odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
@@ -315,7 +319,17 @@ public class DriveSubsystem extends SubsystemBase {
                 .andThen(new InstantCommand(
                         () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));
     }
-    public Command resetOdometryAprilTag(){
-        return new InstantCommand(() -> resetOdometry(vision.isTarget() ? vision.getAprilTagPose2d():getPose()));
+
+    public Command resetOdometryAprilTag() {
+        return new InstantCommand(() -> resetOdometry(getAprilTagPose()));
+        
+    }
+    public Pose2d getAprilTagPose(){
+        for (AprilTagVision vision : visions) {
+            if (vision.isTarget()){
+                return vision.getAprilTagPose2d();
+            }
+        }
+        return getPose();
     }
 }
