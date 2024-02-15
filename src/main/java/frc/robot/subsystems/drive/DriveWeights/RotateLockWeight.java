@@ -30,6 +30,7 @@ public class RotateLockWeight implements DriveWeight {
         double angle = Math.atan2(pose.get().getY() - getPose.get().getY(),
                 pose.get().getX() - getPose.get().getX()) - gyro.getOffset();
         double o;
+        
         if (getSpeed.get() > 0) {
             o = pidMoving.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
                     (angle + gyro.getOffset())), 0);
@@ -41,7 +42,17 @@ public class RotateLockWeight implements DriveWeight {
         if (Math.abs(o) < 0.01) {
             o = 0;
         }
-        System.out.println(o);
+        
+        double k;
+        double linearRotSpeed = Math.abs(o * SwerveAlgorithms.maxNorm);
+        o = MathUtil.clamp(o, -1, 1);
+        if (getSpeed.get() == 0 || o ==0){
+            k = 1;
+        }
+        else{
+            k = 1+Math.min(getSpeed.get() / linearRotSpeed, linearRotSpeed / getSpeed.get());
+        }
+        o = o * k;
         o = MathUtil.clamp(o, -1, 1);
         return new ChassisSpeeds(0, 0, o);
     }
