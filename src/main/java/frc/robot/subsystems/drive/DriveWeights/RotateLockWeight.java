@@ -14,25 +14,35 @@ public class RotateLockWeight implements DriveWeight {
     Supplier<Pose2d> pose;
     Supplier<Pose2d> getPose;
     PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
+    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID);
     Gyro gyro;
+    Supplier<Double> getSpeed;
 
-    public RotateLockWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro) {
+    public RotateLockWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro, Supplier<Double> getSpeed) {
         this.pose = pose;
         this.getPose = getPose;
         this.gyro = gyro;
+        this.getSpeed = getSpeed;
     }
 
     @Override
     public ChassisSpeeds getSpeeds() {
         double angle = Math.atan2(pose.get().getY() - getPose.get().getY(),
                 pose.get().getX() - getPose.get().getX()) - gyro.getOffset();
-        double o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
-                (angle + gyro.getOffset())), 0);
+        double o;
+        if (getSpeed.get() > 0) {
+            o = pidMoving.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
+                    (angle + gyro.getOffset())), 0);
+        } else {
+            o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
+                    (angle + gyro.getOffset())), 0);
+        }
+
         if (Math.abs(o) < 0.01) {
             o = 0;
         }
-        double scale = 1;
+        System.out.println(o);
         o = MathUtil.clamp(o, -1, 1);
-        return new ChassisSpeeds(0, 0, o / scale);
+        return new ChassisSpeeds(0, 0, o);
     }
 }

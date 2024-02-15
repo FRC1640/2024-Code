@@ -117,8 +117,7 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public Command setSpeedCommand(double speed) {
         
-        return new RunCommand(() -> setSpeed(speed), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
+        return new RunCommand(() -> setSpeed(speed), this);
     }
 
     /**
@@ -129,7 +128,6 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return New RunCommand.
      */
     public Command setVoltageCommand(double voltage) {
-        return new RunCommand(() -> setVoltage(voltage), this)
-                .andThen(new InstantCommand(() -> setVoltage(0), this));
+        return new RunCommand(() -> setVoltage(voltage), this);
     }
 }

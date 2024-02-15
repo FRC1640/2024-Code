@@ -2,9 +2,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -25,6 +27,7 @@ public class DashboardInit {
     private static DriveSubsystem driveSubsystem;
     private static CommandXboxController controller;
 
+    private static final Field2d field = new Field2d();
     public DashboardInit() {
 
     }
@@ -78,12 +81,19 @@ public class DashboardInit {
                 .withSize(1, 1)
                 .withPosition(0, 0);
         // LIMELIGHT STREAM?
-        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
                 .withSize(4,4)
                 .withPosition(1,0);
         teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
                 .withSize(1, 2)
                 .withPosition(5, 2);
+        teleop.add(field)
+            .withSize(4, 4)
+            .withPosition(6, 0);
+    }
+
+    public static void setFieldPos(Pose2d pose){
+        field.setRobotPose(pose);
     }
 
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {

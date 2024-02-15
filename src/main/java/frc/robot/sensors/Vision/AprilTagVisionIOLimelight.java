@@ -9,10 +9,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
+    String key;
+    public AprilTagVisionIOLimelight(String key){
+        this.key = key;
+    }
 
     @Override
     public void updateInputs(AprilTagVisionIOInputs inputs) {
-        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
+        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable(key);
         double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0 };
         double[] emptyArraySix = { 0, 0, 0, 0, 0, 0 };
 

@@ -16,8 +16,8 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class VisionConstants{
-        public static final double xyStdDev = 0.5;
-        public static final double thetaStdDev = 0.5;
+        public static final double xyStdDev = 0.3;
+        public static final double thetaStdDev = 0.3;
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = 0.053975;
@@ -107,17 +107,18 @@ public final class Constants {
         }
 
         //controllers
-        public static PIDController rotPID = new PIDController(0.45, 0.00000, 0.00);
+        public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
+        public static PIDController rotMovingPID = new PIDController(1.3, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
     }
     public static class FieldConstants{
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.667, 7.8);
-        public static Translation2d ampPositionBlue = new Translation2d(1.859, 7.803);
-        public static Translation2d speakerPositionRed = new Translation2d(15.214, 5.555);
-        public static Translation2d speakerPositionBlue = new Translation2d(1.328, 5.555);
+        public static Translation2d ampPositionRed = new Translation2d(14.667, 7.4);
+        public static Translation2d ampPositionBlue = new Translation2d(1.7, 7.4);
+        public static Translation2d speakerPositionRed = new Translation2d(15.214 + Units.feetToMeters(3), 5.555);
+        public static Translation2d speakerPositionBlue = new Translation2d(1.328 - Units.feetToMeters(3), 5.555);
     }
 
     public static class TargetingConstants {
