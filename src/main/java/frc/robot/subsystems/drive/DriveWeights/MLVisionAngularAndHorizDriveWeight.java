@@ -122,5 +122,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         return 2.0;
     }
 
+    // TO DO : Graph delta tx by rotational velocity to get an equation: with this suggested velocity (calculated from the current tx through the PID), how much will the tx change by? -> new tx
+
 
 }
