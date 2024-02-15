@@ -34,17 +34,17 @@ public interface TargetingIO {
      * 
      * @param inputs the TargetingIOInputs to update.
      */
-    public default void updateInputs(TargetingIOInputs inputs) {
+    public default void updateInputs(TargetingIOInputs inputs) { // TODO ask if this is accurate
     }
 
     /**
      * Sets the voltage of the targeting motors.
-     *  
+     * 
      * @param voltage the voltage to set the motors to.
      */
     public default void setTargetingVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
-        setTargetingSpeedPercent(voltage / 12);
+        setTargetingPercentOutput(voltage / 12);
     }
 
     /**
@@ -54,15 +54,15 @@ public interface TargetingIO {
      */
     public default void setExtensionVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
-        setTargetingSpeedPercent(voltage / 12);
+        setTargetingPercentOutput(voltage / 12);
     }
 
     /**
      * Sets the percent output of of the targeting motors.
      * 
-     * @param percentOutput the percent output to set the motors to.
+     * @param output the percent output to set the motors to.
      */
-    public default void setTargetingSpeedPercent(double percentOutput) {
+    public default void setTargetingPercentOutput(double output) {
     }
 
     /**
@@ -70,7 +70,7 @@ public interface TargetingIO {
      * 
      * @param percentOutput the percent output to set the motor to.
      */
-    public default void setExtensionSpeedPercent(double percentOutput) {
+    public default void setExtensionPercentOutput(double percentOutput) {
     }
 
     /**

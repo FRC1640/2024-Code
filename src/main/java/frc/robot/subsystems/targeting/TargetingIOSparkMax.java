@@ -16,6 +16,8 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final Resolver targetingEncoder = new Resolver(7, TargetingConstants.targetingMinVoltage,
             TargetingConstants.targetingMaxVoltage, 0, false);
 
+    // TODO override voltage methods
+
     public TargetingIOSparkMax() {
         leftTargetingMotor = new CANSparkMax(TargetingConstants.leftTargetingMotorId, MotorType.kBrushless);
         rightTargetingMotor = new CANSparkMax(TargetingConstants.rightTargetingMotorId, MotorType.kBrushless);
@@ -34,7 +36,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     // }
 
     @Override
-    public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
+    public void setTargetingPercentOutput(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
         speedClamped = clampSpeedsTargeting(targetingEncoder.getD(), speedClamped);
         leftTargetingMotor.set(speedClamped);
@@ -42,7 +44,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     }
 
     @Override
-    public void setExtensionSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
+    public void setExtensionPercentOutput(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
         speedClamped = clampSpeedsTargeting(extensionMotor.getEncoder().getPosition(), speedClamped); // TODO encoder technicalities
         extensionMotor.set(speedClamped);

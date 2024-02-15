@@ -121,7 +121,7 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));
 
         targetingSubsystem.setDefaultCommand(targetingSubsystem
-                .targetFocusPosition(
+                .target(
                         () -> -0.956635
                                 * Math.toDegrees(
                                         Math.asin(-0.778591 * Units.metersToFeet(2.11)
@@ -152,7 +152,7 @@ public class RobotContainer {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                 .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
+                        .alongWith(targetingSubsystem.target(60)))); // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.y().onTrue(driveSubsystem.resetOdometryCommand(new
         Pose2d(0, 0, new Rotation2d(0))));
@@ -162,22 +162,22 @@ public class RobotContainer {
         // 1));
         driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
                 .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)));
+                        .alongWith(targetingSubsystem.target(60)));
 
         driveController.rightBumper()
                 .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
                         .alongWith(Commands.race(
                                 shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                                        .alongWith(targetingSubsystem.targetFocusPosition(60)),
+                                        .alongWith(targetingSubsystem.target(60)),
                                 new WaitCommand(2))));
 
         driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight)));
         driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight)));
         // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
         operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setTargetingOutputCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setTargetingOutputCommand(TargetingConstants.targetingManualSpeed));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
@@ -189,8 +189,12 @@ public class RobotContainer {
              DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
              DriveWeightCommand.removeWeight(mlVisionWeight)));
-        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionSpeedCommand(0.5).andThen(targetingSubsystem.setExtensionSpeedCommand(0)));
-        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionSpeedCommand(-0.5).andThen(targetingSubsystem.setExtensionSpeedCommand(0)));
+
+             // TODO onFalse()
+        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(0.5));
+        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(-0.5));
+        operatorController.rightBumper().onFalse(targetingSubsystem.setExtensionOutputCommand(0));
+        operatorController.leftBumper().onFalse(targetingSubsystem.setExtensionOutputCommand(0));
         // operatorController.x().whileTrue(targetingSubsystem.extendToPosition(targetingSubsystem.getIO().getExtensionPosition() + 10));
     }
 
@@ -215,7 +219,7 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(0.1));
+                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAngleAccurate(0.1));
     }
 
     public Pose2d getSpeakerPos() {

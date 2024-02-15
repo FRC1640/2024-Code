@@ -34,8 +34,6 @@ public class TargetingSubsystem extends SubsystemBase {
     static boolean firstPowerOn = true;
     private DigitalInput limitSwitch = new DigitalInput(TargetingConstants.targetingLimitSwitchId);
     private PIDController encoderMovePID = PIDConstants.constructPID(PIDConstants.limSwitchMovePID);
-    private PIDController encoderFreezePID = PIDConstants.constructPID(PIDConstants.limSwitchFreezePID);
-    private RunCommand zeroLockCommand;
 
 
     public TargetingSubsystem(TargetingIO io) {
@@ -43,8 +41,6 @@ public class TargetingSubsystem extends SubsystemBase {
         MechanismRoot2d root = targetVisualization.getRoot("targeter", 2, 2);
         root.append(angler);
     }
-
-    // TODO better names
 
     @Override
     public void periodic() {
@@ -56,35 +52,105 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the angle of the arm.
+     * Combines <code> target() </code> and <code> extend() </code>,
+     * running both methods with the inputted angle and position.
      * 
-     * @param angle The angle to move to.
-     * @return A new RunCommand that sets the speed, setting the speed to 0 if the command is canceled.
+     * @param angle The angle to target.
+     * @param position The position to extend to.
+     * @return Command[] of targeting RunCommand and extension RunCommand.
      */
-    public Command targetFocusPosition(double angle) {
-        releaseZeroLock();
-        return new RunCommand(() -> setSpeed(getPIDSpeed(angle)), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
-    }
-
-    public Command targetFocusPosition(DoubleSupplier angle) {
-        releaseZeroLock();
-        return new RunCommand(() -> setSpeed(getPIDSpeed(angle.getAsDouble())), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
-    }
-
-    public Command extendToPosition(double position) {
-        return new RunCommand(() -> setExtensionSpeedPercent(getExtensionPIDSpeed(position)), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
+    public Command[] extendAndTarget(double angle, double position) {
+        return new Command[] {target(angle), extend(position)};
     }
 
     /**
-     * Calculates the speed to reach the setpoint angle using a PID.
+     * Combines <code> target() </code> and <code> extend() </code>,
+     * running both methods with the inputted angle supplier and position.
      * 
-     * @param position the position to move to.
-     * @return The calculated speed.
+     * @param angle Supplier giving the angle to target.
+     * @param position The position to extend to.
+     * @return Command[] of targeting RunCommand and extension RunCommand.
      */
-    private double getPIDSpeed(double position) {
+    public Command[] extendAndTarget(DoubleSupplier angle, double position) {
+        return new Command[] {target(angle), extend(position)};
+    }
+
+    /**
+     * Combines <code> target() </code> and <code> extend() </code>,
+     * running both methods with the inputted position supplier and angle.
+     * 
+     * @param angle The angle to target.
+     * @param position Supplier giving the position to extend to.
+     * @return Command[] of targeting RunCommand and extension RunCommand.
+     */
+    public Command[] extendAndTarget(double angle, DoubleSupplier position) {
+        return new Command[] {target(angle), extend(position)};
+    }
+
+    /**
+     * Combines <code> target() </code> and <code> extend() </code>,
+     * running both methods with the inputted angle and position suppliers.
+     * 
+     * @param angle Supplier giving the angle to target.
+     * @param position Supplier giving the position to extend to.
+     * @return Command[] of targeting RunCommand and extension RunCommand.
+     */
+    public Command[] extendAndTarget(DoubleSupplier angle, DoubleSupplier position) {
+        return new Command[] {target(angle), extend(position)};
+    }
+
+    /**
+     * Targets the given angle.
+     * 
+     * @param angle The angle to target.
+     * @return New RunCommand.
+     */
+    public Command target(double angle) {
+        return new RunCommand(() -> setTargetingPercentOutput(getTargetingPIDSpeed(angle)), this)
+                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
+    }
+
+    /**
+     * Targets the given angle.
+     * 
+     * @param angle Supplier giving the angle to target.
+     * @return New RunCommand.
+     */
+    public Command target(DoubleSupplier angle) {
+        return new RunCommand(() -> setTargetingPercentOutput(getTargetingPIDSpeed(angle.getAsDouble())), this)
+                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
+    }
+
+    /**
+     * Extends to the given position.
+     * 
+     * @param position The position to extend to.
+     * @return New RunCommand.
+     */
+    public Command extend(double position) {
+        return new RunCommand(() -> setTargetingPercentOutput(getExtensionPIDSpeed(position)), this)
+                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
+    }
+
+    /**
+     * Extends to the given position.
+     * 
+     * @param position Supplier giving the position to extend to.
+     * @return New RunCommand.
+     */
+    public Command extend(DoubleSupplier position) {
+        return new RunCommand(() -> setTargetingPercentOutput(getExtensionPIDSpeed(position.getAsDouble())), this)
+                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
+    }
+
+    /**
+     * Calculates the percent output of the targeting motor needed
+     * to reach the inputted angle as quickly as possible.
+     * 
+     * @param position The angle to target.
+     * @return Percent output.
+     */
+    private double getTargetingPIDSpeed(double position) {
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
         speed = MathUtil.clamp(speed, -1, 1);
         if (Math.abs(speed) < 0.01) {
@@ -94,6 +160,13 @@ public class TargetingSubsystem extends SubsystemBase {
         return speed;
     }
 
+    /**
+     * Calculates the percent output of the extension motor needed
+     * to reach the inputted position as quickly as possible.
+     * 
+     * @param position The position to extend to.
+     * @return Percent output.
+     */
     private double getExtensionPIDSpeed(double position) {
         double speed = extensionPID.calculate(inputs.extensionPosition, position);
         speed = MathUtil.clamp(speed, -1, 1);
@@ -106,111 +179,122 @@ public class TargetingSubsystem extends SubsystemBase {
     /**
      * Gets the setpoint of the targeting.
      * 
-     * @return The setpoint.
+     * @return the setpoint.
      */
-    public double getSetpoint() {
+    public double getSetAngle() {
         return setpoint;
     }
 
     /**
      * Returns whether the position of the targeting is within the inputted margin of error from the setpoint.
      * 
-     * @param error the allowed degree error for the arm.
-     * @return Whether the angle is within the margin of error as a boolean.
+     * @param error the allowed error in degrees for the arm.
+     * @return Whether the angle versus the setpoint is within the margin of error as a boolean.
      */
-    public boolean isPositionAccurate(double error) {
-        return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error
-        ;
+    public boolean isAngleAccurate(double error) {
+        return Math.abs(getSetAngle() - inputs.targetingPositionAverage) < error;
     }
 
     /**
-     * Sets the motor voltage.
+     * Sets the voltage of the targeting motors.
      * 
      * @param voltage the voltage to set the motors to.
      */
-    private void setVoltage(double voltage) {
+    private void setTargetingVoltage(double voltage) {
         io.setTargetingVoltage(voltage);
     }
 
     /**
-     * Sets the motor speed.
+     * Sets the percent output of the targeting motors.
      * 
-     * @param speed the speed to set the motors to.
+     * @param output the percent output to set the motors to.
      */
-    private void setSpeed(double speed) {
-        io.setTargetingSpeedPercent(speed);
+    private void setTargetingPercentOutput(double output) {
+        io.setTargetingPercentOutput(output);
     }
 
+    /**
+     * Sets the voltage of the extension motor.
+     * 
+     * @param voltage the voltage to set the motor to.
+     */
     private void setExtensionVoltage(double voltage) {
         io.setExtensionVoltage(voltage);
     }
 
-    private void setExtensionSpeedPercent(double speed) {
-        io.setExtensionSpeedPercent(speed);
+    /**
+     * Sets the percent output of the extension motor.
+     * 
+     * @param output the percent output to set the motor to.
+     */
+    private void setExtensionPercentOutput(double output) {
+        io.setExtensionPercentOutput(output);
     }
 
-    public Command setExtensionSpeedCommand(double speed) {
-        return new RunCommand(() -> setExtensionSpeedPercent(speed), this);
+    /**
+     * Returns a RunCommand which sets the extension to a percent output,
+     * setting the percent output to 0 if the command is canceled.
+     * 
+     * @param output the percent output to set the extension motor to.
+     * @return New RunCommand.
+     */
+    public Command setExtensionOutputCommand(double output) {
+        return new RunCommand(() -> setExtensionPercentOutput(output), this);
     }
 
+    /**
+     * Returns a RunCommand which sets the extension to a voltage,
+     * setting the voltage to 0 if the command is canceled.
+     * 
+     * @param voltage the voltage to set the extension motor to.
+     * @return new RunCommand.
+     */
     public Command setExtensionVoltageCommand(double voltage) {
         return new RunCommand(() -> setExtensionVoltage(voltage), this)
                 .andThen(new InstantCommand(() -> setExtensionVoltage(0), this));
     }
 
     /**
-     * Returns a RunCommand which sets the motors to a speed,
-     *  setting the speed to 0 if the command is canceled.
+     * Returns a RunCommand which sets the targeting to a percent output,
+     * setting the percent output to 0 if the command is canceled.
      * 
-     * @param speed the speed to set the motors to.
-     * @return New RunCommand.
+     * @param output the percent output to set the targeting motors to.
+     * @return new RunCommand.
      */
-    public Command setSpeedCommand(double speed) {
-        releaseZeroLock();
-        return new RunCommand(() -> setSpeed(speed), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
+    public Command setTargetingOutputCommand(double output) {
+        return new RunCommand(() -> setTargetingPercentOutput(output), this)
+                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
     }
 
     /**
-     * Returns a RunCommand which sets the motors to a voltage,
-     *  setting the voltage to 0 if the command is canceled.
+     * Returns a RunCommand which sets the targeting to a voltage,
+     * setting the voltage to 0 if the command is canceled.
      * 
-     * @param voltage the voltage to set the motors to.
-     * @return New RunCommand.
+     * @param voltage the voltage to set the targeting motors to.
+     * @return new RunCommand.
      */
-    public Command setVoltageCommand(double voltage) {
-        return new RunCommand(() -> setVoltage(voltage), this)
-                .andThen(new InstantCommand(() -> setVoltage(0), this));
+    public Command setTargetingVoltageCommand(double voltage) {
+        return new RunCommand(() -> setTargetingVoltage(voltage), this)
+                .andThen(new InstantCommand(() -> setTargetingVoltage(0), this));
     }
 
     /**
-     * Sets the speed to move to the limit switch, set the speed to 0,
-     * sets the encoder values to 0.
+     * Sets the targeting percent output to move to the reset limit switch, sets the output to 0,
+     * and finally sets the targeting encoder values to 0.
      * 
-     * @return RunCommand setting the speed to -0.5.
+     * @return RunCommand setting the percent output to -0.5.
      */
-    public Command resetEncoderCommand() { // TODO speed
+    public Command resetEncoderCommand() { // TODO speed & in comments
         firstPowerOn = false;
-        return new RunCommand(() -> setSpeed(
+        return new RunCommand(() -> setTargetingPercentOutput(
                 encoderMovePID.calculate(inputs.targetingPositionAverage, inputs.targetingPositionAverage - 10))) // TODO modification to position
                 .until(() -> limitSwitch.get())
-                .andThen(new InstantCommand(() -> setSpeed(0)))
-                .andThen(new InstantCommand(() -> io.resetEncoderValue()))
-                .andThen(zeroLockCommand = new RunCommand(() -> setSpeed(encoderFreezePID.calculate(
-                inputs.targetingPositionAverage, 0)))); // TODO get rid of releaseZeroLock()
+                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0)))
+                .andThen(new InstantCommand(() -> io.resetEncoderValue()));
     }
 
     /**
-     * Releases the lock to zero initialized by <code> resetEncoderCommand() </code>.
-     */
-    public void releaseZeroLock() {
-        if (zeroLockCommand != null){
-            zeroLockCommand.cancel();
-        } 
-    }
-
-    /**
-     * Gets whether the motor encoders have been not yet been reset via
+     * Gets whether the targeting motor encoders have been not yet been reset via
      * <code> resetEncoderCommand() </code>.
      * 
      * <p>
@@ -225,7 +309,11 @@ public class TargetingSubsystem extends SubsystemBase {
         return firstPowerOn;
     }
 
-
+    /**
+     * Returns the TargetingIO passed into the subsystem's constructor.
+     * 
+     * @return The subsystem's TargetingIO.
+     */
     public TargetingIO getIO() {
         return io;
     }

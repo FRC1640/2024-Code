@@ -27,7 +27,7 @@ public class TargetingIOSim implements TargetingIO {
     }
 
     @Override
-    public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
+    public void setTargetingPercentOutput(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
         double averagePosition = getPositionAverage(leftPositon, rightPosition);
         speedClamped = clampSpeedsTargeting(averagePosition, speedClamped);
@@ -36,7 +36,7 @@ public class TargetingIOSim implements TargetingIO {
     }
 
     @Override
-    public void setExtensionSpeedPercent(double speed) {
+    public void setExtensionPercentOutput(double speed) {
         double speedClamped = speed;
         speedClamped = clampSpeedsExtension(extensionPosition, speedClamped);
         setExtensionVoltage(speedClamped * 12);
