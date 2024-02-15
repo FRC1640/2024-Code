@@ -34,7 +34,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     private double initTime = 0;
 
-    private boolean targetNoteSet = false;
+    private boolean targetNoteSet = false; // target note signafies the note, out of the multiple visible, which is the objective to intake
     private double previousTX = 0;
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision, CommandXboxController driveController,
@@ -44,6 +44,10 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         this.driveController = driveController;
 
         scanForTargetNote();
+        
+        if (targetNoteSet){
+            System.out.println("SET IN INITIALIZATION 1");
+        }
     }
 
     @Override
@@ -57,24 +61,32 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
 
 
-        if (!vision.isTarget()) {
+        if (!targetNoteSet){
+            System.out.println("NO TARGET NOTE" + targetNoteSet + "Is a note visible? " + vision.isTarget());
             scanForTargetNote();
             chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
-            // return chassisSpeedsToTurn;
+            return chassisSpeedsToTurn;
         }
 
-        if (targetNoteSet) {
-            if (Math.abs(vision.getTX()) > distanceLim) {
+
+        if (Math.abs(vision.getTX()) > distanceLim) {
                 chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
                 // return chassisSpeedsToTurn;
-            } else if (!isDriveToNoteFinished()) {
+        } else if (!isDriveToNoteFinished()) {
                 chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                         new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
                         angleSupplier.get());
                 // return chassisSpeedsToTurn;
-            }
         }
 
+        if (!vision.isTarget()) {
+            System.out.println(" NO Target " + vision.isTarget() + targetNoteSet);
+
+            scanForTargetNote();
+            chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
+            // return chassisSpeedsToTurn;
+        }
+        System.out.println("TEST PRINT PrevTX? " + targetNoteSet + "prev tx " + previousTX);
         return chassisSpeedsToTurn;
     }
 
@@ -102,6 +114,13 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             targetNoteSet = true;
             previousTX = vision.getTX();
         }
+        System.out.println("SET to ---- " + targetNoteSet);
+
     }
+
+    private double caclulatePredictedNextTX(){
+        return 2.0;
+    }
+
 
 }
