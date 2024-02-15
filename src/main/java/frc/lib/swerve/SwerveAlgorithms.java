@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.SwerveDriveDimensions;
 
 public class SwerveAlgorithms {
+    public static double maxNorm = computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0));
     public static SwerveModuleState[] desaturated(double xSpeed, double ySpeed, double rot, double currentAngleRadians, boolean fieldRelative){
         var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
             fieldRelative
@@ -39,7 +40,7 @@ public class SwerveAlgorithms {
     double currentAngleRadians, boolean fieldRelative){
 
         double translationalSpeed = Math.hypot(xSpeed, ySpeed);
-        double linearRotSpeed = Math.abs(rot * computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0,0)));
+        double linearRotSpeed = Math.abs(rot * maxNorm);
         double k;
         if (linearRotSpeed == 0 || translationalSpeed == 0){
             k = 0;

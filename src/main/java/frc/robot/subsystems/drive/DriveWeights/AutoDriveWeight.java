@@ -41,6 +41,6 @@ public class AutoDriveWeight implements DriveWeight {
             s = 0;
         }
         // System.out.println(s);
-        return new ChassisSpeeds(-Math.cos(angle) * s / scale, -Math.sin(angle) * s / scale, o);
+        return new ChassisSpeeds(Math.sin(angle) * s / scale, -Math.cos(angle) * s / scale, o);
     }
 }
