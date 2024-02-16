@@ -42,7 +42,7 @@ import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
-import frc.robot.sensors.Vision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 
 public class DriveSubsystem extends SubsystemBase {
 

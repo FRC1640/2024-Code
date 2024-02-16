@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Robot.TestMode;
-import frc.robot.sensors.Vision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 
 /**
  * Writes various pieces of match data to Shuffleboard.

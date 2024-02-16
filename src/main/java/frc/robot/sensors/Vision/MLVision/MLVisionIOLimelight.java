@@ -1,4 +1,4 @@
-package frc.robot.sensors.Vision;
+package frc.robot.sensors.Vision.MLVision;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;

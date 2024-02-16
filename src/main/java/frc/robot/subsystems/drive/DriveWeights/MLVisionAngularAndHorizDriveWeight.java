@@ -7,7 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.sensors.Vision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVision;
 
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {

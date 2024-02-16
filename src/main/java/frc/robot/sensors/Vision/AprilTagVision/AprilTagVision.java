@@ -1,4 +1,4 @@
-package frc.robot.sensors.Vision;
+package frc.robot.sensors.Vision.AprilTagVision;
 
 import org.littletonrobotics.junction.Logger;
 
