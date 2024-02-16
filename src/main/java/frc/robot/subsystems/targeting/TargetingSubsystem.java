@@ -128,8 +128,8 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return New RunCommand.
      */
     public Command extend(double position) {
-        return new RunCommand(() -> setTargetingPercentOutput(getExtensionPIDSpeed(position)), this)
-                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
+        return new RunCommand(() -> setExtensionPercentOutput(getExtensionPIDSpeed(position)), this)
+                .andThen(new InstantCommand(() -> setExtensionPercentOutput(0), this));
     }
 
     /**
@@ -139,8 +139,8 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return New RunCommand.
      */
     public Command extend(DoubleSupplier position) {
-        return new RunCommand(() -> setTargetingPercentOutput(getExtensionPIDSpeed(position.getAsDouble())), this)
-                .andThen(new InstantCommand(() -> setTargetingPercentOutput(0), this));
+        return new RunCommand(() -> setExtensionPercentOutput(getExtensionPIDSpeed(position.getAsDouble())), this)
+                .andThen(new InstantCommand(() -> setExtensionPercentOutput(0), this));
     }
 
     /**
@@ -314,7 +314,16 @@ public class TargetingSubsystem extends SubsystemBase {
      * 
      * @return The subsystem's TargetingIO.
      */
-    public TargetingIO getIO() {
+    private TargetingIO getIO() {
         return io;
+    }
+
+    /**
+     * Gets the position of the extension.
+     * 
+     * @return The position of the extension.
+     */
+    public double getExtensionPosition() {
+        return getIO().getExtensionPosition();
     }
 }

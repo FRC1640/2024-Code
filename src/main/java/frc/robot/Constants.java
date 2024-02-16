@@ -112,7 +112,7 @@ public final class Constants {
         public static PIDController targetingPID = new PIDController(0.1, 0, 0); // TODO tune
         public static PIDController limSwitchMovePID = new PIDController(0.1, 0, 0); // TODO tune
         public static PIDController limSwitchFreezePID = new PIDController(0.1, 0, 0); // TODO tune
-        public static PIDController extensionPID = new PIDController(0.1, 1, 0); // TODO tune
+        public static PIDController extensionPID = new PIDController(3, 1, 0); // TODO tune
     }
     public static class FieldConstants{
         public static double height = 8.21;

@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
+import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision;
 
@@ -25,6 +27,8 @@ public class DashboardInit {
     private static DriveSubsystem driveSubsystem;
     private static CommandXboxController controller;
 
+    private static int pidsCalled = -1;
+
     public DashboardInit() {
 
     }
@@ -34,6 +38,7 @@ public class DashboardInit {
         autonInit();
         matchInit(vision);
         testInit();
+        tunePIDInit(PIDConstants.extensionPID);
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.controller = controller;
     }
@@ -43,6 +48,12 @@ public class DashboardInit {
         autoChooser = AutoBuilder.buildAutoChooser();
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
         autoTab.add(autoChooser).withSize(5, 5).withPosition(1, 1);
+    }
+
+    public static void tunePIDInit(PIDController pid) {
+        ShuffleboardTab tuning = Shuffleboard.getTab("PID Tuning");
+        pidsCalled += 1;
+        tuning.add("PID " + pidsCalled, pid);
     }
 
     private static void testInit() {

@@ -189,12 +189,11 @@ public class RobotContainer {
              DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
              DriveWeightCommand.removeWeight(mlVisionWeight)));
-
-             // TODO onFalse()
         operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(0.5));
         operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(-0.5));
         operatorController.rightBumper().onFalse(targetingSubsystem.setExtensionOutputCommand(0));
         operatorController.leftBumper().onFalse(targetingSubsystem.setExtensionOutputCommand(0));
+        operatorController.x().onTrue(targetingSubsystem.extend(0.5));
         // operatorController.x().whileTrue(targetingSubsystem.extendToPosition(targetingSubsystem.getIO().getExtensionPosition() + 10));
     }
 
