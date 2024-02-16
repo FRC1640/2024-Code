@@ -7,9 +7,6 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-
-import java.time.Instant;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,7 +19,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -34,30 +30,26 @@ import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
 import frc.robot.sensors.Gyro.GyroIOSim;
-import frc.robot.sensors.Vision.AprilTagVision;
-import frc.robot.sensors.Vision.MLVision;
-import frc.robot.sensors.Vision.MLVisionIOLimelight;
-import frc.robot.sensors.Vision.MLVisionIOSim;
-import frc.robot.sensors.Vision.AprilTagVisionIO;
-import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
-import frc.robot.sensors.Vision.AprilTagVisionIOSim;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
+import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
-import frc.robot.subsystems.drive.DriveWeights.MLVisionRotationDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
-import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class RobotContainer {
@@ -128,7 +120,7 @@ public class RobotContainer {
         DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(1.0, 1.0, ()->intakeSubsystem.hasNote()));
 
         targetingSubsystem.setDefaultCommand(targetingSubsystem
                 .targetFocusPosition(
@@ -153,7 +145,7 @@ public class RobotContainer {
                         : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
                 driveSubsystem::getPose, gyro);
         
-        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, driveController, gyro::getAngleRotation2d);
+        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
         configureBindings();
     }
@@ -161,18 +153,12 @@ public class RobotContainer {
     private void configureBindings() {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
-                        .alongWith(targetingSubsystem.targetFocusPosition(60))));
+                .alongWith(generateIntakeCommand())
+                        .alongWith(targetingSubsystem.targetFocusPosition(60)));
                         // amp shot
-
-        driveController.x().onFalse(intakeSubsystem.intakeCommand(0, 0));
-        driveController.leftBumper().onFalse(intakeSubsystem.intakeCommand(0, 0));
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
-        driveController.leftBumper().whileTrue(new InstantCommand(() -> generateIntakeCommand().schedule()));
-        new Trigger(() -> intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(0, 0));
-        // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,
-        // 1));
+        driveController.leftBumper().whileTrue(generateIntakeCommand());
         driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
                 .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                         .alongWith(targetingSubsystem.targetFocusPosition(60)));
@@ -188,13 +174,10 @@ public class RobotContainer {
                 .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(0.5))));
         driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
                 .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
-        // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
         operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed))
-                .onFalse(targetingSubsystem.setSpeedCommand(0));
+                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed))
-                .onFalse(targetingSubsystem.setSpeedCommand(0));
+                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));

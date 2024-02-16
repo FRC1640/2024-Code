@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.JoystickCleaner;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 

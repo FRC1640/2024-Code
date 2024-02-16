@@ -1,4 +1,4 @@
-package frc.robot.sensors.Vision;
+package frc.robot.sensors.Vision.MLVision;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -19,7 +19,7 @@ public class MLVision extends PeriodicBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("ML Vision", inputs);
-        Logger.recordOutput("Distance to note", getDistance());
+        Logger.recordOutput("MLVision/Distance to note", getDistance());
         io.takeSnapshot(inputs);
         
         }

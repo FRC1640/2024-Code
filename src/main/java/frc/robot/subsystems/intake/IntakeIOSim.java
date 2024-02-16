@@ -1,11 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class IntakeIOSim implements IntakeIO {

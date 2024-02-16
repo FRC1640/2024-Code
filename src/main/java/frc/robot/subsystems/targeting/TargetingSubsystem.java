@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PIDConstants;
 
@@ -45,12 +43,10 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return A new RunCommand that sets the speed, setting the speed to 0 if the command is canceled.
      */
     public Command targetFocusPosition(double angle) {
-        return new RunCommand(() -> setSpeed(getPIDSpeed(angle)), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
+        return setSpeedCommand(()->getPIDSpeed(angle));
     }
-        public Command targetFocusPosition(DoubleSupplier angle) {
-        return new RunCommand(() -> setSpeed(getPIDSpeed(angle.getAsDouble())), this)
-                .andThen(new InstantCommand(() -> setSpeed(0), this));
+    public Command targetFocusPosition(DoubleSupplier angle) {
+        return setSpeedCommand(()->getPIDSpeed(angle.getAsDouble()));
     }
 
     /**
@@ -85,8 +81,7 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Whether the angle is within the margin of error as a boolean.
      */
     public boolean isPositionAccurate(double error) {
-        return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error
-        ;
+        return Math.abs(getSetpoint() - inputs.targetingPositionAverage) < error;
     }
 
     /**
@@ -109,25 +104,60 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns a RunCommand which sets the motors to a speed,
+     * Returns a Command which sets the motors to a speed,
      *  setting the speed to 0 if the command is canceled.
      * 
      * @param speed the speed to set the motors to.
      * @return New RunCommand.
      */
     public Command setSpeedCommand(double speed) {
-        
-        return new RunCommand(() -> setSpeed(speed), this);
+        Command c = new Command() {
+            @Override
+            public void execute(){
+                setSpeed(speed);
+            }
+            @Override
+            public void end(boolean interrupted){
+                setSpeed(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+    public Command setSpeedCommand(DoubleSupplier speed) {
+        Command c = new Command() {
+            @Override
+            public void execute(){
+                setSpeed(speed.getAsDouble());
+            }
+            @Override
+            public void end(boolean interrupted){
+                setSpeed(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     /**
-     * Returns a RunCommand which sets the motors to a voltage,
+     * Returns a Command which sets the motors to a voltage,
      *  setting the voltage to 0 if the command is canceled.
      * 
      * @param voltage the voltage to set the motors to.
-     * @return New RunCommand.
+     * @return New Command.
      */
     public Command setVoltageCommand(double voltage) {
-        return new RunCommand(() -> setVoltage(voltage), this);
+            Command c = new Command() {
+            @Override
+            public void execute(){
+                setVoltage(voltage);
+            }
+            @Override
+            public void end(boolean interrupted){
+                setVoltage(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 }

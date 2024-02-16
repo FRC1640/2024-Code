@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +42,7 @@ import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
-import frc.robot.sensors.Vision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 
 public class DriveSubsystem extends SubsystemBase {
 
