@@ -1,14 +1,30 @@
-package frc.robot.sensors.Vision;
+package frc.robot.sensors.Vision.AprilTagVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 
-public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
+public class AprilTagVisionIOSim implements AprilTagVisionIO {
+    DoublePublisher tv;
+    DoubleArrayPublisher botpose_wpiblue, targetpose_robotspace;
+
+    public AprilTagVisionIOSim() {
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+        botpose_wpiblue = table.getDoubleArrayTopic("botpose_wpiblue").publish();
+        botpose_wpiblue.set(new double[] { 0, 0, 0, 0, 0, 0, 0 });
+
+        targetpose_robotspace = table.getDoubleArrayTopic("targetpose_robotspace").publish();
+        targetpose_robotspace.set(new double[] { 0, 0, 0, 0, 0, 0, 0 });
+
+        tv = table.getDoubleTopic("tv").publish();
+        tv.set(0);
+    }
 
     @Override
     public void updateInputs(AprilTagVisionIOInputs inputs) {

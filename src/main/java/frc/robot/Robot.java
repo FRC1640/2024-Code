@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.periodic.PeriodicScheduler;
+import frc.robot.subsystems.drive.DriveWeightCommand;
 
 public class Robot extends LoggedRobot {
     public static enum Mode {
@@ -42,7 +43,7 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
         Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
         Logger.recordMetadata("RobotMode", getMode().toString());
-        Logger.recordMetadata("MACAddress", getMACAddress());
+        // Logger.recordMetadata("MACAddress", getMACAddress());
         switch (BuildConstants.DIRTY) {
             case 0:
                 Logger.recordMetadata("GitDirty", "All changes committed");
@@ -98,10 +99,13 @@ public class Robot extends LoggedRobot {
         // This must be called from the robot's periodic block in order for anything in
         // the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        Logger.recordOutput("Memory", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
     }
 
     @Override
     public void disabledInit() {
+        DriveWeightCommand.removeAllWeights();
     }
 
     @Override

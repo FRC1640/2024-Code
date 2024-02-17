@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PivotId;
-import frc.robot.Constants.SwerveDriveDimensions;
 
 public class Module {
     ModuleIO io;
