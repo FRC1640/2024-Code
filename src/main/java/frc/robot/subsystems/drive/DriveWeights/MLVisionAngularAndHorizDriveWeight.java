@@ -2,6 +2,9 @@ package frc.robot.subsystems.drive.DriveWeights;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+import frc.lib.periodic.PeriodicBase;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,6 +39,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     private boolean targetNoteSet = false; // target note signafies the note, out of the multiple visible, which is the objective to intake
     private double previousTX = 0;
+    private double deltaTX = 0;
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision, CommandXboxController driveController,
             Supplier<Rotation2d> angleSupplier) {
@@ -52,6 +56,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     @Override
     public ChassisSpeeds getSpeeds() {
+        
+        
         angularVelocity = angularController.calculate(vision.getTX());
         angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
         angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
@@ -85,6 +91,10 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             scanForTargetNote();
             chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
             // return chassisSpeedsToTurn;
+            
+            deltaTX = vision.getTX()-previousTX;
+            Logger.recordOutput("Delta TX", deltaTX);
+
         }
         System.out.println("TEST PRINT PrevTX? " + targetNoteSet + "prev tx " + previousTX);
         return chassisSpeedsToTurn;
@@ -122,7 +132,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         return 2.0;
     }
 
-    // TO DO : Graph delta tx by rotational velocity to get an equation: with this suggested velocity (calculated from the current tx through the PID), how much will the tx change by? -> new tx
+
+    // TODO : Graph delta tx by rotational velocity to get an equation: with this suggested velocity (calculated from the current tx through the PID), how much will the tx change by? -> new tx
 
 
 }
