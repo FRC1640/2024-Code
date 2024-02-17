@@ -61,11 +61,11 @@ public interface TargetingIO {
     }
 
     /**
-     * Modifies the inputted speed so as to not move out of limits, applying a deadband as well.
+     * Modifies the inputted speed so as to not move out of limits
      * 
      * @param pos the current position.
-     * @param speed the base speed to cap.
-     * @return Capped speed.
+     * @param speed the base speed to clamp.
+     * @return clamped speed.
      */
     public default double clampSpeeds(double pos, double speed) {
         double speedClamped = speed;

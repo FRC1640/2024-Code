@@ -36,11 +36,16 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
@@ -64,6 +69,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
+    private ClimberSubsystem climberSubsystem;
     private TargetingSubsystem targetingSubsystem;
 
     RotateLockWeight rotateLockWeight;
@@ -83,6 +89,7 @@ public class RobotContainer {
                 // shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 //intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+                climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
                 // targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
@@ -96,6 +103,7 @@ public class RobotContainer {
                 mlVision = new MLVision(new MLVisionIOSim());
 
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
+                climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
                 break;
 
@@ -110,8 +118,11 @@ public class RobotContainer {
                 });
                 targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
                 });
-                mlVision = new MLVision(new MLVisionIOLimelight());
-
+                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
+                });
+                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
+                });
+                mlVision = new MLVision(new MLVisionIO(){});
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
@@ -179,6 +190,10 @@ public class RobotContainer {
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+        new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
+                Math.abs(operatorController.getRightY()) > 0.1)
+                .whileTrue(climberSubsystem.setSpeedCommand(
+                        ()->-operatorController.getLeftY() * 0.5, ()->-operatorController.getRightY() * 0.5));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));

@@ -94,6 +94,13 @@ public final class Constants {
         public static final int proximitySensorChannel = 0;
     }
 
+    public static class ClimberConstants{
+        public static final int leftCanID = 0;
+        public static final int rightCanID = 0;
+        public static final double lowerLimit = 0;
+        public static final double upperLimit = 90;
+    }
+
     public static class ShooterConstants{
         public static final int topLeftCanID = 21; 
         public static final int bottomLeftCanID = 6;
