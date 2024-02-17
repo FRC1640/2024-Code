@@ -22,6 +22,11 @@ public class TargetingSubsystem extends SubsystemBase {
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
     private MechanismLigament2d angler = new MechanismLigament2d("angler", 1, 0);
 
+    public double extensionSetpoint = 0.0;
+    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID);
+
+    
+
     public TargetingSubsystem(TargetingIO io) {
         this.io = io;
         MechanismRoot2d root = targetVisualization.getRoot("targeter", 2, 2);
@@ -33,6 +38,7 @@ public class TargetingSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Targeting", inputs);
         angler.setAngle(inputs.targetingPositionAverage);
+        angler.setLength(inputs.extensionPosition + 0.5);
         Logger.recordOutput("Targeting/mech", targetVisualization);
     }
 
@@ -159,5 +165,85 @@ public class TargetingSubsystem extends SubsystemBase {
         };
         c.addRequirements(this);
         return c;
+    }
+
+    /**
+     * Sets the voltage of the extension motor.
+     * 
+     * @param voltage the voltage to set the motor to.
+     */
+    private void setExtensionVoltage(double voltage) {
+        io.setExtensionVoltage(voltage);
+    }
+
+    /**
+     * Sets the percent output of the extension motor.
+     * 
+     * @param output the percent output to set the motor to.
+     */
+    private void setExtensionPercentOutput(double output) {
+        io.setExtensionPercentOutput(output);
+    }
+
+    /**
+     * Returns a RunCommand which sets the extension to a percent output,
+     * setting the percent output to 0 if the command is canceled.
+     * 
+     * @param output the percent output to set the extension motor to.
+     * @return New RunCommand.
+     */
+    public Command setExtensionOutputCommand(double output) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setExtensionPercentOutput(output);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                setExtensionPercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    /**
+     * Returns a RunCommand which sets the extension to a voltage,
+     * setting the voltage to 0 if the command is canceled.
+     * 
+     * @param voltage the voltage to set the extension motor to.
+     * @return new RunCommand.
+     */
+    public Command setExtensionVoltageCommand(double voltage) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setExtensionVoltage(voltage);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                setExtensionVoltage(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    /**
+     * Returns the TargetingIO passed into the subsystem's constructor.
+     * 
+     * @return The subsystem's TargetingIO.
+     */
+    private TargetingIO getIO() {
+        return io;
+    }
+
+    /**
+     * Gets the position of the extension.
+     * 
+     * @return The position of the extension.
+     */
+    public double getExtensionPosition() {
+        return getIO().getExtensionPosition();
     }
 }
