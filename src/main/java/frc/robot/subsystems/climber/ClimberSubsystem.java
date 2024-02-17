@@ -1,5 +1,7 @@
 package frc.robot.subsystems.climber;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,83 +36,40 @@ public class ClimberSubsystem extends SubsystemBase{
         Logger.recordOutput("Climber/ClimberMechanism", climberVisualization);
     }
 
-    private void setSpeedPercent(double speed){
-        io.setLeftSpeedPercent(speed);
-        io.setRightSpeedPercent(speed);
+    private void setSpeedPercent(double leftSpeed, double rightSpeed){
+        io.setLeftSpeedPercent(leftSpeed);
+        io.setRightSpeedPercent(rightSpeed);
     }
 
-    // public Command runClimberCommand(double percentage){
-    //     return Commands.run(()->setSpeedPercent(percentage))
-    //         .finallyDo(() -> setSpeedPercent(0));
-    //}
-//might change this to two different commands later idk
-    public Command runClimberRight(double rSpeed){
-        Command c = new Command(){
-            @Override
-            public void initialize(){
-
-            }
-
+    public Command setSpeedCommand(double leftSpeed, double rightSpeed) {
+        Command c = new Command() {
             @Override
             public void execute(){
-                io.setRightSpeedPercent(rSpeed);
-                // if(0 < inputs.rightClimberPositionDegrees && inputs.rightClimberPositionDegrees < 90){
-                // io.setRightSpeedPercent(rSpeed);
-                // }
-                // else if(inputs.rightClimberPositionDegrees > 90){
-                //     io.setRightSpeedPercent(rSpeed * .3);
-                // }
-                // else {
-                //     io.setRightSpeedPercent(0);
-                // }
+                setSpeedPercent(leftSpeed, rightSpeed);
             }
-
-            @Override 
-            public void end(boolean interrupted){
-                io.setRightSpeedPercent(0);
-            }
-
             @Override
-            public boolean isFinished(){
-                return false;
+            public void end(boolean interrupted){
+                setSpeedPercent(0, 0);
             }
         };
         c.addRequirements(this);
         return c;
     }
 
-    public Command runClimberLeft(double lSpeed){
-        Command c = new Command(){
-            @Override
-            public void initialize(){
-
-            }
-
+    public Command setSpeedCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed){
+            Command c = new Command() {
             @Override
             public void execute(){
-                io.setLeftSpeedPercent(lSpeed);
-                // if(0 < inputs.leftClimberPositionDegrees && inputs.leftClimberPositionDegrees < 90){
-                // io.setLeftSpeedPercent(lSpeed);
-                // }
-                // else if(inputs.leftClimberPositionDegrees > 90){
-                //     io.setLeftSpeedPercent(lSpeed * .3);
-                // }
-                // else {
-                //     io.setLeftSpeedPercent(0);
-                // }
+                setSpeedPercent(leftSpeed.getAsDouble(), rightSpeed.getAsDouble());
             }
-
-            @Override 
-            public void end(boolean interrupted){
-                io.setLeftSpeedPercent(0);
-            }
-
             @Override
-            public boolean isFinished(){
-                return false;
+            public void end(boolean interrupted){
+                setSpeedPercent(0, 0);
             }
         };
         c.addRequirements(this);
         return c;
     }
+
+
 }

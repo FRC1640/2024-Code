@@ -20,24 +20,26 @@ public class ClimberIOSparkMax implements ClimberIO {
         rightEncoder = new Resolver(6, .05, 4.95, 0, false); //note: to create resolver constants class for min/max
     }
 
+    // @Override
+    // public void setLeftVoltage(double lVoltage){
+    //     leftMotor.setVoltage(lVoltage);
+    // }
+
+    // @Override
+    // public void setRightVoltage(double rVoltage){
+    //     rightMotor.setVoltage(rVoltage);
+    // }
+
     @Override
-    public void setLeftVoltage(double lVoltage){
-        leftMotor.setVoltage(lVoltage);
+    public void setLeftSpeedPercent(double speed){
+        speed = clampSpeeds(leftEncoder.getD(), speed);
+        leftMotor.set(speed);
     }
 
     @Override
-    public void setRightVoltage(double rVoltage){
-        rightMotor.setVoltage(rVoltage);
-    }
-
-    @Override
-    public void setLeftSpeedPercent(double lSpeed){
-        leftMotor.set(lSpeed);
-    }
-
-    @Override
-    public void setRightSpeedPercent(double rSpeed){
-        leftMotor.set(rSpeed);
+    public void setRightSpeedPercent(double speed){
+        speed = clampSpeeds(rightEncoder.getD(), speed);
+        rightMotor.set(speed);
     }
 
     @Override

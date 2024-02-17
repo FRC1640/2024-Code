@@ -97,6 +97,8 @@ public final class Constants {
     public static class ClimberConstants{
         public static final int leftCanID = 0;
         public static final int rightCanID = 0;
+        public static final double lowerLimit = 0;
+        public static final double upperLimit = 90;
     }
 
     public static class ShooterConstants{

@@ -2,6 +2,9 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.TargetingConstants;
+
 public interface ClimberIO {
     @AutoLog
     public static class ClimberIOInputs {
@@ -36,5 +39,22 @@ public interface ClimberIO {
 
     public default void setRightSpeedPercent(double rSpeed){
 
+    }
+    /**
+     * Modifies the inputted speed so as to not move out of limits
+     * 
+     * @param pos the current position.
+     * @param speed the base speed to clamp.
+     * @return clamped speed.
+     */
+    public default double clampSpeeds(double pos, double speed) {
+        double speedClamped = speed;
+        if (pos < ClimberConstants.lowerLimit) {
+            speedClamped = Math.max(speed, 0);
+        }
+        if (pos > ClimberConstants.upperLimit) {
+            speedClamped = Math.min(speed, 0);
+        }
+        return speedClamped;
     }
 }

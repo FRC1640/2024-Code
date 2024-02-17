@@ -36,6 +36,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -121,7 +122,7 @@ public class RobotContainer {
                 });
                 climberSubsystem = new ClimberSubsystem(new ClimberIO() {
                 });
-                mlVision = new MLVision(new MLVisionIOLimelight());
+                mlVision = new MLVision(new MLVisionIO(){});
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
@@ -189,15 +190,10 @@ public class RobotContainer {
                 .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
                 .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
-        // operatorController.rightBumper()
-        //         .whileTrue(climberSubsystem.runClimberCommand(1));
-        // operatorController.leftBumper()
-        //         .whileTrue(climberSubsystem.runClimberCommand(-1));
-        new Trigger(() -> operatorController.getLeftY() > .2).whileTrue(climberSubsystem.runClimberLeft(-0.5));
-        new Trigger(() -> operatorController.getLeftY() < -.2).whileTrue(climberSubsystem.runClimberLeft(0.5));
-        new Trigger(() -> operatorController.getRightY() > .2).whileTrue(climberSubsystem.runClimberRight(-0.5));
-        new Trigger(() -> operatorController.getRightY() < .2).whileTrue(climberSubsystem.runClimberRight(0.5));
-        //note: test speeds!!! set as middle ish rn but make sure to change
+        new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
+                Math.abs(operatorController.getRightY()) > 0.1)
+                .whileTrue(climberSubsystem.setSpeedCommand(
+                        ()->-operatorController.getLeftY() * 0.5, ()->-operatorController.getRightY() * 0.5));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
