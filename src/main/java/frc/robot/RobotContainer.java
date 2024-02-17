@@ -57,6 +57,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
+import frc.robot.util.drive.MovingWhileShooting;
 
 public class RobotContainer {
 
@@ -79,6 +80,8 @@ public class RobotContainer {
     MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 
     JoystickDriveWeight joystickDriveWeight;
+
+    MovingWhileShooting movingWhileShooting;
 
     public RobotContainer() {
         switch (Robot.getMode()) {
@@ -133,14 +136,10 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(1.0, 1.0, ()->intakeSubsystem.hasNote()));
-
+        movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), 
+                driveSubsystem::getPose, driveSubsystem::getChassisSpeeds);
         targetingSubsystem.setDefaultCommand(targetingSubsystem
-                .targetFocusPosition(
-                        () -> -0.956635
-                                * Math.toDegrees(
-                                        Math.asin(-0.778591 * Units.metersToFeet(2.11)
-                                                / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
-                                -2.01438));
+                .targetFocusPosition(() -> movingWhileShooting.getAngleFromDistance()));
 
 
         //configure weights
