@@ -121,6 +121,7 @@ public final class Constants {
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);
+        public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // TODO values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
     }
     public static class FieldConstants{
@@ -137,6 +138,15 @@ public final class Constants {
         public static int rightTargetingMotorId = 14; // TODO replace all of these constants
         public static double targetingLowerLimit = 0;
         public static double targetingUpperLimit = 90;
-        public static double targetingManualSpeed = 0.5; // 
+        public static double targetingManualSpeed = 0.5; // TODO speed
+        
+        public static double extensionLowerLimit = 0.0; // TODO limit
+        public static double extensionUpperLimit = 1.0; // TODO limit
+
+        public static double targetingMinVoltage = 0.05;
+        public static double targetingMaxVoltage = 4.95;
+
+        public static int extensionMotorId = 15;
+        public static double extensionManualSpeed = 0.5;
     }
 }
