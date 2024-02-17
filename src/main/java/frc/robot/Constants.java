@@ -140,5 +140,10 @@ public final class Constants {
         
         public static double extensionLowerLimit = 0.0; // TODO grab from GitHub
         public static double extensionUpperLimit = 0.0; // TODO as above
+
+        public static double targetingMinVoltage = 0.0; // TODO as above
+        public static double targetingMaxVoltage = 0.0; // TODO as above
+
+        public static int extensionMotorId = 0; // TODO as above
     }
 }
