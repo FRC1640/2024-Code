@@ -121,7 +121,7 @@ public final class Constants {
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);
-        public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // TODO values from sim: 3, 1, 0
+        public static PIDController extensionPID = new PIDController(3, 1, 0); // TODO values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
     }
     public static class FieldConstants{
