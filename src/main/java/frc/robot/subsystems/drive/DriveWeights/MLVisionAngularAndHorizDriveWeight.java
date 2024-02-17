@@ -77,6 +77,11 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
         if (Math.abs(vision.getTX()) > distanceLim) {
                 chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
+                deltaTX = vision.getTX()-previousTX;
+                Logger.recordOutput("MLVision/Delta TX", deltaTX);
+                Logger.recordOutput("MLVision/Previous TX", previousTX);
+                Logger.recordOutput("MLVision/Input Rotational Velocity", angularVelocity);
+
                 // return chassisSpeedsToTurn;
         } else if (!isDriveToNoteFinished()) {
                 chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -92,9 +97,6 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
             // return chassisSpeedsToTurn;
             
-            deltaTX = vision.getTX()-previousTX;
-            Logger.recordOutput("Delta TX", deltaTX);
-
         }
         System.out.println("TEST PRINT PrevTX? " + targetNoteSet + "prev tx " + previousTX);
         return chassisSpeedsToTurn;
