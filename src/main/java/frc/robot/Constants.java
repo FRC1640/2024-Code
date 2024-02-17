@@ -108,8 +108,9 @@ public final class Constants {
 
         //controllers
         public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
-        public static PIDController rotMovingPID = new PIDController(1.5, 0, 0);
-        public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
+        public static PIDController rotMovingPID = new PIDController(1, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(1, 0, 0);
+        public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);

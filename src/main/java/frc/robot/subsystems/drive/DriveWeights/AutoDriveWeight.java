@@ -16,6 +16,7 @@ public class AutoDriveWeight implements DriveWeight {
     PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID);
     PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
     Gyro gyro;
+    double setAngle;
 
     public AutoDriveWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro) {
         this.pose = pose;
@@ -31,6 +32,8 @@ public class AutoDriveWeight implements DriveWeight {
         double s = pid.calculate(-dist, 0);
         double o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
                 pose.get().getRotation().getRadians()), 0);
+
+        
         double scale = (dist / 3 + 1);
         s = MathUtil.clamp(s, -1, 1);
         o = MathUtil.clamp(o, -1, 1);
@@ -40,7 +43,12 @@ public class AutoDriveWeight implements DriveWeight {
         if (Math.abs(s) < 0.01) {
             s = 0;
         }
+        setAngle = pose.get().getRotation().getRadians();
         // System.out.println(s);
         return new ChassisSpeeds(Math.sin(angle) * s / scale, -Math.cos(angle) * s / scale, o);
+    }
+    @Override
+    public double angle(){
+        return setAngle;
     }
 }

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
+import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
@@ -212,7 +213,9 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(0.1));
+                () -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(7)
+                && Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
+                        DriveWeightCommand.getAngle(),gyro.getAngleRotation2d().getRadians()))) < 3));
     }
 
     public Pose2d getSpeakerPos() {
