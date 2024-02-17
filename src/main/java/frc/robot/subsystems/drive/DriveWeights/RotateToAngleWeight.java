@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -10,15 +11,13 @@ import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
 
 public class RotateToAngleWeight implements DriveWeight {
-    Supplier<Pose2d> pose;
     PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
     PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID);
     Supplier<Double> getSpeed;
     Supplier<Pose2d> getPose;
-    double angle;
+    DoubleSupplier angle;
 
-    public RotateToAngleWeight(Supplier<Pose2d> pose, double angle, Supplier<Pose2d> getPose, Supplier<Double> getSpeed) {
-        this.pose = pose;
+    public RotateToAngleWeight(DoubleSupplier angle, Supplier<Pose2d> getPose, Supplier<Double> getSpeed) {
         this.angle = angle;
         this.getPose = getPose;
         this.getSpeed = getSpeed;
@@ -30,10 +29,10 @@ public class RotateToAngleWeight implements DriveWeight {
         
         if (getSpeed.get() > 0) {
             o = pidMoving.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
-                    angle), 0);
+                    angle.getAsDouble()), 0);
         } else {
             o = pidr.calculate(-SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
-                    angle), 0);
+                    angle.getAsDouble()), 0);
         }
 
         if (Math.abs(o) < 0.005) {
@@ -55,6 +54,6 @@ public class RotateToAngleWeight implements DriveWeight {
     }
     @Override
     public double angle(){
-        return angle;
+        return angle.getAsDouble();
     }
 }

@@ -51,6 +51,7 @@ import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
+import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -74,6 +75,8 @@ public class RobotContainer {
     private TargetingSubsystem targetingSubsystem;
 
     RotateLockWeight rotateLockWeight;
+
+//     RotateToAngleWeight rotateLockWeight;
 
     AutoDriveWeight autoDriveWeight;
 
@@ -149,6 +152,9 @@ public class RobotContainer {
                         ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
                         : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
                 driveSubsystem::getPose, gyro, ()->joystickDriveWeight.getTranslationalSpeed());
+
+        // rotateLockWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(), 
+        //         driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed());
 
         autoDriveWeight = new AutoDriveWeight(
                 () -> (getAlliance() == Alliance.Blue

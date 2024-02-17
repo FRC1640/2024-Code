@@ -2,6 +2,8 @@ package frc.robot.util.drive;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -49,6 +51,8 @@ public class MovingWhileShooting {
         double phih = getAngleToGoal();
         double vy = speeds.get().vyMetersPerSecond;
         double vx = speeds.get().vxMetersPerSecond;
+        Logger.recordOutput("Drive/MovingWhileShooting/AngleDistance", 
+            Math.toDegrees(Math.abs(Math.atan2(V * Math.cos(phiv) * Math.sin(phih) + vy, V * Math.cos(phiv) * Math.cos(phih) + vx) - phih)));
         return Math.atan2(V * Math.cos(phiv) * Math.sin(phih) + vy, V * Math.cos(phiv) * Math.cos(phih) + vx);
     }
 
