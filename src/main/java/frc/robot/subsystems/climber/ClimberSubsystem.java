@@ -4,6 +4,8 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -11,11 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.PIDConstants;
 
 public class ClimberSubsystem extends SubsystemBase{
     ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
     ClimberIO io;
-    
+    PIDController pid = PIDConstants.constructPID(PIDConstants.climberPID);
+    double setpoint = 0;
     private Mechanism2d climberVisualization = new Mechanism2d(5.75, 3);
     private MechanismLigament2d climberLeft = new MechanismLigament2d("leftClimber", 2.5, 0);
     private MechanismLigament2d climberRight = new MechanismLigament2d("rightClimber", 2.5, 0);
@@ -34,6 +38,11 @@ public class ClimberSubsystem extends SubsystemBase{
         climberLeft.setAngle(inputs.leftClimberPositionDegrees);
         climberRight.setAngle(inputs.rightClimberPositionDegrees);
         Logger.recordOutput("Climber/ClimberMechanism", climberVisualization);
+    }
+
+    public Command climberPIDCommand(double posLeft, double posRight) {
+        return setSpeedCommand(()->getPIDSpeed(posLeft, ()->inputs.leftClimberPositionDegrees), 
+            ()->getPIDSpeed(posRight, ()->inputs.rightClimberPositionDegrees));
     }
 
     private void setSpeedPercent(double leftSpeed, double rightSpeed){
@@ -71,5 +80,13 @@ public class ClimberSubsystem extends SubsystemBase{
         return c;
     }
 
-
+    private double getPIDSpeed(double position, DoubleSupplier getPos) {
+        double speed = pid.calculate(getPos.getAsDouble(), position);
+        speed = MathUtil.clamp(speed, -1, 1);
+        if (Math.abs(speed) < 0.01) {
+            speed = 0;
+        }
+        setpoint = position;
+        return speed;
+    }
 }
