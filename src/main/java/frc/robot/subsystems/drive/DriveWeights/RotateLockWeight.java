@@ -17,6 +17,7 @@ public class RotateLockWeight implements DriveWeight {
     PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID);
     Gyro gyro;
     Supplier<Double> getSpeed;
+    double setAngle;
 
     public RotateLockWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro, Supplier<Double> getSpeed) {
         this.pose = pose;
@@ -39,7 +40,7 @@ public class RotateLockWeight implements DriveWeight {
                     (angle + gyro.getOffset())), 0);
         }
 
-        if (Math.abs(o) < 0.01) {
+        if (Math.abs(o) < 0.005) {
             o = 0;
         }
         
@@ -52,8 +53,13 @@ public class RotateLockWeight implements DriveWeight {
         else{
             k = 1+Math.min(getSpeed.get() / linearRotSpeed, linearRotSpeed / getSpeed.get());
         }
+        setAngle = angle + gyro.getOffset();
         o = o * k;
         o = MathUtil.clamp(o, -1, 1);
         return new ChassisSpeeds(0, 0, o);
+    }
+    @Override
+    public double angle(){
+        return setAngle;
     }
 }

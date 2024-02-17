@@ -30,6 +30,10 @@ public class IntakeSubsystem extends SubsystemBase {
                     io.setIntakeSpeedPercent(speedIntake);
                     io.setIndexerSpeedPercent(speedIndexer);
                 }
+                else{
+                    io.setIntakeSpeedPercent(0);
+                    io.setIndexerSpeedPercent(0);
+                }
             }
 
             @Override

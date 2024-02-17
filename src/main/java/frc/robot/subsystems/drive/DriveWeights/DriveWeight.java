@@ -8,4 +8,5 @@ public interface DriveWeight {
     public default Translation2d getCenterOfRot(){return new Translation2d();};
     public default double getWeight(){return 1;};
     public default void setWeight(double weight){};
+    public default double angle(){return 0;};
 }
