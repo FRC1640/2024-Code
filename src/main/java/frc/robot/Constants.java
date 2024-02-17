@@ -137,14 +137,15 @@ public final class Constants {
         public static int rightTargetingMotorId = 14; // TODO replace all of these constants
         public static double targetingLowerLimit = 0;
         public static double targetingUpperLimit = 90;
-        public static double targetingManualSpeed = 0.5; //
+        public static double targetingManualSpeed = 0.5; // TODO speed
         
-        public static double extensionLowerLimit = 0.0; // TODO grab from GitHub
-        public static double extensionUpperLimit = 0.0; // TODO as above
+        public static double extensionLowerLimit = 0.0; // TODO limit
+        public static double extensionUpperLimit = 1.0; // TODO limit
 
-        public static double targetingMinVoltage = 0.0; // TODO as above
-        public static double targetingMaxVoltage = 0.0; // TODO as above
+        public static double targetingMinVoltage = 0.05;
+        public static double targetingMaxVoltage = 4.95;
 
-        public static int extensionMotorId = 0; // TODO as above
+        public static int extensionMotorId = 15;
+        public static double extensionManualSpeed = 0.5;
     }
 }
