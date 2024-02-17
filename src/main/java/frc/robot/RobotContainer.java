@@ -44,7 +44,6 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
-import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
@@ -205,6 +204,8 @@ public class RobotContainer {
              DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
              DriveWeightCommand.removeWeight(mlVisionWeight)));
+        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(0.5));
+        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(-0.5));
     }
 
     public Command getAutonomousCommand() {
