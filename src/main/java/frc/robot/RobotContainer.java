@@ -206,6 +206,7 @@ public class RobotContainer {
              DriveWeightCommand.removeWeight(mlVisionWeight)));
         operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(TargetingConstants.extensionManualSpeed));
         operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(-TargetingConstants.extensionManualSpeed));
+        // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
     }
 
     public Command getAutonomousCommand() {

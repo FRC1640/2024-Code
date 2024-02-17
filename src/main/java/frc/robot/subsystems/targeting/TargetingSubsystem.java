@@ -246,4 +246,63 @@ public class TargetingSubsystem extends SubsystemBase {
     public double getExtensionPosition() {
         return getIO().getExtensionPosition();
     }
+
+    /**
+     * Extends to the given position.
+     * 
+     * @param position The position to extend to.
+     * @return New RunCommand.
+     */
+    public Command extend(double position) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setExtensionPercentOutput(getExtensionPIDSpeed(position));
+            }
+            @Override
+            public void end(boolean interrupted) {
+                setExtensionPercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    /**
+     * Extends to the given position.
+     * 
+     * @param position Supplier giving the position to extend to.
+     * @return New RunCommand.
+     */
+    public Command extend(DoubleSupplier position) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setExtensionPercentOutput(getExtensionPIDSpeed(position.getAsDouble()));
+            }
+            @Override
+            public void end(boolean interrupted) {
+                setExtensionPercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    /**
+     * Calculates the percent output of the ex
+     * tension motor needed
+     * to reach the inputted position as quickly as possible.
+     * 
+     * @param position The position to extend to.
+     * @return Percent output.
+     */
+    private double getExtensionPIDSpeed(double position) {
+        double speed = extensionPID.calculate(inputs.extensionPosition, position);
+        speed = MathUtil.clamp(speed, -1, 1);
+        if (Math.abs(speed) < 0.01) {
+            speed = 0;
+        }
+        return speed;
+    }
 }
