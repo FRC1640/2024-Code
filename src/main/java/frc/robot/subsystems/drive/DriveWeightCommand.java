@@ -40,7 +40,6 @@ public class DriveWeightCommand {
     }
 
     public static double getAngle(){
-        Logger.recordOutput("Drive/SetAngle", setAngle);
         return setAngle;
     }
 
@@ -61,7 +60,6 @@ public class DriveWeightCommand {
     }
 
     public static ChassisSpeeds getSpeeds(){
-        Logger.recordOutput("Drive/ChassisSpeeds", speeds);
         return speeds;
     }
 

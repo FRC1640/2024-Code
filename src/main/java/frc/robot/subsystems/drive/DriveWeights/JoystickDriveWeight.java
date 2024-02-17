@@ -113,13 +113,10 @@ public class JoystickDriveWeight implements DriveWeight {
             if (Math.abs(rot) < 0.01){
                 rot = 0;
             }
-            System.out.println(rot);
         }
         else{
             lastAngle = gyro.getRawAngleRadians();
         }
-        Logger.recordOutput("Drive/AngleError", Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
-            DriveWeightCommand.getAngle(),gyro.getAngleRotation2d().getRadians()))));
         return new ChassisSpeeds(xSpeed, ySpeed, rot);
 
         // if (!hold && leftTrigger.getAsBoolean()) {
