@@ -84,7 +84,8 @@ public class RobotContainer {
         switch (Robot.getMode()) {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
+                aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+                // aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
                 mlVision = new MLVision(new MLVisionIOLimelight());
                 // shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
