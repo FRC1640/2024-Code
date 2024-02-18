@@ -134,7 +134,7 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(1.0, 1.0, ()->intakeSubsystem.hasNote()));
 
         targetingSubsystem.setDefaultCommand(targetingSubsystem
-                .targetFocusPosition(
+                .anglePIDCommand(
                         () -> -0.956635
                                 * Math.toDegrees(
                                         Math.asin(-0.778591 * Units.metersToFeet(2.11)
@@ -165,20 +165,20 @@ public class RobotContainer {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
                 .alongWith(generateIntakeCommand())
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)));
+                        .alongWith(targetingSubsystem.anglePIDCommand(60)));
                         // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
         driveController.leftBumper().whileTrue(generateIntakeCommand());
         driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
                 .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)));
+                        .alongWith(targetingSubsystem.anglePIDCommand(60)));
 
         driveController.rightBumper()
                 .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
                         .alongWith(Commands.race(
                                 shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                                        .alongWith(targetingSubsystem.targetFocusPosition(60)),
+                                        .alongWith(targetingSubsystem.anglePIDCommand(60)),
                                 new WaitCommand(2))));
 
         driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
@@ -186,9 +186,9 @@ public class RobotContainer {
         driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
                 .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
         operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.targetingManualSpeed));
         new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
                 Math.abs(operatorController.getRightY()) > 0.1)
                 .whileTrue(climberSubsystem.setSpeedCommand(
@@ -204,8 +204,8 @@ public class RobotContainer {
              DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
              DriveWeightCommand.removeWeight(mlVisionWeight)));
-        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(TargetingConstants.extensionManualSpeed));
-        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(-TargetingConstants.extensionManualSpeed));
+        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
         // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
     }
 
@@ -230,7 +230,7 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(7)
+                () -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
                 && Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
                         DriveWeightCommand.getAngle(),gyro.getAngleRotation2d().getRadians()))) < 3));
     }
