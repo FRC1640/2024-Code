@@ -134,8 +134,8 @@ public final class Constants {
     }
 
     public static class TargetingConstants {
-        public static int leftTargetingMotorId = 12;
-        public static int rightTargetingMotorId = 14; // TODO replace all of these constants
+        public static int leftAnglerCanID = 12;
+        public static int rightAnglerCanID = 14; // TODO replace all of these constants
         public static double targetingLowerLimit = 0;
         public static double targetingUpperLimit = 90;
         public static double targetingManualSpeed = 0.5; // TODO speed
@@ -146,7 +146,7 @@ public final class Constants {
         public static double targetingMinVoltage = 0.05;
         public static double targetingMaxVoltage = 4.95;
 
-        public static int extensionMotorId = 15;
+        public static int extensionCanID = 15;
         public static double extensionManualSpeed = 0.5;
     }
 }

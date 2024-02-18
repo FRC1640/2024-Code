@@ -113,4 +113,33 @@ public class IntakeSubsystem extends SubsystemBase {
         return c;
     }
 
+    public Command testIntakeSpeedCommand(double intakeSpeed) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                io.setIntakeSpeedPercent(intakeSpeed);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                io.setIntakeSpeedPercent(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testIndexerSpeedCommand(double indexerSpeed) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                io.setIndexerSpeedPercent(indexerSpeed);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                io.setIndexerSpeedPercent(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
 }

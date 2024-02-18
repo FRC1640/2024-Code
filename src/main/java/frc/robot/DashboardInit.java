@@ -2,11 +2,10 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.function.DoubleConsumer;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -18,6 +17,10 @@ import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -69,7 +72,7 @@ public class DashboardInit {
                 break;
 
             case MOTOR:
-                // motorInit();
+                motorInit();
                 break;
         
             default:
@@ -112,11 +115,19 @@ public class DashboardInit {
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
     }
 
-    private static void motorInit(ArrayList<DoubleConsumer> motorSetSpeed) {
-        ShuffleboardTab motorTab = Shuffleboard.getTab("Motor");
-        for (int i = 1; i < motorSetSpeed.size(); i++) {
-
-        }
+    private static void motorInit(IntakeSubsystem intakeSubsystem, ClimberSubsystem climberSubsystem,
+            ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem) { // TODO motor ids
+        ArrayList<DoubleConsumer> motorSetSpeed = new ArrayList<>();
+        motorSetSpeed.add((intakeSpeed) -> intakeSubsystem.testIntakeSpeedCommand(intakeSpeed));
+        motorSetSpeed.add((indexerSpeed) -> intakeSubsystem.testIndexerSpeedCommand(indexerSpeed));
+        motorSetSpeed.add((climberSpeed) -> climberSubsystem.setSpeedCommand(climberSpeed, climberSpeed));
+        motorSetSpeed.add((topLeftSpeed) -> shooterSubsystem.testTopLeftSpeed(topLeftSpeed));
+        motorSetSpeed.add((topRightSpeed) -> shooterSubsystem.testTopRightSpeed(topRightSpeed));
+        motorSetSpeed.add((bottomLeftSpeed) -> shooterSubsystem.testBottomLeftSpeed(bottomLeftSpeed));
+        motorSetSpeed.add((bottomRightSpeed) -> shooterSubsystem.testBottomRightSpeed(bottomRightSpeed));
+        motorSetSpeed.add(() -> targetingSubsystem.);
+        ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
+        
     }
 
     public static TestMode getTestMode() {

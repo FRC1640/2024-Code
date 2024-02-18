@@ -102,4 +102,64 @@ public class ShooterSubsystem extends SubsystemBase {
      
         return true;
     }
+
+    public Command testTopLeftSpeed(double speed) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                io.testTopLeftSpeed(speed);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                io.testTopLeftSpeed(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testTopRightSpeed(double speed) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                io.testTopRightSpeed(speed);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                io.testTopRightSpeed(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testBottomLeftSpeed(double speed) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                io.testBottomLeftSpeed(speed);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                io.testBottomLeftSpeed(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testBottomRightSpeed(double speed) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                io.testBottomRightSpeed(speed);
+            }
+            @Override
+            public void end(boolean interrupted) {
+                io.testBottomRightSpeed(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
 }

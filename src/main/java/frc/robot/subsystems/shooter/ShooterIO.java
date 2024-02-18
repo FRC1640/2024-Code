@@ -34,4 +34,16 @@ public interface ShooterIO {
 
     public default void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
     }
+
+    public default void testTopLeftSpeed(double speed) {
+    }
+
+    public default void testTopRightSpeed(double speed) {
+    }
+
+    public default void testBottomLeftSpeed(double speed) {
+    }
+
+    public default void testBottomRightSpeed(double speed) {
+    }
 }

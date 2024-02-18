@@ -59,4 +59,32 @@ public class ShooterIOSim implements ShooterIO {
         inputs.bottomRightAppliedVoltage = bottomRightVoltage;
         inputs.bottomRightCurrentAmps = bottomRightShooterSimulated.getCurrentDrawAmps();
     }
+
+    @Override
+    public void testTopLeftSpeed(double speed) {
+        MathUtil.clamp(speed, -1, 1);
+        topLeftShooterSimulated.setInputVoltage(speed * 12);
+        topLeftVoltage = speed * 12;
+    }
+
+    @Override
+    public void testTopRightSpeed(double speed) {
+        MathUtil.clamp(speed, -1, 1);
+        topRightShooterSimulated.setInputVoltage(speed * 12);
+        topRightVoltage = speed * 12;
+    }
+
+    @Override
+    public void testBottomLeftSpeed(double speed) {
+        MathUtil.clamp(speed, -1, 1);
+        bottomLeftShooterSimulated.setInputVoltage(speed * 12);
+        bottomLeftVoltage = speed * 12;
+    }
+
+    @Override
+    public void testBottomRightSpeed(double speed) {
+        MathUtil.clamp(speed, -1, 1);
+        bottomRightShooterSimulated.setInputVoltage(speed * 12);
+        bottomRightVoltage = speed * 12;
+    }
 }

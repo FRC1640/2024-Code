@@ -19,9 +19,9 @@ public class TargetingIOSparkMax implements TargetingIO {
     // TODO override voltage methods
 
     public TargetingIOSparkMax() {
-        leftTargetingMotor = new CANSparkMax(TargetingConstants.leftTargetingMotorId, MotorType.kBrushless);
-        rightTargetingMotor = new CANSparkMax(TargetingConstants.rightTargetingMotorId, MotorType.kBrushless);
-        extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
+        leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAnglerCanID, MotorType.kBrushless);
+        rightTargetingMotor = new CANSparkMax(TargetingConstants.rightAnglerCanID, MotorType.kBrushless);
+        extensionMotor = new CANSparkMax(TargetingConstants.extensionCanID, MotorType.kBrushless);
     }
 
     @Override
