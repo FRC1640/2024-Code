@@ -79,12 +79,11 @@ public class DashboardInit {
         }
         PIDTab.add(pidChooser)
                 .withSize(4, 4)
-                .withPosition(1, 1);
-        GenericEntry kP = PIDTab.add("P", 0).getEntry();
-        GenericEntry kI = PIDTab.add("I", 0).getEntry();
-        GenericEntry kD = PIDTab.add("D", 0).getEntry();
-        GenericEntry kSetpoint = PIDTab.add("Setpoint", 0).getEntry();
-        PIDUpdate.setEntries(kP, kI, kD, kSetpoint);
+                .withPosition(0, 1);
+        GenericEntry kP = PIDTab.add("P", 0).withSize(1,1).withPosition(0,0).getEntry();
+        GenericEntry kI = PIDTab.add("I", 0).withSize(1,1).withPosition(1,0).getEntry();
+        GenericEntry kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
+        PIDUpdate.setEntries(kP, kI, kD);
         pidChooser.onChange(DashboardInit::onPIDChooserChange);
     }
 

@@ -129,6 +129,10 @@ public final class Constants {
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // TODO values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
+
+        public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
+
+        public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
     }
     public static class FieldConstants{
         public static double height = 8.21;

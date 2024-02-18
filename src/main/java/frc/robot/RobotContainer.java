@@ -119,8 +119,6 @@ public class RobotContainer {
                 });
                 climberSubsystem = new ClimberSubsystem(new ClimberIO() {
                 });
-                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
-                });
                 mlVision = new MLVision(new MLVisionIO(){});
                 break;
         }
@@ -206,7 +204,7 @@ public class RobotContainer {
              DriveWeightCommand.removeWeight(mlVisionWeight)));
         operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(TargetingConstants.extensionManualSpeed));
         operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionOutputCommand(-TargetingConstants.extensionManualSpeed));
-        operatorController.x().onTrue(targetingSubsystem.extend(0.5));
+        // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
     }
 
     public Command getAutonomousCommand() {
@@ -219,6 +217,7 @@ public class RobotContainer {
         shooterSubsystem.removeDefaultCommand();
         intakeSubsystem.removeDefaultCommand();
         targetingSubsystem.removeDefaultCommand();
+        climberSubsystem.removeDefaultCommand();
     }
 
     private Alliance getAlliance() {
