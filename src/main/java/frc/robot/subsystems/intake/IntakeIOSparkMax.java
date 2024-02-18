@@ -55,5 +55,15 @@ public class IntakeIOSparkMax implements IntakeIO {
 
         
         inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold; // TODO sensing
-    } 
+    }
+
+    @Override
+    public double getIntakePercentOutput() {
+        return intakeMotor.getAppliedOutput();
+    }
+
+    @Override
+    public double getIndexerPercentOutput() {
+        return indexerMotor.getAppliedOutput();
+    }
 }

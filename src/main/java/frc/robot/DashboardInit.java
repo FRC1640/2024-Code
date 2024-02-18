@@ -1,7 +1,13 @@
 package frc.robot;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+
+import javax.management.openmbean.TabularType;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -31,6 +37,10 @@ public class DashboardInit {
     private static SendableChooser<Command> sysidChooser = new SendableChooser<Command>();
 
     private static DriveSubsystem driveSubsystem;
+    private static IntakeSubsystem intakeSubsystem;
+    private static ClimberSubsystem climberSubsystem;
+    private static ShooterSubsystem shooterSubsystem;
+    private static TargetingSubsystem targetingSubsystem;
     private static CommandXboxController controller;
 
     private static final Field2d field = new Field2d();
@@ -39,12 +49,18 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller,
+            AprilTagVision vision, IntakeSubsystem intakeSubsystem, ClimberSubsystem climberSubsystem,
+                ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem) {
         autonInit();
         matchInit(vision);
         testInit();
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.controller = controller;
+        DashboardInit.intakeSubsystem = intakeSubsystem;
+        DashboardInit.climberSubsystem = climberSubsystem;
+        DashboardInit.shooterSubsystem = shooterSubsystem;
+        DashboardInit.targetingSubsystem = targetingSubsystem;
     }
 
     private static void autonInit() {
@@ -72,7 +88,7 @@ public class DashboardInit {
                 break;
 
             case MOTOR:
-                motorInit();
+                motorInit(intakeSubsystem, climberSubsystem, shooterSubsystem, targetingSubsystem);
                 break;
         
             default:
@@ -117,15 +133,20 @@ public class DashboardInit {
 
     private static void motorInit(IntakeSubsystem intakeSubsystem, ClimberSubsystem climberSubsystem,
             ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem) { // TODO motor ids
-        ArrayList<DoubleConsumer> motorSetSpeed = new ArrayList<>();
-        motorSetSpeed.add((intakeSpeed) -> intakeSubsystem.testIntakeSpeedCommand(intakeSpeed));
-        motorSetSpeed.add((indexerSpeed) -> intakeSubsystem.testIndexerSpeedCommand(indexerSpeed));
-        motorSetSpeed.add((climberSpeed) -> climberSubsystem.setSpeedCommand(climberSpeed, climberSpeed));
-        motorSetSpeed.add((topLeftSpeed) -> shooterSubsystem.testTopLeftSpeed(topLeftSpeed));
-        motorSetSpeed.add((topRightSpeed) -> shooterSubsystem.testTopRightSpeed(topRightSpeed));
-        motorSetSpeed.add((bottomLeftSpeed) -> shooterSubsystem.testBottomLeftSpeed(bottomLeftSpeed));
-        motorSetSpeed.add((bottomRightSpeed) -> shooterSubsystem.testBottomRightSpeed(bottomRightSpeed));
-        motorSetSpeed.add(() -> targetingSubsystem.);
+        DoubleConsumer[] consumers = {(intakeSpeed) -> intakeSubsystem.testIntakeSpeedCommand(intakeSpeed),
+            (indexerSpeed) -> intakeSubsystem.testIndexerSpeedCommand(indexerSpeed),
+            (climberSpeed) -> climberSubsystem.setSpeedCommand(climberSpeed, climberSpeed),
+            (topLeftSpeed) -> shooterSubsystem.testTopLeftSpeed(topLeftSpeed),
+            (topRightSpeed) -> shooterSubsystem.testTopRightSpeed(topRightSpeed),
+            (bottomLeftSpeed) -> shooterSubsystem.testBottomLeftSpeed(bottomLeftSpeed),
+            (bottomRightSpeed) -> shooterSubsystem.testBottomRightSpeed(bottomRightSpeed),
+            (angleSpeed) -> targetingSubsystem.setAnglePercentOutputCommand(angleSpeed),
+            (extensionSpeed) -> targetingSubsystem.setExtensionPercentOutputCommand(extensionSpeed)};
+        ArrayList<DoubleConsumer> motorSetSpeed = new ArrayList<>(Arrays.asList(consumers));
+        DoubleSupplier[] suppliers = {() -> intakeSubsystem.getIntakePercentOutput(),
+            () -> intakeSubsystem.getIndexerPercentOutput(), () -> climberSubsystem.getPercentOutput(),
+            () -> shooterSubsystem.getTopLeftSpeed(), () -> shooterSubsystem.getTopRightSpeed(),
+            () -> shooterSubsystem.getBottomLeftSpeed(), () -> shooterSubsystem.getBottomRightSpeed()};
         ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
         
     }

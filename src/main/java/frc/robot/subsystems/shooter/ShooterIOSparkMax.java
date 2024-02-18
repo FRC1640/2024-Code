@@ -79,4 +79,24 @@ public class ShooterIOSparkMax implements ShooterIO {
         MathUtil.clamp(speed, -1, 1);
         bottomRightShooter.set(speed);
     }
+
+    @Override
+    public double getTopLeftSpeed() {
+        return topLeftShooter.getAppliedOutput();
+    }
+
+    @Override
+    public double getTopRightSpeed() {
+        return topRightShooter.getAppliedOutput();
+    }
+
+    @Override
+    public double getBottomLeftSpeed() {
+        return bottomLeftShooter.getAppliedOutput();
+    }
+
+    @Override
+    public double getBottomRightSpeed() {
+        return bottomRightShooter.getAppliedOutput();
+    }
 }

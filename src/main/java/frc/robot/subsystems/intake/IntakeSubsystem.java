@@ -142,4 +142,12 @@ public class IntakeSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+
+    public double getIntakePercentOutput() {
+        return io.getIntakePercentOutput();        
+    }
+
+    public double getIndexerPercentOutput() {
+        return io.getIndexerPercentOutput();        
+    }
 }

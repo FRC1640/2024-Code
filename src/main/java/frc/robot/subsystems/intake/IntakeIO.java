@@ -33,4 +33,11 @@ public interface IntakeIO {
     public default void setIndexerSpeedPercent(double speed) {
     }
 
+    public default double getIntakePercentOutput() {
+        return 0;
+    }
+
+    public default double getIndexerPercentOutput() {
+        return 0;
+    }
 }

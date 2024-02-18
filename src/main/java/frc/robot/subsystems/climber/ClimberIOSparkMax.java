@@ -56,4 +56,14 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.rightTempCelcius = rightMotor.getMotorTemperature();
         inputs.rightClimberPositionDegrees = rightEncoder.getD();
     }
+
+    @Override
+    public double getLeftPercentOutput() {
+        return leftMotor.getAppliedOutput();
+    }
+
+    @Override
+    public double getRightPercentOutput() {
+        return rightMotor.getAppliedOutput();
+    }
 }

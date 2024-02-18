@@ -46,4 +46,20 @@ public interface ShooterIO {
 
     public default void testBottomRightSpeed(double speed) {
     }
+
+    public default double getTopLeftSpeed() {
+        return 0;
+    }
+
+    public default double getTopRightSpeed() {
+        return 0;
+    }
+
+    public default double getBottomLeftSpeed() {
+        return 0;
+    }
+
+    public default double getBottomRightSpeed() {
+        return 0;
+    }
 }

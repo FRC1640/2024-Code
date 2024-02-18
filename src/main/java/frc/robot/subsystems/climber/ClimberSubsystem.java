@@ -89,4 +89,8 @@ public class ClimberSubsystem extends SubsystemBase{
         setpoint = position;
         return speed;
     }
+
+    public double getPercentOutput() {
+        return (io.getLeftPercentOutput() + io.getRightPercentOutput()) / 2;
+    }
 }

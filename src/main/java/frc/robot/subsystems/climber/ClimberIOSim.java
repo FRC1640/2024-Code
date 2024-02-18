@@ -60,4 +60,14 @@ public class ClimberIOSim implements ClimberIO{
         rightClimbingMotorSimulated.setInputVoltage(speed * 12);
 
     }
+
+    @Override
+    public double getLeftPercentOutput() {
+        return leftMotorVoltage / 12;
+    }
+
+    @Override
+    public double getRightPercentOutput() {
+        return rightMotorVoltage / 12;
+    }
 }

@@ -87,4 +87,24 @@ public class ShooterIOSim implements ShooterIO {
         bottomRightShooterSimulated.setInputVoltage(speed * 12);
         bottomRightVoltage = speed * 12;
     }
+
+    @Override
+    public double getTopLeftSpeed() {
+        return topLeftVoltage / 12;
+    }
+
+    @Override
+    public double getTopRightSpeed() {
+        return topRightVoltage / 12;
+    }
+
+    @Override
+    public double getBottomLeftSpeed() {
+        return bottomLeftVoltage / 12;
+    }
+
+    @Override
+    public double getBottomRightSpeed() {
+        return bottomRightVoltage / 12;
+    }
 }

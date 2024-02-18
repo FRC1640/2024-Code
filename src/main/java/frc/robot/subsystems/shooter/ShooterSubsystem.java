@@ -162,4 +162,20 @@ public class ShooterSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+
+    public double getTopLeftSpeed() {
+        return io.getTopLeftSpeed();
+    }
+
+    public double getTopRightSpeed() {
+        return io.getTopRightSpeed();
+    }
+
+    public double getBottomLeftSpeed() {
+        return io.getBottomLeftSpeed();
+    }
+
+    public double getBottomRightSpeed() {
+        return io.getBottomRightSpeed();
+    }
 }

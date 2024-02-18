@@ -3,7 +3,6 @@ package frc.robot.subsystems.climber;
 import org.littletonrobotics.junction.AutoLog;
 
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.TargetingConstants;
 
 public interface ClimberIO {
     @AutoLog
@@ -56,5 +55,13 @@ public interface ClimberIO {
             speedClamped = Math.min(speed, 0);
         }
         return speedClamped;
+    }
+
+    public default double getLeftPercentOutput() {
+        return 0;
+    }
+
+    public default double getRightPercentOutput() {
+        return 0;
     }
 }

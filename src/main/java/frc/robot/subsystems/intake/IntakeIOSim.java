@@ -47,4 +47,13 @@ public class IntakeIOSim implements IntakeIO {
         
         inputs.hasNote = note.getAsBoolean();
     }
+
+    @Override
+    public double getIntakePercentOutput() {
+        return intakeMotorVoltage / 12;
+    }
+
+    public double getIndexerPercentOutput() {
+        return indexerMotorVoltage / 12;
+    }
 }
