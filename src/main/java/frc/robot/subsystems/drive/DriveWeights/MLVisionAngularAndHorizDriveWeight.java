@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
-    private PIDController angularController = new PIDController(0.005, 0, 0); // Constants.PIDConstants.rotPID;
-    private PIDController horizontalController = new PIDController(0.004, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController angularController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController horizontalController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
 
     private double angularVelocity = 0;
     private double horizontalVelocity = 0;
@@ -34,10 +34,12 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     // private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 5;
+    private double distanceLim = 6;
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
 
     private double initTime = 0;
+
+    private boolean rotateMode = true;
     
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision, CommandXboxController driveController,
@@ -63,7 +65,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             new ChassisSpeeds(0 , 0, 0); 
 
         }
-        else if (Math.abs(vision.getTX()) > distanceLim) {
+        else if (Math.abs(vision.getTX()) > distanceLim && rotateMode) {
             System.out.println(" TX IS " + vision.getTX() + "GREATER THAN dist linm " + distanceLim);
             System.out.println(" help");
             
@@ -83,6 +85,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             
         }
         else {
+            rotateMode = false;
 
             horizontalVelocity = horizontalController.calculate(vision.getTX());
             horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
