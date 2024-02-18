@@ -19,8 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     private PIDController angularController = new PIDController(0.004, 0, 0); // Constants.PIDConstants.rotPID;
-    private PIDController horizontalController = new PIDController(0.008, 0, 0); // Constants.PIDConstants.rotPID;
-
+    private PIDController horizontalController = new PIDController(0.004, 0, 0); // Constants.PIDConstants.rotPID;
 
     private double angularVelocity;
     private double horizontalVelocity;
@@ -36,10 +35,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
 
     private double initTime = 0;
-
-    private boolean targetNoteSet = false; // target note signafies the note, out of the multiple visible, which is the objective to intake
-    private double previousTX = 0;
-    private double deltaTX = 0;
+    
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision, CommandXboxController driveController,
             Supplier<Rotation2d> angleSupplier) {
@@ -47,17 +43,11 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         this.angleSupplier = angleSupplier;
         this.driveController = driveController;
 
-        scanForTargetNote();
-        
-        if (targetNoteSet){
-            System.out.println("SET IN INITIALIZATION 1");
-        }
     }
 
     @Override
     public ChassisSpeeds getSpeeds() {
-        
-        
+
         angularVelocity = angularController.calculate(vision.getTX());
         angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
         angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
@@ -66,33 +56,32 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
         horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
 
-
+        // return chassisSpeedsToTurn;
+        if (!vision.isTarget()) {
+            //System.out.println(" NO Target " + vision.isTarget() + targetNoteSet);
+            chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
+            return chassisSpeedsToTurn;
+        }
 
         if (Math.abs(vision.getTX()) > distanceLim) {
-                chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
-                deltaTX = vision.getTX()-previousTX;
-                Logger.recordOutput("MLVision/Delta TX", deltaTX);
-                Logger.recordOutput("MLVision/Input Rotational Velocity", angularVelocity);
+            chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
 
-                // return chassisSpeedsToTurn;
-        } else if (!isDriveToNoteFinished()) {
-                chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                        new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
-                        angleSupplier.get());
-                // return chassisSpeedsToTurn;
+            //deltaTX = vision.getTX() - previousTX;
+            //Logger.recordOutput("MLVision/Delta TX", deltaTX);
+            Logger.recordOutput("MLVision/Input Rotational Velocity", angularVelocity);
         }
 
-        if (!vision.isTarget()) {
-            System.out.println(" NO Target " + vision.isTarget() + targetNoteSet);
-
-            scanForTargetNote();
-            chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
-            // return chassisSpeedsToTurn;
-            
-        }
-        System.out.println("TEST PRINT PrevTX? " + targetNoteSet + "prev tx " + previousTX);
+    /* } else if (!isDriveToNoteFinished()) {
+            chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
+            new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
+             angleSupplier.get());
+                return chassisSpeedsToTurn; 
+    }
+    */ 
+        
         return chassisSpeedsToTurn;
     }
+    
 
     public boolean isDriveToNoteFinished() { // add intake limit later
 
@@ -113,17 +102,9 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         return false;
     }
 
-    private void scanForTargetNote() {
-        if (vision.isTarget()) {
-            targetNoteSet = true;
-            previousTX = vision.getTX();
-        }
-        System.out.println("SET to ---- " + targetNoteSet);
 
-    }
-
-
-    // TODO : Graph delta tx by rotational velocity to get an equation: with this suggested velocity (calculated from the current tx through the PID), how much will the tx change by? -> new tx
-
+    // TODO : Graph delta tx by rotational velocity to get an equation: with this
+    // suggested velocity (calculated from the current tx through the PID), how much
+    // will the tx change by? -> new tx
 
 }

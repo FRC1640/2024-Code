@@ -41,6 +41,7 @@ public class MLVision extends PeriodicBase {
         llresults = LimelightHelpers.getLatestResults("limelight-ml");
         resultsArray = llresults.targetingResults.targets_Detector;
         numNotesInView = resultsArray.length;
+        System.out.println("numNotes in view" + numNotesInView + " == " + resultsArray.length);
 
         if (isTarget()){
             targetNote = calculateTargetNote();
@@ -131,7 +132,6 @@ public class MLVision extends PeriodicBase {
 
         ArrayList<LimelightHelpers.LimelightTarget_Detector> notesWithinThreshold = new ArrayList<LimelightHelpers.LimelightTarget_Detector>() ;
         double minTX = 27;
-        int feasibleIndexWithLeastTX = -1;
         LimelightHelpers.LimelightTarget_Detector finalNote = new LimelightHelpers.LimelightTarget_Detector();
 
         // Get rid of ones with class != note AKA fill notesArray list
@@ -163,18 +163,20 @@ public class MLVision extends PeriodicBase {
         }
 
         numNotesWithinThreshold = notesWithinThreshold.size();
+        System.out.println("Num notes in threshold: " + numNotesWithinThreshold);
 
         // find the leftmose note within threshold
         if (notesWithinThreshold.size() > 0){
             for (int i = 0; i < notesWithinThreshold.size(); i++) {
                 LimelightHelpers.LimelightTarget_Detector detector = notesWithinThreshold.get(i);
                 double tx = detector.tx;
+                System.out.println("TX VAL "+ detector.tx);
                 if (tx < minTX) { 
                     minTX = tx;
-                    feasibleIndexWithLeastTX = i;
-                    detector = finalNote;
+                    finalNote = detector;
                 }
             }
+            System.out.println("TX VAL Fin "+ finalNote.tx);
         }
 
         return finalNote;
