@@ -20,10 +20,12 @@ public class MLVision extends PeriodicBase {
    
     private LimelightHelpers.LimelightResults  llresults;
     private LimelightHelpers.LimelightTarget_Detector[] resultsArray;
-    private LimelightHelpers.LimelightTarget_Detector targetNote;
 
-    private int numNotesInView;
-    private int numNotesWithinThreshold;
+    private LimelightHelpers.LimelightTarget_Detector targetNote;
+    private boolean isTargetNote = false; // has the target note been set
+
+    private int numNotesInView = 0;
+    private int numNotesWithinThreshold = 0;
 
 
 
@@ -42,6 +44,10 @@ public class MLVision extends PeriodicBase {
 
         if (isTarget()){
             targetNote = calculateTargetNote();
+            isTargetNote = true;
+        }
+        else{
+            isTargetNote = false;
         }
 
         Logger.processInputs("ML Vision", inputs);
@@ -49,6 +55,7 @@ public class MLVision extends PeriodicBase {
         Logger.recordOutput("MLVision/Distance to note", getDistance());
         
         // all of the tx ty whatever
+        Logger.recordOutput("MLVision/Is Target Note Set?", isTargetNote);
         Logger.recordOutput("MLVision/Target TX", getTX());
         Logger.recordOutput("MLVision/Target TA", getTA());
         Logger.recordOutput("MLVision/Target TY", getTY());  
@@ -71,16 +78,31 @@ public class MLVision extends PeriodicBase {
         return inputs.isTarget;
     }
 
-    public double getTX(){   
-        return targetNote.tx;
+    public double getTX(){
+        if (isTargetNote){   
+            return targetNote.tx;
+        }
+        else{
+            return inputs.tx;
+        }
     }
     
     public double getTY(){
-        return targetNote.ty;
+        if (isTargetNote){   
+            return targetNote.ty;
+        }
+        else{
+            return inputs.ty;
+        }
     }
     
     public double getTA(){
-        return targetNote.ta;
+        if (isTargetNote){   
+            return targetNote.ta;
+        }
+        else{
+            return inputs.ta;
+        }
     }
 
     public double getDistance(){
