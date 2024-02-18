@@ -119,8 +119,6 @@ public class RobotContainer {
                 });
                 climberSubsystem = new ClimberSubsystem(new ClimberIO() {
                 });
-                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
-                });
                 mlVision = new MLVision(new MLVisionIO(){});
                 break;
         }
@@ -219,6 +217,7 @@ public class RobotContainer {
         shooterSubsystem.removeDefaultCommand();
         intakeSubsystem.removeDefaultCommand();
         targetingSubsystem.removeDefaultCommand();
+        climberSubsystem.removeDefaultCommand();
     }
 
     private Alliance getAlliance() {

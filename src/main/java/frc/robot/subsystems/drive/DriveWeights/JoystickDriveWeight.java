@@ -45,7 +45,7 @@ public class JoystickDriveWeight implements DriveWeight {
 
     private Translation2d centerOfRot = new Translation2d();
 
-    PIDController rotPID = PIDConstants.constructPID(PIDConstants.gyroCorrectPid);
+    PIDController rotPID = PIDConstants.constructPID(PIDConstants.gyroCorrectPid, "gyrocorrect");
 
     private double lastAngle;
 

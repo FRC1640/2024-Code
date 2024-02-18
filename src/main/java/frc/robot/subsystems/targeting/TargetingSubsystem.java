@@ -16,14 +16,14 @@ import frc.robot.Constants.PIDConstants;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID);
+    PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID, "angle");
     public double setpoint = 0.0;
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
     private MechanismLigament2d angler = new MechanismLigament2d("angler", 1, 0);
 
     public double extensionSetpoint = 0.0;
-    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID);
+    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID, "extension");
 
     
 
