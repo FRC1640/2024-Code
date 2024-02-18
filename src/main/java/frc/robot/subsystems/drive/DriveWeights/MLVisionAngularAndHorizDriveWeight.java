@@ -67,19 +67,11 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
 
 
-        if (!targetNoteSet){
-            System.out.println("NO TARGET NOTE" + targetNoteSet + "Is a note visible? " + vision.isTarget());
-            scanForTargetNote();
-            chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
-            return chassisSpeedsToTurn;
-        }
-
 
         if (Math.abs(vision.getTX()) > distanceLim) {
                 chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
                 deltaTX = vision.getTX()-previousTX;
                 Logger.recordOutput("MLVision/Delta TX", deltaTX);
-                Logger.recordOutput("MLVision/Previous TX", previousTX);
                 Logger.recordOutput("MLVision/Input Rotational Velocity", angularVelocity);
 
                 // return chassisSpeedsToTurn;
@@ -128,10 +120,6 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         }
         System.out.println("SET to ---- " + targetNoteSet);
 
-    }
-
-    private double caclulatePredictedNextTX(){
-        return 2.0;
     }
 
 

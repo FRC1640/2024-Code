@@ -25,7 +25,8 @@ public class MLVision extends PeriodicBase {
 
     public MLVision(MLVisionIO io) {
         this.io = io;
-
+        llresults = LimelightHelpers.getLatestResults("limelight-ml");
+        resultsArray = llresults.targetingResults.targets_Detector;
     }
 
     public void periodic() {
@@ -33,7 +34,9 @@ public class MLVision extends PeriodicBase {
         
         llresults = LimelightHelpers.getLatestResults("limelight-ml");
         resultsArray = llresults.targetingResults.targets_Detector;
-        targetNote = calculateTargetNote();
+        if (isTarget()){
+            targetNote = calculateTargetNote();
+        }
 
         Logger.processInputs("ML Vision", inputs);
         Logger.recordOutput("Distance to note", getDistance());
@@ -90,6 +93,7 @@ public class MLVision extends PeriodicBase {
         ArrayList<LimelightHelpers.LimelightTarget_Detector> notesWithinThreshold = new ArrayList<LimelightHelpers.LimelightTarget_Detector>() ;
         double minTX = 27;
         int feasibleIndexWithLeastTX = -1;
+        LimelightHelpers.LimelightTarget_Detector finalNote = new LimelightHelpers.LimelightTarget_Detector();
 
         // Get rid of ones with class != note AKA fill notesArray list
         for (int i = 0; i < resultsArray.length; i++) {
@@ -127,11 +131,11 @@ public class MLVision extends PeriodicBase {
             if (tx < minTX) { 
                 minTX = tx;
                 feasibleIndexWithLeastTX = i;
+                detector = finalNote;
             }
         }
 
-        return notesWithinThreshold.get(feasibleIndexWithLeastTX);
-
+        return finalNote;
     }
 
    
