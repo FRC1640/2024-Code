@@ -110,6 +110,10 @@ public final class Constants {
         public static PIDController rotPID = new PIDController(0.45, 0.00000, 0.00);
         public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
+        
+        public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
+        public static PIDController rotMLVision = new PIDController(0.006, 0, 0);
+        
     }
     public static class FieldConstants{
         public static double height = 8.21;

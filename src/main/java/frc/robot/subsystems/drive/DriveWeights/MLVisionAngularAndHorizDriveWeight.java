@@ -3,6 +3,9 @@ package frc.robot.subsystems.drive.DriveWeights;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import frc.robot.Constants.PIDConstants;
+
 import frc.lib.periodic.PeriodicBase;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
-    private PIDController angularController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
-    private PIDController horizontalController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision); //new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision);//new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
 
     private double angularVelocity = 0;
     private double horizontalVelocity = 0;
