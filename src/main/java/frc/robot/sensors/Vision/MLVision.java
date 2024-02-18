@@ -39,7 +39,14 @@ public class MLVision extends PeriodicBase {
         }
 
         Logger.processInputs("ML Vision", inputs);
-        Logger.recordOutput("Distance to note", getDistance());
+
+        Logger.recordOutput("MLVision/Distance to note", getDistance());
+        
+        // all of the tx ty whatever
+        Logger.recordOutput("MLVision/Target TX", getTX());
+        Logger.recordOutput("MLVision/Target TA", getTA());
+        Logger.recordOutput("MLVision/Target TY", getTY());        
+        
         io.takeSnapshot(inputs);
     }
     
@@ -75,7 +82,7 @@ public class MLVision extends PeriodicBase {
         else{
             trigDistance = Units.inchesToMeters( // "d = (h2-h1) / tan(a1+a2)"
                 (Constants.LimelightConstants.noteHeightInches - Constants.LimelightConstants.limelightLensHeight)
-                        / Math.tan(Math.toRadians(inputs.ty + Constants.LimelightConstants.limelightAngle)));
+                        / Math.tan(Math.toRadians(getTY() + Constants.LimelightConstants.limelightAngle)));
         
         }
         return trigDistance;
