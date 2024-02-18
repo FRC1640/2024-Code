@@ -1,5 +1,6 @@
 package frc.lib.drive;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -34,18 +35,19 @@ import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.robot.Constants;
+import frc.robot.DashboardInit;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
-import frc.robot.sensors.Vision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 
 public class DriveSubsystem extends SubsystemBase {
 
     Gyro gyro;
-    AprilTagVision vision;
+    ArrayList<AprilTagVision> visions = new ArrayList<AprilTagVision>();
 
     private Module frontLeft;
     private Module frontRight;
@@ -63,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
         this.gyro = gyro;
-        this.vision = vision;
+        visions.add(vision);
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -116,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> DriverStation.getAlliance().isPresent()
                         && DriverStation.getAlliance().get() == Alliance.Red,
                 this);
-        //setup pathplanning logs
+        // setup pathplanning logs
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
@@ -143,6 +145,8 @@ public class DriveSubsystem extends SubsystemBase {
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
+
+        DashboardInit.setFieldPos(getPose());
     }
 
     public SwerveModuleState[] getActualSwerveStates() {
@@ -155,22 +159,25 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateOdometry() {
-        if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
-            // System.out.println("vision");
-            // TODO: TUNE
-            
-            double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
-            
-            // velocity standard deviation constant
-          
-            double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                    getActualSwerveStates()).vxMetersPerSecond,
-                    SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond), 2);
-                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency()
-                    ,VecBuilder.fill(VisionConstants.xyStdDev * distConst,
-                            VisionConstants.xyStdDev * distConst,
-                            VisionConstants.thetaStdDev)
-                            );
+        for (AprilTagVision vision : visions) {
+            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
+                // System.out.println("vision");
+                // TODO: TUNE
+
+                double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+
+                // velocity standard deviation constant
+
+                double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                        getActualSwerveStates()).vxMetersPerSecond,
+                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
+                        1);
+                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                        VecBuilder.fill(VisionConstants.xyStdDev * distConst + velConst / 5,
+                                VisionConstants.xyStdDev * distConst + velConst / 5,
+                                VisionConstants.thetaStdDev * distConst + velConst / 5));
+            }
+
         }
         // update odometry
         odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
@@ -313,5 +320,18 @@ public class DriveSubsystem extends SubsystemBase {
                 new Subsystem[] {})
                 .andThen(new InstantCommand(
                         () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));
+    }
+
+    public Command resetOdometryAprilTag() {
+        return new InstantCommand(() -> resetOdometry(getAprilTagPose()));
+        
+    }
+    public Pose2d getAprilTagPose(){
+        for (AprilTagVision vision : visions) {
+            if (vision.isTarget()){
+                return vision.getAprilTagPose2d();
+            }
+        }
+        return getPose();
     }
 }

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
+import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
@@ -31,17 +32,20 @@ import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
 import frc.robot.sensors.Gyro.GyroIOSim;
-import frc.robot.sensors.Vision.AprilTagVision;
-import frc.robot.sensors.Vision.MLVision;
-import frc.robot.sensors.Vision.MLVisionIOLimelight;
-import frc.robot.sensors.Vision.MLVisionIOSim;
-import frc.robot.sensors.Vision.AprilTagVisionIO;
-import frc.robot.sensors.Vision.AprilTagVisionIOLimelight;
-import frc.robot.sensors.Vision.AprilTagVisionIOSim;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
+import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVisionIO;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
@@ -49,11 +53,9 @@ import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeigh
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
-import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class RobotContainer {
@@ -67,6 +69,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
+    private ClimberSubsystem climberSubsystem;
     private TargetingSubsystem targetingSubsystem;
 
     RotateLockWeight rotateLockWeight;
@@ -75,15 +78,18 @@ public class RobotContainer {
 
     MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 
+    JoystickDriveWeight joystickDriveWeight;
+
     public RobotContainer() {
         switch (Robot.getMode()) {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight());
+                aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
                 mlVision = new MLVision(new MLVisionIOLimelight());
                 // shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
                 //intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+                climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
                 // targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
@@ -96,7 +102,8 @@ public class RobotContainer {
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
                 mlVision = new MLVision(new MLVisionIOSim());
 
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
+                climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
                 break;
 
@@ -111,20 +118,22 @@ public class RobotContainer {
                 });
                 targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
                 });
-                mlVision = new MLVision(new MLVisionIOLimelight());
-
+                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
+                });
+                mlVision = new MLVision(new MLVisionIO(){});
                 break;
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
-        DriveWeightCommand.addWeight(new JoystickDriveWeight(driveController, gyro));
+        joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
+        DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(1.0, 1.0));
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(1.0, 1.0, ()->intakeSubsystem.hasNote()));
 
         targetingSubsystem.setDefaultCommand(targetingSubsystem
-                .targetFocusPosition(
+                .anglePIDCommand(
                         () -> -0.956635
                                 * Math.toDegrees(
                                         Math.asin(-0.778591 * Units.metersToFeet(2.11)
@@ -138,7 +147,7 @@ public class RobotContainer {
                 () -> (getAlliance() == Alliance.Blue
                         ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
                         : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-                driveSubsystem::getPose, gyro);
+                driveSubsystem::getPose, gyro, ()->joystickDriveWeight.getTranslationalSpeed());
 
         autoDriveWeight = new AutoDriveWeight(
                 () -> (getAlliance() == Alliance.Blue
@@ -146,7 +155,7 @@ public class RobotContainer {
                         : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
                 driveSubsystem::getPose, gyro);
         
-        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, driveController, gyro::getAngleRotation2d);
+        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
         configureBindings();
     }
@@ -154,33 +163,35 @@ public class RobotContainer {
     private void configureBindings() {
 
         driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                .alongWith(new InstantCommand(() -> generateIntakeCommand().schedule())
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)))); // amp shot
+                .alongWith(generateIntakeCommand())
+                        .alongWith(targetingSubsystem.anglePIDCommand(60)));
+                        // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-        driveController.y().onTrue(driveSubsystem.resetOdometryCommand(new
-        Pose2d(0, 0, new Rotation2d(0))));
-        driveController.leftBumper().whileTrue(new InstantCommand(() -> generateIntakeCommand().schedule()));
-        new Trigger(() -> intakeSubsystem.hasNote()).whileTrue(intakeSubsystem.intakeCommand(0, 0));
-        // driveController.rightBumper().whileTrue(shooterSubsystem.setSpeedCommand(1,
-        // 1));
+        driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+        driveController.leftBumper().whileTrue(generateIntakeCommand());
         driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
                 .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                        .alongWith(targetingSubsystem.targetFocusPosition(60)));
+                        .alongWith(targetingSubsystem.anglePIDCommand(60)));
 
         driveController.rightBumper()
                 .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
                         .alongWith(Commands.race(
                                 shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                                        .alongWith(targetingSubsystem.targetFocusPosition(60)),
+                                        .alongWith(targetingSubsystem.anglePIDCommand(60)),
                                 new WaitCommand(2))));
 
-        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight)));
-        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight)));
-        // driveController, gyro, new Pose2d(0,0,new Rotation2d(0))));
+        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
+                .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(0.5))));
+        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
+                .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
         operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(-TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.targetingManualSpeed));
         operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setSpeedCommand(TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.targetingManualSpeed));
+        new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
+                Math.abs(operatorController.getRightY()) > 0.1)
+                .whileTrue(climberSubsystem.setSpeedCommand(
+                        ()->-operatorController.getLeftY() * 0.5, ()->-operatorController.getRightY() * 0.5));
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onTrue(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
@@ -192,6 +203,9 @@ public class RobotContainer {
              DriveWeightCommand.addWeight(mlVisionWeight)));
         driveController.rightTrigger().onFalse(new InstantCommand(()->
              DriveWeightCommand.removeWeight(mlVisionWeight)));
+        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+        // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
     }
 
     public Command getAutonomousCommand() {
@@ -204,6 +218,7 @@ public class RobotContainer {
         shooterSubsystem.removeDefaultCommand();
         intakeSubsystem.removeDefaultCommand();
         targetingSubsystem.removeDefaultCommand();
+        climberSubsystem.removeDefaultCommand();
     }
 
     private Alliance getAlliance() {
@@ -215,7 +230,9 @@ public class RobotContainer {
 
     private Command generateIntakeCommand() {
         return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isPositionAccurate(0.1));
+                () -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
+                && Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
+                        DriveWeightCommand.getAngle(),gyro.getAngleRotation2d().getRadians()))) < 3));
     }
 
     public Pose2d getSpeakerPos() {

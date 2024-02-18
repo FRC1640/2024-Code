@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3768462609067285,
-      "y": 5.55492627078484
+      "x": 1.4042995358717991,
+      "y": 4.24
     },
-    "rotation": 180.0
+    "rotation": 141.77116143431294
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,31 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Pickup 1"
+            "pathName": "Stage Post Pickup 2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle Pickup 2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         },
         {
@@ -38,13 +50,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "center amp side pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return from Amp Side Center"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         }
       ]

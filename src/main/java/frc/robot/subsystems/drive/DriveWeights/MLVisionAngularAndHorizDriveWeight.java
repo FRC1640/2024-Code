@@ -15,14 +15,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
-import frc.robot.sensors.Vision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
-    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision); //new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
-    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision);//new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision,"mlrot"); //new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive");//new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
 
     private double angularVelocity = 0;
     private double horizontalVelocity = 0;

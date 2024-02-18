@@ -1,18 +1,30 @@
 package frc.robot;
 
+import java.util.Map;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
+import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
-import frc.robot.sensors.Vision.AprilTagVision;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.util.dashboard.PIDUpdate;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -21,9 +33,12 @@ public class DashboardInit {
     private static SendableChooser<Command> autoChooser;
     private static SendableChooser<TestMode> testModeChooser = new SendableChooser<TestMode>();
     private static SendableChooser<Command> sysidChooser = new SendableChooser<Command>();
+    private static SendableChooser<PIDController> pidChooser = new SendableChooser<PIDController>(); // what put here ??
 
     private static DriveSubsystem driveSubsystem;
     private static CommandXboxController controller;
+
+    private static final Field2d field = new Field2d();
 
     public DashboardInit() {
 
@@ -56,18 +71,43 @@ public class DashboardInit {
         testModeChooser.onChange(DashboardInit::onTestChange);
     }
 
-    private static void onTestChange(TestMode mode){
+    private static void pidInit() {
+        ShuffleboardTab PIDTab = Shuffleboard.getTab("PID");
+        pidChooser.setDefaultOption("None", new PIDController(0, 0, 0));
+        for (Map.Entry<String, PIDController> entry : PIDConstants.map.entrySet()){
+            pidChooser.addOption(entry.getKey(), entry.getValue());
+        }
+        PIDTab.add(pidChooser)
+                .withSize(4, 4)
+                .withPosition(0, 1);
+        GenericEntry kP = PIDTab.add("P", 0).withSize(1,1).withPosition(0,0).getEntry();
+        GenericEntry kI = PIDTab.add("I", 0).withSize(1,1).withPosition(1,0).getEntry();
+        GenericEntry kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
+        PIDUpdate.setEntries(kP, kI, kD);
+        pidChooser.onChange(DashboardInit::onPIDChooserChange);
+    }
+
+    private static void onPIDChooserChange(PIDController controller) {
+        PIDUpdate.setPID(controller);
+    }
+
+    private static void onTestChange(TestMode mode) {
         switch (mode) {
             case SYSID:
                 sysidInit(driveSubsystem, controller);
                 break;
-        
+
+            case PID:
+                pidInit();
+                break;
+
             default:
                 break;
         }
     }
 
-    private static void matchInit(AprilTagVision vision) { // TODO Limelight feed appears only when Shuffleboard is running before sim starts. Why?
+    private static void matchInit(AprilTagVision vision) { // TODO Limelight feed appears only when Shuffleboard is
+                                                           // running before sim starts. Why?
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -77,13 +117,20 @@ public class DashboardInit {
         teleop.addDouble("Match Timer", () -> Math.round(DriverStation.getMatchTime() * 10000) / 10000)
                 .withSize(1, 1)
                 .withPosition(0, 0);
-        // LIMELIGHT STREAM?
-        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.11:5800/stream.mjpg")
-                .withSize(4,4)
-                .withPosition(1,0);
+        // LIMELIGHT STREAM
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
+                .withSize(4, 4)
+                .withPosition(1, 0);
         teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
                 .withSize(1, 2)
                 .withPosition(5, 2);
+        teleop.add(field)
+                .withSize(4, 4)
+                .withPosition(6, 0);
+    }
+
+    public static void setFieldPos(Pose2d pose) {
+        field.setRobotPose(pose);
     }
 
     private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
@@ -91,7 +138,7 @@ public class DashboardInit {
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
-                        "SwerveSysId", ()->controller.a().getAsBoolean(), ()->controller.b().getAsBoolean()));
+                        "SwerveSysId", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
     }
 

@@ -1,4 +1,6 @@
 package frc.robot;
+import java.util.HashMap;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -16,8 +18,8 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class VisionConstants{
-        public static final double xyStdDev = 0.5;
-        public static final double thetaStdDev = 0.5;
+        public static final double xyStdDev = 0.3;
+        public static final double thetaStdDev = 0.3;
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = 0.053975;
@@ -94,6 +96,13 @@ public final class Constants {
         public static final int proximitySensorChannel = 0;
     }
 
+    public static class ClimberConstants{
+        public static final int leftCanID = 0;
+        public static final int rightCanID = 0;
+        public static final double lowerLimit = 0;
+        public static final double upperLimit = 90;
+    }
+
     public static class ShooterConstants{
         public static final int topLeftCanID = 21; 
         public static final int bottomLeftCanID = 6;
@@ -102,14 +111,27 @@ public final class Constants {
     }
 
     public static class PIDConstants{
-        public static PIDController constructPID(PIDController controller){
-            return new PIDController(controller.getP(), controller.getI(), controller.getD());
+        public static HashMap<String, PIDController> map = new HashMap<>();
+        public static PIDController constructPID(PIDController controller, String name){
+            PIDController n = new PIDController(controller.getP(), controller.getI(), controller.getD());
+            map.put(name, n);
+            return n;
         }
+        
 
         //controllers
-        public static PIDController rotPID = new PIDController(0.45, 0.00000, 0.00);
-        public static PIDController driveForwardPID = new PIDController(0.8, 0, 0);
+        public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
+        public static PIDController rotMovingPID = new PIDController(1, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(1, 0, 0);
+        public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
+
+        public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // TODO values from sim: 3, 1, 0
+        public static PIDController climberPID = new PIDController(0.01, 0, 0);
+
+        public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
+
+        public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
         
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.006, 0, 0);
@@ -118,10 +140,10 @@ public final class Constants {
     public static class FieldConstants{
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.667, 7.8);
-        public static Translation2d ampPositionBlue = new Translation2d(1.859, 7.803);
-        public static Translation2d speakerPositionRed = new Translation2d(15.214, 5.555);
-        public static Translation2d speakerPositionBlue = new Translation2d(1.328, 5.555);
+        public static Translation2d ampPositionRed = new Translation2d(14.667, 7.4);
+        public static Translation2d ampPositionBlue = new Translation2d(1.7, 7.4);
+        public static Translation2d speakerPositionRed = new Translation2d(15.214 + Units.feetToMeters(3), 5.555);
+        public static Translation2d speakerPositionBlue = new Translation2d(1.328 - Units.feetToMeters(3), 5.555);
     }
 
     public static class TargetingConstants {
@@ -129,6 +151,15 @@ public final class Constants {
         public static int rightTargetingMotorId = 14; // TODO replace all of these constants
         public static double targetingLowerLimit = 0;
         public static double targetingUpperLimit = 90;
-        public static double targetingManualSpeed = 0.5; // 
+        public static double targetingManualSpeed = 0.5; // TODO speed
+        
+        public static double extensionLowerLimit = 0.0; // TODO limit
+        public static double extensionUpperLimit = 1.0; // TODO limit
+
+        public static double targetingMinVoltage = 0.05;
+        public static double targetingMaxVoltage = 4.95;
+
+        public static int extensionMotorId = 15;
+        public static double extensionManualSpeed = 0.5;
     }
 }
