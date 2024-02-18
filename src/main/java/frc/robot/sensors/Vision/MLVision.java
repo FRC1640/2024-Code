@@ -53,7 +53,7 @@ public class MLVision extends PeriodicBase {
         Logger.recordOutput("MLVision/Target TA", getTA());
         Logger.recordOutput("MLVision/Target TY", getTY());  
         Logger.recordOutput("MLVision/Notes in View", numNotesInView);
-        Logger.recordOutput("MLVision/Notes targetting threshold", numNotesWithinThreshold);        
+        Logger.recordOutput("MLVision/Notes targeting threshold", numNotesWithinThreshold);        
       
       
         
