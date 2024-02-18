@@ -22,6 +22,10 @@ public class MLVision extends PeriodicBase {
     private LimelightHelpers.LimelightTarget_Detector[] resultsArray;
     private LimelightHelpers.LimelightTarget_Detector targetNote;
 
+    private int numNotesInView;
+    private int numNotesWithinThreshold;
+
+
 
     public MLVision(MLVisionIO io) {
         this.io = io;
@@ -34,6 +38,8 @@ public class MLVision extends PeriodicBase {
         
         llresults = LimelightHelpers.getLatestResults("limelight-ml");
         resultsArray = llresults.targetingResults.targets_Detector;
+        numNotesInView = resultsArray.length;
+
         if (isTarget()){
             targetNote = calculateTargetNote();
         }
@@ -45,7 +51,11 @@ public class MLVision extends PeriodicBase {
         // all of the tx ty whatever
         Logger.recordOutput("MLVision/Target TX", getTX());
         Logger.recordOutput("MLVision/Target TA", getTA());
-        Logger.recordOutput("MLVision/Target TY", getTY());        
+        Logger.recordOutput("MLVision/Target TY", getTY());  
+        Logger.recordOutput("MLVision/Notes in View", numNotesInView);
+        Logger.recordOutput("MLVision/Notes targetting threshold", numNotesWithinThreshold);        
+      
+      
         
         io.takeSnapshot(inputs);
     }
@@ -130,15 +140,18 @@ public class MLVision extends PeriodicBase {
             }  
         }
 
+        numNotesWithinThreshold = notesWithinThreshold.size();
+
         // find the leftmose note within threshold
-        
-        for (int i = 0; i < notesWithinThreshold.size(); i++) {
-            LimelightHelpers.LimelightTarget_Detector detector = notesWithinThreshold.get(i);
-            double tx = detector.tx;
-            if (tx < minTX) { 
-                minTX = tx;
-                feasibleIndexWithLeastTX = i;
-                detector = finalNote;
+        if (notesWithinThreshold.size() > 0){
+            for (int i = 0; i < notesWithinThreshold.size(); i++) {
+                LimelightHelpers.LimelightTarget_Detector detector = notesWithinThreshold.get(i);
+                double tx = detector.tx;
+                if (tx < minTX) { 
+                    minTX = tx;
+                    feasibleIndexWithLeastTX = i;
+                    detector = finalNote;
+                }
             }
         }
 
