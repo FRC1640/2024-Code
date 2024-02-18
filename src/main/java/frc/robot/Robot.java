@@ -26,7 +26,7 @@ public class Robot extends LoggedRobot {
     };
 
     public static enum TestMode {
-        NONE, SYSID
+        NONE, SYSID, MOTOR
     };
 
     private Command m_autonomousCommand;

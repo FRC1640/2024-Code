@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.function.DoubleConsumer;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,6 +67,10 @@ public class DashboardInit {
             case SYSID:
                 sysidInit(driveSubsystem, controller);
                 break;
+
+            case MOTOR:
+                // motorInit();
+                break;
         
             default:
                 break;
@@ -103,6 +110,13 @@ public class DashboardInit {
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
                         "SwerveSysId", ()->controller.a().getAsBoolean(), ()->controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
+    }
+
+    private static void motorInit(ArrayList<DoubleConsumer> motorSetSpeed) {
+        ShuffleboardTab motorTab = Shuffleboard.getTab("Motor");
+        for (int i = 1; i < motorSetSpeed.size(); i++) {
+
+        }
     }
 
     public static TestMode getTestMode() {
