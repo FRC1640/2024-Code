@@ -1,4 +1,6 @@
 package frc.robot;
+import java.util.HashMap;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -109,9 +111,13 @@ public final class Constants {
     }
 
     public static class PIDConstants{
-        public static PIDController constructPID(PIDController controller){
-            return new PIDController(controller.getP(), controller.getI(), controller.getD());
+        public static HashMap<String, PIDController> map = new HashMap<>();
+        public static PIDController constructPID(PIDController controller, String name){
+            PIDController n = new PIDController(controller.getP(), controller.getI(), controller.getD());
+            map.put(name, n);
+            return n;
         }
+        
 
         //controllers
         public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);

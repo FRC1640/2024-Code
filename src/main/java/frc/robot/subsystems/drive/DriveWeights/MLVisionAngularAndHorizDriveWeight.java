@@ -12,8 +12,8 @@ import frc.robot.sensors.Vision.MLVision.MLVision;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
-    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision); //;
-    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision); //Constants.PIDConstants.rotPID;
+    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision, "mlrot"); //;
+    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
     private double angularVelocity;
     private double horizontalVelocity;

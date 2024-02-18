@@ -13,8 +13,8 @@ import frc.robot.sensors.Gyro.Gyro;
 public class AutoDriveWeight implements DriveWeight {
     Supplier<Pose2d> pose;
     Supplier<Pose2d> getPose;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID);
-    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
+    PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID, "autodriveforward");
+    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "autodriverotation");
     Gyro gyro;
     double setAngle;
 

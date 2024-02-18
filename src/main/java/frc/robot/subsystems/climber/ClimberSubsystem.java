@@ -18,7 +18,7 @@ import frc.robot.Constants.PIDConstants;
 public class ClimberSubsystem extends SubsystemBase{
     ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
     ClimberIO io;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.climberPID);
+    PIDController pid = PIDConstants.constructPID(PIDConstants.climberPID, "climber");
     double setpoint = 0;
     private Mechanism2d climberVisualization = new Mechanism2d(5.75, 3);
     private MechanismLigament2d climberLeft = new MechanismLigament2d("leftClimber", 2.5, 0);
