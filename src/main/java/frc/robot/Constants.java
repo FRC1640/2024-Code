@@ -116,8 +116,6 @@ public final class Constants {
             map.put(name, n);
             return n;
         }
-        
-
         //controllers
         public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
