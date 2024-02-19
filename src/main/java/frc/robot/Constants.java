@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
 
-public final class Constants { // TODO: check all constants
+public final class Constants {
     public static enum PivotId { FL, FR, BL, BR;}
     public static class MLVisionLimelightConstants { // TODO: set these
         public static final double limelightAngle = -10.0;
@@ -19,9 +19,9 @@ public final class Constants { // TODO: check all constants
         public static final double thetaStdDev = 0.3;
     }
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = 0.053975; //TODO
-        public static final double driveGearRatio = 7.73; //TODO
-        public static final double steerGearRatio = 43.6; //TODO
+        public static final double wheelRadius = Units.inchesToMeters(2);
+        public static final double driveGearRatio = 7.73;
+        public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(10.375);//TODO
         public static final double wheelXPos = Units.inchesToMeters(12.375);//TODO
         public static final double maxSpeed = 4;
