@@ -41,6 +41,7 @@ import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
@@ -52,9 +53,11 @@ import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeigh
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
+import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class RobotContainer {
@@ -85,13 +88,13 @@ public class RobotContainer {
                 gyro = new Gyro(new GyroIONavX());
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
                 mlVision = new MLVision(new MLVisionIOLimelight());
-                // shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
-                shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
-                //intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+                shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+                // shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
                 climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
-                intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-                // targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
-                targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
+                // intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
+                targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+                // targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
                 break;
             case SIM:
                 gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
@@ -131,15 +134,15 @@ public class RobotContainer {
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(1.0, 1.0, ()->intakeSubsystem.hasNote()));
 
-        targetingSubsystem.setDefaultCommand(targetingSubsystem
-                .anglePIDCommand(
-                        () -> -0.956635
-                                * Math.toDegrees(
-                                        Math.asin(-0.778591 * Units.metersToFeet(2.11)
-                                                / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
-                                -2.01438));
+        // targetingSubsystem.setDefaultCommand(targetingSubsystem
+        //         .anglePIDCommand(
+        //                 () -> -0.956635
+        //                         * Math.toDegrees(
+        //                                 Math.asin(-0.778591 * Units.metersToFeet(2.11)
+        //                                         / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
+        //                         -2.01438));
 
-
+        targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
         //configure weights
 
         rotateLockWeight = new RotateLockWeight(

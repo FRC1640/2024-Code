@@ -12,7 +12,7 @@ import frc.robot.sensors.Resolver;
 public class TargetingIOSparkMax implements TargetingIO {
     private final CANSparkMax leftTargetingMotor;
     private final CANSparkMax rightTargetingMotor;
-    private final CANSparkMax extensionMotor;
+    // private final CANSparkMax extensionMotor;
     private final Resolver targetingEncoder = new Resolver(7, TargetingConstants.targetingMinVoltage,
             TargetingConstants.targetingMaxVoltage, 0, false);
 
@@ -21,7 +21,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     public TargetingIOSparkMax() {
         leftTargetingMotor = new CANSparkMax(TargetingConstants.leftTargetingMotorId, MotorType.kBrushless);
         rightTargetingMotor = new CANSparkMax(TargetingConstants.rightTargetingMotorId, MotorType.kBrushless);
-        extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
+        // extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
     }
 
     @Override
@@ -57,11 +57,11 @@ public class TargetingIOSparkMax implements TargetingIO {
 
         inputs.targetingPositionAverage = targetingEncoder.getD();
 
-        inputs.extensionSpeedPercent = extensionMotor.getAppliedOutput();
-        inputs.extensionAppliedVoltage = extensionMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
-        inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
-        inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
-        inputs.extensionPosition = extensionMotor.getEncoder().getPosition(); // TODO set
+        // inputs.extensionSpeedPercent = extensionMotor.getAppliedOutput();
+        // inputs.extensionAppliedVoltage = extensionMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
+        // inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
+        // inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
+        // inputs.extensionPosition = extensionMotor.getEncoder().getPosition(); // TODO set
     }
 
     /**
@@ -77,8 +77,8 @@ public class TargetingIOSparkMax implements TargetingIO {
     @Override
     public void setExtensionPercentOutput(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
-        speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped); // TODO encoder technicalities
-        extensionMotor.set(speedClamped);
+        // speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped); // TODO encoder technicalities
+        // extensionMotor.set(speedClamped);
     }
 
     @Override
