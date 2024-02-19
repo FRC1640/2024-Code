@@ -34,7 +34,7 @@ public interface TargetingIO {
      * 
      * @param inputs the TargetingIOInputs to update.
      */
-    public default void updateInputs(TargetingIOInputs inputs) { // TODO ask if this is accurate
+    public default void updateInputs(TargetingIOInputs inputs) {
     }
 
     /**
