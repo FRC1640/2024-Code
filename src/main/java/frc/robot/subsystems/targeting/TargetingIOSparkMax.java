@@ -1,6 +1,7 @@
 package frc.robot.subsystems.targeting;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.RobotController;
 
@@ -13,7 +14,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final CANSparkMax leftTargetingMotor;
     private final CANSparkMax rightTargetingMotor;
     // private final CANSparkMax extensionMotor;
-    private final Resolver targetingEncoder = new Resolver(7, TargetingConstants.targetingMinVoltage,
+    private final Resolver targetingEncoder = new Resolver(TargetingConstants.resolverID, TargetingConstants.targetingMinVoltage,
             TargetingConstants.targetingMaxVoltage, 0, false);
 
     // TODO override voltage methods
@@ -32,7 +33,10 @@ public class TargetingIOSparkMax implements TargetingIO {
         averagePosition = encoderToDegrees(averagePosition);
         speedClamped = clampSpeeds(averagePosition, speedClamped);
         leftTargetingMotor.set(speedClamped);
-        rightTargetingMotor.set(speedClamped);        
+        rightTargetingMotor.set(speedClamped);
+
+        rightTargetingMotor.setIdleMode(IdleMode.kBrake);
+        leftTargetingMotor.setIdleMode(IdleMode.kCoast);
     }
 
     // @Override

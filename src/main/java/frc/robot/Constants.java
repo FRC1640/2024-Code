@@ -101,6 +101,8 @@ public final class Constants {
         public static final int rightCanID = 0;
         public static final double lowerLimit = 0;
         public static final double upperLimit = 90;
+        public static final int leftClimberResolver = 5;
+        public static final int rightClimberResolver = 6;
     }
 
     public static class ShooterConstants{
@@ -158,5 +160,7 @@ public final class Constants {
 
         public static int extensionMotorId = 15;
         public static double extensionManualSpeed = 0.5;
+
+        public static int resolverID = 7;
     }
 }

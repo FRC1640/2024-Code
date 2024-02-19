@@ -86,11 +86,14 @@ public class RobotContainer {
         switch (Robot.getMode()) {
             case REAL:
                 gyro = new Gyro(new GyroIONavX());
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
-                mlVision = new MLVision(new MLVisionIOLimelight());
+                // aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
+                // mlVision = new MLVision(new MLVisionIOLimelight());
+                aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+                mlVision = new MLVision(new MLVisionIOSim());
+
                 shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
                 // shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax());
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean()));
                 climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
                 // intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
                 targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
@@ -127,12 +130,13 @@ public class RobotContainer {
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+        // shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
         joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
         DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(1.0, 1.0, ()->intakeSubsystem.hasNote()));
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.5, 0.5, ()->intakeSubsystem.hasNote()));
 
         // targetingSubsystem.setDefaultCommand(targetingSubsystem
         //         .anglePIDCommand(
@@ -164,9 +168,9 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                .alongWith(generateIntakeCommand())
-                        .alongWith(targetingSubsystem.anglePIDCommand(60)));
+        // driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+        //         .alongWith(generateIntakeCommand())
+        //                 .alongWith(targetingSubsystem.anglePIDCommand(60)));
                         // amp shot
         driveController.start().onTrue(driveSubsystem.resetGyroCommand());
         driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
