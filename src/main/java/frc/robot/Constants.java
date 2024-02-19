@@ -96,8 +96,8 @@ public final class Constants {
     public static class ClimberConstants{
         public static final int leftCanID = 17;
         public static final int rightCanID = 16;
-        public static final double lowerLimit = 0;
-        public static final double upperLimit = 90;
+        public static final double lowerLimit = -15;
+        public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 7;
     }
@@ -116,8 +116,6 @@ public final class Constants {
             map.put(name, n);
             return n;
         }
-        
-
         //controllers
         public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
