@@ -52,11 +52,11 @@ public class TargetingIOSim implements TargetingIO {
         rightTargetingMotorSimulated.update(0.02);
         extensionMotorSimulated.update(0.02);
 
-        inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
-        inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
-        inputs.leftTargetingCurrentAmps = leftTargetingMotorSimulated.getCurrentDrawAmps();
-        inputs.leftTargetingPositionDegrees += leftTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
-        leftPositon = inputs.leftTargetingPositionDegrees;
+        // inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
+        // inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
+        // inputs.leftTargetingCurrentAmps = leftTargetingMotorSimulated.getCurrentDrawAmps();
+        // inputs.leftTargetingPositionDegrees += leftTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
+        // leftPositon = inputs.leftTargetingPositionDegrees;
 
         inputs.rightTargetingSpeedPercent = rightMotorVoltage/12;
         inputs.rightTargetingAppliedVoltage = rightMotorVoltage;
@@ -96,15 +96,5 @@ public class TargetingIOSim implements TargetingIO {
         voltage = MathUtil.clamp(voltage, -12, 12);
         extensionMotorVoltage = voltage;
         extensionMotorSimulated.setInputVoltage(voltage);
-    }
-
-    @Override
-    public double getExtensionPosition() {
-        return extensionPosition;
-    }
-
-    @Override
-    public double getCappedExtensionSpeed() {
-        return cappedExtensionSpeed;
     }
 }
