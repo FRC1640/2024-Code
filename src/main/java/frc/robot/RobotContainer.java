@@ -188,9 +188,9 @@ public class RobotContainer {
         driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
                 .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
         operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.angleManualSpeed));
         operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.targetingManualSpeed));
+                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.angleManualSpeed));
         new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
                 Math.abs(operatorController.getRightY()) > 0.1)
                 .whileTrue(climberSubsystem.setSpeedCommand(

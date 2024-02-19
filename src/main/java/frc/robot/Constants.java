@@ -9,24 +9,21 @@ import frc.lib.drive.Module.ModuleInfo;
 
 public final class Constants { // TODO: check all constants
     public static enum PivotId { FL, FR, BL, BR;}
-    public static class LimelightConstants {
+    public static class MLVisionLimelightConstants { // TODO: set these
         public static final double limelightAngle = -10.0;
         public static final double limelightLensHeight = 11.0;
-        public static final double limelightLensHorrizontalDisplacement = 0.0;
-        public static final double horizontalResolution = 0.0;
-        public static final double verticalResolution = 0.0;
         public static final double noteHeightInches = 2.0;
     }
-    public static class VisionConstants{
+    public static class AprilTagVisionConstants{
         public static final double xyStdDev = 0.3;
         public static final double thetaStdDev = 0.3;
     }
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = 0.053975;
-        public static final double driveGearRatio = 7.73;
-        public static final double steerGearRatio = 43.6;
-        public static final double wheelYPos = Units.inchesToMeters(10.375);
-        public static final double wheelXPos = Units.inchesToMeters(12.375);
+        public static final double wheelRadius = 0.053975; //TODO
+        public static final double driveGearRatio = 7.73; //TODO
+        public static final double steerGearRatio = 43.6; //TODO
+        public static final double wheelYPos = Units.inchesToMeters(10.375);//TODO
+        public static final double wheelXPos = Units.inchesToMeters(12.375);//TODO
         public static final double maxSpeed = 4;
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
@@ -50,8 +47,8 @@ public final class Constants { // TODO: check all constants
         
         public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
-            3, 
-            4, 
+            2, 
+            1, 
             0, 
             45, 
             true, 
@@ -60,8 +57,8 @@ public final class Constants { // TODO: check all constants
 
         public static final ModuleInfo FR = new ModuleInfo(
             PivotId.FR, 
-            2, 
-            1, //5, 
+            19, 
+            20, //5, 
             2,
             -45, 
             true, 
@@ -70,8 +67,8 @@ public final class Constants { // TODO: check all constants
 
         public static final ModuleInfo BL = new ModuleInfo(
             PivotId.BL, 
-            18, 
-            17, 
+            9, 
+            10, 
             1, 
             135, 
             true, 
@@ -80,8 +77,8 @@ public final class Constants { // TODO: check all constants
 
         public static final ModuleInfo BR = new ModuleInfo(
             PivotId.BR, 
-            19, 
-            20, 
+            12, 
+            11, 
             3, 
             -135, 
             true, 
@@ -90,26 +87,26 @@ public final class Constants { // TODO: check all constants
     }
 
     public static class IntakeConstants{
-        public static final int intakeCanID = 6;
-        public static final int indexerCanID = 16;
+        public static final int intakeCanID = 18;
+        public static final int indexerCanID = 4;
         public static final double proximityVoltageThreshold = 4.0;
         public static final int proximitySensorChannel = 0;
     }
 
     public static class ClimberConstants{
-        public static final int leftCanID = 0;
-        public static final int rightCanID = 0;
+        public static final int leftCanID = 17;
+        public static final int rightCanID = 16;
         public static final double lowerLimit = 0;
         public static final double upperLimit = 90;
-        public static final int leftClimberResolver = 5;
-        public static final int rightClimberResolver = 6;
+        public static final int leftClimberResolver = 6;
+        public static final int rightClimberResolver = 7;
     }
 
     public static class ShooterConstants{
-        public static final int topLeftCanID = 21; 
-        public static final int bottomLeftCanID = 6;
-        public static final int topRightCanID = 13;
-        public static final int bottomRightCanID = 14;
+        public static final int topLeftCanID = 8; 
+        public static final int bottomLeftCanID = 7;
+        public static final int topRightCanID = 6;
+        public static final int bottomRightCanID = 5;
     }
 
     public static class PIDConstants{
@@ -146,21 +143,21 @@ public final class Constants { // TODO: check all constants
     }
 
     public static class TargetingConstants {
-        public static int leftTargetingMotorId = 12;
-        public static int rightTargetingMotorId = 14;
-        public static double targetingLowerLimit = 0;
-        public static double targetingUpperLimit = 90;
-        public static double targetingManualSpeed = 0.5;
+        public static int leftAngleMotorId = 14;
+        public static int rightAngleMotorId = 13;
+        public static double angleLowerLimit = 0;
+        public static double angleUpperLimit = 90;
+        public static double angleManualSpeed = 0.5;
         
         public static double extensionLowerLimit = 0.0;
         public static double extensionUpperLimit = 1.0;
 
-        public static double targetingMinVoltage = 0.05;
-        public static double targetingMaxVoltage = 4.95;
+        public static double angleMinVoltage = 0.05;
+        public static double angleMaxVoltage = 4.95;
 
-        public static int extensionMotorId = 15;
+        public static int extensionMotorId = 3;
         public static double extensionManualSpeed = 0.5;
 
-        public static int resolverID = 7;
+        public static int resolverID = 4;
     }
 }

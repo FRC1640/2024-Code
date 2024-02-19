@@ -52,11 +52,11 @@ public class TargetingIOSim implements TargetingIO {
         rightTargetingMotorSimulated.update(0.02);
         extensionMotorSimulated.update(0.02);
 
-        inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
-        inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
-        inputs.leftTargetingCurrentAmps = leftTargetingMotorSimulated.getCurrentDrawAmps();
-        inputs.leftTargetingPositionDegrees += leftTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
-        leftPositon = inputs.leftTargetingPositionDegrees;
+        // inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
+        // inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
+        // inputs.leftTargetingCurrentAmps = leftTargetingMotorSimulated.getCurrentDrawAmps();
+        // inputs.leftTargetingPositionDegrees += leftTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
+        // leftPositon = inputs.leftTargetingPositionDegrees;
 
         inputs.rightTargetingSpeedPercent = rightMotorVoltage/12;
         inputs.rightTargetingAppliedVoltage = rightMotorVoltage;

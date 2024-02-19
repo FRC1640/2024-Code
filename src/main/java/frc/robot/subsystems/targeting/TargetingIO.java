@@ -8,11 +8,11 @@ import frc.robot.Constants.TargetingConstants;
 public interface TargetingIO {
     @AutoLog
     public static class TargetingIOInputs {
-        public double leftTargetingSpeedPercent = 0.0;
-        public double leftTargetingAppliedVoltage = 0.0;
-        public double leftTargetingCurrentAmps = 0.0;
-        public double leftTargetingTempCelsius = 0.0;
-        public double leftTargetingPositionDegrees = 0.0;
+        // public double leftTargetingSpeedPercent = 0.0;
+        // public double leftTargetingAppliedVoltage = 0.0;
+        // public double leftTargetingCurrentAmps = 0.0;
+        // public double leftTargetingTempCelsius = 0.0;
+        // public double leftTargetingPositionDegrees = 0.0;
 
         public double rightTargetingSpeedPercent = 0.0;
         public double rightTargetingAppliedVoltage = 0.0;
@@ -75,10 +75,10 @@ public interface TargetingIO {
      */
     public default double clampSpeeds(double pos, double speed) {
         double speedClamped = speed;
-        if (pos < TargetingConstants.targetingLowerLimit) {
+        if (pos < TargetingConstants.angleLowerLimit) {
             speedClamped = Math.max(speed, 0);
         }
-        if (pos > TargetingConstants.targetingUpperLimit) {
+        if (pos > TargetingConstants.angleUpperLimit) {
             speedClamped = Math.min(speed, 0);
         }
         return speedClamped;
