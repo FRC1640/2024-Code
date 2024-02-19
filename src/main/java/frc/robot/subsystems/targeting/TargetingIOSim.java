@@ -97,14 +97,4 @@ public class TargetingIOSim implements TargetingIO {
         extensionMotorVoltage = voltage;
         extensionMotorSimulated.setInputVoltage(voltage);
     }
-
-    @Override
-    public double getExtensionPosition() {
-        return extensionPosition;
-    }
-
-    @Override
-    public double getCappedExtensionSpeed() {
-        return cappedExtensionSpeed;
-    }
 }

@@ -119,23 +119,4 @@ public interface TargetingIO {
         }
         return speedClamped;
     }
-
-    /**
-     * Sets the encoder value to 0.
-     */
-    public default void resetEncoderValue() {
-    }
-
-    /**
-     * Gets the position of the extension.
-     * 
-     * @return Position of the extension.
-     */
-    public default double getExtensionPosition() {
-        return 0;
-    }
-
-    public default double getCappedExtensionSpeed() {
-        return 0;
-    }
 }

@@ -161,12 +161,8 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
-                // System.out.println("vision");
-                // TODO: TUNE
 
                 double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
-
-                // velocity standard deviation constant
 
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,

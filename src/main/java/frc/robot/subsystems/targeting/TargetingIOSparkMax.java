@@ -17,8 +17,6 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final Resolver targetingEncoder = new Resolver(TargetingConstants.resolverID, TargetingConstants.targetingMinVoltage,
             TargetingConstants.targetingMaxVoltage, 0, false);
 
-    // TODO override voltage methods
-
     public TargetingIOSparkMax() {
         leftTargetingMotor = new CANSparkMax(TargetingConstants.leftTargetingMotorId, MotorType.kBrushless);
         rightTargetingMotor = new CANSparkMax(TargetingConstants.rightTargetingMotorId, MotorType.kBrushless);
@@ -26,7 +24,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     }
 
     @Override
-    public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
+    public void setTargetingSpeedPercent(double speed) {
         double speedClamped = speed;
         double averagePosition = getPositionAverage(leftTargetingMotor.getEncoder().getPosition(),
                 rightTargetingMotor.getEncoder().getPosition());
@@ -65,7 +63,7 @@ public class TargetingIOSparkMax implements TargetingIO {
         // inputs.extensionAppliedVoltage = extensionMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         // inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
         // inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
-        // inputs.extensionPosition = extensionMotor.getEncoder().getPosition(); // TODO set
+        // inputs.extensionPosition = extensionMotor.getEncoder().getPosition();
     }
 
     /**
@@ -79,14 +77,9 @@ public class TargetingIOSparkMax implements TargetingIO {
     }
 
     @Override
-    public void setExtensionPercentOutput(double speed) {  // TODO negative or positive limits & speeds
+    public void setExtensionPercentOutput(double speed) {
         double speedClamped = speed;
-        // speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped); // TODO encoder technicalities
+        // speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped);
         // extensionMotor.set(speedClamped);
-    }
-
-    @Override
-    public double getExtensionPosition() {
-        return 0; // TODO return
     }
 }

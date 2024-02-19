@@ -3,7 +3,6 @@ package frc.robot.subsystems.climber;
 import org.littletonrobotics.junction.AutoLog;
 
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.TargetingConstants;
 
 public interface ClimberIO {
     @AutoLog

@@ -357,15 +357,6 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return The position of the extension.
      */
     public double getExtensionPosition() {
-        return getIO().getExtensionPosition();
-    }
-
-    /**
-     * Returns the TargetingIO passed into the subsystem's constructor.
-     * 
-     * @return The subsystem's TargetingIO.
-     */
-    private TargetingIO getIO() {
-        return io;
+        return inputs.extensionPosition;
     }
 }
