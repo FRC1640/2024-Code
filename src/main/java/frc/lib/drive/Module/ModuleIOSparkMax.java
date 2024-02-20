@@ -38,7 +38,7 @@ public class ModuleIOSparkMax implements ModuleIO{
 		driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 200);
         driveEncoder = driveMotor.getEncoder();
 		steeringEncoder = new Resolver(id.resolverChannel, ModuleConstants.minVoltage, ModuleConstants.maxVoltage,
-				id.angleOffset, id.reverseAngle);
+				id.angleOffset, id.reverseAngle, 1);
 
         driveMotor.setInverted(id.reverseDrive);
         steeringMotor.setInverted(id.reverseSteer);

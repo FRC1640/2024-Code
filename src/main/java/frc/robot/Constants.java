@@ -22,8 +22,8 @@ public final class Constants {
         public static final double wheelRadius = Units.inchesToMeters(2);
         public static final double driveGearRatio = 7.73;
         public static final double steerGearRatio = 43.6;
-        public static final double wheelYPos = Units.inchesToMeters(10.375);//TODO
-        public static final double wheelXPos = Units.inchesToMeters(12.375);//TODO
+        public static final double wheelYPos = Units.inchesToMeters(22.75/2);
+        public static final double wheelXPos = Units.inchesToMeters(22.75/2);
         public static final double maxSpeed = 4;
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
@@ -48,7 +48,7 @@ public final class Constants {
         public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
             2, 
-            1, 
+            21, 
             0, 
             45, 
             true, 
@@ -87,7 +87,7 @@ public final class Constants {
     }
 
     public static class IntakeConstants{
-        public static final int intakeCanID = 18;
+        public static final int intakeCanID = 15;
         public static final int indexerCanID = 4;
         public static final double proximityVoltageThreshold = 4.0;
         public static final int proximitySensorChannel = 0;
@@ -119,7 +119,7 @@ public final class Constants {
         //controllers
         public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
-        public static PIDController gyroCorrectPid = new PIDController(1, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(0.8, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
@@ -143,12 +143,12 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 0;
-        public static double angleUpperLimit = 90;
-        public static double angleManualSpeed = 0.5;
+        public static double angleLowerLimit = -100;
+        public static double angleUpperLimit = 100;
+        public static double angleManualSpeed = 0.05;
         
-        public static double extensionLowerLimit = 0.0;
-        public static double extensionUpperLimit = 1.0;
+        public static double extensionLowerLimit = -100.0;
+        public static double extensionUpperLimit = 100.0;
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;

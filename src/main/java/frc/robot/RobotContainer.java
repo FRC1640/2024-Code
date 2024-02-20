@@ -127,14 +127,14 @@ public class RobotContainer {
         }
         driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
         DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
-        // shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(-0.8, 0.8, 0.7, -0.7));
+        // shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
         joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
         DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
         driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.5, 0.5, ()->intakeSubsystem.hasNote()));
-
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, -0.8, ()->intakeSubsystem.hasNote()));
+        // intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
         // targetingSubsystem.setDefaultCommand(targetingSubsystem
         //         .anglePIDCommand(
         //                 () -> -0.956635

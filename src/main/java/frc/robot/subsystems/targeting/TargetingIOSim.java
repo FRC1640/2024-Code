@@ -28,7 +28,7 @@ public class TargetingIOSim implements TargetingIO {
     }
 
     @Override
-    public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
+    public void setTargetingSpeedPercent(double speed) {
         double speedClamped = speed;
         double averagePosition = getPositionAverage(leftPositon, rightPosition);
         speedClamped = clampSpeeds(averagePosition, speedClamped);
@@ -69,7 +69,7 @@ public class TargetingIOSim implements TargetingIO {
         inputs.extensionSpeedPercent = extensionMotorVoltage/12;
         inputs.extensionAppliedVoltage = extensionMotorVoltage;
         inputs.extensionCurrentAmps = extensionMotorSimulated.getCurrentDrawAmps();
-        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4; // TODO gears
+        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4;
         extensionPosition = inputs.extensionPosition;
     }
 

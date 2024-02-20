@@ -39,7 +39,7 @@ public class Resolver {
         double v = resolver.getVoltage();
         updateBounds(v);
 
-        double vSlope = 360.0 / (maxV - minV);
+        double vSlope = 360.0 / ((maxV - minV));
 		double vOffset = -vSlope * minV;
         double angle = (((vSlope * v + vOffset) - offset) + 360) % 360;
 
