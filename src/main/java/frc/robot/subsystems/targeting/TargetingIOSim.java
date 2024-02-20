@@ -36,6 +36,11 @@ public class TargetingIOSim implements TargetingIO {
 
     }
 
+    @Override 
+    public double getPositionAverage(double motorOneEncoderValue, double motorTwoEncoderValue) {
+        return motorTwoEncoderValue;
+    }
+
     @Override
     public void setTargetingVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);

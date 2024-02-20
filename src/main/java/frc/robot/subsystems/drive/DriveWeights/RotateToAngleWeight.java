@@ -32,9 +32,7 @@ public class RotateToAngleWeight implements DriveWeight {
 
     @Override
     public ChassisSpeeds getSpeeds() {
-        if (cancelCondition.getAsBoolean()){
-            DriveWeightCommand.removeWeight(this);
-        }
+        
         double o;
         
         if (getSpeed.get() > 0) {
@@ -65,5 +63,9 @@ public class RotateToAngleWeight implements DriveWeight {
     @Override
     public double angle(){
         return angle.getAsDouble();
+    }
+    @Override
+    public boolean cancelCondition() {
+        return cancelCondition.getAsBoolean();
     }
 }

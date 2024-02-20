@@ -230,6 +230,9 @@ public class RobotContainer {
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+
+		driveController.b().whileTrue(manualShot(50, Math.PI/2, Math.PI/2,
+			()->!driveController.b().getAsBoolean()));
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
 	}
 
@@ -257,7 +260,7 @@ public class RobotContainer {
 		return intakeSubsystem.intakeCommand(0, 0.5,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
-								DriveWeightCommand.getAngle(), gyro.getAngleRotation2d().getRadians()))) < 3));
+								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
 
 	public Pose2d getSpeakerPos() {
@@ -266,13 +269,14 @@ public class RobotContainer {
 				: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
 	}
 
-	public Command manualShot(double targetAngle, double robotAngle, BooleanSupplier cancelCondition) {
+	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
-					() -> robotAngle, driveSubsystem::getPose, () -> joystickDriveWeight.getTranslationalSpeed(), "manualShot",
+					() -> (getAlliance()==Alliance.Blue?robotAngleBlueRadians:robotAngleRedRadians), 
+					driveSubsystem::getPose, () -> joystickDriveWeight.getTranslationalSpeed(), "manualShot",
 					cancelCondition);
 			DriveWeightCommand.addWeight(weight);
-		}));
+		}).alongWith(generateIntakeCommand()));
 	}
 
 	public double get3dDistance(Supplier<Pose2d> speakerPos) {

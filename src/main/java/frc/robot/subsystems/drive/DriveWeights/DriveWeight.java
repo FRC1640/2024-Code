@@ -9,4 +9,5 @@ public interface DriveWeight {
     public default double getWeight(){return 1;};
     public default void setWeight(double weight){};
     public default double angle(){return 0;};
+    public default boolean cancelCondition(){return false;};
 }
