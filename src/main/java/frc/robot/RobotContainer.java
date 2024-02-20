@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -61,210 +62,228 @@ import frc.robot.util.drive.MovingWhileShooting;
 
 public class RobotContainer {
 
-    private Gyro gyro;
-    private AprilTagVision aprilTagVision;
-    private MLVision mlVision;
+	private Gyro gyro;
+	private AprilTagVision aprilTagVision;
+	private MLVision mlVision;
 
-    private DriveSubsystem driveSubsystem;
-    private final CommandXboxController driveController = new CommandXboxController(0);
-    private final CommandXboxController operatorController = new CommandXboxController(1);
-    private ShooterSubsystem shooterSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-    private ClimberSubsystem climberSubsystem;
-    private TargetingSubsystem targetingSubsystem;
+	private DriveSubsystem driveSubsystem;
+	private final CommandXboxController driveController = new CommandXboxController(0);
+	private final CommandXboxController operatorController = new CommandXboxController(1);
+	private ShooterSubsystem shooterSubsystem;
+	private IntakeSubsystem intakeSubsystem;
+	private ClimberSubsystem climberSubsystem;
+	private TargetingSubsystem targetingSubsystem;
 
-    RotateLockWeight rotateLockWeight;
+	RotateLockWeight rotateLockWeight;
 
-//     RotateToAngleWeight rotateLockWeight;
+	// RotateToAngleWeight rotateLockWeight;
 
-    AutoDriveWeight autoDriveWeight;
+	AutoDriveWeight autoDriveWeight;
 
-    MLVisionAngularAndHorizDriveWeight mlVisionWeight;
+	MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 
-    JoystickDriveWeight joystickDriveWeight;
+	JoystickDriveWeight joystickDriveWeight;
 
-    MovingWhileShooting movingWhileShooting;
+	MovingWhileShooting movingWhileShooting;
 
-    public RobotContainer() {
-        switch (Robot.getMode()) {
-            case REAL:
-                gyro = new Gyro(new GyroIONavX());
-                // aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
-                // mlVision = new MLVision(new MLVisionIOLimelight());
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-                mlVision = new MLVision(new MLVisionIOSim());
+	public RobotContainer() {
+		switch (Robot.getMode()) {
+			case REAL:
+				gyro = new Gyro(new GyroIONavX());
+				// aprilTagVision = new AprilTagVision(new
+				// AprilTagVisionIOLimelight("limelight"));
+				// mlVision = new MLVision(new MLVisionIOLimelight());
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+				mlVision = new MLVision(new MLVisionIOSim());
 
-                shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
-                // shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean()));
-                climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
-                // intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-                targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
-                // targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
-                break;
-            case SIM:
-                gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
-                        .toChassisSpeeds(
-                                driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
-                shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-                mlVision = new MLVision(new MLVisionIOSim());
+				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+				intakeSubsystem = new IntakeSubsystem(
+						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean()));
+				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
+				});
+				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
+				break;
+			case SIM:
+				gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
+						.toChassisSpeeds(
+								driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
+				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+				mlVision = new MLVision(new MLVisionIOSim());
 
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
-                climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-                targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
-                break;
+				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
+				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
+				break;
 
-            default:
-                gyro = new Gyro(new GyroIO() {
-                });
-                shooterSubsystem = new ShooterSubsystem(new ShooterIO() {
-                });
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {
-                });
-                intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
-                });
-                targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
-                });
-                climberSubsystem = new ClimberSubsystem(new ClimberIO() {
-                });
-                mlVision = new MLVision(new MLVisionIO(){});
-                break;
-        }
-        driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
-        DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(-0.8, 0.8, 0.7, -0.7));
-        // shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
-        joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
-        DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
-        driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
+			default:
+				gyro = new Gyro(new GyroIO() {
+				});
+				shooterSubsystem = new ShooterSubsystem(new ShooterIO() {
+				});
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {
+				});
+				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
+				});
+				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
+				});
+				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
+				});
+				mlVision = new MLVision(new MLVisionIO() {
+				});
+				break;
+		}
+		driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
 
-        intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, -0.8, ()->intakeSubsystem.hasNote()));
-        // intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
-        // targetingSubsystem.setDefaultCommand(targetingSubsystem
-        //         .anglePIDCommand(
-        //                 () -> -0.956635
-        //                         * Math.toDegrees(
-        //                                 Math.asin(-0.778591 * Units.metersToFeet(2.11)
-        //                                         / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
-        //                         -2.01438));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(-0.8, 0.8, 0.7, -0.7));
+		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0,
+		// 0));
+		joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
+		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
+		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-        targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-        //configure weights
-        
-        // movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
+		intakeSubsystem
+				.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, -0.8, () -> intakeSubsystem.hasNote()));
+		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
+		// targetingSubsystem.setDefaultCommand(targetingSubsystem
+		// .anglePIDCommand(
+		// () -> -0.956635
+		// * Math.toDegrees(
+		// Math.asin(-0.778591 * Units.metersToFeet(2.11)
+		// / Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))
+		// -2.01438));
 
-        rotateLockWeight = new RotateLockWeight(
-                () -> (getAlliance() == Alliance.Blue
-                        ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
-                        : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-                driveSubsystem::getPose, gyro, ()->joystickDriveWeight.getTranslationalSpeed());
+		targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
+		// configure weights
 
-        // rotateLockWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(), 
-        //         driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed());
+		// movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
 
-        autoDriveWeight = new AutoDriveWeight(
-                () -> (getAlliance() == Alliance.Blue
-                        ? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
-                        : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
-                driveSubsystem::getPose, gyro);
-        
-        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
+		rotateLockWeight = new RotateLockWeight(
+				() -> (getAlliance() == Alliance.Blue
+						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
+						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
+				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());
 
-        configureBindings();
-    }
+		// rotateLockWeight = new
+		// RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
+		// driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed());
 
-    private void configureBindings() {
+		autoDriveWeight = new AutoDriveWeight(
+				() -> (getAlliance() == Alliance.Blue
+						? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
+						: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
+				driveSubsystem::getPose, gyro);
 
-        // driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-        //         .alongWith(generateIntakeCommand())
-        //                 .alongWith(targetingSubsystem.anglePIDCommand(60)));
-                        // amp shot
-        driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-        driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
-        driveController.leftBumper().whileTrue(generateIntakeCommand());
-        driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
-                .whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                        .alongWith(targetingSubsystem.anglePIDCommand(60)));
+		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
-        driveController.rightBumper()
-                .onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
-                        .alongWith(Commands.race(
-                                shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
-                                        .alongWith(targetingSubsystem.anglePIDCommand(60)),
-                                new WaitCommand(2))));
+		DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
+		configureBindings();
+	}
 
-        driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
-                .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(0.5))));
-        driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
-                .andThen(new InstantCommand(()->joystickDriveWeight.setWeight(1))));
-        operatorController.leftTrigger()
-                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.angleManualSpeed));
-        operatorController.rightTrigger()
-                .whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.angleManualSpeed));
-        new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
-                Math.abs(operatorController.getRightY()) > 0.1)
-                .whileTrue(climberSubsystem.setSpeedCommand(
-                        ()->-operatorController.getLeftY() * 0.5, ()->-operatorController.getRightY() * 0.5));
-        new Trigger(() -> intakeSubsystem.hasNote())
-                .onTrue(new InstantCommand(
-                        () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
-        new Trigger(() -> intakeSubsystem.hasNote())
-                .onFalse(new InstantCommand(
-                        () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
-       
-        driveController.rightTrigger().onTrue(new InstantCommand(()->
-             DriveWeightCommand.addWeight(mlVisionWeight)));
-        driveController.rightTrigger().onFalse(new InstantCommand(()->
-             DriveWeightCommand.removeWeight(mlVisionWeight)));
-        operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
-        operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
-        // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
-    }
+	private void configureBindings() {
 
-    public Command getAutonomousCommand() {
-        return DashboardInit.getAutoChooserCommand()
-                .andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
-    }
+		// driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,
+		// 0.1, 0.25)
+		// .alongWith(generateIntakeCommand())
+		// .alongWith(targetingSubsystem.anglePIDCommand(60)));
+		// amp shot
+		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
+		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+		driveController.leftBumper().whileTrue(generateIntakeCommand());
+		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
+				.whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+						.alongWith(targetingSubsystem.anglePIDCommand(60)));
 
-    public void removeAllDefaultCommands() {
-        driveSubsystem.removeDefaultCommand();
-        shooterSubsystem.removeDefaultCommand();
-        intakeSubsystem.removeDefaultCommand();
-        targetingSubsystem.removeDefaultCommand();
-        climberSubsystem.removeDefaultCommand();
-    }
+		driveController.rightBumper()
+				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
+						.alongWith(Commands.race(
+								shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+										.alongWith(targetingSubsystem.anglePIDCommand(60)),
+								new WaitCommand(2))));
 
-    private Alliance getAlliance() {
-        if (DriverStation.getAlliance().isPresent()) {
-            return DriverStation.getAlliance().get();
-        }
-        return Alliance.Blue;
-    }
+		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
+		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
+		operatorController.leftTrigger()
+				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.angleManualSpeed));
+		operatorController.rightTrigger()
+				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.angleManualSpeed));
+		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
+				Math.abs(operatorController.getRightY()) > 0.1)
+				.whileTrue(climberSubsystem.setSpeedCommand(
+						() -> -operatorController.getLeftY() * 0.5, () -> -operatorController.getRightY() * 0.5));
+		new Trigger(() -> intakeSubsystem.hasNote())
+				.onTrue(new InstantCommand(
+						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
+		new Trigger(() -> intakeSubsystem.hasNote())
+				.onFalse(new InstantCommand(
+						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
-    private Command generateIntakeCommand() {
-        return intakeSubsystem.intakeCommand(0, 0.5,
-                () -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
-                && Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
-                        DriveWeightCommand.getAngle(),gyro.getAngleRotation2d().getRadians()))) < 3));
-    }
+		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
+		driveController.rightTrigger()
+				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)));
+		operatorController.rightBumper().whileTrue(
+				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+		operatorController.leftBumper().whileTrue(
+				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
+	}
 
-    public Pose2d getSpeakerPos() {
-        return (getAlliance() == Alliance.Blue
-                ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
-                : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
-    }
+	public Command getAutonomousCommand() {
+		return DashboardInit.getAutoChooserCommand()
+				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
+	}
 
-    public Command manualShot(double targetAngle, double robotAngle){
-        return targetingSubsystem.anglePIDCommand(targetAngle);
-    }
+	public void removeAllDefaultCommands() {
+		driveSubsystem.removeDefaultCommand();
+		shooterSubsystem.removeDefaultCommand();
+		intakeSubsystem.removeDefaultCommand();
+		targetingSubsystem.removeDefaultCommand();
+		climberSubsystem.removeDefaultCommand();
+	}
 
-    public double get3dDistance(Supplier<Pose2d> speakerPos) {
-        Logger.recordOutput("Drive/DistanceToSpeaker",
-                new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
-                        speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm());
-        return new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
-                speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
+	private Alliance getAlliance() {
+		if (DriverStation.getAlliance().isPresent()) {
+			return DriverStation.getAlliance().get();
+		}
+		return Alliance.Blue;
+	}
 
-    }
+	private Command generateIntakeCommand() {
+		return intakeSubsystem.intakeCommand(0, 0.5,
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
+						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
+								DriveWeightCommand.getAngle(), gyro.getAngleRotation2d().getRadians()))) < 3));
+	}
+
+	public Pose2d getSpeakerPos() {
+		return (getAlliance() == Alliance.Blue
+				? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
+				: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
+	}
+
+	public Command manualShot(double targetAngle, double robotAngle, BooleanSupplier cancelCondition) {
+		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
+			RotateToAngleWeight weight = new RotateToAngleWeight(
+					() -> robotAngle, driveSubsystem::getPose, () -> joystickDriveWeight.getTranslationalSpeed(), "manualShot",
+					cancelCondition);
+			DriveWeightCommand.addWeight(weight);
+		}));
+	}
+
+	public double get3dDistance(Supplier<Pose2d> speakerPos) {
+		Logger.recordOutput("Drive/DistanceToSpeaker",
+				new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
+						speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm());
+
+		
+		
+		return new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
+				speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
+
+	}
 }

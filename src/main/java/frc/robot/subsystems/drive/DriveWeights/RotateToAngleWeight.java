@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -9,22 +10,31 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.subsystems.drive.DriveWeightCommand;
 
 public class RotateToAngleWeight implements DriveWeight {
-    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "RotateToAngle");
-    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "RotateToAngleMoving");
+    PIDController pidr;
+    PIDController pidMoving;
     Supplier<Double> getSpeed;
     Supplier<Pose2d> getPose;
     DoubleSupplier angle;
+    private BooleanSupplier cancelCondition;
 
-    public RotateToAngleWeight(DoubleSupplier angle, Supplier<Pose2d> getPose, Supplier<Double> getSpeed) {
+    public RotateToAngleWeight(DoubleSupplier angle, Supplier<Pose2d> getPose, Supplier<Double> getSpeed, String name,
+            BooleanSupplier cancelCondition) {
         this.angle = angle;
         this.getPose = getPose;
         this.getSpeed = getSpeed;
+        this.cancelCondition = cancelCondition;
+        pidr = PIDConstants.constructPID(PIDConstants.rotPID, "RotateToAngle" + name);
+        pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "RotateToAngleMoving" + name);
     }
 
     @Override
     public ChassisSpeeds getSpeeds() {
+        if (cancelCondition.getAsBoolean()){
+            DriveWeightCommand.removeWeight(this);
+        }
         double o;
         
         if (getSpeed.get() > 0) {
