@@ -244,6 +244,10 @@ public class RobotContainer {
                 : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
     }
 
+    public Command manualShot(double targetAngle, double robotAngle){
+        return targetingSubsystem.anglePIDCommand(targetAngle);
+    }
+
     public double get3dDistance(Supplier<Pose2d> speakerPos) {
         Logger.recordOutput("Drive/DistanceToSpeaker",
                 new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
