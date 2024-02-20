@@ -15,7 +15,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final CANSparkMax rightTargetingMotor;
     private final CANSparkMax extensionMotor;
     private final ResolverSlope targetingEncoder = new ResolverSlope(TargetingConstants.resolverID, 0.52, 0,
-        59, 0, 30);
+        59, 30, 30);
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);

@@ -107,6 +107,7 @@ public final class Constants {
         public static final int bottomLeftCanID = 7;
         public static final int topRightCanID = 6;
         public static final int bottomRightCanID = 5;
+        public static double waitTime = 2;
     }
 
     public static class PIDConstants{
@@ -143,8 +144,8 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = -100;
-        public static double angleUpperLimit = 100;
+        public static double angleLowerLimit = 35;
+        public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         
         public static double extensionLowerLimit = -100.0;
