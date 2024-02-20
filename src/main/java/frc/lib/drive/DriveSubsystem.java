@@ -194,6 +194,10 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
+    public ChassisSpeeds getChassisSpeeds(){
+        return SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates());
+    }
+
     public Pose2d getPose() {
         return odometryPose;
     }

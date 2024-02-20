@@ -48,6 +48,7 @@ import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
+import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
@@ -56,6 +57,7 @@ import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
 import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
+import frc.robot.util.drive.MovingWhileShooting;
 
 public class RobotContainer {
 
@@ -73,11 +75,15 @@ public class RobotContainer {
 
     RotateLockWeight rotateLockWeight;
 
+//     RotateToAngleWeight rotateLockWeight;
+
     AutoDriveWeight autoDriveWeight;
 
     MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 
     JoystickDriveWeight joystickDriveWeight;
+
+    MovingWhileShooting movingWhileShooting;
 
     public RobotContainer() {
         switch (Robot.getMode()) {
@@ -145,12 +151,17 @@ public class RobotContainer {
 
         targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
         //configure weights
+        
+        // movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
 
         rotateLockWeight = new RotateLockWeight(
                 () -> (getAlliance() == Alliance.Blue
                         ? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
                         : new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
                 driveSubsystem::getPose, gyro, ()->joystickDriveWeight.getTranslationalSpeed());
+
+        // rotateLockWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(), 
+        //         driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed());
 
         autoDriveWeight = new AutoDriveWeight(
                 () -> (getAlliance() == Alliance.Blue
