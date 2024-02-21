@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import javax.management.openmbean.TabularType;
 
+import com.google.flatbuffers.FlexBuffers.Map;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -154,7 +155,7 @@ public class DashboardInit {
         ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
         ShuffleboardTab motorSpeedTab = Shuffleboard.getTab("Motors");
         for (int i = 0; i < 9; i++) {
-            motorSpeedTab.add(motorSetSpeed[0]).withWidget().withProperties(Map.of("min", -1, "max", 1)).withPosition();
+            motorSpeedTab.add().withWidget().withProperties(Map.of("min", -1, "max", 1)).withPosition();
         }
     }
 
