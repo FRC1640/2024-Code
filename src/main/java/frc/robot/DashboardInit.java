@@ -149,8 +149,13 @@ public class DashboardInit {
             () -> shooterSubsystem.getBottomLeftSpeed(), () -> shooterSubsystem.getBottomRightSpeed(),
             () -> targetingSubsystem.getAnglerSpeedPercent(), () -> targetingSubsystem.getExtensionSpeedPercent()};
         ArrayList<DoubleSupplier> motorGetSpeed = new ArrayList<>(Arrays.asList(suppliers));
-        ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
-        
+        String[] names = {"Intake", "Indexer", "Climber Motors", "Shooter TL", "Shooter TR", "Shooter BL",
+            "Shooter BR", "Angler Motors", "Extension"};
+        ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
+        ShuffleboardTab motorSpeedTab = Shuffleboard.getTab("Motors");
+        for (int i = 0; i < 9; i++) {
+            motorSpeedTab.add(motorSetSpeed[0]).withWidget().withProperties(Map.of("min", -1, "max", 1)).withPosition();
+        }
     }
 
     public static TestMode getTestMode() {
