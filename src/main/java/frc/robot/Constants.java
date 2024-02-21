@@ -131,9 +131,6 @@ public final class Constants {
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
         
-        public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
-        public static PIDController rotMLVision = new PIDController(0.006, 0, 0);
-        
     }
     public static class FieldConstants{
         public static double height = 8.21;
