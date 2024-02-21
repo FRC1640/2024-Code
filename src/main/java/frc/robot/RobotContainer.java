@@ -8,6 +8,9 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -140,19 +143,18 @@ public class RobotContainer {
 		}
 		driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
 
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(-0.8, 0.8, 0.7, -0.7));
-		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0,
-		// 0));
+		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
 		joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, -0.8, () -> intakeSubsystem.hasNote()));
-		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
+		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.8, () -> intakeSubsystem.hasNote()));
+		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
-		targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(60)); // actual def
+		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
+		targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(60)); // actual def
 		// configure weights
 
 		// movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
@@ -175,7 +177,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
-		DashboardInit.init(driveSubsystem, driveController, aprilTagVision);
+		DashboardInit.init(driveSubsystem, driveController, aprilTagVision, targetingSubsystem);
 		configureBindings();
 	}
 
@@ -293,5 +295,12 @@ public class RobotContainer {
 			Math.asin(-0.778591 * Units.metersToFeet(2.11)
 			/ Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))-2.01438);
 
+	}
+
+
+
+	public void generateNamedCommands(){
+		// NamedCommands.registerCommand("", )
+		
 	}
 }

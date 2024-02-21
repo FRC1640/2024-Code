@@ -18,6 +18,7 @@ public class IntakeIOSparkMax implements IntakeIO {
     public IntakeIOSparkMax(BooleanSupplier hasNote) {
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
+        indexerMotor.setInverted(true);
         proximityAnalogOutput = new AnalogOutput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }

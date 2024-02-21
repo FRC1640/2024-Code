@@ -122,7 +122,7 @@ public final class Constants {
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.8, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
-        public static PIDController targetingPID = new PIDController(0.1, 0, 0);
+        public static PIDController targetingPID = new PIDController(0.0001, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
@@ -144,11 +144,11 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 35;
+        public static double angleLowerLimit = 45;
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         
-        public static double extensionLowerLimit = -100.0;
+        public static double extensionLowerLimit = 0;
         public static double extensionUpperLimit = 100.0;
 
         public static double angleMinVoltage = 0.05;

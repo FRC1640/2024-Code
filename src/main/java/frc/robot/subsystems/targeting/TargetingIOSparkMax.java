@@ -22,6 +22,9 @@ public class TargetingIOSparkMax implements TargetingIO {
         rightTargetingMotor = new CANSparkMax(TargetingConstants.rightAngleMotorId, MotorType.kBrushless);
         extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
         rightTargetingMotor.setIdleMode(IdleMode.kBrake);
+        extensionMotor.setIdleMode(IdleMode.kBrake);
+        rightTargetingMotor.setInverted(true);
+        extensionMotor.setInverted(true);
     }
 
     @Override

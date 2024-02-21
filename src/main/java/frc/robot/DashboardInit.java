@@ -20,6 +20,7 @@ import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
 
 /**
@@ -33,20 +34,26 @@ public class DashboardInit {
 
     private static DriveSubsystem driveSubsystem;
     private static CommandXboxController controller;
+    private static TargetingSubsystem targetingSubsystem;
 
     private static final Field2d field = new Field2d();
+
+    static boolean sysIdInit = false;
+    static boolean pidInit = false;
 
     public DashboardInit() {
 
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem) {
+        DashboardInit.driveSubsystem = driveSubsystem;
+        DashboardInit.targetingSubsystem = targetingSubsystem;
+        DashboardInit.controller = controller;
         autonInit();
         matchInit(vision);
         testInit();
-        DashboardInit.driveSubsystem = driveSubsystem;
-        DashboardInit.controller = controller;
+
     }
 
     private static void autonInit() {
@@ -81,6 +88,7 @@ public class DashboardInit {
         GenericEntry kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
         PIDUpdate.setEntries(kP, kI, kD);
         pidChooser.onChange(DashboardInit::onPIDChooserChange);
+        pidInit = true;
     }
 
     private static void onPIDChooserChange(PIDController controller) {
@@ -90,11 +98,15 @@ public class DashboardInit {
     private static void onTestChange(TestMode mode) {
         switch (mode) {
             case SYSID:
-                sysidInit(driveSubsystem, controller);
+                if (!sysIdInit){
+                    sysidInit();
+                }
                 break;
 
             case PID:
-                pidInit();
+                if (!pidInit){
+                    pidInit();
+                }
                 break;
 
             default:
@@ -128,13 +140,16 @@ public class DashboardInit {
         field.setRobotPose(pose);
     }
 
-    private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
+    private static void sysidInit() {
         ShuffleboardTab sysidTab = Shuffleboard.getTab("Sysid");
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
+        sysidChooser.addOption("AnglerSysID", CreateSysidCommand.createCommand(targetingSubsystem::sysIdQuasistatic, 
+        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
                         "SwerveSysId", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
+        sysIdInit = true;
     }
 
     public static TestMode getTestMode() {
