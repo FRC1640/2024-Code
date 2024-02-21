@@ -36,10 +36,10 @@ import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.robot.Constants;
 import frc.robot.DashboardInit;
+import frc.robot.Constants.AprilTagVisionConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
@@ -103,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.05, 0.05, 0.05),
-                VecBuilder.fill(VisionConstants.xyStdDev, VisionConstants.xyStdDev, VisionConstants.thetaStdDev));
+                VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -161,21 +161,17 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
-                // System.out.println("vision");
-                // TODO: TUNE
 
                 double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
-
-                // velocity standard deviation constant
 
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
                         1);
                 swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                        VecBuilder.fill(VisionConstants.xyStdDev * distConst + velConst / 5,
-                                VisionConstants.xyStdDev * distConst + velConst / 5,
-                                VisionConstants.thetaStdDev * distConst + velConst / 5));
+                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
+                                AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
+                                AprilTagVisionConstants.thetaStdDev * distConst + velConst / 5));
             }
 
         }

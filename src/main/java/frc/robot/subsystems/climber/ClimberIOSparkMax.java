@@ -16,8 +16,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     public ClimberIOSparkMax() {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
         rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
-        leftEncoder = new Resolver(5, .05, 4.95, 0, false);
-        rightEncoder = new Resolver(6, .05, 4.95, 0, false); //note: to create resolver constants class for min/max
+        leftEncoder = new Resolver(ClimberConstants.leftClimberResolver, .05, 4.95, 0, false);
+        rightEncoder = new Resolver(ClimberConstants.rightClimberResolver, .05, 4.95, 0, false); //note: to create resolver constants class for min/max
     }
 
     // @Override

@@ -2,8 +2,6 @@ package frc.robot.subsystems.drive;
 
 import java.util.ArrayList;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;

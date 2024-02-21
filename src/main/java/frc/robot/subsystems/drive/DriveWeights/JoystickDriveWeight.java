@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
