@@ -138,4 +138,12 @@ public interface TargetingIO {
     public default double getCappedExtensionSpeed() {
         return 0;
     }
+
+    public default double getAnglerSpeedPercent() {
+        return 0;
+    }
+    
+    public default double getExtensionSpeedPercent() {
+        return 0;
+    }
 }

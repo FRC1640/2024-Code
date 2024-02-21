@@ -107,4 +107,14 @@ public class TargetingIOSim implements TargetingIO {
     public double getCappedExtensionSpeed() {
         return cappedExtensionSpeed;
     }
+
+    @Override
+    public double getExtensionSpeedPercent() {
+        return extensionMotorVoltage / 12;
+    }
+
+    @Override
+    public double getAnglerSpeedPercent() {
+        return (leftMotorVoltage + rightMotorVoltage) / 24;
+    }
 }

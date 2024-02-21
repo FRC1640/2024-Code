@@ -212,6 +212,15 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
+     * Gets the percent output of the angler.
+     * 
+     * @return The average percent output of the angler motors.
+     */
+    public double getAnglerSpeedPercent() {
+        return io.getAnglerSpeedPercent();
+    }
+
+    /**
      * Gets the setpoint of the angler.
      * 
      * @return The setpoint.
@@ -370,6 +379,15 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     private void setExtensionVoltage(double voltage) {
         io.setExtensionVoltage(voltage);
+    }
+
+    /**
+     * Gets the percent output of the extension.
+     * 
+     * @return The percent output of the extension motor.
+     */
+    public double getExtensionSpeedPercent() {
+        return io.getExtensionSpeedPercent();
     }
 
     /**

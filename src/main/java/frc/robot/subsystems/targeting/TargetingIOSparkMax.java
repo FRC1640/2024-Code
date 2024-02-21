@@ -16,8 +16,6 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final Resolver targetingEncoder = new Resolver(7, TargetingConstants.targetingMinVoltage,
             TargetingConstants.targetingMaxVoltage, 0, false);
 
-    // TODO override voltage methods
-
     public TargetingIOSparkMax() {
         leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAnglerCanID, MotorType.kBrushless);
         rightTargetingMotor = new CANSparkMax(TargetingConstants.rightAnglerCanID, MotorType.kBrushless);
@@ -35,11 +33,16 @@ public class TargetingIOSparkMax implements TargetingIO {
         rightTargetingMotor.set(speedClamped);        
     }
 
-    // @Override
-    // public void setTargetingVoltage(double voltage) {
-    //     leftTargetingMotor.setVoltage(voltage);
-    //     rightTargetingMotor.setVoltage(voltage);
-    // }
+    @Override
+    public void setTargetingVoltage(double voltage) {
+        leftTargetingMotor.setVoltage(voltage);
+        rightTargetingMotor.setVoltage(voltage);
+    }
+
+    @Override
+    public void setExtensionVoltage(double voltage) {
+        extensionMotor.setVoltage(voltage);
+    }
 
     @Override
     public void updateInputs(TargetingIOInputs inputs) {
@@ -61,7 +64,7 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.extensionAppliedVoltage = extensionMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
         inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
-        inputs.extensionPosition = extensionMotor.getEncoder().getPosition(); // TODO set
+        inputs.extensionPosition = extensionMotor.getEncoder().getPosition();
     }
 
     /**
@@ -83,6 +86,16 @@ public class TargetingIOSparkMax implements TargetingIO {
 
     @Override
     public double getExtensionPosition() {
-        return 0; // TODO return
+        return extensionMotor.getEncoder().getPosition();
+    }
+
+    @Override
+    public double getExtensionSpeedPercent() {
+        return extensionMotor.getAppliedOutput();
+    }
+
+    @Override
+    public double getAnglerSpeedPercent() {
+        return (leftTargetingMotor.getAppliedOutput() + rightTargetingMotor.getAppliedOutput()) / 2;
     }
 }

@@ -132,7 +132,7 @@ public class DashboardInit {
     }
 
     private static void motorInit(IntakeSubsystem intakeSubsystem, ClimberSubsystem climberSubsystem,
-            ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem) { // TODO motor ids
+            ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem) { // TODO motor ids, drive motors
         DoubleConsumer[] consumers = {(intakeSpeed) -> intakeSubsystem.testIntakeSpeedCommand(intakeSpeed),
             (indexerSpeed) -> intakeSubsystem.testIndexerSpeedCommand(indexerSpeed),
             (climberSpeed) -> climberSubsystem.setSpeedCommand(climberSpeed, climberSpeed),
@@ -146,7 +146,9 @@ public class DashboardInit {
         DoubleSupplier[] suppliers = {() -> intakeSubsystem.getIntakePercentOutput(),
             () -> intakeSubsystem.getIndexerPercentOutput(), () -> climberSubsystem.getPercentOutput(),
             () -> shooterSubsystem.getTopLeftSpeed(), () -> shooterSubsystem.getTopRightSpeed(),
-            () -> shooterSubsystem.getBottomLeftSpeed(), () -> shooterSubsystem.getBottomRightSpeed()};
+            () -> shooterSubsystem.getBottomLeftSpeed(), () -> shooterSubsystem.getBottomRightSpeed(),
+            () -> targetingSubsystem.getAnglerSpeedPercent(), () -> targetingSubsystem.getExtensionSpeedPercent()};
+        ArrayList<DoubleSupplier> motorGetSpeed = new ArrayList<>(Arrays.asList(suppliers));
         ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
         
     }

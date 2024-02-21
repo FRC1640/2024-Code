@@ -56,4 +56,5 @@ public class IntakeIOSim implements IntakeIO {
     public double getIndexerPercentOutput() {
         return indexerMotorVoltage / 12;
     }
+    
 }
