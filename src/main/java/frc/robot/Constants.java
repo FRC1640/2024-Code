@@ -57,8 +57,8 @@ public final class Constants {
 
         public static final ModuleInfo FR = new ModuleInfo(
             PivotId.FR, 
-            19, 
-            20, //5, 
+            19, // 2023: and dew 1: 2
+            20, //2023: 1, dew 1: 5
             2,
             -45, 
             true, 
@@ -124,12 +124,13 @@ public final class Constants {
         public static PIDController targetingPID = new PIDController(0.1, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);
-        public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
+        public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // TODO values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
 
         public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
+        
     }
     public static class FieldConstants{
         public static double height = 8.21;
