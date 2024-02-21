@@ -163,7 +163,7 @@ public class RobotContainer {
                         : new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
                 driveSubsystem::getPose, gyro);
         
-        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, driveController, gyro::getAngleRotation2d);
+        mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
         configureBindings();
     }
