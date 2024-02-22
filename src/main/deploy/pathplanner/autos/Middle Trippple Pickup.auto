@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Targeting"
+                }
+              }
+            ]
           }
         },
         {
@@ -45,25 +58,6 @@
           "type": "path",
           "data": {
             "pathName": "center amp side pickup"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Indexer"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Targeting"
-                }
-              }
-            ]
           }
         }
       ]

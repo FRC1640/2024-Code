@@ -238,7 +238,7 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand()
-				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
+			.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -265,7 +265,7 @@ public class RobotContainer {
 
         private Command generateIntakeCommandAuto() {
 		return intakeSubsystem.intakeCommand(0, 0.5,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)));
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))).until(() -> true);
 	}
 
 	public Pose2d getSpeakerPos() {
