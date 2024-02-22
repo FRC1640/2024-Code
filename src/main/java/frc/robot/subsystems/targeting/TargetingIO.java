@@ -19,6 +19,7 @@ public interface TargetingIO {
         public double rightTargetingCurrentAmps = 0.0;
         public double rightTargetingTempCelsius = 0.0;
         public double rightTargetingPositionDegrees = 0.0;
+        public double rightRadiansPerSecond = 0.0;
 
         public double targetingPositionAverage = 0.0;
 
