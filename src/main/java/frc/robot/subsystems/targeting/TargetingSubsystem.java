@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -78,6 +79,11 @@ public class TargetingSubsystem extends SubsystemBase {
         }
         setpoint = Math.toDegrees(pos.getAsDouble());
         return speed;
+    }
+    public double distToAngle(double dist){
+        return -0.956635 * Math.toDegrees(
+			Math.asin(-0.778591 * Units.metersToFeet(2.11)
+			/ Units.metersToFeet(dist)) - 0.22140)-2.01438;
     }
 
     public double getAngleVoltage(){

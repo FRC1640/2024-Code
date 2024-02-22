@@ -97,6 +97,8 @@ public class RobotContainer {
 
 	MovingWhileShooting movingWhileShooting;
 
+	RotateToAngleWeight movingWhileShootingWeight;
+
 	public RobotContainer() {
 		switch (Robot.getMode()) {
 			case REAL:
@@ -149,7 +151,7 @@ public class RobotContainer {
 		}
 		driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
 
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+		
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
 		joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
@@ -160,11 +162,19 @@ public class RobotContainer {
 
 
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		
 		// configure weights
 
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
-		driveSubsystem::getChassisSpeeds);
+		driveSubsystem::getChassisSpeeds, targetingSubsystem);
+
+		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		// targetingSubsystem.setDefaultCommand(
+			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
+
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+		// shooterSubsystem.setDefaultCommand(
+		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 
 		rotateLockWeight = new RotateLockWeight(
 				() -> (getAlliance() == Alliance.Blue
@@ -172,9 +182,9 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());
 
-		// rotateLockWeight = new
-		// RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
-		// driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed());
+		movingWhileShootingWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
+			driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
+			"MovingWhileShooting", ()->false);
 
 		autoDriveWeight = new AutoDriveWeight(
 				() -> (getAlliance() == Alliance.Blue
@@ -306,9 +316,8 @@ public class RobotContainer {
 
 	}
 	public Command autoTarget(){
-		return targetingSubsystem.anglePIDCommand(() -> -0.956635 * Math.toDegrees(
-			Math.asin(-0.778591 * Units.metersToFeet(2.11)
-			/ Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))-2.01438, 60);
+		return targetingSubsystem.anglePIDCommand(() -> 
+			targetingSubsystem.distToAngle(get3dDistance(() -> getSpeakerPos())));
 
 	}
 

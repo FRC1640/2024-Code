@@ -56,6 +56,32 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
+    public Command setSpeedCommand(double speed) {
+        Command c = new Command() {
+            @Override
+            public void end(boolean interrupted) {
+                setSpeedPercent(0, 0, 0, 0);
+            }
+
+            @Override
+            public void execute() {
+                setSpeedPercent(speed, speed, speed, speed);
+            }
+
+            @Override
+            public void initialize() {
+
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
     public Command setVoltageCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         Command c = new Command() {
             @Override

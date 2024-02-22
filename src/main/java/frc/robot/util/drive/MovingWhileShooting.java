@@ -9,17 +9,21 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class MovingWhileShooting {
     Supplier<Pose2d> goalPose;
     Supplier<Pose2d> getPose;
     Gyro gyro;
     Supplier<ChassisSpeeds> speeds;
-    public MovingWhileShooting(Gyro gyro, Supplier<Pose2d> goalPose, Supplier<Pose2d> getPose, Supplier<ChassisSpeeds> speeds) {
+    private TargetingSubsystem targetingSubsystem;
+    public MovingWhileShooting(Gyro gyro, Supplier<Pose2d> goalPose, Supplier<Pose2d> getPose, 
+            Supplier<ChassisSpeeds> speeds, TargetingSubsystem targetingSubsystem) {
         this.goalPose = goalPose;
         this.gyro = gyro;
         this.getPose = getPose;
         this.speeds = speeds;
+        this.targetingSubsystem = targetingSubsystem;
     }
 
     public double getAngleToGoal() {
@@ -34,19 +38,20 @@ public class MovingWhileShooting {
     }
 
     public double getAngleFromDistance() {
-        return -0.956635
-                * Math.toDegrees(
-                        Math.asin(-0.778591 * Units.metersToFeet(2.11)
-                                / Units.metersToFeet(getDistance()) - 0.22140))
-                - 2.01438;
+        return targetingSubsystem.distToAngle(getDistance());
     }
 
-    public double getPowerFromDistance(){
+    public double getSpeedFromDistance(){
         return 15;
     }
 
+    public double speedToPercentOutput(){
+        return getNewShotSpeed(); // TODO: conversion
+    }
+    
+
     public double getNewRobotAngle() {
-        double V = getPowerFromDistance();
+        double V = getSpeedFromDistance();
         double phiv = Math.toRadians(getAngleFromDistance());
         double phih = getAngleToGoal();
         double vy = speeds.get().vyMetersPerSecond;
@@ -56,8 +61,8 @@ public class MovingWhileShooting {
         return Math.atan2(V * Math.cos(phiv) * Math.sin(phih) + vy, V * Math.cos(phiv) * Math.cos(phih) + vx);
     }
 
-    public double getNewHoodAngle() {
-        double V = getPowerFromDistance();
+    public double getNewTargetingAngle() {
+        double V = getSpeedFromDistance();
         double phiv = Math.toRadians(getAngleFromDistance());
         double phih = getAngleToGoal();
         double vy = speeds.get().vyMetersPerSecond;
@@ -70,7 +75,7 @@ public class MovingWhileShooting {
     }
 
     public double getNewShotSpeed() {
-        double V = getPowerFromDistance();
+        double V = getSpeedFromDistance();
         double phiv = Math.toRadians(getAngleFromDistance());
         double phih = getAngleToGoal();
         double vy = speeds.get().vyMetersPerSecond;
