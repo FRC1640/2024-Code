@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -34,6 +35,9 @@ public class TargetingSubsystem extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine;
 
+    ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0);
+    PIDController ffPID = new PIDController(0, 0, 0);
+
     
 
     public TargetingSubsystem(TargetingIO io) {
@@ -57,6 +61,11 @@ public class TargetingSubsystem extends SubsystemBase {
         
     }
 
+    public Command manualFeedForwardAngle(double speed){
+        return setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), speed)
+            + ffPID.calculate(inputs.rightRadiansPerSecond, speed));
+    }
+
     public double getAngleVoltage(){
         return inputs.rightTargetingAppliedVoltage;
     }
@@ -64,7 +73,7 @@ public class TargetingSubsystem extends SubsystemBase {
         return Math.toRadians(inputs.rightTargetingPositionDegrees);
     }
     public double getAngleVelocity(){
-        return inputs.rightTargetingSpeedPercent * 5676 / 60 * 2 * Math.PI;
+        return inputs.rightRadiansPerSecond;
     }
 
     /**
