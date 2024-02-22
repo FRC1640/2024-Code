@@ -68,6 +68,7 @@ import frc.robot.subsystems.targeting.TargetingIO;
 import frc.robot.subsystems.targeting.TargetingIOSim;
 import frc.robot.subsystems.targeting.TargetingIOSparkMax;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
+import frc.robot.util.dashboard.PIDUpdate;
 import frc.robot.util.drive.MovingWhileShooting;
 
 public class RobotContainer {
@@ -239,6 +240,14 @@ public class RobotContainer {
 		driveController.b().whileTrue(manualShot(50, Math.PI/2, Math.PI/2,
 			()->!driveController.b().getAsBoolean()));
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
+
+
+		
+	}
+
+	public void pidTriggers(){
+		new Trigger(()->PIDUpdate.getPID() == PIDConstants.map.get("angle"))
+			.whileTrue(targetingSubsystem.anglePIDCommand(()->PIDConstants.map.get("angle").getSetpoint()));
 	}
 
 	public Command getAutonomousCommand() {
@@ -252,9 +261,6 @@ public class RobotContainer {
 		intakeSubsystem.removeDefaultCommand();
 		targetingSubsystem.removeDefaultCommand();
 		climberSubsystem.removeDefaultCommand();
-	}
-	public void setPIDCommands(){
-		targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->PIDConstants.map.get("angle").getSetpoint()));
 	}
 
 	private Alliance getAlliance() {

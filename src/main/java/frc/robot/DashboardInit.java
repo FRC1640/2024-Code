@@ -42,6 +42,11 @@ public class DashboardInit {
     static boolean sysIdInit = false;
     static boolean pidInit = false;
 
+    private static GenericEntry kP;
+    private static GenericEntry kI;
+    private static GenericEntry kD;
+    private static GenericEntry kS;
+
     public DashboardInit() {
 
     }
@@ -84,10 +89,11 @@ public class DashboardInit {
         PIDTab.add(pidChooser)
                 .withSize(4, 4)
                 .withPosition(0, 1);
-        GenericEntry kP = PIDTab.add("P", 0).withSize(1,1).withPosition(0,0).getEntry();
-        GenericEntry kI = PIDTab.add("I", 0).withSize(1,1).withPosition(1,0).getEntry();
-        GenericEntry kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
-        GenericEntry kS = PIDTab.add("Setpoint", 0).withSize(1,1).withPosition(3,0).getEntry();
+        
+        kP = PIDTab.add("P", 0).withSize(1,1).withPosition(0,0).getEntry();
+        kI = PIDTab.add("I", 0).withSize(1,1).withPosition(1,0).getEntry();
+        kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
+        kS = PIDTab.add("Setpoint", 0).withSize(1,1).withPosition(3,0).getEntry();
         PIDUpdate.setEntries(kP, kI, kD, kS);
         pidChooser.onChange(DashboardInit::onPIDChooserChange);
         pidInit = true;
@@ -95,6 +101,9 @@ public class DashboardInit {
 
     private static void onPIDChooserChange(PIDController controller) {
         PIDUpdate.setPID(controller);
+        kP.setDouble(controller.getP());
+        kI.setDouble(controller.getI());
+        kD.setDouble(controller.getD());
     }
 
     private static void onTestChange(TestMode mode) {

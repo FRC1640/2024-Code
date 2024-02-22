@@ -22,6 +22,10 @@ public class PIDUpdate{
         pid = controller;
     }
 
+    public static PIDController getPID(){
+        return pid;
+    }
+
     public static void periodic() {
         pid.setP(kP.getDouble(0));
         pid.setI(kI.getDouble(0));
