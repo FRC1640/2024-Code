@@ -13,8 +13,8 @@ import frc.robot.sensors.Gyro.Gyro;
 public class RotateLockWeight implements DriveWeight {
     Supplier<Pose2d> pose;
     Supplier<Pose2d> getPose;
-    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID);
-    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID);
+    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "rotlock");
+    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "rotlockmoving");
     Gyro gyro;
     Supplier<Double> getSpeed;
     double setAngle;

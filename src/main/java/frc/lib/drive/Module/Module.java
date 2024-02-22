@@ -9,15 +9,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.swerve.SwerveAlgorithms;
+import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.PivotId;
 
 public class Module {
     ModuleIO io;
     PivotId id;
     ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-    public final PIDController drivePIDController = new PIDController(0, 0.0, 0);
+    
+    public final PIDController drivePIDController = PIDConstants.constructPID(PIDConstants.drivePIDController, "module drive");
 
-    public final PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); // actual PID
+    public final PIDController turningPIDController = PIDConstants.constructPID(PIDConstants.turningPIDController, "module turning");
 
     // public final PIDController turningPIDController = new PIDController(1,0,0);
     // //sim PID

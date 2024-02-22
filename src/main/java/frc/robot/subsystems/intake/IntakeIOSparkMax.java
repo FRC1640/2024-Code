@@ -1,4 +1,6 @@
 package frc.robot.subsystems.intake;
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -10,15 +12,14 @@ public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
     private final CANSparkMax indexerMotor;
     private AnalogOutput proximityAnalogOutput;
+    BooleanSupplier hasNote;
     
 
-    public IntakeIOSparkMax() {
-        intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless); // TODO ids
-        
+    public IntakeIOSparkMax(BooleanSupplier hasNote) {
+        intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
         proximityAnalogOutput = new AnalogOutput(IntakeConstants.proximitySensorChannel);
-
-         
+        this.hasNote = hasNote;
     }
 
     @Override
@@ -52,9 +53,7 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.indexerAppliedVoltage = indexerMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
-
-        
-        inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold; // TODO sensing
+        inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold;
     }
 
     @Override

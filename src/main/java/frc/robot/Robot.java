@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.periodic.PeriodicScheduler;
 import frc.robot.subsystems.drive.DriveWeightCommand;
+import frc.robot.util.dashboard.PIDUpdate;
 
 public class Robot extends LoggedRobot {
     public static enum Mode {
@@ -26,7 +27,7 @@ public class Robot extends LoggedRobot {
     };
 
     public static enum TestMode {
-        NONE, SYSID, MOTOR
+        NONE, SYSID, PID, MOTOR
     };
 
     private Command m_autonomousCommand;
@@ -154,6 +155,7 @@ public class Robot extends LoggedRobot {
         switch (DashboardInit.getTestMode()) {
             case NONE:
                 System.out.println("Nothing is happening!");
+                break;
             case SYSID:
                 if (DashboardInit.getSelectedSysid() != null){
                     System.out.println("Running sysid on: " + DashboardInit.getSelectedSysid().getName());
@@ -161,6 +163,10 @@ public class Robot extends LoggedRobot {
                     CommandScheduler.getInstance().getActiveButtonLoop().clear();
                     m_robotContainer.removeAllDefaultCommands();
                 }
+                break;
+            case PID:
+                System.out.println("PID MODE");
+                break;
         }
     }
 
@@ -168,9 +174,12 @@ public class Robot extends LoggedRobot {
     public void testPeriodic() {
         switch (DashboardInit.getTestMode()) {
             case NONE:
-                
+                break;
             case SYSID:
-                
+                break;
+            case PID:
+                PIDUpdate.periodic();
+                break;
         }
     }
 

@@ -16,16 +16,14 @@ import frc.robot.Constants.PIDConstants;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID);
+    PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID, "angle");
     public double setpoint = 0.0;
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
     private MechanismLigament2d angler = new MechanismLigament2d("angler", 1, 0);
 
     public double extensionSetpoint = 0.0;
-    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID);
-
-    
+    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID, "extension");
 
     public TargetingSubsystem(TargetingIO io) {
         this.io = io;
@@ -40,54 +38,6 @@ public class TargetingSubsystem extends SubsystemBase {
         angler.setAngle(inputs.targetingPositionAverage);
         angler.setLength(inputs.extensionPosition + 0.5);
         Logger.recordOutput("Targeting/mech", targetVisualization);
-    }
-
-    /**
-     * Combines <code> anglePIDCommand() </code> and <code> extensionPIDCommand() </code>,
-     * running both methods with the inputted angle and position.
-     * 
-     * @param angle The angle to move to.
-     * @param position The position to extend to.
-     * @return Command[] of angle and extension commands.
-     */
-    public Command[] extendAndAngle(double angle, double position) {
-        return new Command[] {anglePIDCommand(angle), extensionPIDCommand(position)};
-    }
-
-    /**
-     * Combines <code> anglePIDCommand() </code> and <code> extensionPIDCommand() </code>,
-     * running both methods with the inputted angle supplier and position.
-     * 
-     * @param angle Supplier giving the angle to move to.
-     * @param position The position to extend to.
-     * @return Command[] of angle and extension commands.
-     */
-    public Command[] extendAndAngle(DoubleSupplier angle, double position) {
-        return new Command[] {anglePIDCommand(angle), extensionPIDCommand(position)};
-    }
-
-    /**
-     * Combines <code> anglePIDCommand() </code> and <code> extensionPIDCommand() </code>,
-     * running both methods with the inputted position supplier and angle.
-     * 
-     * @param angle The angle to move to.
-     * @param position Supplier giving the position to extend to.
-     * @return Command[] of angle and extension commands.
-     */
-    public Command[] extendAndAngle(double angle, DoubleSupplier position) {
-        return new Command[] {anglePIDCommand(angle), extensionPIDCommand(position)};
-    }
-
-    /**
-     * Combines <code> anglePIDCommand() </code> and <code> extensionPIDCommand() </code>,
-     * running both methods with the inputted angle and position suppliers.
-     * 
-     * @param angle Supplier giving the angle to move to.
-     * @param position Supplier giving the position to extend to.
-     * @return Command[] of angle and extension commands.
-     */
-    public Command[] extendAndAngle(DoubleSupplier angle, DoubleSupplier position) {
-        return new Command[] {anglePIDCommand(angle), extensionPIDCommand(position)};
     }
 
     /**
@@ -108,6 +58,24 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public Command anglePIDCommand(DoubleSupplier angle) {
         return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()));
+    }
+
+    public Command extendAndAngleSpeed(double extend, double angle) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setExtensionPercentOutput(extend);
+                setAnglePercentOutput(angle);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAnglePercentOutput(0);
+                setExtensionPercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     /**
@@ -137,11 +105,12 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command setAnglePercentOutputCommand(double output) {
         Command c = new Command() {
             @Override
-            public void execute(){
+            public void execute() {
                 setAnglePercentOutput(output);
             }
+
             @Override
-            public void end(boolean interrupted){
+            public void end(boolean interrupted) {
                 setAnglePercentOutput(0);
             }
         };
@@ -159,11 +128,12 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command setAnglePercentOutputCommand(DoubleSupplier output) {
         Command c = new Command() {
             @Override
-            public void execute(){
+            public void execute() {
                 setAnglePercentOutput(output.getAsDouble());
             }
+
             @Override
-            public void end(boolean interrupted){
+            public void end(boolean interrupted) {
                 setAnglePercentOutput(0);
             }
         };
@@ -179,13 +149,14 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return New Command.
      */
     public Command setAngleVoltageCommand(double voltage) {
-            Command c = new Command() {
+        Command c = new Command() {
             @Override
-            public void execute(){
+            public void execute() {
                 setAngleVoltage(voltage);
             }
+
             @Override
-            public void end(boolean interrupted){
+            public void end(boolean interrupted) {
                 setAngleVoltage(0);
             }
         };
@@ -230,10 +201,12 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns whether the position of the angler is within the inputted margin of error from the setpoint.
+     * Returns whether the position of the angler is within the inputted margin of
+     * error from the setpoint.
      * 
      * @param error The allowed error in degrees for the arm.
-     * @return Whether the angle versus the setpoint is within the margin of error as a boolean.
+     * @return Whether the angle versus the setpoint is within the margin of error
+     *         as a boolean.
      */
     public boolean isAnglePositionAccurate(double error) {
         return Math.abs(getAngleSetpoint() - inputs.targetingPositionAverage) < error;
@@ -251,6 +224,7 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 setExtensionPercentOutput(getExtensionPIDSpeed(position));
             }
+
             @Override
             public void end(boolean interrupted) {
                 setExtensionPercentOutput(0);
@@ -272,6 +246,7 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 setExtensionPercentOutput(getExtensionPIDSpeed(position.getAsDouble()));
             }
+
             @Override
             public void end(boolean interrupted) {
                 setExtensionPercentOutput(0);
@@ -310,6 +285,7 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 setExtensionPercentOutput(output);
             }
+
             @Override
             public void end(boolean interrupted) {
                 setExtensionPercentOutput(0);
@@ -323,7 +299,8 @@ public class TargetingSubsystem extends SubsystemBase {
      * Returns a new Command which sets the extension to a percent output,
      * setting the percent output to 0 when the command ends.
      * 
-     * @param output Supplier giving the percent output to set the extension motor to.
+     * @param output Supplier giving the percent output to set the extension motor
+     *               to.
      * @return New Command.
      */
     public Command setExtensionPercentOutputCommand(DoubleSupplier output) {
@@ -332,6 +309,7 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 setExtensionPercentOutput(output.getAsDouble());
             }
+
             @Override
             public void end(boolean interrupted) {
                 setExtensionPercentOutput(0);
@@ -354,6 +332,7 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 setExtensionVoltage(voltage);
             }
+
             @Override
             public void end(boolean interrupted) {
                 setExtensionVoltage(0);
@@ -396,15 +375,6 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return The position of the extension.
      */
     public double getExtensionPosition() {
-        return getIO().getExtensionPosition();
-    }
-
-    /**
-     * Returns the TargetingIO passed into the subsystem's constructor.
-     * 
-     * @return The subsystem's TargetingIO.
-     */
-    private TargetingIO getIO() {
-        return io;
+        return inputs.extensionPosition;
     }
 }
