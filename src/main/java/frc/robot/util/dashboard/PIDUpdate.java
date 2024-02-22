@@ -8,7 +8,7 @@ public class PIDUpdate{
     private static GenericEntry kP;
     private static GenericEntry kI;
     private static GenericEntry kD;
-    private static PIDController pid;
+    private static PIDController pid = new PIDController(0, 0, 0);
 
     public static void setEntries(GenericEntry p, GenericEntry i, GenericEntry d){
         kP = p;

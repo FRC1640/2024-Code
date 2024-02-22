@@ -5,13 +5,20 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.sysid.ArmSysidRoutine;
 import frc.robot.Constants.PIDConstants;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
@@ -25,10 +32,19 @@ public class TargetingSubsystem extends SubsystemBase {
     public double extensionSetpoint = 0.0;
     PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID, "extension");
 
+    SysIdRoutine sysIdRoutine;
+
+    
+
     public TargetingSubsystem(TargetingIO io) {
         this.io = io;
         MechanismRoot2d root = targetVisualization.getRoot("targeter", 2, 2);
         root.append(angler);
+
+        sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
+            this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition, 
+            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.5)).per(Seconds.of(1)),
+            mutable(Volts.of(7)), mutable(Second.of(15))));
     }
 
     @Override
@@ -36,8 +52,19 @@ public class TargetingSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Targeting", inputs);
         angler.setAngle(inputs.targetingPositionAverage);
-        angler.setLength(inputs.extensionPosition + 0.5);
+        angler.setLength(inputs.extensionPosition / 40 * 2 * Math.PI );
         Logger.recordOutput("Targeting/mech", targetVisualization);
+        
+    }
+
+    public double getAngleVoltage(){
+        return inputs.rightTargetingAppliedVoltage;
+    }
+    public double getAnglePosition(){
+        return Math.toRadians(inputs.rightTargetingPositionDegrees);
+    }
+    public double getAngleVelocity(){
+        return inputs.rightTargetingSpeedPercent * 5676 / 60 * 2 * Math.PI;
     }
 
     /**
@@ -358,5 +385,12 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public double getExtensionPosition() {
         return inputs.extensionPosition;
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
     }
 }

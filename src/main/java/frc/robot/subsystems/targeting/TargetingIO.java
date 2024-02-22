@@ -22,6 +22,8 @@ public interface TargetingIO {
 
         public double targetingPositionAverage = 0.0;
 
+        public double targetingVoltage = 0;
+
         public double extensionSpeedPercent = 0.0;
         public double extensionAppliedVoltage = 0.0;
         public double extensionCurrentAmps = 0.0;

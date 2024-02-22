@@ -108,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
                 this::getPose,
-                this::resetOdometry,
+                this::resetOdometryAuton,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
@@ -183,6 +183,19 @@ public class DriveSubsystem extends SubsystemBase {
     private void resetOdometry(Pose2d newPose) {
         swervePoseEstimator.resetPosition(gyro.getRawAngleRotation2d(), getModulePositionsArray(), newPose);
         odometryPose = newPose;
+    }
+
+    private void resetOdometryAuton(Pose2d pose){
+        if (pose.getTranslation().getDistance(getPose().getTranslation()) < 1.5){
+            resetOdometry(getPose());
+        }
+        else{
+            resetOdometry(pose);
+        }
+    }
+
+    public ChassisSpeeds getChassisSpeeds(){
+        return SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates());
     }
 
     public Pose2d getPose() {

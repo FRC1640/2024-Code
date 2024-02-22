@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -65,6 +66,15 @@ public class DriveWeightCommand {
         speeds = new ChassisSpeeds();
         centerOfRot = new Translation2d();
         setAngle = 0;
+        // remove weights with a true cancel condition
+        Iterator<DriveWeight> iterator = weights.iterator();
+        while (iterator.hasNext()) {
+            DriveWeight weight = iterator.next();
+            if (weight.cancelCondition()){
+                iterator.remove();
+            }
+        }
+        // iterate over remaining weights and add speeds
         for (DriveWeight driveWeight : weights) {
             speeds = speeds.plus(driveWeight.getSpeeds().times(driveWeight.getWeight()));
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());

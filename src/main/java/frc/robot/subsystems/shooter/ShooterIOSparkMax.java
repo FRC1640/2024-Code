@@ -10,10 +10,13 @@ public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topLeftShooter = new CANSparkMax(ShooterConstants.topLeftCanID, MotorType.kBrushless); // TODO ids
+        topLeftShooter = new CANSparkMax(ShooterConstants.topLeftCanID, MotorType.kBrushless); 
         bottomLeftShooter = new CANSparkMax(ShooterConstants.bottomLeftCanID, MotorType.kBrushless);
-        topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); // TODO ids
+        topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); 
         bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
+
+        topLeftShooter.setInverted(true);
+        bottomRightShooter.setInverted(true);
     }
 
     @Override

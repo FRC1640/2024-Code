@@ -8,20 +8,23 @@ import edu.wpi.first.wpilibj.RobotController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.TargetingConstants;
-import frc.robot.sensors.Resolver;
+import frc.robot.sensors.ResolverSlope;
 
 public class TargetingIOSparkMax implements TargetingIO {
     // private final CANSparkMax leftTargetingMotor;
     private final CANSparkMax rightTargetingMotor;
-    // private final CANSparkMax extensionMotor;
-    private final Resolver targetingEncoder = new Resolver(TargetingConstants.resolverID, TargetingConstants.angleMinVoltage,
-            TargetingConstants.angleMaxVoltage, 0, false);
+    private final CANSparkMax extensionMotor;
+    private final ResolverSlope targetingEncoder = new ResolverSlope(TargetingConstants.resolverID, 0.52, 0,
+        59, 30, 30);
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
         rightTargetingMotor = new CANSparkMax(TargetingConstants.rightAngleMotorId, MotorType.kBrushless);
-        // extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
+        extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
         rightTargetingMotor.setIdleMode(IdleMode.kBrake);
+        extensionMotor.setIdleMode(IdleMode.kBrake);
+        rightTargetingMotor.setInverted(true);
+        extensionMotor.setInverted(true);
     }
 
     @Override
@@ -54,11 +57,12 @@ public class TargetingIOSparkMax implements TargetingIO {
 
         inputs.targetingPositionAverage = targetingEncoder.getD();
 
-        // inputs.extensionSpeedPercent = extensionMotor.getAppliedOutput();
-        // inputs.extensionAppliedVoltage = extensionMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
-        // inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
-        // inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
-        // inputs.extensionPosition = extensionMotor.getEncoder().getPosition();
+        inputs.extensionSpeedPercent = extensionMotor.getAppliedOutput();
+        inputs.extensionAppliedVoltage = extensionMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
+        inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
+        inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
+        inputs.extensionPosition = extensionMotor.getEncoder().getPosition();
+        inputs.targetingVoltage = targetingEncoder.getV();
     }
 
     /**
@@ -74,7 +78,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     @Override
     public void setExtensionPercentOutput(double speed) {
         double speedClamped = speed;
-        // speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped);
-        // extensionMotor.set(speedClamped);
+        speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped);
+        extensionMotor.set(speedClamped);
     }
 }
