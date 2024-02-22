@@ -38,6 +38,8 @@ public class TargetingSubsystem extends SubsystemBase {
     ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0);
     PIDController ffPID = new PIDController(0, 0, 0);
 
+    PIDController radianAngle = PIDConstants.constructPID(PIDConstants.radianAngle, "radian angle");
+
     
 
     public TargetingSubsystem(TargetingIO io) {
@@ -61,9 +63,21 @@ public class TargetingSubsystem extends SubsystemBase {
         
     }
 
-    public Command manualFeedForwardAngle(double speed){
-        return setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), speed)
-            + ffPID.calculate(inputs.rightRadiansPerSecond, speed));
+    public Command manualFeedForwardAngle(DoubleSupplier speed){
+        return setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), speed.getAsDouble())
+            + ffPID.calculate(inputs.rightRadiansPerSecond, speed.getAsDouble()));
+    }
+    public Command pidFeedForwardAngle(DoubleSupplier positionDegrees){
+        return manualFeedForwardAngle(() -> getRadianPIDSpeed(()->Math.toRadians(positionDegrees.getAsDouble())));
+    }
+
+    public double getRadianPIDSpeed(DoubleSupplier pos){
+        double speed = radianAngle.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), pos.getAsDouble());
+        if (Math.abs(speed) < 0.01) {
+            speed = 0;
+        }
+        setpoint = Math.toDegrees(pos.getAsDouble());
+        return speed;
     }
 
     public double getAngleVoltage(){
