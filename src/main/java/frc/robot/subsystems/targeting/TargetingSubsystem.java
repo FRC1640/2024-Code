@@ -43,7 +43,7 @@ public class TargetingSubsystem extends SubsystemBase {
 
         sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
             this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition, 
-            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.5)).per(Seconds.of(1)),
+            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(1)).per(Seconds.of(1)),
             mutable(Volts.of(7)), mutable(Second.of(15))));
     }
 
