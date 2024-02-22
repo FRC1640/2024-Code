@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
@@ -251,6 +252,9 @@ public class RobotContainer {
 		intakeSubsystem.removeDefaultCommand();
 		targetingSubsystem.removeDefaultCommand();
 		climberSubsystem.removeDefaultCommand();
+	}
+	public void setPIDCommands(){
+		targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->PIDConstants.map.get("angle").getSetpoint()));
 	}
 
 	private Alliance getAlliance() {
