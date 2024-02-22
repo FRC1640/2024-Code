@@ -57,8 +57,8 @@ public final class Constants {
 
         public static final ModuleInfo FR = new ModuleInfo(
             PivotId.FR, 
-            19, 
-            20, //5, 
+            19, // 2023: and dew 1: 2
+            20, //2023: 1, dew 1: 5
             2,
             -45, 
             true, 
@@ -131,6 +131,7 @@ public final class Constants {
         public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
+        
     }
     public static class FieldConstants{
         public static double height = 8.21;

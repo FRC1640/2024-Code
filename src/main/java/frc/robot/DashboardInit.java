@@ -20,6 +20,7 @@ import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
 
@@ -46,12 +47,12 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem, MLVision ml) {
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
         autonInit();
-        matchInit(vision);
+        matchInit(vision, ml);
         testInit();
 
     }
@@ -114,7 +115,7 @@ public class DashboardInit {
         }
     }
 
-    private static void matchInit(AprilTagVision vision) {
+    private static void matchInit(AprilTagVision vision, MLVision ml) {
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -131,10 +132,14 @@ public class DashboardInit {
         teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
                 .withSize(1, 2)
                 .withPosition(5, 2);
+        teleop.addBoolean("Note sighted?", () -> ml.isTarget())
+            .withSize(1, 2)
+            .withPosition(5, 0);
         teleop.add(field)
                 .withSize(4, 4)
                 .withPosition(6, 0);
     }
+
 
     public static void setFieldPos(Pose2d pose) {
         field.setRobotPose(pose);
