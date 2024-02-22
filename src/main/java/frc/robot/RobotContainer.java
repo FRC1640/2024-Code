@@ -265,7 +265,7 @@ public class RobotContainer {
 
         private Command generateIntakeCommandAuto() {
 		return intakeSubsystem.intakeCommand(0, 0.5,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))).until(() -> true);
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))).until(() -> intakeSubsystem.);
 	}
 
 	public Pose2d getSpeakerPos() {
