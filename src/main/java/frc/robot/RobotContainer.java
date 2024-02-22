@@ -163,7 +163,8 @@ public class RobotContainer {
 		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
 		// configure weights
 
-		// movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
+		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
+		driveSubsystem::getChassisSpeeds);
 
 		rotateLockWeight = new RotateLockWeight(
 				() -> (getAlliance() == Alliance.Blue

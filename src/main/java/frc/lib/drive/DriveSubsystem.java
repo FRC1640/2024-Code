@@ -195,6 +195,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public ChassisSpeeds getChassisSpeeds(){
+        Logger.recordOutput("Drive/Actual Chassis Speeds", SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()));
         return SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates());
     }
 
