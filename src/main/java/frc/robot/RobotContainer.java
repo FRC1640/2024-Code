@@ -263,6 +263,11 @@ public class RobotContainer {
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
 
+        private Command generateIntakeCommandAuto() {
+		return intakeSubsystem.intakeCommand(0, 0.5,
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)));
+	}
+
 	public Pose2d getSpeakerPos() {
 		return (getAlliance() == Alliance.Blue
 				? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
@@ -301,6 +306,8 @@ public class RobotContainer {
 
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
+                NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
+                NamedCommands.registerCommand("Targeting", autoTarget());
 		
 	}
 }
