@@ -76,6 +76,10 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command anglePIDCommand(double angle) {
         return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle));
     }
+    public Command anglePIDCommand(DoubleSupplier angle, double limit) {
+        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit);
+    }
+
 
     /**
      * Moves to the given angle.
@@ -157,6 +161,27 @@ public class TargetingSubsystem extends SubsystemBase {
             @Override
             public void execute() {
                 setAnglePercentOutput(output.getAsDouble());
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAnglePercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setAnglePercentOutputCommand(DoubleSupplier output, double limit) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (getAnglePosition() > limit){
+                    setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                }
+                else{
+                    setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                }
             }
 
             @Override

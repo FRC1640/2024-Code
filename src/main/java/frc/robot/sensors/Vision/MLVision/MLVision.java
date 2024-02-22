@@ -41,7 +41,7 @@ public class MLVision extends PeriodicBase {
         llresults = LimelightHelpers.getLatestResults("limelight-ml");
         resultsArray = llresults.targetingResults.targets_Detector;
         numNotesInView = resultsArray.length;
-        System.out.println("numNotes in view" + numNotesInView + " == " + resultsArray.length);
+        // System.out.println("numNotes in view" + numNotesInView + " == " + resultsArray.length);
 
         if (isTarget()){
             targetNote = calculateTargetNote();
@@ -163,7 +163,7 @@ public class MLVision extends PeriodicBase {
         }
 
         numNotesWithinThreshold = notesWithinThreshold.size();
-        System.out.println("Num notes in threshold: " + numNotesWithinThreshold);
+        // System.out.println("Num notes in threshold: " + numNotesWithinThreshold);
 
         // find the leftmose note within threshold
         if (notesWithinThreshold.size() > 0){

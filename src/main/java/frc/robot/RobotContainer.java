@@ -147,18 +147,18 @@ public class RobotContainer {
 		}
 		driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
 
-		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
 		joystickDriveWeight = new JoystickDriveWeight(driveController, gyro);
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.8, () -> intakeSubsystem.hasNote()));
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
+		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.8, () -> intakeSubsystem.hasNote()));
+		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-		targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(60)); // actual def
+		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
 		// configure weights
 
 		// movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
@@ -194,7 +194,7 @@ public class RobotContainer {
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
 		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
-		driveController.leftBumper().whileTrue(generateIntakeCommand().alongWith(autoTarget()));
+		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
 				.whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
 						.alongWith(targetingSubsystem.anglePIDCommand(60)));
@@ -207,11 +207,11 @@ public class RobotContainer {
 								new WaitCommand(ShooterConstants.waitTime))));
 
 		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5)))
-				.alongWith(autoTarget()));
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
+				// .alongWith(autoTarget()));
 		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))
-				.alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
+				// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
 		operatorController.leftTrigger()
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.angleManualSpeed));
 		operatorController.rightTrigger()
@@ -297,7 +297,7 @@ public class RobotContainer {
 	public Command autoTarget(){
 		return targetingSubsystem.anglePIDCommand(() -> -0.956635 * Math.toDegrees(
 			Math.asin(-0.778591 * Units.metersToFeet(2.11)
-			/ Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))-2.01438);
+			/ Units.metersToFeet(get3dDistance(() -> getSpeakerPos())) - 0.22140))-2.01438, 60);
 
 	}
 

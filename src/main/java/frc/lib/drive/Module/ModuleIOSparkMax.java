@@ -82,8 +82,8 @@ public class ModuleIOSparkMax implements ModuleIO{
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-        inputs.drivePositionMeters = (-driveEncoder.getPosition() / kDriveGearRatio) * kWheelRadius * 2 * Math.PI;
-        inputs.driveVelocityMetersPerSecond =  ((-driveEncoder.getVelocity() / kDriveGearRatio) / 60) * 2 * Math.PI * kWheelRadius;
+        inputs.drivePositionMeters = -(driveEncoder.getPosition() / kDriveGearRatio) * kWheelRadius * 2 * Math.PI;
+        inputs.driveVelocityMetersPerSecond =  -((driveEncoder.getVelocity() / kDriveGearRatio) / 60) * 2 * Math.PI * kWheelRadius;
         inputs.driveAppliedVoltage = driveMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.driveCurrentAmps = driveMotor.getOutputCurrent();
         inputs.driveTempCelsius = driveMotor.getMotorTemperature();
