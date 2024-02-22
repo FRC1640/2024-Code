@@ -87,4 +87,24 @@ public class ClimberSubsystem extends SubsystemBase{
         setpoint = position;
         return speed;
     }
+
+    public Command climbRoutineCommand(){
+        Command c = new Command(){
+            @Override
+            public void initialize(){
+                climberLeft.setAngle(90);
+                climberRight.setAngle(90);
+            }
+
+            @Override
+            public void execute(){
+                
+            }
+            @Override
+            public void end(boolean interrupted){
+                setSpeedPercent(0, 0);
+            }
+        };
+        return c;
+    }
 }

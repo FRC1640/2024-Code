@@ -63,7 +63,7 @@ public class RobotContainer {
     private AprilTagVision aprilTagVision;
     private MLVision mlVision;
 
-    private DriveSubsystem driveSubsystem;
+    private static DriveSubsystem driveSubsystem;
     private final CommandXboxController driveController = new CommandXboxController(0);
     private final CommandXboxController operatorController = new CommandXboxController(1);
     private ShooterSubsystem shooterSubsystem;
@@ -201,6 +201,7 @@ public class RobotContainer {
         new Trigger(() -> intakeSubsystem.hasNote())
                 .onFalse(new InstantCommand(
                         () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
+		//operatorController.a().onTrue(climberSubsystem.climbRoutineCommand()); gonna change to be a separate command that runs this after lining up
        
         driveController.rightTrigger().onTrue(new InstantCommand(()->
              DriveWeightCommand.addWeight(mlVisionWeight)));
@@ -223,12 +224,26 @@ public class RobotContainer {
         targetingSubsystem.removeDefaultCommand();
         climberSubsystem.removeDefaultCommand();
     }
-
-    private Alliance getAlliance() {
+//i put a bunch of 'static's everywhere including the drive subsystem so everything might explode but i thought id make note
+    private static Alliance getAlliance() {
         if (DriverStation.getAlliance().isPresent()) {
             return DriverStation.getAlliance().get();
         }
         return Alliance.Blue;
+    }
+
+    public static Pose2d getNearestStage(){ //will probably end up changing first two keywords we'll see
+		Pose2d[] list = getAlliance() == Alliance.Blue?FieldConstants.blueStages:FieldConstants.redStages;
+		double best = 999999;
+		Pose2d bestPose = new Pose2d();
+		for (Pose2d position : list){
+			if (position.getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < best){
+				best = position.getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
+				bestPose = position;
+			}
+			
+		}
+		return bestPose;
     }
 
     private Command generateIntakeCommand() {

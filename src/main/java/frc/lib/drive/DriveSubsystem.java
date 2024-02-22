@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -41,6 +42,7 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 
@@ -330,4 +332,18 @@ public class DriveSubsystem extends SubsystemBase {
         }
         return getPose();
     }
+
+//how to i get it to move over there???
+    
+    public void driveToNearestStage(Pose2d bestPose){
+        new Transform2d(odometryPose, bestPose); //pretty sure odometryPose is current position
+        //[then use that]
+        }
+
+    // Transform2d moveToStage = new Transform2d();
+    // public void driveToNearestStage(Pose2d bestPose){
+    //     moveToStage = RobotContainer.getNearestStage().relativeTo(bestPose); //gets transformation from here to bestPose (hopefully)
+    //     //[robot get current pose2d].plus()
+    //     //aah???
+    // }
 }
