@@ -1,6 +1,10 @@
 package frc.robot.sensors.Vision.MLVision;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.AutoLog;
+
+import frc.lib.vision.LimelightHelpers;
 
 public interface MLVisionIO {
     
@@ -9,9 +13,21 @@ public interface MLVisionIO {
     public static class MLVisionIOInputs {
         public double latency;
         public boolean isTarget;
+        
+        // default network tables outputs (based on greatest TA)
         public double tx;
         public double ty;
         public double ta;
+
+        // array of total tx values
+        ArrayList<Double> txArray;
+
+        // prioretized values
+        public boolean isTargetNote;
+        public double calculatedTx;
+        public double calculatedTy;
+        public double calculatedTa;
+
         
     }
     public default void updateInputs(MLVisionIOInputs inputs) {
