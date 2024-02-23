@@ -6,35 +6,78 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class TestMotorUpdate {
     
-    private static GenericEntry motorSpeed;
-    private static CANSparkMax realMotor;
-    private static DCMotorSim simMotor;
-    private static String type;
+    private GenericEntry motorSpeed;
+    private CANSparkMax realMotor;
+    private CANSparkMax[] realMotors;
+    private DCMotorSim simMotor;
+    private DCMotorSim[] simMotors;
+    private MotorType type;
+    private MotorGroupType groupType;
 
-    public static void setEntry(GenericEntry speed) {
-        motorSpeed = speed;
+    private enum MotorType {
+        REAL, SIM
     }
 
-    public static void setMotor(CANSparkMax motor) {
-        type = "REAL";
-        realMotor = motor;
-        simMotor = null;
+    private enum MotorGroupType {
+        SINGLE, GROUP
     }
 
-    public static void setMotor(DCMotorSim motor) {
-        type = "SIM";
-        simMotor = motor;
-        realMotor = null;
+    public TestMotorUpdate(CANSparkMax realMotor, GenericEntry entry) {
+        this.realMotor = realMotor;
+        motorSpeed = entry;
+        this.type = MotorType.REAL;
+        this.groupType = groupType.SINGLE;
+    }
+
+    public TestMotorUpdate(DCMotorSim simMotor, GenericEntry entry) {
+        this.simMotor = simMotor;
+        motorSpeed = entry;
+        this.type = MotorType.SIM;
+        this.groupType = groupType.SINGLE;
+    }
+
+    public TestMotorUpdate(CANSparkMax[] realMotors, GenericEntry entry) {
+        this.realMotors = realMotors;
+        motorSpeed = entry;
+        this.type = MotorType.REAL;
+        this.groupType = groupType.GROUP;
+    }
+
+    public TestMotorUpdate(DCMotorSim[] simMotors, GenericEntry entry) {
+        this.simMotors = simMotors;
+        motorSpeed = entry;
+        this.type = MotorType.SIM;
+        this.groupType = groupType.GROUP;
     }
 
     public void periodic() {
         switch (type) {
-            case "REAL":
-                realMotor.set(motorSpeed.getDouble(0));
+            case REAL:
+                switch (groupType) {
+                    case SINGLE:
+                        realMotor.set(motorSpeed.getDouble(0));
+                    break;
+
+                    case GROUP:
+                        for (int i = 0; i < realMotors.length; i++) {
+                            realMotors[i].set(motorSpeed.getDouble(0));
+                        }
+                    break;
+                }
             break;
 
-            case "SIM":
-                simMotor.setInputVoltage(motorSpeed.getDouble(0) * 12);
+            case SIM:
+                switch (groupType) {
+                    case SINGLE:
+                        simMotor.setInputVoltage(motorSpeed.getDouble(0) * 12);
+                    break;
+
+                    case GROUP:
+                        for (int i = 0; i < simMotors.length; i++) {
+                            simMotors[i].setInputVoltage(motorSpeed.getDouble(0) * 12);
+                        }
+                    break;
+                }
             break;
         }
     }

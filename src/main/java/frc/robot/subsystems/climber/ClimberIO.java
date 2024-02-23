@@ -1,7 +1,8 @@
 package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.AutoLog;
-
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.ClimberConstants;
 
 public interface ClimberIO {
@@ -63,5 +64,13 @@ public interface ClimberIO {
 
     public default double getRightPercentOutput() {
         return 0;
+    }
+
+    public default DCMotorSim[] getSimulationMotors() {
+        return null;
+    }
+
+    public default CANSparkMax[] getRealMotors() {
+        return null;
     }
 }

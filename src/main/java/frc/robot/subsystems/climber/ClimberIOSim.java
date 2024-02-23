@@ -70,4 +70,10 @@ public class ClimberIOSim implements ClimberIO{
     public double getRightPercentOutput() {
         return rightMotorVoltage / 12;
     }
+
+    @Override
+    public DCMotorSim[] getSimulationMotors() {
+        DCMotorSim[] d = {leftClimbingMotorSimulated, rightClimbingMotorSimulated};
+        return d;
+    }
 }

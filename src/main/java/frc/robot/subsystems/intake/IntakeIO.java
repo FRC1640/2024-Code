@@ -2,6 +2,10 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+
 public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
@@ -39,5 +43,21 @@ public interface IntakeIO {
 
     public default double getIndexerPercentOutput() {
         return 0;
+    }
+
+    public default DCMotorSim getSimulationIntakeMotor() {
+        return null;
+    }
+
+    public default CANSparkMax getRealIntakeMotor() {
+        return null;
+    }
+
+    public default DCMotorSim getSimulationIndexerMotor() {
+        return null;
+    }
+
+    public default CANSparkMax getRealIndexerMotor() {
+        return null;
     }
 }

@@ -66,4 +66,10 @@ public class ClimberIOSparkMax implements ClimberIO {
     public double getRightPercentOutput() {
         return rightMotor.getAppliedOutput();
     }
+
+    @Override
+    public CANSparkMax[] getRealMotors() {
+        CANSparkMax[] s = {leftMotor, rightMotor};
+        return s;
+    }
 }

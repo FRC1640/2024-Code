@@ -4,6 +4,9 @@ import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -149,5 +152,21 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public double getIndexerPercentOutput() {
         return io.getIndexerPercentOutput();        
+    }
+
+    public DCMotorSim getSimulationIntakeMotorTest() {
+        return io.getSimulationIntakeMotor();
+    }
+
+    public CANSparkMax getRealIntakeMotorTest() {
+        return io.getRealIntakeMotor();
+    }
+
+    public DCMotorSim getSimulationIndexerMotorTest() {
+        return io.getSimulationIntakeMotor();
+    }
+
+    public CANSparkMax getRealIndexerMotorTest() {
+        return io.getRealIntakeMotor();
     }
 }

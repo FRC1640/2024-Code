@@ -3,16 +3,19 @@ package frc.robot;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +31,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
+import frc.robot.util.dashboard.TestMotorUpdate;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -46,6 +50,8 @@ public class DashboardInit {
     private static CommandXboxController controller;
 
     private static final Field2d field = new Field2d();
+
+    private static final int NUMBER_OF_MOTORS = 19;
 
     public DashboardInit() {
 
@@ -169,26 +175,69 @@ public class DashboardInit {
             (bottomRightSpeed) -> shooterSubsystem.testBottomRightSpeed(bottomRightSpeed),
             (angleSpeed) -> targetingSubsystem.setAnglePercentOutputCommand(angleSpeed),
             (extensionSpeed) -> targetingSubsystem.setExtensionPercentOutputCommand(extensionSpeed)};
-        ArrayList<DoubleConsumer> motorSetSpeed = new ArrayList<>(Arrays.asList(consumers));
+        List<DoubleConsumer> motorSetSpeed = new ArrayList<>(Arrays.asList(consumers));
         DoubleSupplier[] suppliers = {() -> intakeSubsystem.getIntakePercentOutput(),
             () -> intakeSubsystem.getIndexerPercentOutput(), () -> climberSubsystem.getPercentOutput(),
             () -> shooterSubsystem.getTopLeftSpeed(), () -> shooterSubsystem.getTopRightSpeed(),
             () -> shooterSubsystem.getBottomLeftSpeed(), () -> shooterSubsystem.getBottomRightSpeed(),
             () -> targetingSubsystem.getAnglerSpeedPercent(), () -> targetingSubsystem.getExtensionSpeedPercent()};
-        ArrayList<DoubleSupplier> motorGetSpeed = new ArrayList<>(Arrays.asList(suppliers));
+        List<DoubleSupplier> motorGetSpeed = new ArrayList<>(Arrays.asList(suppliers));
         String[] names = {"Intake", "Indexer", "Climber Motors", "Shooter TL", "Shooter TR", "Shooter BL",
             "Shooter BR", "Angler Motors", "Extension"};
+        List<GenericEntry> sliderEntries = new ArrayList<>(NUMBER_OF_MOTORS);
         ShuffleboardTab motorTab = Shuffleboard.getTab("Motors");
         for (int i = 0; i < 9; i++) {
-            motorTab.addDouble(names[i], () -> 0).withWidget(BuiltInWidgets.kNumberSlider)
+            sliderEntries.add(motorTab.add(names[i], 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", -1, "max", 1))
-                .withPosition((i % 7) * 2, (i / 7) * 2);
+                .withPosition((i % 7) * 2, (i / 7) * 2)
+                .withSize(2, 1)
+                .getEntry());
         }
         for (int i = 0; i < 9; i++) {
-            motorTab.addDouble(names[i], motorGetSpeed.get(i)).withWidget(BuiltInWidgets.kNumberBar)
+            motorTab.addDouble(names[i] + " -Applied", motorGetSpeed.get(i)).withWidget(BuiltInWidgets.kNumberBar)
                 .withProperties(Map.of("min", -1, "max", 1))
-                .withPosition((i % 7) * 2 + 1, (i / 7) * 2);
+                .withPosition((i % 7) * 2, (i / 7) * 2 + 1);
         }
+        TestMotorUpdate[] updaters;
+        switch(Robot.getMode()) {
+            case REAL:
+                updaters = new TestMotorUpdate[] {
+                    new TestMotorUpdate(intakeSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(intakeSubsystem.getRealIndexerMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(climberSubsystem.getRealMotorsTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(targetingSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(targetingSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                };
+            break;
+
+            case SIM:
+                updaters = new TestMotorUpdate[] {
+                    new TestMotorUpdate(intakeSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(intakeSubsystem.getSimulationIndexerMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(climberSubsystem.getSimulationMotorsTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(targetingSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(targetingSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                };
+            break;
+
+            default:
+                updaters = new TestMotorUpdate[] {
+                    new TestMotorUpdate(new DCMotorSim(DCMotor.getNEO(1),
+                    50, 0.00019125), null)
+                };
+            break;
+        }
+        List<TestMotorUpdate> updatiers = new ArrayList<>(Arrays.asList(updaters));
+        
     }
 
     public static TestMode getTestMode() {

@@ -4,8 +4,11 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -90,5 +93,13 @@ public class ClimberSubsystem extends SubsystemBase{
 
     public double getPercentOutput() {
         return (io.getLeftPercentOutput() + io.getRightPercentOutput()) / 2;
+    }
+
+    public DCMotorSim[] getSimulationMotorsTest() {
+        return io.getSimulationMotors();
+    }
+
+    public CANSparkMax[] getRealMotorsTest() {
+        return io.getRealMotors();
     }
 }
