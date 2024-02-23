@@ -1,6 +1,10 @@
 package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -177,5 +181,37 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getBottomRightSpeed() {
         return io.getBottomRightSpeed();
+    }
+
+    public CANSparkMax getRealTopLeftMotorTest() {
+        return io.getRealTopLeftMotorTest();
+    }
+
+    public CANSparkMax getRealTopRightMotorTest() {
+        return io.getRealTopRightMotorTest();
+    }
+
+    public CANSparkMax getRealBottomLeftMotorTest() {
+        return io.getRealBottomLeftMotorTest();
+    }
+
+    public CANSparkMax getRealBottomRightMotorTest() {
+        return io.getRealBottomRightMotorTest();
+    }
+
+    public DCMotorSim getSimTopLeftMotorTest() {
+        return io.getSimTopLeftMotorTest();
+    }
+
+    public DCMotorSim getSimTopRightMotorTest() {
+        return io.getSimTopRightMotorTest();
+    }
+
+    public DCMotorSim getSimBottomLeftMotorTest() {
+        return io.getSimBottomLeftMotorTest();
+    }
+
+    public DCMotorSim getSimBottomRightMotorTest() {
+        return io.getSimBottomRightMotorTest();
     }
 }

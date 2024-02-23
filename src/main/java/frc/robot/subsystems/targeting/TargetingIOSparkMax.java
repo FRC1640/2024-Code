@@ -99,4 +99,14 @@ public class TargetingIOSparkMax implements TargetingIO {
     public double getAnglerSpeedPercent() {
         return rightTargetingMotor.getAppliedOutput();
     }
+
+    @Override
+    public CANSparkMax getRealAnglerMotorTest() {
+        return rightTargetingMotor;
+    }
+
+    @Override
+    public CANSparkMax getRealExtensionMotorTest() {
+        return extensionMotor;
+    }
 }

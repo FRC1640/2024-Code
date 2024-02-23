@@ -204,28 +204,28 @@ public class DashboardInit {
             case REAL:
                 updaters = new TestMotorUpdate[] {
                     new TestMotorUpdate(intakeSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(intakeSubsystem.getRealIndexerMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(climberSubsystem.getRealMotorsTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(targetingSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(targetingSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(intakeSubsystem.getRealIndexerMotorTest(), sliderEntries.get(1)),
+                    new TestMotorUpdate(climberSubsystem.getRealMotorsTest(), sliderEntries.get(2)),
+                    new TestMotorUpdate(shooterSubsystem.getRealTopLeftMotorTest(), sliderEntries.get(3)),
+                    new TestMotorUpdate(shooterSubsystem.getRealTopRightMotorTest(), sliderEntries.get(4)),
+                    new TestMotorUpdate(shooterSubsystem.getRealBottomLeftMotorTest(), sliderEntries.get(5)),
+                    new TestMotorUpdate(shooterSubsystem.getRealBottomRightMotorTest(), sliderEntries.get(6)),
+                    new TestMotorUpdate(targetingSubsystem.getRealAnglerMotorTest(), sliderEntries.get(7)),
+                    new TestMotorUpdate(targetingSubsystem.getRealExtensionMotorTest(), sliderEntries.get(8)),
                 };
             break;
 
             case SIM:
                 updaters = new TestMotorUpdate[] {
                     new TestMotorUpdate(intakeSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(intakeSubsystem.getSimulationIndexerMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(climberSubsystem.getSimulationMotorsTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(shooterSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(targetingSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(targetingSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
+                    new TestMotorUpdate(intakeSubsystem.getSimulationIndexerMotorTest(), sliderEntries.get(1)),
+                    new TestMotorUpdate(climberSubsystem.getSimulationMotorsTest(), sliderEntries.get(2)),
+                    new TestMotorUpdate(shooterSubsystem.getSimTopLeftMotorTest(), sliderEntries.get(3)),
+                    new TestMotorUpdate(shooterSubsystem.getSimTopRightMotorTest(), sliderEntries.get(4)),
+                    new TestMotorUpdate(shooterSubsystem.getSimBottomLeftMotorTest(), sliderEntries.get(5)),
+                    new TestMotorUpdate(shooterSubsystem.getSimBottomRightMotorTest(), sliderEntries.get(6)),
+                    new TestMotorUpdate(targetingSubsystem.getSimAnglerMotorTest(), sliderEntries.get(7)),
+                    new TestMotorUpdate(targetingSubsystem.getSimExtensionMotorTest(), sliderEntries.get(8)),
                 };
             break;
 

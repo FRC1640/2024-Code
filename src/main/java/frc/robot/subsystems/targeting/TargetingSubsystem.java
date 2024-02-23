@@ -4,8 +4,11 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -213,6 +216,30 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
+     * Returns the angler motor used on the real robot.
+     * 
+     * <p> Note that this method must <strong> NEVER </strong> be used
+     * outside of {@code DashboardInit}'s motor test mode.
+     * 
+     * @return {@code CANSparkMax} from the subsystem's {@code TargetingIOSparkMax}.
+     */
+    public CANSparkMax getRealAnglerMotorTest() {
+        return io.getRealAnglerMotorTest();
+    }
+
+    /**
+     * Returns the angler motor used on the simulated robot.
+     * 
+     * <p> Note that this method must <strong> NEVER </strong> be used
+     * outside of {@code DashboardInit}'s motor test mode.
+     * 
+     * @return {@code DCMotorSim} from the subsystem's {@code TargetingIOSim}.
+     */
+    public DCMotorSim getSimAnglerMotorTest() {
+        return io.getSimAnglerMotorTest();
+    }
+
+    /**
      * Extends to the given position.
      * 
      * @param position The position to extend to.
@@ -376,5 +403,29 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public double getExtensionPosition() {
         return inputs.extensionPosition;
+    }
+
+    /**
+     * Returns the extension motor used on the real robot.
+     * 
+     * <p> Note that this method must <strong> NEVER </strong> be used
+     * outside of {@code DashboardInit}'s motor test mode.
+     * 
+     * @return {@code CANSparkMax} from the subsystem's {@code TargetingIOSparkMax}.
+     */
+    public CANSparkMax getRealExtensionMotorTest() {
+        return io.getRealExtensionMotorTest();
+    }
+
+    /**
+     * Returns the extension motor used on the simulated robot.
+     * 
+     * <p> Note that this method must <strong> NEVER </strong> be used
+     * outside of {@code DashboardInit}'s motor test mode.
+     * 
+     * @return {@code DCMotorSim} from the subsystem's {@code TargetingIOSim}.
+     */
+    public DCMotorSim getSimExtensionMotorTest() {
+        return io.getSimExtensionMotorTest();
     }
 }

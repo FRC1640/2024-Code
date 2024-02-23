@@ -5,19 +5,19 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class TargetingIOSim implements TargetingIO {
-    private DCMotorSim leftTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
-        50, 0.00019125);
+    // private DCMotorSim leftTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
+    //     50, 0.00019125);
     private DCMotorSim rightTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
         50, 0.00019125);
     private DCMotorSim extensionMotorSimulated = new DCMotorSim(DCMotor.getNEO(1),
         50, 0.00019125);
 
-    private double leftMotorVoltage = 0.0;
+    // private double leftMotorVoltage = 0.0;
     private double rightMotorVoltage = 0.0;
     private double extensionMotorVoltage = 0.0;
     private double cappedExtensionSpeed;
 
-    private double leftPositon;
+    // private double leftPosition;
     private double rightPosition;
     private double extensionPosition;
 
@@ -30,7 +30,7 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
-        double averagePosition = getPositionAverage(leftPositon, rightPosition);
+        double averagePosition = getPositionAverage(rightPosition, rightPosition);
         speedClamped = clampSpeeds(averagePosition, speedClamped);
         setTargetingVoltage(speedClamped * 12);
 
@@ -39,16 +39,16 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public void setTargetingVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
-        leftMotorVoltage = voltage;
+        // leftMotorVoltage = voltage;
         rightMotorVoltage = voltage;
-        leftTargetingMotorSimulated.setInputVoltage(voltage);
+        // leftTargetingMotorSimulated.setInputVoltage(voltage);
         rightTargetingMotorSimulated.setInputVoltage(voltage);
     }
 
     @Override
     public void updateInputs(TargetingIOInputs inputs) {
 
-        leftTargetingMotorSimulated.update(0.02);
+        // leftTargetingMotorSimulated.update(0.02);
         rightTargetingMotorSimulated.update(0.02);
         extensionMotorSimulated.update(0.02);
 
@@ -64,7 +64,7 @@ public class TargetingIOSim implements TargetingIO {
         inputs.rightTargetingPositionDegrees += rightTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
         rightPosition = inputs.rightTargetingPositionDegrees;
 
-        inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
+        inputs.targetingPositionAverage = getPositionAverage(rightPosition, rightPosition);
 
         inputs.extensionSpeedPercent = extensionMotorVoltage/12;
         inputs.extensionAppliedVoltage = extensionMotorVoltage;
@@ -105,6 +105,16 @@ public class TargetingIOSim implements TargetingIO {
 
     @Override
     public double getAnglerSpeedPercent() {
-        return (leftMotorVoltage + rightMotorVoltage) / 24;
+        return (rightMotorVoltage + rightMotorVoltage) / 24;
+    }
+
+    @Override
+    public DCMotorSim getSimAnglerMotorTest() {
+        return rightTargetingMotorSimulated;
+    }
+
+    @Override
+    public DCMotorSim getSimExtensionMotorTest() {
+        return extensionMotorSimulated;
     }
 }

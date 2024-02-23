@@ -2,6 +2,10 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
@@ -61,5 +65,37 @@ public interface ShooterIO {
 
     public default double getBottomRightSpeed() {
         return 0;
+    }
+
+    public default CANSparkMax getRealTopLeftMotorTest() {
+        return null;
+    }
+
+    public default CANSparkMax getRealTopRightMotorTest() {
+        return null;
+    }
+
+    public default CANSparkMax getRealBottomLeftMotorTest() {
+        return null;
+    }
+
+    public default CANSparkMax getRealBottomRightMotorTest() {
+        return null;
+    }
+
+    public default DCMotorSim getSimTopLeftMotorTest() {
+        return null;
+    }
+
+    public default DCMotorSim getSimTopRightMotorTest() {
+        return null;
+    }
+
+    public default DCMotorSim getSimBottomLeftMotorTest() {
+        return null;
+    }
+
+    public default DCMotorSim getSimBottomRightMotorTest() {
+        return null;
     }
 }

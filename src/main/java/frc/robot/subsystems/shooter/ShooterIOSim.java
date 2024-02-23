@@ -107,4 +107,24 @@ public class ShooterIOSim implements ShooterIO {
     public double getBottomRightSpeed() {
         return bottomRightVoltage / 12;
     }
+
+    @Override
+    public DCMotorSim getSimTopLeftMotorTest() {
+        return topLeftShooterSimulated;
+    }
+
+    @Override
+    public DCMotorSim getSimTopRightMotorTest() {
+        return topRightShooterSimulated;
+    }
+
+    @Override
+    public DCMotorSim getSimBottomLeftMotorTest() {
+        return bottomLeftShooterSimulated;
+    }
+    
+    @Override
+    public DCMotorSim getSimBottomRightMotorTest() {
+        return bottomRightShooterSimulated;
+    }
 }
