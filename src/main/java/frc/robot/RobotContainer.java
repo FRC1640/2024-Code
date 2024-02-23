@@ -167,8 +167,8 @@ public class RobotContainer {
 
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
-
-		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
+		// targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
@@ -226,7 +226,7 @@ public class RobotContainer {
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
 				// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
 		operatorController.leftTrigger()
-				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-TargetingConstants.angleManualSpeed));
+				.whileTrue(targetingSubsystem.anglePIDCommand(-TargetingConstants.angleManualSpeed));
 		operatorController.rightTrigger()
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(TargetingConstants.angleManualSpeed));
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
@@ -257,8 +257,8 @@ public class RobotContainer {
 	}
 
 	public void pidTriggers(){
-		new Trigger(()->PIDUpdate.getPID() == PIDConstants.map.get("angle"))
-			.whileTrue(targetingSubsystem.anglePIDCommand(()->PIDConstants.map.get("angle").getSetpoint()));
+		targetingSubsystem.setDefaultCommand(
+			targetingSubsystem.anglePIDCommand(()->PIDConstants.map.get("angle").getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
 	}
 
 	public Command getAutonomousCommand() {

@@ -19,6 +19,8 @@ public class ResolverSlope {
 
     double t1 = 0; 
     double t2 = 0;
+    double count = 0;
+    double v = 0;
 
     public ResolverSlope (int channel, double v1, double v2, double angle1, double angle2, double offset) {
         this.channel = channel;
@@ -51,11 +53,7 @@ public class ResolverSlope {
     }
 
     public double getVelocityRadians(){
-        r1 = Math.toRadians(getD());
-        t1 = System.currentTimeMillis() * 1000;
-        double v = (r2 - r1) / (t1 - t2);
-        t2 = t1;
-        r2 = r1;
-        return v;
+        return 0;
+
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.targeting;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -36,8 +37,8 @@ public class TargetingSubsystem extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine;
 
-    ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0);
-    PIDController ffPID = new PIDController(0, 0, 0);
+    ArmFeedforward feedforward = new ArmFeedforward(0.16342, 5.0944, 9.7296, 1.9507);
+    PIDController ffPID = new PIDController(0.003307, 0, 0);
 
     PIDController radianAngle = PIDConstants.constructPID(PIDConstants.radianAngle, "radian angle");
 
@@ -50,8 +51,8 @@ public class TargetingSubsystem extends SubsystemBase {
 
         sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
             this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition, 
-            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.025)).per(Seconds.of(1)),
-            mutable(Volts.of(0.25)), mutable(Second.of(15))));
+            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.1)).per(Seconds.of(1)),
+            mutable(Volts.of(0.75)), mutable(Second.of(30))));
     }
 
     @Override
@@ -61,6 +62,7 @@ public class TargetingSubsystem extends SubsystemBase {
         angler.setAngle(inputs.targetingPositionAverage);
         angler.setLength(inputs.extensionPosition / 40 * 2 * Math.PI );
         Logger.recordOutput("Targeting/mech", targetVisualization);
+        // Logger.recordOutput("Targeting/velocity", inputs.);
         
     }
 
@@ -108,6 +110,9 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command anglePIDCommand(DoubleSupplier angle, double limit) {
         return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit);
     }
+    public Command anglePIDCommand(DoubleSupplier angle, double limit, BooleanSupplier condition) {
+        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit, condition);
+    }
 
 
     /**
@@ -118,6 +123,9 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public Command anglePIDCommand(DoubleSupplier angle) {
         return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()));
+    }
+    public Command anglePIDCommand(DoubleSupplier angle,BooleanSupplier condition) {
+        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()),condition);
     }
 
     public Command extendAndAngleSpeed(double extend, double angle) {
@@ -200,6 +208,26 @@ public class TargetingSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+    public Command setAnglePercentOutputCommand(DoubleSupplier output, BooleanSupplier condition) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()){
+                    setAnglePercentOutput(output.getAsDouble());
+                }
+                else{
+                    setAnglePercentOutput(0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAnglePercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
 
     public Command setAnglePercentOutputCommand(DoubleSupplier output, double limit) {
         Command c = new Command() {
@@ -210,6 +238,32 @@ public class TargetingSubsystem extends SubsystemBase {
                 }
                 else{
                     setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAnglePercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setAnglePercentOutputCommand(DoubleSupplier output, double limit, BooleanSupplier condition) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()){
+                    if (getAnglePosition() > limit){
+                        setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                    }
+                    else{
+                        setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                    }
+                }
+                else{
+                    setAnglePercentOutput(0);
                 }
             }
 
