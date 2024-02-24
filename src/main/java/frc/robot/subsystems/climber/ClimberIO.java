@@ -66,14 +66,6 @@ public interface ClimberIO {
         return 0;
     }
 
-    public default DCMotorSim[] getSimulationMotors() {
-        return null;
-    }
-
-    public default CANSparkMax[] getRealMotors() {
-        return null;
-    }
-
     public default double getEncoderValue() {
         return 0;
     }

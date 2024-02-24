@@ -65,14 +65,4 @@ public class IntakeIOSparkMax implements IntakeIO {
     public double getIndexerPercentOutput() {
         return indexerMotor.getAppliedOutput();
     }
-
-    @Override
-    public CANSparkMax getRealIntakeMotor() {
-        return intakeMotor;
-    }
-
-    @Override
-    public CANSparkMax getRealIndexerMotor() {
-        return indexerMotor;
-    }
 }

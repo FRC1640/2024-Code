@@ -72,12 +72,6 @@ public class ClimberIOSim implements ClimberIO{
     }
 
     @Override
-    public DCMotorSim[] getSimulationMotors() {
-        DCMotorSim[] d = {leftClimbingMotorSimulated, rightClimbingMotorSimulated};
-        return d;
-    }
-
-    @Override
     public double getEncoderValue() {
         return (leftMotorPosition + rightMotorPosition) / 2;
     }

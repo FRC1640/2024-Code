@@ -1,11 +1,7 @@
 package frc.robot.subsystems.targeting;
 
 import org.littletonrobotics.junction.AutoLog;
-
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.TargetingConstants;
 
 public interface TargetingIO {
@@ -148,22 +144,6 @@ public interface TargetingIO {
     
     public default double getExtensionSpeedPercent() {
         return 0;
-    }
-
-    public default CANSparkMax getRealAnglerMotorTest() {
-        return null;
-    }
-
-    public default CANSparkMax getRealExtensionMotorTest() {
-        return null;
-    }
-
-    public default DCMotorSim getSimAnglerMotorTest() {
-        return null;
-    }
-
-    public default DCMotorSim getSimExtensionMotorTest() {
-        return null;
     }
 
     public default double getAnglerEncoderValue() {

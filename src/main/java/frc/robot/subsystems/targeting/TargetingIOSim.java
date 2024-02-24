@@ -109,16 +109,6 @@ public class TargetingIOSim implements TargetingIO {
     }
 
     @Override
-    public DCMotorSim getSimAnglerMotorTest() {
-        return rightTargetingMotorSimulated;
-    }
-
-    @Override
-    public DCMotorSim getSimExtensionMotorTest() {
-        return extensionMotorSimulated;
-    }
-
-    @Override
     public double getAnglerEncoderValue() {
         return rightPosition;
     }

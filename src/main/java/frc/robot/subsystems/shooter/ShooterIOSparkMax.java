@@ -99,20 +99,4 @@ public class ShooterIOSparkMax implements ShooterIO {
     public double getBottomRightSpeed() {
         return bottomRightShooter.getAppliedOutput();
     }
-
-    public CANSparkMax getRealTopLeftMotorTest() {
-        return topLeftShooter;
-    }
-
-    public CANSparkMax getRealTopRightMotorTest() {
-        return topRightShooter;
-    }
-
-    public CANSparkMax getRealBottomLeftMotorTest() {
-        return bottomLeftShooter;
-    }
-
-    public CANSparkMax getRealBottomRightMotorTest() {
-        return bottomRightShooter;
-    }
 }

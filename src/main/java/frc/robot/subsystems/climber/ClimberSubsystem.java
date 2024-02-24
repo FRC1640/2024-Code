@@ -95,19 +95,7 @@ public class ClimberSubsystem extends SubsystemBase{
         return (io.getLeftPercentOutput() + io.getRightPercentOutput()) / 2;
     }
 
-    public DCMotorSim[] getSimulationMotorsTest() {
-        return io.getSimulationMotors();
-    }
-
-    public CANSparkMax[] getRealMotorsTest() {
-        return io.getRealMotors();
-    }
-
     public double getEncoderValue() {
         return io.getEncoderValue();
-    }
-
-    public double getPosition() {
-        return 
     }
 }

@@ -216,30 +216,6 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns the angler motor used on the real robot.
-     * 
-     * <p> Note that this method must <strong> NEVER </strong> be used
-     * outside of {@code DashboardInit}'s motor test mode.
-     * 
-     * @return {@code CANSparkMax} from the subsystem's {@code TargetingIOSparkMax}.
-     */
-    public CANSparkMax getRealAnglerMotorTest() {
-        return io.getRealAnglerMotorTest();
-    }
-
-    /**
-     * Returns the angler motor used on the simulated robot.
-     * 
-     * <p> Note that this method must <strong> NEVER </strong> be used
-     * outside of {@code DashboardInit}'s motor test mode.
-     * 
-     * @return {@code DCMotorSim} from the subsystem's {@code TargetingIOSim}.
-     */
-    public DCMotorSim getSimAnglerMotorTest() {
-        return io.getSimAnglerMotorTest();
-    }
-
-    /**
      * Gets the angle of the angler.
      * 
      * @return Angle in degrees.
@@ -412,30 +388,6 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public double getExtensionPosition() {
         return inputs.extensionPosition;
-    }
-
-    /**
-     * Returns the extension motor used on the real robot.
-     * 
-     * <p> Note that this method must <strong> NEVER </strong> be used
-     * outside of {@code DashboardInit}'s motor test mode.
-     * 
-     * @return {@code CANSparkMax} from the subsystem's {@code TargetingIOSparkMax}.
-     */
-    public CANSparkMax getRealExtensionMotorTest() {
-        return io.getRealExtensionMotorTest();
-    }
-
-    /**
-     * Returns the extension motor used on the simulated robot.
-     * 
-     * <p> Note that this method must <strong> NEVER </strong> be used
-     * outside of {@code DashboardInit}'s motor test mode.
-     * 
-     * @return {@code DCMotorSim} from the subsystem's {@code TargetingIOSim}.
-     */
-    public DCMotorSim getSimExtensionMotorTest() {
-        return io.getSimExtensionMotorTest();
     }
 
     /**

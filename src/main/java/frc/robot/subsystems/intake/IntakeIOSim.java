@@ -56,14 +56,4 @@ public class IntakeIOSim implements IntakeIO {
     public double getIndexerPercentOutput() {
         return indexerMotorVoltage / 12;
     }
-
-    @Override
-    public DCMotorSim getSimulationIntakeMotor() {
-        return intakeMotor;
-    }
-
-    @Override
-    public DCMotorSim getSimulationIndexerMotor() {
-        return indexerMotor;
-    }
 }
