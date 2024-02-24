@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import frc.robot.Constants.PIDConstants;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,8 +14,10 @@ import frc.robot.sensors.Vision.MLVision.MLVision;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
-    private PIDController angularController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
-    private PIDController horizontalController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    //private PIDController angularController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    //private PIDController horizontalController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
+    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision, "mlrot"); //;
+    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
     private double angularVelocity = 0;
     private double horizontalVelocity = 0;
