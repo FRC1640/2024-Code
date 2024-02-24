@@ -32,12 +32,6 @@
                 "data": {
                   "name": "Run Indexer"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Targeting"
-                }
               }
             ]
           }

@@ -158,10 +158,12 @@ public class RobotContainer {
 
 
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-		targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(60)); // actual def
+		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
 		// configure weights
 
 		// movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
+		
+		generateNamedCommands();
 
 		rotateLockWeight = new RotateLockWeight(
 				() -> (getAlliance() == Alliance.Blue
@@ -268,8 +270,7 @@ public class RobotContainer {
 	}
 
         private Command generateIntakeCommandAuto() {
-			System.out.println("Success");
-			return new ParallelDeadlineGroup( new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5)), intakeSubsystem.intakeCommand(0, 0.5,
+			return new ParallelDeadlineGroup( new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5).andThen(new InstantCommand(() -> System.out.println("Success \n Success \n Success")))), intakeSubsystem.intakeCommand(0, 0.5,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))));
 	}
 
@@ -307,12 +308,8 @@ public class RobotContainer {
 
 	}
 
-
-
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
-                NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
-                NamedCommands.registerCommand("Targeting", autoTarget());
-		
+		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 	}
 }
