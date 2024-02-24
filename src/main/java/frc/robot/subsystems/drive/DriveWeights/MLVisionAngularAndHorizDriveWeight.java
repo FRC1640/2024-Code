@@ -30,7 +30,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     // private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 6; // angular tx disparity deadband idk if thats what i should call it
+    private double distanceLim = 4; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
     
@@ -38,16 +38,23 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     private double initTime = -1;
     private double initIntakeModeTime = 0; // initialize drive straight until intookith or timithed out 
-    private double previousTY = 0;
+    private double previousTY;
     private double deltaTYlim = 1; // if delta ty > than this, enter drive straight to intake mode
 
-    private boolean intakeMode = true;
-    private boolean rotateMode = true;
+    private boolean intakeMode;
+    private boolean rotateMode;
     
 
     public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;
+        
+        intakeMode = false;
+        rotateMode = true;
+        previousTY = -1;
+
+        initTime = -1;
+        initIntakeModeTime = 0;
 
     }
 
@@ -57,7 +64,9 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         verticalVelocity = 0;
         angularVelocity = 0;
 
-        determineIntakeNoteMode();
+        if (!intakeMode){
+            determineIntakeNoteMode();
+        }
 
         if (intakeMode){
             verticalVelocity = 0.1;
@@ -119,6 +128,15 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
      
         
         return chassisSpeedsToTurn;
+    }
+
+    public void resetMode(){
+        intakeMode = false;
+        rotateMode = true;
+        previousTY = -1;
+
+        initTime = -1;
+        initIntakeModeTime = 0;
     }
 
 
