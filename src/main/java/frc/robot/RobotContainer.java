@@ -176,7 +176,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 
@@ -204,10 +204,10 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
-		driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.2, 0.2,
-			0.2, 0.2)
+		driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.03, 0.3,
+			0.03, 0.3)
 			.alongWith(generateIntakeNoRobot())
-			.alongWith(targetingSubsystem.anglePIDCommand(95)));
+			.alongWith(targetingSubsystem.anglePIDCommand(60)));
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
 		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
@@ -297,7 +297,7 @@ public class RobotContainer {
 	}
 
 	public Command generateIntakeNoRobot(){
-		return intakeSubsystem.intakeCommand(0.5, 0.5,
+		return intakeSubsystem.intakeCommand(0.5, 0.6,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
 				&& targetingSubsystem.isAnglePositionAccurate(7)));
 	}
