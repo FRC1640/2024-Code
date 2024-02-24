@@ -20,7 +20,7 @@ public interface MLVisionIO {
         public double ta;
 
         // array of total tx values
-        ArrayList<Double> txArray;
+        Double[] txArray;
 
         // prioretized values
         public boolean isTargetNote;

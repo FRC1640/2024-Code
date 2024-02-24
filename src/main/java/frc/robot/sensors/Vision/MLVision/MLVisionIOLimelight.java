@@ -38,12 +38,13 @@ public class MLVisionIOLimelight implements MLVisionIO {
     }
 
     // fills an arraylist with doubles of every tx value of every note visible
-    private ArrayList<Double> fillTxArray() {  
+    private Double[] fillTxArray() {  
         ArrayList<Double> txArray = new ArrayList<Double>();
         for (LimelightHelpers.LimelightTarget_Detector detector : resultsArray) {
           txArray.add(detector.tx);  
         }
-        return txArray;
+        Double[] array = txArray.toArray(new Double[txArray.size()]);
+        return array;
     }
 
     private LimelightHelpers.LimelightTarget_Detector calculateTargetNote(){
