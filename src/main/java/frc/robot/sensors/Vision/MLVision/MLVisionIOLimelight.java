@@ -28,7 +28,7 @@ public class MLVisionIOLimelight implements MLVisionIO {
      inputs.isTargetNote = (resultsArray.length == 0) ? false : true;
     
      // array of total tx values
-     inputs.txArray = fillTxArray(); 
+     //inputs.txArray = fillTxArray(); 
 
      // prioretized values
      inputs.calculatedTx = (inputs.isTarget) ? 0 : calculateTargetNote().tx;;
@@ -38,14 +38,14 @@ public class MLVisionIOLimelight implements MLVisionIO {
     }
 
     // fills an arraylist with doubles of every tx value of every note visible
-    private Double[] fillTxArray() {  
+    /*private Double[] fillTxArray() {  
         ArrayList<Double> txArray = new ArrayList<Double>();
         for (LimelightHelpers.LimelightTarget_Detector detector : resultsArray) {
           txArray.add(detector.tx);  
         }
         Double[] array = txArray.toArray(new Double[txArray.size()]);
         return array;
-    }
+    }*/
 
     private LimelightHelpers.LimelightTarget_Detector calculateTargetNote(){
         

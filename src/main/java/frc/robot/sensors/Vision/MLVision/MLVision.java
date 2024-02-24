@@ -1,24 +1,15 @@
 package frc.robot.sensors.Vision.MLVision;
 
-import java.util.ArrayList;
 
 
 import org.littletonrobotics.junction.Logger;
 
-
-import edu.wpi.first.math.util.Units;
 import frc.lib.periodic.PeriodicBase;
-import frc.lib.vision.LimelightHelpers;
-import frc.robot.Constants;
+
 
 public class MLVision extends PeriodicBase {
     private MLVisionIO io;
     private MLVisionIOInputsAutoLogged inputs = new MLVisionIOInputsAutoLogged();
-    //private double trigDistance;
-   
-
-    private LimelightHelpers.LimelightTarget_Detector targetNote;
-
 
     public MLVision(MLVisionIO io) {
         this.io = io;
