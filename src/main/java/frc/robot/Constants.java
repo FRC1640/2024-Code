@@ -127,7 +127,7 @@ public final class Constants {
         public static PIDController rotMLVision = new PIDController(0.004, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
-        public static PIDController radianAngle = new PIDController(0, 0, 0);
+        public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
         public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
 
@@ -147,7 +147,7 @@ public final class Constants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
         public static double angleLowerLimit = 35;
-        public static double angleUpperLimit = 90;
+        public static double angleUpperLimit = 105;
         public static double angleManualSpeed = 0.05;
         
         public static double extensionLowerLimit = 0;

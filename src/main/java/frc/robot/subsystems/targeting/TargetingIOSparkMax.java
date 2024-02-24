@@ -1,5 +1,7 @@
 package frc.robot.subsystems.targeting;
 
+import java.util.function.IntUnaryOperator;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -56,7 +58,8 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.rightTargetingCurrentAmps = rightTargetingMotor.getOutputCurrent();
         inputs.rightTargetingTempCelsius = rightTargetingMotor.getMotorTemperature();
         inputs.rightTargetingPositionDegrees = targetingEncoder.getD();
-        inputs.rightRadiansPerSecond = rightTargetingMotor.getEncoder().getVelocity() / 60 * 2 * Math.PI / 100;
+        // inputs.rightRadiansPerSecond = rightTargetingMotor.getEncoder().getVelocity() / 60 * 2 * Math.PI / 100;
+        inputs.rightRadiansPerSecond = targetingEncoder.getVelocityRadians();
 
         inputs.targetingPositionAverage = targetingEncoder.getD();
 
