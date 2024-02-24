@@ -44,8 +44,51 @@ public final class Constants {
     public static class ModuleConstants{
         public static final double minVoltage = 0.05;
         public static final double maxVoltage = 4.95;
-        
+
+        // 2023 prime
+
         public static final ModuleInfo FL = new ModuleInfo(
+            PivotId.FL,
+            3, 
+            4, 
+            0, 
+            45, 
+            true, 
+            true,
+            true);
+
+        public static final ModuleInfo FR = new ModuleInfo(
+            PivotId.FR, 
+            2, 
+            1, 
+            2,
+            -45, 
+            true, 
+            true,
+            true);
+
+        public static final ModuleInfo BL = new ModuleInfo(
+            PivotId.BL, 
+            18, 
+            17, 
+            1, 
+            135, 
+            true, 
+            true,
+            true);
+
+        public static final ModuleInfo BR = new ModuleInfo(
+            PivotId.BR, 
+            19, 
+            20, 
+            3, 
+            -135, 
+            true, 
+            true,
+            true);
+    }
+        
+        /*public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
             2, 
             21, 
@@ -57,8 +100,8 @@ public final class Constants {
 
         public static final ModuleInfo FR = new ModuleInfo(
             PivotId.FR, 
-            19, // 2023: and dew 1: 2
-            20, //2023: 1, dew 1: 5
+            2,//19, // 2023: and dew 1: 2
+            1, //20, //2023: 1, dew 1: 5
             2,
             -45, 
             true, 
@@ -84,7 +127,7 @@ public final class Constants {
             true, 
             true,
             true);
-    }
+    }*/
 
     public static class IntakeConstants{
         public static final int intakeCanID = 15;
