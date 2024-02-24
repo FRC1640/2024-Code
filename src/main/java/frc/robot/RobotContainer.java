@@ -158,7 +158,7 @@ public class RobotContainer {
 
 
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		//targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
 		// configure weights
 
 		// movingWhileShooting = new MovingWhileShooting(gyro, null, null, null);
