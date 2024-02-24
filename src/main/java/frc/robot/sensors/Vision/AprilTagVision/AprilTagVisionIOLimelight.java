@@ -7,9 +7,14 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import frc.lib.vision.LimelightHelpers;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     String key;
+    
+    LimelightHelpers.LimelightResults  llresults;
+    LimelightHelpers.LimelightTarget_Fiducial[] resultsArray; // FIDUCIAL IS APRIL TAGS
+
     public AprilTagVisionIOLimelight(String key){
         this.key = key;
     }
@@ -31,5 +36,9 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         // System.out.println(robotPoseArray + "robotPoseArray len "+ robotPoseArray.length);
         Translation3d robotPoseTranslation = new Translation3d(robotPoseArray[0], robotPoseArray[1], robotPoseArray[2]);
         inputs.aprilTagDistance = robotPoseTranslation.getNorm();
+
+        inputs.numVisibleTags = resultsArray.length;
+
+
     }
 }
