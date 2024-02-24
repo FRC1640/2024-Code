@@ -1,5 +1,7 @@
 package frc.robot.util.dashboard;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -20,11 +22,12 @@ public class TestMotorUpdate {
     private MotorLimitStyle limitStyle;
     private double lowerLimit;
     private double upperLimit;
-    
+
     private MotorEncoderType encoderType;
     private Resolver resolver;
     private Resolver[] resolvers;
-    private double simulatedPosition;
+    private DoubleSupplier realPosition;
+    private DoubleSupplier simulatedPosition;
 
     /**
      * Whether the motor is simulated or real.
@@ -51,7 +54,7 @@ public class TestMotorUpdate {
      * Whether this object's motor uses a built-in encoder or a {@code Resolver}.
      */
     public enum MotorEncoderType {
-        INBUILT, RESOLVER, SIMULATED
+        INBUILT, RESOLVER, SIMULATED, POSITION
     }
 
     /**
@@ -159,7 +162,7 @@ public class TestMotorUpdate {
      * @param upperLimit Upper limit of the motor.
      * @param position Position of the motor.
      */
-    public TestMotorUpdate(DCMotorSim simMotor, GenericEntry entry, double lowerLimit, double upperLimit, double position) {
+    public TestMotorUpdate(DCMotorSim simMotor, GenericEntry entry, double lowerLimit, double upperLimit, DoubleSupplier position) {
         this.simMotor = simMotor;
         motorSpeed = entry;
         this.type = MotorType.SIM;
@@ -217,9 +220,9 @@ public class TestMotorUpdate {
      * @param entry {@code GenericEntry} in which to find the percent output.
      * @param lowerLimit Lower limit of the motors.
      * @param upperLimit Upper limit of the motors.
-     * @param position Position of the motors.
+     * @param position Supplier returning the position of the motors.
      */
-    public TestMotorUpdate(DCMotorSim[] simMotors, GenericEntry entry, double lowerLimit, double upperLimit, double position) {
+    public TestMotorUpdate(DCMotorSim[] simMotors, GenericEntry entry, double lowerLimit, double upperLimit, DoubleSupplier position) {
         this.simMotors = simMotors;
         motorSpeed = entry;
         this.type = MotorType.SIM;
@@ -336,10 +339,10 @@ public class TestMotorUpdate {
                             break;
 
                             case LIMITED:
-                                if (simulatedPosition < lowerLimit) {
+                                if (simulatedPosition.getAsDouble() < lowerLimit) {
                                     simMotor.setInputVoltage(Math.max(motorSpeed.getDouble(0), 0) * 12);
                                 }
-                                if (simulatedPosition > upperLimit) {
+                                if (simulatedPosition.getAsDouble() > upperLimit) {
                                     simMotor.setInputVoltage(Math.min(motorSpeed.getDouble(0), 0) * 12);
                                 }
                                 else {
@@ -359,10 +362,10 @@ public class TestMotorUpdate {
 
                             case LIMITED:
                                 for (int i = 0; i < simMotors.length; i++) {
-                                    if (simulatedPosition < lowerLimit) {
+                                    if (simulatedPosition.getAsDouble() < lowerLimit) {
                                         simMotors[i].setInputVoltage(Math.max(motorSpeed.getDouble(0), 0) * 12);
                                     }
-                                    if (simulatedPosition > upperLimit) {
+                                    if (simulatedPosition.getAsDouble() > upperLimit) {
                                         simMotors[i].setInputVoltage(Math.min(motorSpeed.getDouble(0), 0) * 12);
                                     }
                                     else {

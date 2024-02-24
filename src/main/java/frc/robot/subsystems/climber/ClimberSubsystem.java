@@ -106,4 +106,8 @@ public class ClimberSubsystem extends SubsystemBase{
     public double getEncoderValue() {
         return io.getEncoderValue();
     }
+
+    public double getPosition() {
+        return 
+    }
 }

@@ -232,7 +232,7 @@ public class DashboardInit {
                         sliderEntries.get(2),
                         ClimberConstants.lowerLimit,
                         ClimberConstants.upperLimit,
-                        MotorEncoderType.RESOLVER),
+                        ),
                     new TestMotorUpdate(shooterSubsystem.getRealTopLeftMotorTest(),
                         sliderEntries.get(3)),
                     new TestMotorUpdate(shooterSubsystem.getRealTopRightMotorTest(),
