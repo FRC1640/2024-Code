@@ -11,6 +11,10 @@ public interface AprilTagVisionIO {
         public Pose2d aprilTagPose;
         public boolean isTarget;
         public double aprilTagDistance;
+
+        public int numVisibleTags;
+        
+
     }
     public default void updateInputs(AprilTagVisionIOInputs inputs) {
     }
