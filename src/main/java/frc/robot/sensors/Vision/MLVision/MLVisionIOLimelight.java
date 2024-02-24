@@ -31,7 +31,7 @@ public class MLVisionIOLimelight implements MLVisionIO {
      // prioretized values
      inputs.calculatedTx = (inputs.isTarget) ? calculateTargetNote().tx : 0;
      inputs.calculatedTy = (inputs.isTarget) ? calculateTargetNote().ty : 0;
-     inputs.calculatedTa = (inputs.isTarget) ? calculateTargetNote().ta : 0;
+     inputs.calculatedTa = (inputs.isTarget) ? calculateTargetNote().ta * 100 : 0;
     
     }
 
