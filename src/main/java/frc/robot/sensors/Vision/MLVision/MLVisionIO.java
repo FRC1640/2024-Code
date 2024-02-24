@@ -21,6 +21,8 @@ public interface MLVisionIO {
 
         // array of total tx values
         //Double[] txArray;
+        public int numVisibleNotes;
+
 
         // prioretized values
         public boolean isTargetNote;

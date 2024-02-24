@@ -26,14 +26,12 @@ public class MLVisionIOLimelight implements MLVisionIO {
      resultsArray = llresults.targetingResults.targets_Detector;
 
      inputs.isTargetNote = (resultsArray.length == 0) ? false : true;
-    
-     // array of total tx values
-     //inputs.txArray = fillTxArray(); 
+     inputs.numVisibleNotes = resultsArray.length;
 
      // prioretized values
-     inputs.calculatedTx = (inputs.isTarget) ? 0 : calculateTargetNote().tx;;
-     inputs.calculatedTy = (inputs.isTarget) ? 0 : calculateTargetNote().ty;
-     inputs.calculatedTa = (inputs.isTarget) ? 0 : calculateTargetNote().ta;
+     inputs.calculatedTx = (inputs.isTarget) ? calculateTargetNote().tx : 0;
+     inputs.calculatedTy = (inputs.isTarget) ? calculateTargetNote().ty : 0;
+     inputs.calculatedTa = (inputs.isTarget) ? calculateTargetNote().ta : 0;
     
     }
 
