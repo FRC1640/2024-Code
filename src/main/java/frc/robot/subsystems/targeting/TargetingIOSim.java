@@ -30,8 +30,8 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public void setTargetingSpeedPercent(double speed) {
         double speedClamped = speed;
-        double averagePosition = getPositionAverage(leftPositon, rightPosition);
-        speedClamped = clampSpeeds(averagePosition, speedClamped);
+        // double averagePosition = getPositionAverage(leftPositon, rightPosition);
+        speedClamped = clampSpeeds(rightPosition, speedClamped);
         setTargetingVoltage(speedClamped * 12);
 
     }
@@ -44,10 +44,13 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public void setTargetingVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
-        leftMotorVoltage = voltage;
+        // leftMotorVoltage = voltage;
         rightMotorVoltage = voltage;
-        leftTargetingMotorSimulated.setInputVoltage(voltage);
-        rightTargetingMotorSimulated.setInputVoltage(voltage);
+        double speedClamped = voltage;
+        // double averagePosition = getPositionAverage(leftPositon, rightPosition);
+        speedClamped = clampSpeeds(rightPosition, speedClamped);
+        // leftTargetingMotorSimulated.setInputVoltage(voltage);
+        rightTargetingMotorSimulated.setInputVoltage(speedClamped);
     }
 
     @Override

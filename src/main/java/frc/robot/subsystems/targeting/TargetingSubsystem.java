@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -34,6 +35,11 @@ public class TargetingSubsystem extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine;
 
+    ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0);
+    PIDController ffPID = new PIDController(0, 0, 0);
+
+    PIDController radianAngle = PIDConstants.constructPID(PIDConstants.radianAngle, "radian angle");
+
     
 
     public TargetingSubsystem(TargetingIO io) {
@@ -43,8 +49,8 @@ public class TargetingSubsystem extends SubsystemBase {
 
         sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
             this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition, 
-            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.5)).per(Seconds.of(1)),
-            mutable(Volts.of(7)), mutable(Second.of(15))));
+            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.025)).per(Seconds.of(1)),
+            mutable(Volts.of(0.25)), mutable(Second.of(15))));
     }
 
     @Override
@@ -57,6 +63,23 @@ public class TargetingSubsystem extends SubsystemBase {
         
     }
 
+    public Command manualFeedForwardAngle(DoubleSupplier speed){
+        return setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), speed.getAsDouble())
+            + ffPID.calculate(inputs.rightRadiansPerSecond, speed.getAsDouble()));
+    }
+    public Command pidFeedForwardAngle(DoubleSupplier positionDegrees){
+        return manualFeedForwardAngle(() -> getRadianPIDSpeed(()->Math.toRadians(positionDegrees.getAsDouble())));
+    }
+
+    public double getRadianPIDSpeed(DoubleSupplier pos){
+        double speed = radianAngle.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), pos.getAsDouble());
+        if (Math.abs(speed) < 0.01) {
+            speed = 0;
+        }
+        setpoint = Math.toDegrees(pos.getAsDouble());
+        return speed;
+    }
+
     public double getAngleVoltage(){
         return inputs.rightTargetingAppliedVoltage;
     }
@@ -64,7 +87,7 @@ public class TargetingSubsystem extends SubsystemBase {
         return Math.toRadians(inputs.rightTargetingPositionDegrees);
     }
     public double getAngleVelocity(){
-        return inputs.rightTargetingSpeedPercent * 5676 / 60 * 2 * Math.PI;
+        return inputs.rightRadiansPerSecond;
     }
 
     /**
@@ -76,6 +99,10 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command anglePIDCommand(double angle) {
         return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle));
     }
+    public Command anglePIDCommand(DoubleSupplier angle, double limit) {
+        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit);
+    }
+
 
     /**
      * Moves to the given angle.
@@ -157,6 +184,27 @@ public class TargetingSubsystem extends SubsystemBase {
             @Override
             public void execute() {
                 setAnglePercentOutput(output.getAsDouble());
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAnglePercentOutput(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setAnglePercentOutputCommand(DoubleSupplier output, double limit) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (getAnglePosition() > limit){
+                    setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                }
+                else{
+                    setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                }
             }
 
             @Override

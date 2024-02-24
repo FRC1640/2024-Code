@@ -35,11 +35,13 @@ public class TargetingIOSparkMax implements TargetingIO {
         rightTargetingMotor.set(speedClamped);
     }
 
-    // @Override
-    // public void setTargetingVoltage(double voltage) {
-    //     leftTargetingMotor.setVoltage(voltage);
-    //     rightTargetingMotor.setVoltage(voltage);
-    // }
+    @Override
+    public void setTargetingVoltage(double voltage) {
+        // leftTargetingMotor.setVoltage(voltage);
+        double speedClamped = voltage;
+        speedClamped = clampSpeeds(targetingEncoder.getD(), speedClamped);
+        rightTargetingMotor.setVoltage(speedClamped);
+    }
 
     @Override
     public void updateInputs(TargetingIOInputs inputs) {
@@ -54,6 +56,7 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.rightTargetingCurrentAmps = rightTargetingMotor.getOutputCurrent();
         inputs.rightTargetingTempCelsius = rightTargetingMotor.getMotorTemperature();
         inputs.rightTargetingPositionDegrees = targetingEncoder.getD();
+        inputs.rightRadiansPerSecond = targetingEncoder.getVelocityRadians();
 
         inputs.targetingPositionAverage = targetingEncoder.getD();
 
