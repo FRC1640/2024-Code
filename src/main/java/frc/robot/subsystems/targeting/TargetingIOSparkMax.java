@@ -109,4 +109,14 @@ public class TargetingIOSparkMax implements TargetingIO {
     public CANSparkMax getRealExtensionMotorTest() {
         return extensionMotor;
     }
+
+    @Override
+    public double getAnglerEncoderValue() {
+        return targetingEncoder.getD();
+    }
+
+    @Override
+    public double getExtensionEncoderValue() {
+        return extensionMotor.getEncoder().getPosition();
+    }
 }

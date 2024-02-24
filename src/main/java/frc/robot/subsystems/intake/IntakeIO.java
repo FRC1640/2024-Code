@@ -60,4 +60,12 @@ public interface IntakeIO {
     public default CANSparkMax getRealIndexerMotor() {
         return null;
     }
+
+    public default double getIntakeEncoderValue() {
+        return 0;
+    }
+
+    public default double getIndexerEncoderValue() {
+        return 0;
+    }
 }

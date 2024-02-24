@@ -165,4 +165,12 @@ public interface TargetingIO {
     public default DCMotorSim getSimExtensionMotorTest() {
         return null;
     }
+
+    public default double getAnglerEncoderValue() {
+        return 0;
+    }
+
+    public default double getExtensionEncoderValue() {
+        return 0;
+    }
 }

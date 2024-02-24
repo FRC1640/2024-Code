@@ -102,4 +102,8 @@ public class ClimberSubsystem extends SubsystemBase{
     public CANSparkMax[] getRealMotorsTest() {
         return io.getRealMotors();
     }
+
+    public double getEncoderValue() {
+        return io.getEncoderValue();
+    }
 }

@@ -240,6 +240,15 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
+     * Gets the angle of the angler.
+     * 
+     * @return Angle in degrees.
+     */
+    public double getAnglerEncoderValue() {
+        return io.getAnglerEncoderValue();
+    }
+
+    /**
      * Extends to the given position.
      * 
      * @param position The position to extend to.
@@ -427,5 +436,14 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public DCMotorSim getSimExtensionMotorTest() {
         return io.getSimExtensionMotorTest();
+    }
+
+    /**
+     * Gets the encoder value of the extension.
+     * 
+     * @return Encoder value.
+     */
+    public double getExtensionEncoderValue() {
+        return io.getExtensionEncoderValue();
     }
 }

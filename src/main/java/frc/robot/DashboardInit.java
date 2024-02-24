@@ -1,11 +1,14 @@
 package frc.robot;
 
 import java.util.Map;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+import javax.swing.text.GlyphView;
+import javax.swing.text.GlyphView.GlyphPainter;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,15 +18,19 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.TargetingConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -31,7 +38,9 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
+import frc.robot.util.dashboard.SubsystemWrapper;
 import frc.robot.util.dashboard.TestMotorUpdate;
+import frc.robot.util.dashboard.TestMotorUpdate.MotorEncoderType;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -189,55 +198,96 @@ public class DashboardInit {
         for (int i = 0; i < 9; i++) {
             sliderEntries.add(motorTab.add(names[i], 0)
                 .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", -1, "max", 1))
+                .withProperties(Map.of("min", -1, "max", 1, "display value", false))
                 .withPosition((i % 7) * 2, (i / 7) * 2)
                 .withSize(2, 1)
                 .getEntry());
         }
         for (int i = 0; i < 9; i++) {
-            motorTab.addDouble(names[i] + " -Applied", motorGetSpeed.get(i)).withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -1, "max", 1))
-                .withPosition((i % 7) * 2, (i / 7) * 2 + 1);
+            if (i != 2 && i != 7 && i != 8) {
+                motorTab.addDouble(names[i] + " -Applied", motorGetSpeed.get(i))
+                    .withWidget(BuiltInWidgets.kNumberBar)
+                    .withProperties(Map.of("min", -1, "max", 1, "show text", false))
+                    .withPosition((i % 7) * 2, (i / 7) * 2 + 1)
+                    .withSize(2, 1);
+            }
+            else {
+                motorTab.addDouble(names[i] + " -Applied", motorGetSpeed.get(i))
+                    .withWidget(BuiltInWidgets.kNumberBar)
+                    .withProperties(Map.of("min", -1, "max", 1, "show text", false))
+                    .withPosition((i % 7) * 2, (i / 7) * 2 + 1)
+                    .withSize(1, 1);
+            }
         }
+        motorTab.addDouble("Climber Encoder", () -> climberSubsystem.getEncoderValue()).withPosition(5, 1);
+        motorTab.addDouble("Angler Encoder", () -> targetingSubsystem.getAnglerEncoderValue()).withPosition(1, 3);
+        motorTab.addDouble("Extension Encoder", () -> targetingSubsystem.getExtensionEncoderValue()).withPosition(3, 3);
         TestMotorUpdate[] updaters;
         switch(Robot.getMode()) {
             case REAL:
                 updaters = new TestMotorUpdate[] {
                     new TestMotorUpdate(intakeSubsystem.getRealIntakeMotorTest(), sliderEntries.get(0)),
                     new TestMotorUpdate(intakeSubsystem.getRealIndexerMotorTest(), sliderEntries.get(1)),
-                    new TestMotorUpdate(climberSubsystem.getRealMotorsTest(), sliderEntries.get(2)),
-                    new TestMotorUpdate(shooterSubsystem.getRealTopLeftMotorTest(), sliderEntries.get(3)),
-                    new TestMotorUpdate(shooterSubsystem.getRealTopRightMotorTest(), sliderEntries.get(4)),
-                    new TestMotorUpdate(shooterSubsystem.getRealBottomLeftMotorTest(), sliderEntries.get(5)),
-                    new TestMotorUpdate(shooterSubsystem.getRealBottomRightMotorTest(), sliderEntries.get(6)),
-                    new TestMotorUpdate(targetingSubsystem.getRealAnglerMotorTest(), sliderEntries.get(7)),
-                    new TestMotorUpdate(targetingSubsystem.getRealExtensionMotorTest(), sliderEntries.get(8)),
-                };
+                    new TestMotorUpdate(climberSubsystem.getRealMotorsTest(),
+                        sliderEntries.get(2),
+                        ClimberConstants.lowerLimit,
+                        ClimberConstants.upperLimit,
+                        MotorEncoderType.RESOLVER),
+                    new TestMotorUpdate(shooterSubsystem.getRealTopLeftMotorTest(),
+                        sliderEntries.get(3)),
+                    new TestMotorUpdate(shooterSubsystem.getRealTopRightMotorTest(),
+                        sliderEntries.get(4)),
+                    new TestMotorUpdate(shooterSubsystem.getRealBottomLeftMotorTest(),
+                        sliderEntries.get(5)),
+                    new TestMotorUpdate(shooterSubsystem.getRealBottomRightMotorTest(),
+                        sliderEntries.get(6)),
+                    new TestMotorUpdate(targetingSubsystem.getRealAnglerMotorTest(),
+                        sliderEntries.get(7),
+                        TargetingConstants.angleLowerLimit,
+                        TargetingConstants.angleUpperLimit,
+                        MotorEncoderType.RESOLVER),
+                    new TestMotorUpdate(targetingSubsystem.getRealExtensionMotorTest(),
+                        sliderEntries.get(8),
+                        TargetingConstants.extensionLowerLimit,
+                        TargetingConstants.extensionUpperLimit,
+                        MotorEncoderType.INBUILT)};
             break;
 
             case SIM:
                 updaters = new TestMotorUpdate[] {
-                    new TestMotorUpdate(intakeSubsystem.getSimulationIntakeMotorTest(), sliderEntries.get(0)),
-                    new TestMotorUpdate(intakeSubsystem.getSimulationIndexerMotorTest(), sliderEntries.get(1)),
-                    new TestMotorUpdate(climberSubsystem.getSimulationMotorsTest(), sliderEntries.get(2)),
-                    new TestMotorUpdate(shooterSubsystem.getSimTopLeftMotorTest(), sliderEntries.get(3)),
-                    new TestMotorUpdate(shooterSubsystem.getSimTopRightMotorTest(), sliderEntries.get(4)),
-                    new TestMotorUpdate(shooterSubsystem.getSimBottomLeftMotorTest(), sliderEntries.get(5)),
-                    new TestMotorUpdate(shooterSubsystem.getSimBottomRightMotorTest(), sliderEntries.get(6)),
-                    new TestMotorUpdate(targetingSubsystem.getSimAnglerMotorTest(), sliderEntries.get(7)),
-                    new TestMotorUpdate(targetingSubsystem.getSimExtensionMotorTest(), sliderEntries.get(8)),
-                };
+                    new TestMotorUpdate(intakeSubsystem.getSimulationIntakeMotorTest(),
+                        sliderEntries.get(0)),
+                    new TestMotorUpdate(intakeSubsystem.getSimulationIndexerMotorTest(),
+                        sliderEntries.get(1)),
+                    new TestMotorUpdate(climberSubsystem.getSimulationMotorsTest(),
+                        sliderEntries.get(2),
+                        ClimberConstants.lowerLimit,
+                        ClimberConstants.upperLimit),
+                    new TestMotorUpdate(shooterSubsystem.getSimTopLeftMotorTest(),
+                        sliderEntries.get(3)),
+                    new TestMotorUpdate(shooterSubsystem.getSimTopRightMotorTest(),
+                        sliderEntries.get(4)),
+                    new TestMotorUpdate(shooterSubsystem.getSimBottomLeftMotorTest(),
+                        sliderEntries.get(5)),
+                    new TestMotorUpdate(shooterSubsystem.getSimBottomRightMotorTest(),
+                        sliderEntries.get(6)),
+                    new TestMotorUpdate(targetingSubsystem.getSimAnglerMotorTest(),
+                        sliderEntries.get(7),
+                        TargetingConstants.angleLowerLimit,
+                        TargetingConstants.angleUpperLimit),
+                    new TestMotorUpdate(targetingSubsystem.getSimExtensionMotorTest(),
+                        sliderEntries.get(8),
+                        TargetingConstants.extensionLowerLimit,
+                        TargetingConstants.extensionUpperLimit)};
             break;
 
             default:
                 updaters = new TestMotorUpdate[] {
                     new TestMotorUpdate(new DCMotorSim(DCMotor.getNEO(1),
-                    50, 0.00019125), null)
-                };
+                    50, 0.00019125), null)};
             break;
         }
-        List<TestMotorUpdate> updatiers = new ArrayList<>(Arrays.asList(updaters));
-        
+        List<TestMotorUpdate> updatiers = new ArrayList<>(Arrays.asList(updaters));      
     }
 
     public static TestMode getTestMode() {

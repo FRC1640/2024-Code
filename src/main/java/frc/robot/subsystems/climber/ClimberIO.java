@@ -73,4 +73,8 @@ public interface ClimberIO {
     public default CANSparkMax[] getRealMotors() {
         return null;
     }
+
+    public default double getEncoderValue() {
+        return 0;
+    }
 }

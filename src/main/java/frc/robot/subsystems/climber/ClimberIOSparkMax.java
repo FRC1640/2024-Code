@@ -72,4 +72,9 @@ public class ClimberIOSparkMax implements ClimberIO {
         CANSparkMax[] s = {leftMotor, rightMotor};
         return s;
     }
+
+    @Override
+    public double getEncoderValue() {
+        return (leftEncoder.getD() + rightEncoder.getD()) / 2;
+    }
 }
