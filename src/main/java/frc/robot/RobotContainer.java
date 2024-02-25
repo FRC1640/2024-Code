@@ -26,8 +26,12 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
@@ -165,6 +169,8 @@ public class RobotContainer {
 
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds);
+		
+		generateNamedCommands();
 
 		rotateLockWeight = new RotateLockWeight(
 				() -> (getAlliance() == Alliance.Blue
@@ -253,7 +259,7 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand()
-				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
+			.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -276,6 +282,11 @@ public class RobotContainer {
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
+	}
+
+        private Command generateIntakeCommandAuto() {
+			return new ParallelDeadlineGroup( new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5).andThen(new InstantCommand(() -> System.out.println("Success \n Success \n Success")))), intakeSubsystem.intakeCommand(0, 0.5,
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))));
 	}
 
 	public Pose2d getSpeakerPos() {
@@ -312,10 +323,8 @@ public class RobotContainer {
 
 	}
 
-
-
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
-		
+		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 	}
 }
