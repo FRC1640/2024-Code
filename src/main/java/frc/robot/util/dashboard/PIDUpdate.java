@@ -29,7 +29,16 @@ public class PIDUpdate{
     public static void periodic() {
         pid.setP(kP.getDouble(0));
         pid.setI(kI.getDouble(0));
-        pid.setD(kD.getDouble( 0));
-        pid.setSetpoint(kS.getDouble(0));
+        pid.setD(kD.getDouble(0));
+        // pid.setSetpoint(kS.getDouble(0));
+    }
+    public static double getSetpoint(){
+        return kS.getDouble(0);
+    }
+
+    public static void update(PIDController pid){
+        pid.setP(pid.getP());
+        pid.setI(pid.getI());
+        pid.setD(pid.getD());
     }
 }
