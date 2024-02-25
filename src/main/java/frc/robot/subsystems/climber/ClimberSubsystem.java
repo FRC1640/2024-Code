@@ -93,26 +93,37 @@ public class ClimberSubsystem extends SubsystemBase{
         setpoint = position;
         return speed;
     }
+    // Plan for the routine:
 
-    public Command climbRoutineCommand(Supplier<Pose2d> currentLocation, Gyro gyro){
-        Command c = new Command(){
-            AutoDriveWeight AutoDrive = new AutoDriveWeight(() -> RobotContainer.getNearestStage(), currentLocation, gyro);
-            @Override
-            public void initialize(){
-                climberLeft.setAngle(90);
-                climberRight.setAngle(90);
-            }
+	// Initialize:
+	// - run shooter to 110 degrees
+	// - lower climber arms
 
-            @Override
-            public void execute(){
-                DriveWeightCommand.addWeight(AutoDrive);
-            }
-            @Override
-            public void end(boolean interrupted){
-                setSpeedPercent(0, 0);
-                DriveWeightCommand.removeWeight(AutoDrive);
-            }
-        };
-        return c;
-    }
+	// Exicute:
+	// - drive until shooter is barely touching the stage
+	// - raise climber arms
+	// - drive forward into chain
+	// - extend shooter
+	// - if we have a mechanical latch to lock the shooter in place, lock it. If not, start one crazy PID
+	// - pull down the climber arms
+	// - shoot into trap
+    // public Command climbRoutineCommand(Supplier<Pose2d> currentLocation, Gyro gyro){
+    //     Command c = new Command(){
+    //         AutoDriveWeight AutoDrive = new AutoDriveWeight(() -> RobotContainer.getNearestStage(), currentLocation, gyro);
+    //         @Override
+    //         public void initialize(){
+    //         }
+
+    //         @Override
+    //         public void execute(){
+    //             DriveWeightCommand.addWeight(AutoDrive);
+    //         }
+    //         @Override
+    //         public void end(boolean interrupted){
+    //             setSpeedPercent(0, 0);
+    //             DriveWeightCommand.removeWeight(AutoDrive);
+    //         }
+    //     };
+    //     return c;
+    // }
 }

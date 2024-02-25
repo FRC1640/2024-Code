@@ -210,7 +210,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
         operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
         // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
-        operatorController.pov(90).whileTrue(climberSubsystem.climbRoutineCommand(() -> driveSubsystem.getPose(), gyro));
+        operatorController.pov(90).whileTrue(climbRoutineCommand(() -> driveSubsystem.getPose()));
     }
 
     public Command getAutonomousCommand() {
@@ -267,5 +267,32 @@ public class RobotContainer {
         return new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
                 speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
 
+    }
+
+    public Command climbRoutineCommand(Supplier<Pose2d> currentLocation){
+        Command c = new Command(){
+                AutoDriveWeight AutoDrive = new AutoDriveWeight(() -> RobotContainer.getNearestStage(), currentLocation, gyro);
+                @Override
+                public void initialize(){
+                        targetingSubsystem.anglePIDCommand(() -> 110);
+                }
+    
+                @Override
+                public void execute(){
+                        DriveWeightCommand.addWeight(AutoDrive); //some work needs to be done to stop this when we want it to stop
+                        targetingSubsystem.extensionPIDCommand(0);  //change this to the value we want
+                        climberSubsystem.climberPIDCommand(90,90);
+
+                }
+
+                @Override
+                public void end(boolean interrupted){
+                        targetingSubsystem.anglePIDCommand(() -> 60);
+                        targetingSubsystem.extensionPIDCommand(0);
+                        climberSubsystem.setSpeedCommand(0, 0);
+                        DriveWeightCommand.removeWeight(AutoDrive);
+                }
+            };
+            return c;
     }
 }
