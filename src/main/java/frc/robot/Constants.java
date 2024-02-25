@@ -140,8 +140,8 @@ public final class Constants {
         public static Translation2d ampPositionBlue = new Translation2d(1.7, 7.4);
         public static Translation2d speakerPositionRed = new Translation2d(15.214 + Units.feetToMeters(3), 5.555);
         public static Translation2d speakerPositionBlue = new Translation2d(1.328 - Units.feetToMeters(3), 5.555);
-        public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.202, 2.894), new Rotation2d(.994)), new Pose2d(new Translation2d(6.306, 4.066), new Rotation2d(3.141)), new Pose2d(new Translation2d(4.110, 5.262), new Rotation2d(-1.030))};
-        public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.387, 2.885), new Rotation2d(2.139)), new Pose2d(new Translation2d(10.288,3.919), new Rotation2d(0)), new Pose2d(new Translation2d(12.528,5.2), new Rotation2d(-2.071))};
+        public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.62, 3.572), new Rotation2d(-2.1)), new Pose2d(new Translation2d(4.624, 4.538), new Rotation2d(2.01)), new Pose2d(new Translation2d(5.388, 4.068), new Rotation2d(0))};
+        public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.0, 3.658), new Rotation2d(-1.05)), new Pose2d(new Translation2d(11.982,4.59), new Rotation2d(1.035)), new Pose2d(new Translation2d(11.133,4.05), new Rotation2d(3.135))};
     }
 
     public static class TargetingConstants {

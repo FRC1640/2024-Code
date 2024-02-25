@@ -210,6 +210,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
         operatorController.leftBumper().whileTrue(targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
         // operatorController.x().onTrue(targetingSubsystem.extend(0.5));
+        operatorController.pov(90).whileTrue(climberSubsystem.climbRoutineCommand(() -> driveSubsystem.getPose(), gyro));
     }
 
     public Command getAutonomousCommand() {

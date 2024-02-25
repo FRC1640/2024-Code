@@ -18,9 +18,9 @@ public class AutoDriveWeight implements DriveWeight {
     Gyro gyro;
     double setAngle;
 
-    public AutoDriveWeight(Supplier<Pose2d> pose, Supplier<Pose2d> getPose, Gyro gyro) {
-        this.pose = pose;
-        this.getPose = getPose;
+    public AutoDriveWeight(Supplier<Pose2d> destinationPose, Supplier<Pose2d> currentPose, Gyro gyro) {
+        this.pose = destinationPose;
+        this.getPose = currentPose;
         this.gyro = gyro;
     }
 
@@ -45,7 +45,7 @@ public class AutoDriveWeight implements DriveWeight {
         }
         setAngle = pose.get().getRotation().getRadians();
         // System.out.println(s);
-        return new ChassisSpeeds(Math.sin(angle) * s / scale, -Math.cos(angle) * s / scale, o);
+        return new ChassisSpeeds(Math.cos(angle) * s / scale, Math.sin(angle) * s / scale, o);
     }
     @Override
     public double angle(){

@@ -1,17 +1,23 @@
 package frc.robot.subsystems.climber;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.subsystems.drive.DriveWeightCommand;
+import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 
 public class ClimberSubsystem extends SubsystemBase{
     ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
@@ -88,8 +94,9 @@ public class ClimberSubsystem extends SubsystemBase{
         return speed;
     }
 
-    public Command climbRoutineCommand(){
+    public Command climbRoutineCommand(Supplier<Pose2d> currentLocation, Gyro gyro){
         Command c = new Command(){
+            AutoDriveWeight AutoDrive = new AutoDriveWeight(() -> RobotContainer.getNearestStage(), currentLocation, gyro);
             @Override
             public void initialize(){
                 climberLeft.setAngle(90);
@@ -98,11 +105,12 @@ public class ClimberSubsystem extends SubsystemBase{
 
             @Override
             public void execute(){
-                
+                DriveWeightCommand.addWeight(AutoDrive);
             }
             @Override
             public void end(boolean interrupted){
                 setSpeedPercent(0, 0);
+                DriveWeightCommand.removeWeight(AutoDrive);
             }
         };
         return c;
