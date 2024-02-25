@@ -40,7 +40,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private double initIntakeModeTime = -1; // initialize drive straight until intookith or timithed out 
 
     private double previousTA;
-    private double deltaTAlim = 1; // if delta ty > than this, enter drive straight to intake mode
+    private double deltaTAlim = 3; // if delta ty > than this, enter drive straight to intake mode
 
     private boolean intakeMode;
     private boolean rotateMode;
