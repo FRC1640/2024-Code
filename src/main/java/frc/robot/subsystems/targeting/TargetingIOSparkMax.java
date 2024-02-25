@@ -2,11 +2,8 @@ package frc.robot.subsystems.targeting;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
-
 import edu.wpi.first.wpilibj.RobotController;
-
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Resolver;
 
@@ -16,6 +13,9 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final CANSparkMax extensionMotor;
     private final Resolver targetingEncoder = new Resolver(7, TargetingConstants.angleMinVoltage,
             TargetingConstants.angleMaxVoltage, 0, false);
+
+    private boolean anglerLimitsOff = false;
+    private boolean extensionLimitsOff = false;
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAnglerCanID, MotorType.kBrushless);
@@ -108,5 +108,59 @@ public class TargetingIOSparkMax implements TargetingIO {
     @Override
     public double getExtensionEncoderValue() {
         return extensionMotor.getEncoder().getPosition();
+    }
+
+    @Override
+    public void toggleAnglerLimits() {
+        anglerLimitsOff = !anglerLimitsOff;
+    }
+
+    @Override
+    public void toggleExtensionLimits() {
+        extensionLimitsOff = !extensionLimitsOff;
+    }
+
+    @Override
+    public boolean getAnglerLimitsOff() {
+        return anglerLimitsOff;
+    }
+
+    @Override
+    public boolean getExtensionLimitsOff() {
+        return extensionLimitsOff;
+    }
+
+    @Override
+    public double clampSpeeds(double pos, double speed) {
+        if (anglerLimitsOff == false) {
+            double speedClamped = speed;
+            if (pos < TargetingConstants.angleLowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > TargetingConstants.angleUpperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
+            return speedClamped;
+        }
+        else {
+            return speed;
+        }
+    }
+
+    @Override
+    public double clampSpeedsExtension(double pos, double speed) {
+        if (extensionLimitsOff == false) {
+            double speedClamped = speed;
+            if (pos < TargetingConstants.angleLowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > TargetingConstants.angleUpperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
+            return speedClamped;
+        }
+        else {
+            return speed;
+        }
     }
 }

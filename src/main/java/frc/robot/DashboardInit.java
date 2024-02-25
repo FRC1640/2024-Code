@@ -29,7 +29,9 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
+import frc.robot.util.dashboard.MotorUpdate.TargetingFunction;
 import frc.robot.util.dashboard.MotorUpdate;
+import frc.robot.util.dashboard.MotorUpdatePeriodicHandler;
 
 /**
  * Writes various pieces of match data to Shuffleboard.
@@ -202,10 +204,37 @@ public class DashboardInit {
         motorTab.addDouble("Climber Encoder", () -> climberSubsystem.getEncoderValue()).withPosition(5, 1);
         motorTab.addDouble("Angler Encoder", () -> targetingSubsystem.getAnglerEncoderValue()).withPosition(1, 3);
         motorTab.addDouble("Extension Encoder", () -> targetingSubsystem.getExtensionEncoderValue()).withPosition(3, 3);
+        List<GenericEntry> toggliers = new ArrayList<>(3);
+        toggliers.add(motorTab.add("Angler Limits", !targetingSubsystem.getAnglerLimitsOff())
+            .withWidget(BuiltInWidgets.kToggleSwitch)
+            .withPosition(0, 4)
+            .withSize(2, 1)
+            .getEntry());
+        toggliers.add(motorTab.add("Extension Limits", !targetingSubsystem.getExtensionLimitsOff())
+            .withWidget(BuiltInWidgets.kToggleSwitch)
+            .withPosition(2, 4)
+            .withSize(2, 1)
+            .getEntry());
+        toggliers.add(motorTab.add("Climber Limits", !climberSubsystem.getLimitsOff())
+            .withWidget(BuiltInWidgets.kToggleSwitch)
+            .withPosition(4, 2)
+            .withSize(2, 1)
+            .getEntry());
         List<MotorUpdate> updatiers = new ArrayList<>(9);
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 2; i++) {
             updatiers.add(new MotorUpdate(sliderEntries.get(i), motorSetSpeed.get(i)));
         }
+        updatiers.add(new MotorUpdate(sliderEntries.get(2), motorSetSpeed.get(2), climberSubsystem,
+            toggliers.get(2)));
+        for (int i = 3; i < 7; i++) {
+            updatiers.add(new MotorUpdate(sliderEntries.get(i), motorSetSpeed.get(i)));
+        }
+        updatiers.add(new MotorUpdate(sliderEntries.get(7), motorSetSpeed.get(7),
+            targetingSubsystem, toggliers.get(0), TargetingFunction.ANGLER));
+        updatiers.add(new MotorUpdate(sliderEntries.get(8), motorSetSpeed.get(8),
+            targetingSubsystem, toggliers.get(1), TargetingFunction.EXTENSION));
+        MotorUpdatePeriodicHandler.giveMotorUpdates(updatiers.get(0), updatiers.get(1), updatiers.get(2), updatiers.get(3),
+             updatiers.get(4), updatiers.get(5), updatiers.get(6), updatiers.get(7), updatiers.get(8));
     }
 
     public static TestMode getTestMode() {

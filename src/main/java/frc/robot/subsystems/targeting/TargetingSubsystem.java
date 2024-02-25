@@ -1,14 +1,9 @@
 package frc.robot.subsystems.targeting;
 
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -397,5 +392,37 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public double getExtensionEncoderValue() {
         return io.getExtensionEncoderValue();
+    }
+
+    /**
+     * Toggles the limits of the angler.
+     */
+    public void toggleAnglerLimits() {
+        io.toggleAnglerLimits();
+    }
+
+    /**
+     * Toggles the limits of the extension.
+     */
+    public void toggleExtensionLimits() {
+        io.toggleExtensionLimits();
+    }
+
+    /**
+     * Gets whether the angler limits are off.
+     * 
+     * @return Boolean.
+     */
+    public boolean getAnglerLimitsOff() {
+        return io.getAnglerLimitsOff();
+    }
+
+    /**
+     * Gets whether the extension limits are off.
+     * 
+     * @return Boolean.
+     */
+    public boolean getExtensionLimitsOff() {
+        return io.getExtensionLimitsOff();
     }
 }

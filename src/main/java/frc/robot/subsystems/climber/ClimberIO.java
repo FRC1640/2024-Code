@@ -1,8 +1,6 @@
 package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.AutoLog;
-import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.ClimberConstants;
 
 public interface ClimberIO {
@@ -68,5 +66,12 @@ public interface ClimberIO {
 
     public default double getEncoderValue() {
         return 0;
+    }
+
+    public default void toggleLimits() {
+    }
+
+    public default boolean getLimitsOff() {
+        return false;
     }
 }

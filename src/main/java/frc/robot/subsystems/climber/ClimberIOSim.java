@@ -3,6 +3,7 @@ package frc.robot.subsystems.climber;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants.ClimberConstants;
 
 public class ClimberIOSim implements ClimberIO{
     DCMotorSim leftClimbingMotorSimulated= new DCMotorSim(DCMotor.getNEO(1), 
@@ -15,6 +16,8 @@ public class ClimberIOSim implements ClimberIO{
 
     private double leftMotorPosition = 0.0;
     private double rightMotorPosition = 0.0;
+
+    private boolean limitsOff = false;
 
     @Override
     public void updateInputs(ClimberIOInputs inputs) {
@@ -74,5 +77,32 @@ public class ClimberIOSim implements ClimberIO{
     @Override
     public double getEncoderValue() {
         return (leftMotorPosition + rightMotorPosition) / 2;
+    }
+
+    @Override
+    public void toggleLimits() {
+        limitsOff = !limitsOff;
+    }
+
+    @Override
+    public boolean getLimitsOff() {
+        return limitsOff;
+    }
+
+    @Override
+    public double clampSpeeds(double pos, double speed) {
+        if (limitsOff == false) {
+            double speedClamped = speed;
+            if (pos < ClimberConstants.lowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > ClimberConstants.upperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
+            return speedClamped;
+        }
+        else {
+            return speed;
+        }
     }
 }

@@ -3,6 +3,7 @@ package frc.robot.subsystems.targeting;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants.TargetingConstants;
 
 public class TargetingIOSim implements TargetingIO {
     // private DCMotorSim leftTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
@@ -21,6 +22,8 @@ public class TargetingIOSim implements TargetingIO {
     private double rightPosition;
     private double extensionPosition;
 
+    private boolean anglerLimitsOff = false;
+    private boolean extensionLimitsOff = false;
 
 
     public TargetingIOSim() {
@@ -116,5 +119,59 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public double getExtensionEncoderValue() {
         return extensionPosition;
+    }
+
+    @Override
+    public void toggleAnglerLimits() {
+        anglerLimitsOff = !anglerLimitsOff;
+    }
+
+    @Override
+    public void toggleExtensionLimits() {
+        extensionLimitsOff = !extensionLimitsOff;
+    }
+
+    @Override
+    public boolean getAnglerLimitsOff() {
+        return anglerLimitsOff;
+    }
+
+    @Override
+    public boolean getExtensionLimitsOff() {
+        return extensionLimitsOff;
+    }
+
+    @Override
+    public double clampSpeeds(double pos, double speed) {
+        if (anglerLimitsOff == false) {
+            double speedClamped = speed;
+            if (pos < TargetingConstants.angleLowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > TargetingConstants.angleUpperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
+            return speedClamped;
+        }
+        else {
+            return speed;
+        }
+    }
+
+    @Override
+    public double clampSpeedsExtension(double pos, double speed) {
+        if (extensionLimitsOff == false) {
+            double speedClamped = speed;
+            if (pos < TargetingConstants.extensionLowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > TargetingConstants.extensionUpperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
+            return speedClamped;
+        }
+        else {
+            return speed;
+        }
     }
 }

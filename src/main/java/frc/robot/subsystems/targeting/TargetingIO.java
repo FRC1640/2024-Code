@@ -153,4 +153,18 @@ public interface TargetingIO {
     public default double getExtensionEncoderValue() {
         return 0;
     }
+
+    public default void toggleAnglerLimits() {
+    }
+
+    public default void toggleExtensionLimits() {
+    }
+
+    public default boolean getAnglerLimitsOff() {
+        return false;
+    }
+
+    public default boolean getExtensionLimitsOff() {
+        return false;
+    }
 }

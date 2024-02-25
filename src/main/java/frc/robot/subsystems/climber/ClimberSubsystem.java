@@ -1,14 +1,9 @@
 package frc.robot.subsystems.climber;
 
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -97,5 +92,13 @@ public class ClimberSubsystem extends SubsystemBase{
 
     public double getEncoderValue() {
         return io.getEncoderValue();
+    }
+
+    public void toggleLimits() {
+        io.toggleLimits();
+    }
+
+    public boolean getLimitsOff() {
+        return io.getLimitsOff();
     }
 }

@@ -13,6 +13,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final Resolver leftEncoder;
     private final Resolver rightEncoder;
 
+    private boolean limitsOff = false;
+
     public ClimberIOSparkMax() {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
         rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
@@ -70,5 +72,32 @@ public class ClimberIOSparkMax implements ClimberIO {
     @Override
     public double getEncoderValue() {
         return (leftEncoder.getD() + rightEncoder.getD()) / 2;
+    }
+
+    @Override
+    public void toggleLimits() {
+        limitsOff = !limitsOff;
+    }
+
+    @Override
+    public boolean getLimitsOff() {
+        return limitsOff;
+    }
+
+    @Override
+    public double clampSpeeds(double pos, double speed) {
+        if (limitsOff == false) {
+            double speedClamped = speed;
+            if (pos < ClimberConstants.lowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > ClimberConstants.upperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
+            return speedClamped;
+        }
+        else {
+            return speed;
+        }
     }
 }
