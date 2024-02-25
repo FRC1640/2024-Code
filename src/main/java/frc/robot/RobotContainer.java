@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -53,6 +54,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -263,7 +265,7 @@ public class RobotContainer {
 
 		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		driveController.rightTrigger()
-				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)));
+				.onFalse(new ParallelCommandGroup(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
