@@ -46,6 +46,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -103,19 +104,19 @@ public class RobotContainer {
 				gyro = new Gyro(new GyroIONavX());
 				// aprilTagVision = new AprilTagVision(new
 				// AprilTagVisionIOLimelight("limelight"));
-				// mlVision = new MLVision(new MLVisionIOLimelight());
+				mlVision = new MLVision(new MLVisionIOLimelight());
 				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-				mlVision = new MLVision(new MLVisionIOSim());
+				//mlVision = new MLVision(new MLVisionIOSim());
 
-				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
-				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
-				intakeSubsystem = new IntakeSubsystem(
-						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean()));
+				//shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
+				shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
+				//intakeSubsystem = new IntakeSubsystem(
+						//new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean()));
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
-				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
-				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
+				intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
+				//targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
 				break;
 			case SIM:
 				gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
