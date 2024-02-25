@@ -319,8 +319,8 @@ public class RobotContainer {
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
 
-        private Command generateIntakeCommandAuto() {
-			return new ParallelDeadlineGroup( new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5).andThen(new InstantCommand(() -> System.out.println("Success \n Success \n Success")))), intakeSubsystem.intakeCommand(0, 0.5,
+    private Command generateIntakeCommandAuto() {
+			return new ParallelDeadlineGroup(new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5)), intakeSubsystem.intakeCommand(0, 0.5,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))));
 	}
 
