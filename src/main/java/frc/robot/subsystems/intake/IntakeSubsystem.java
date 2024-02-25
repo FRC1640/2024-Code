@@ -148,4 +148,12 @@ public class IntakeSubsystem extends SubsystemBase {
     public double getIndexerPercentOutput() {
         return io.getIndexerPercentOutput();        
     }
+
+    public void testIntakeSpeed(double speed) {
+        io.setIntakeSpeedPercent(speed);
+    }
+
+    public void testIndexerSpeed(double speed) {
+        io.setIndexerSpeedPercent(speed);
+    }
 }

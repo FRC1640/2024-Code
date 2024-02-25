@@ -55,13 +55,14 @@ public class ClimberIOSim implements ClimberIO{
     public void setLeftSpeedPercent(double speed){
         speed = clampSpeeds(leftMotorPosition, speed);
         leftClimbingMotorSimulated.setInputVoltage(speed * 12);
+        leftMotorVoltage = speed * 12;
     }
 
     @Override
     public void setRightSpeedPercent(double speed){
         speed = clampSpeeds(rightMotorPosition, speed);
         rightClimbingMotorSimulated.setInputVoltage(speed * 12);
-
+        rightMotorVoltage = speed * 12;
     }
 
     @Override

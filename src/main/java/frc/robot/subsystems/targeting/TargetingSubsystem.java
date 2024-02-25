@@ -181,15 +181,6 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Gets the percent output of the angler.
-     * 
-     * @return The average percent output of the angler motors.
-     */
-    public double getAnglerSpeedPercent() {
-        return io.getAnglerSpeedPercent();
-    }
-
-    /**
      * Gets the setpoint of the angler.
      * 
      * @return The setpoint.
@@ -208,15 +199,6 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public boolean isAnglePositionAccurate(double error) {
         return Math.abs(getAngleSetpoint() - inputs.targetingPositionAverage) < error;
-    }
-
-    /**
-     * Gets the angle of the angler.
-     * 
-     * @return Angle in degrees.
-     */
-    public double getAnglerEncoderValue() {
-        return io.getAnglerEncoderValue();
     }
 
     /**
@@ -367,6 +349,9 @@ public class TargetingSubsystem extends SubsystemBase {
         io.setExtensionVoltage(voltage);
     }
 
+
+
+
     /**
      * Gets the percent output of the extension.
      * 
@@ -424,5 +409,45 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     public boolean getExtensionLimitsOff() {
         return io.getExtensionLimitsOff();
+    }
+
+    /**
+     * Gets the angle of the angler.
+     * 
+     * @return Angle in degrees.
+     */
+    public double getAnglerEncoderValue() {
+        return io.getAnglerEncoderValue();
+    }
+
+    /**
+     * Gets the percent output of the angler.
+     * 
+     * @return The average percent output of the angler motors.
+     */
+    public double getAnglerSpeedPercent() {
+        return io.getAnglerSpeedPercent();
+    }
+
+    /**
+     * Sets the angler to a percent output.
+     * 
+     * <p> Note that this method must <strong> NEVER </strong> be used outside of test mode.
+     * 
+     * @param speed Percent output to set the angler to.
+     */
+    public void testAnglerSpeed(double speed) {
+        setAnglePercentOutput(speed);
+    }
+
+    /**
+     * Sets the extension to a percent output.
+     * 
+     * <p> Note that this method must <strong> NEVER </strong> be used outside of test mode.
+     * 
+     * @param speed Percent output to set the extension to.
+     */
+    public void testExtensionSpeed(double speed) {
+        setExtensionPercentOutput(speed);
     }
 }

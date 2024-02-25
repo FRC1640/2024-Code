@@ -93,7 +93,6 @@ public class MotorUpdate {
      * @param entry {@code GenericEntry} sending the limit boolean from Shuffleboard.
      */
     public void updateAnglerLimits(TargetingSubsystem targetingSubsystem, GenericEntry entry) {
-        System.out.println("Entry reads " + entry.getBoolean(false));
         while (targetingSubsystem.getAnglerLimitsOff() == entry.getBoolean(false)) {
             targetingSubsystem.toggleAnglerLimits();
         }
@@ -112,10 +111,9 @@ public class MotorUpdate {
     }
 
     /**
-     * Runs the {@code DoubleConsumer} with the speed from the {@code GenericEntry} and toggles limits to .
+     * Calls the {@code DoubleConsumer} with the speed from the {@code GenericEntry} and updates limits (if any).
      */
     public void periodic() {
-        System.out.println("Periodic has run...");
         setter.accept(motorSpeed.getDouble(0));
         switch (limitedSubsystem) {
             case CLIMBER:

@@ -101,4 +101,8 @@ public class ClimberSubsystem extends SubsystemBase{
     public boolean getLimitsOff() {
         return io.getLimitsOff();
     }
+
+    public void testSpeedPercent(double speedLeft, double speedRight) {
+        setSpeedPercent(speedLeft, speedRight);
+    }
 }
