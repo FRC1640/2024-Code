@@ -129,6 +129,10 @@ public final class Constants {
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
+        
+        public static PIDController shooterVelocityPID = new PIDController(0.03, 0.04, 0.00004);
+        
+
         public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
@@ -146,7 +150,7 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 35;
+        public static double angleLowerLimit = 31;
         public static double angleUpperLimit = 105;
         public static double angleManualSpeed = 0.05;
         

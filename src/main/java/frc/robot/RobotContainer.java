@@ -159,7 +159,7 @@ public class RobotContainer {
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0, 0, () -> intakeSubsystem.hasNote()));
+		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.5, 0.8, () -> intakeSubsystem.hasNote()));
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -172,11 +172,11 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
 
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->40));
-		// targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
-		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0.8, 0.8, 0.7, 0.7));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->true));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 
@@ -198,14 +198,14 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
-		DashboardInit.init(driveSubsystem, driveController, aprilTagVision, targetingSubsystem, mlVision);
+		DashboardInit.init(driveSubsystem, driveController, aprilTagVision, targetingSubsystem, mlVision, shooterSubsystem);
 		configureBindings();
 	}
 
 	private void configureBindings() {
 
-		driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.03, 0.3,
-			0.03, 0.3)
+		driveController.x().whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.23,
+			()->0.03, ()->0.23, ()->true)
 			.alongWith(generateIntakeNoRobot())
 			.alongWith(targetingSubsystem.anglePIDCommand(60)));
 		// amp shot
@@ -266,7 +266,12 @@ public class RobotContainer {
 
 	public void pidTriggers(){
 		targetingSubsystem.setDefaultCommand(
-			targetingSubsystem.anglePIDCommand(()->PIDConstants.map.get("angle").getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+		// shooterSubsystem.setDefaultCommand(
+		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
+		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
+		// );
+		
 	}
 
 	public Command getAutonomousCommand() {
@@ -297,7 +302,7 @@ public class RobotContainer {
 	}
 
 	public Command generateIntakeNoRobot(){
-		return intakeSubsystem.intakeCommand(0.5, 0.6,
+		return intakeSubsystem.intakeCommand(0.5, 0.4,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
 				&& targetingSubsystem.isAnglePositionAccurate(7)));
 	}

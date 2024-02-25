@@ -91,9 +91,9 @@ public class TargetingSubsystem extends SubsystemBase {
         return speed;
     }
     public double distToAngle(double dist){
-        return -0.956635 * Math.toDegrees(
-			Math.asin(-0.778591 * Units.metersToFeet(2.11)
-			/ Units.metersToFeet(dist)) - 0.22140)-2.01438;
+        return 72.5046 *
+			Math.asin(0.632773 * 2.11
+			/ dist + 0.364214)-27.4917;
     }
 
     public double getAngleVoltage(){
