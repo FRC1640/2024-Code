@@ -47,7 +47,7 @@ public final class Constants {
 
         // 2023 prime
 
-        public static final ModuleInfo FL = new ModuleInfo(
+        /* public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
             3, 
             4, 
@@ -86,9 +86,9 @@ public final class Constants {
             true, 
             true,
             true);
-    }
+    }*/
         
-        /*public static final ModuleInfo FL = new ModuleInfo(
+        public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
             2, 
             21, 
@@ -127,7 +127,7 @@ public final class Constants {
             true, 
             true,
             true);
-    }*/
+    }
 
     public static class IntakeConstants{
         public static final int intakeCanID = 15;

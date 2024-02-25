@@ -116,9 +116,9 @@ public class RobotContainer {
 				gyro = new Gyro(new GyroIONavX());
 				// aprilTagVision = new AprilTagVision(new
 				// AprilTagVisionIOLimelight("limelight"));
-			 	mlVision = new MLVision(new MLVisionIOLimelight());
+			 	//mlVision = new MLVision(new MLVisionIOLimelight());
 				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-				//mlVision = new MLVision(new MLVisionIOSim());
+				mlVision = new MLVision(new MLVisionIOSim());
 
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
