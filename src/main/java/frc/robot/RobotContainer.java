@@ -116,7 +116,7 @@ public class RobotContainer {
 				gyro = new Gyro(new GyroIONavX());
 				// aprilTagVision = new AprilTagVision(new
 				// AprilTagVisionIOLimelight("limelight"));
-			 	//mlVision = new MLVision(new MLVisionIOLimelight());
+				// mlVision = new MLVision(new MLVisionIOLimelight());
 				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
 				mlVision = new MLVision(new MLVisionIOSim());
 
@@ -126,9 +126,9 @@ public class RobotContainer {
 						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting()));
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
-				intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-				//targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
-				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
+				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
 				break;
 			case SIM:
 				gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
