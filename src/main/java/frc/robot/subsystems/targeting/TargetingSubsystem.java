@@ -90,10 +90,15 @@ public class TargetingSubsystem extends SubsystemBase {
         setpoint = Math.toDegrees(pos.getAsDouble());
         return speed;
     }
-    public double distToAngle(double dist){
-        return 72.5046 *
-			Math.asin(0.632773 * 2.11
-			/ dist + 0.364214)-27.4917;
+    public double distToAngle(DoubleSupplier dist){
+        Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4?60:
+        -27.0366 *
+        Math.asin(-1.12258 * (2.11
+        / dist.getAsDouble()) + 0.0298483)+17.378 + 1);
+        return dist.getAsDouble() < 2.4?60:
+        -27.0366 *
+        Math.asin(-1.12258 * 2.11
+        / dist.getAsDouble() + 0.0298483)+17.378 + 1;
     }
 
     public double getAngleVoltage(){
@@ -244,8 +249,9 @@ public class TargetingSubsystem extends SubsystemBase {
                 if (getAnglePosition() > limit){
                     setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
                 }
-                else{
-                    setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                else
+                {
+                    setAnglePercentOutput(output.getAsDouble());
                 }
             }
 
@@ -267,7 +273,7 @@ public class TargetingSubsystem extends SubsystemBase {
                         setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
                     }
                     else{
-                        setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
+                        setAnglePercentOutput(output.getAsDouble());
                     }
                 }
                 else{

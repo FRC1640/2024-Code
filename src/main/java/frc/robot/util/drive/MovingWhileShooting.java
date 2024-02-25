@@ -38,7 +38,7 @@ public class MovingWhileShooting {
     }
 
     public double getAngleFromDistance() {
-        return targetingSubsystem.distToAngle(getDistance());
+        return targetingSubsystem.distToAngle(()->getDistance());
     }
 
     public double getSpeedFromDistance(){

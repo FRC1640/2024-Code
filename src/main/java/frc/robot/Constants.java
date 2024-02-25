@@ -118,9 +118,9 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.6, 0.00000, 0.000);
+        public static PIDController rotPID = new PIDController(0.55, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
-        public static PIDController gyroCorrectPid = new PIDController(0.8, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(0.65, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
@@ -143,15 +143,15 @@ public final class Constants {
         public static double width = 16.54;
         public static Translation2d ampPositionRed = new Translation2d(14.667, 7.4);
         public static Translation2d ampPositionBlue = new Translation2d(1.7, 7.4);
-        public static Translation2d speakerPositionRed = new Translation2d(15.214 + Units.feetToMeters(3), 5.555);
-        public static Translation2d speakerPositionBlue = new Translation2d(1.328 - Units.feetToMeters(3), 5.555);
+        public static Translation2d speakerPositionRed = new Translation2d(16.155, 5.544);
+        public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.544);
     }
 
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 31;
-        public static double angleUpperLimit = 105;
+        public static double angleLowerLimit = 35;
+        public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         
         public static double extensionLowerLimit = 0;

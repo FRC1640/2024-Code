@@ -40,8 +40,6 @@ public class ShooterIOSparkMax implements ShooterIO {
         topRightClamped = MathUtil.clamp(topRight, -12, 12);
         bottomRightClamped = MathUtil.clamp(bottomRight, -12, 12);
 
-        System.out.println("v: " + topLeftClamped);
-
         topLeftShooter.setVoltage(topLeftClamped);
         bottomLeftShooter.setVoltage(bottomLeftClamped);
         topRightShooter.setVoltage(topRightClamped);

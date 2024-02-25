@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -101,6 +102,8 @@ public class RobotContainer {
 
 	RotateToAngleWeight movingWhileShootingWeight;
 
+	boolean autoTargetBool = false;
+
 	public RobotContainer() {
 		switch (Robot.getMode()) {
 			case REAL:
@@ -114,7 +117,7 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
-						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean()));
+						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting()));
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
@@ -159,7 +162,7 @@ public class RobotContainer {
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.5, 0.8, () -> intakeSubsystem.hasNote()));
+		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.5, 0.5, () -> intakeSubsystem.hasNote()));
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -210,16 +213,18 @@ public class RobotContainer {
 			.alongWith(targetingSubsystem.anglePIDCommand(60)));
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
-				.whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+				.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.23,
+				()->0.03, ()->0.23, ()->true)
 						.alongWith(targetingSubsystem.anglePIDCommand(60)));
 
 		driveController.rightBumper()
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
 						.alongWith(Commands.race(
-								shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
+								shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.23,
+								()->0.03, ()->0.23, ()->true)
 										.alongWith(targetingSubsystem.anglePIDCommand(60)),
 								new WaitCommand(ShooterConstants.waitTime))));
 
@@ -232,9 +237,11 @@ public class RobotContainer {
 
 		
 		operatorController.leftTrigger()
-				.whileTrue(targetingSubsystem.manualFeedForwardAngle(()->(-0.1)));
+				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.05));
 		operatorController.rightTrigger()
-				.whileTrue(targetingSubsystem.manualFeedForwardAngle(()->(0.1)));
+				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(0.05));
+
+		driveController.povDown().onTrue(new InstantCommand(()->toggleAutoTarget(true)));
 
 
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
@@ -256,7 +263,7 @@ public class RobotContainer {
 		operatorController.leftBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
-		driveController.b().whileTrue(manualShot(50, Math.PI/2, Math.PI/2,
+		driveController.b().whileTrue(manualShot(60, Math.PI, 0,
 			()->!driveController.b().getAsBoolean()));
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
 
@@ -272,6 +279,11 @@ public class RobotContainer {
 		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
 		// );
 		
+	}
+
+	public void toggleAutoTarget(boolean toggled){
+		Logger.recordOutput("ToggledAutoTarget", autoTargetBool);
+		autoTargetBool = toggled;
 	}
 
 	public Command getAutonomousCommand() {
@@ -336,7 +348,7 @@ public class RobotContainer {
 	}
 	public Command autoTarget(){
 		return targetingSubsystem.anglePIDCommand(() -> 
-			targetingSubsystem.distToAngle(get3dDistance(() -> getSpeakerPos())));
+			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
 
 	}
 
