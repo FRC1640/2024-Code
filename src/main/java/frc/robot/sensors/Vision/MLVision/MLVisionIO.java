@@ -17,6 +17,7 @@ public interface MLVisionIO {
     public default void updateInputs(MLVisionIOInputs inputs) {
     }
 
-    public default void takeSnapshot(MLVisionIOInputs inputs){
+    public default void setPipelineIndex(MLVisionIOInputs inputs){
+        
     }
 }

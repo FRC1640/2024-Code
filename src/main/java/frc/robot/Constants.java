@@ -13,10 +13,13 @@ public final class Constants {
         public static final double limelightAngle = -10.0;
         public static final double limelightLensHeight = 11.0;
         public static final double noteHeightInches = 2.0;
+        public static final int mlVisPipeline = 0;
     }
     public static class AprilTagVisionConstants{
         public static final double xyStdDev = 0.3;
         public static final double thetaStdDev = 0.3;
+        //public static final int aprilTagPipeline = 0;
+
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = Units.inchesToMeters(2);

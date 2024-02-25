@@ -2,6 +2,8 @@ package frc.robot.sensors.Vision.MLVision;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.Constants;
+import frc.lib.vision.LimelightHelpers;
 
 public class MLVisionIOLimelight implements MLVisionIO {
 
@@ -14,5 +16,10 @@ public class MLVisionIOLimelight implements MLVisionIO {
      inputs.ty = MLNetworkTable.getEntry("ty").getDouble(0); // Vertical Offset From Crosshair To Target (LL1: -20.5 degrees to 20.5 degrees / LL2: -24.85 to 24.85 degrees)
      inputs.ta = MLNetworkTable.getEntry("ta").getDouble(0); // Target Area (0% of image to 100% of image)
     
+    }
+
+    @Override
+    public void setPipelineIndex(MLVisionIOInputs inputs) {
+        LimelightHelpers.setPipelineIndex("limelight-ml", Constants.MLVisionLimelightConstants.mlVisPipeline);
     }
 }

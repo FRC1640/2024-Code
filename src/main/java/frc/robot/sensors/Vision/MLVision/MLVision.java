@@ -36,6 +36,7 @@ public class MLVision extends PeriodicBase {
     }
 
     public void periodic() {
+        io.setPipelineIndex(inputs);
         io.updateInputs(inputs);
         
         llresults = LimelightHelpers.getLatestResults("limelight-ml");
@@ -63,10 +64,7 @@ public class MLVision extends PeriodicBase {
         Logger.recordOutput("MLVision/Notes in View", numNotesInView);
         Logger.recordOutput("MLVision/Notes targeting threshold", numNotesWithinThreshold);        
       
-      
-        
-        io.takeSnapshot(inputs);
-    }
+        }
     
 
 
