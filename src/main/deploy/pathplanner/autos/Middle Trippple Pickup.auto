@@ -12,9 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0
+            "name": "Run Indexer"
           }
         },
         {
@@ -24,9 +24,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0
+            "name": "Run Indexer"
           }
         },
         {
@@ -36,9 +36,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0
+            "name": "Run Indexer"
           }
         },
         {

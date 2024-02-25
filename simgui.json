@@ -6,6 +6,7 @@
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Auto/SendableChooser[2]": "String Chooser",
       "/Shuffleboard/Auto/SendableChooser[3]": "String Chooser",
+      "/Shuffleboard/PID/SendableChooser[2]": "String Chooser",
       "/Shuffleboard/Sysid/SendableChooser[1]": "String Chooser",
       "/Shuffleboard/Teleop/Field": "Field2d",
       "/Shuffleboard/Test Chooser/SendableChooser[0]": "String Chooser"

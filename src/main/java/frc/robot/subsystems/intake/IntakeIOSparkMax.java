@@ -1,25 +1,36 @@
 package frc.robot.subsystems.intake;
+import java.lang.ref.Cleaner.Cleanable;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogOutput;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.IntakeConstants;
+import lombok.val;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
     private final CANSparkMax indexerMotor;
-    private AnalogOutput proximityAnalogOutput;
+    private DigitalInput proximityDigitalInput;
     BooleanSupplier hasNote;
+
+    long initTime;
+    boolean first = false;
+    private BooleanSupplier clearCondition;;
     
 
-    public IntakeIOSparkMax(BooleanSupplier hasNote) {
+    public IntakeIOSparkMax(BooleanSupplier hasNote, BooleanSupplier clearCondition) {
+        this.clearCondition = clearCondition;
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
         indexerMotor.setInverted(true);
-        proximityAnalogOutput = new AnalogOutput(IntakeConstants.proximitySensorChannel);
+        indexerMotor.setIdleMode(IdleMode.kBrake);
+        proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }
 
@@ -55,7 +66,17 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
         // inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold;
-
-        inputs.hasNote = hasNote.getAsBoolean();
+        inputs.hasNote = noteDelay(!proximityDigitalInput.get(), clearCondition.getAsBoolean());
+        // inputs.hasNote = !proximityDigitalInput.get();
     } 
+
+    public boolean noteDelay(boolean value, boolean clear){
+        if (value){
+            first = true;
+        }
+        if (clear){
+            first = false;
+        }
+        return first;
+    }
 }

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
     IntakeIO io;
+    boolean shooting;
 
     public IntakeSubsystem(IntakeIO io) {
         this.io = io;
@@ -29,17 +30,21 @@ public class IntakeSubsystem extends SubsystemBase {
                 if (runIntake.getAsBoolean()) {
                     io.setIntakeSpeedPercent(speedIntake);
                     io.setIndexerSpeedPercent(speedIndexer);
+                    shooting = true;
                 }
                 else{
                     io.setIntakeSpeedPercent(0);
                     io.setIndexerSpeedPercent(0);
+                    shooting = false;
                 }
+                
             }
 
             @Override
             public void end(boolean interrupted) {
                 io.setIntakeSpeedPercent(0);
                 io.setIndexerSpeedPercent(0);
+                shooting = false;
             }
 
             @Override
@@ -52,6 +57,9 @@ public class IntakeSubsystem extends SubsystemBase {
         return c;
     }
 
+    public boolean isShooting(){
+        return shooting;
+    }
     public boolean hasNote() {
         // System.out.println(inputs.hasNote);
         return inputs.hasNote;

@@ -21,6 +21,7 @@ import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
 
@@ -35,6 +36,7 @@ public class DashboardInit {
 
     private static DriveSubsystem driveSubsystem;
     private static CommandXboxController controller;
+    private static ShooterSubsystem shooterSubsystem;
     private static TargetingSubsystem targetingSubsystem;
 
     private static final Field2d field = new Field2d();
@@ -52,10 +54,11 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem, MLVision ml) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem, MLVision ml, ShooterSubsystem shooterSubsystem) {
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
+        DashboardInit.shooterSubsystem = shooterSubsystem;
         autonInit();
         matchInit(vision, ml);
         testInit();
@@ -163,6 +166,12 @@ public class DashboardInit {
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
                         "SwerveSysId", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
+
+        sysidChooser.addOption("ShooterSysID",
+            CreateSysidCommand.createCommand(
+                shooterSubsystem::sysIdQuasistatic, 
+                shooterSubsystem::sysIdDynamic, 
+                "ShooterSysID", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
         sysIdInit = true;
     }
