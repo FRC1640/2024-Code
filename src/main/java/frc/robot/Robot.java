@@ -170,7 +170,7 @@ public class Robot extends LoggedRobot {
                 break;
             case PID:
                 System.out.println("PID MODE");
-                // m_robotContainer.removeAllDefaultCommands();
+                m_robotContainer.removeAllDefaultCommands();
                 m_robotContainer.pidTriggers();
                 break;
         }

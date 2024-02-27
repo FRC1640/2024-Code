@@ -130,7 +130,7 @@ public final class Constants {
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
         
-        public static PIDController shooterVelocityPID = new PIDController(0.03, 0.04, 0.00004);
+        public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
         
 
         public static PIDController drivePIDController = new PIDController(0, 0.0, 0);

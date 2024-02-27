@@ -213,26 +213,19 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
-		driveController.x().whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.23,
-			()->0.03, ()->0.23, ()->true)
-			.alongWith(generateIntakeNoRobot())
-			.alongWith(targetingSubsystem.anglePIDCommand(60)));
+		driveController.x().whileTrue(ampCommand());
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
 		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
-				.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.23,
-				()->0.03, ()->0.23, ()->true)
-						.alongWith(targetingSubsystem.anglePIDCommand(60)));
+				.whileTrue(ampCommand());
 
 		driveController.rightBumper()
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
 						.alongWith(Commands.race(
-								shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.23,
-								()->0.03, ()->0.23, ()->true)
-										.alongWith(targetingSubsystem.anglePIDCommand(60)),
-								new WaitCommand(ShooterConstants.waitTime))));
+								ampCommand()),
+								new WaitCommand(ShooterConstants.waitTime)));
 
 		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
@@ -278,12 +271,12 @@ public class RobotContainer {
 	}
 
 	public void pidTriggers(){
-		targetingSubsystem.setDefaultCommand(
-			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
-		// shooterSubsystem.setDefaultCommand(
-		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
-		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
-		// );
+		// targetingSubsystem.setDefaultCommand(
+		// 	targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+		shooterSubsystem.setDefaultCommand(
+			shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
+			()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
+		);
 		
 	}
 
@@ -324,10 +317,10 @@ public class RobotContainer {
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))));
 	}
 
-	public Command generateIntakeNoRobot(){
-		return intakeSubsystem.intakeCommand(0.5, 0.4,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-				&& targetingSubsystem.isAnglePositionAccurate(7)));
+	public Command generateIntakeNoRobot(double time){
+		return intakeSubsystem.intakeCommand(0.5, 0.2,
+				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
+				&& targetingSubsystem.isAnglePositionAccurate(7)), time);
 	}
 
 	public Pose2d getSpeakerPos() {
@@ -361,6 +354,13 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(() -> 
 			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
 
+	}
+
+	public Command ampCommand(){
+		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
+			()->0.08, ()->0.23, ()->true)
+			.alongWith(generateIntakeNoRobot(500))
+			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public void generateNamedCommands(){
