@@ -166,7 +166,7 @@ public class RobotContainer {
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.5, 0.5, () -> intakeSubsystem.hasNote()));
+		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote()));
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -318,7 +318,7 @@ public class RobotContainer {
 	}
 
 	public Command generateIntakeNoRobot(double time){
-		return intakeSubsystem.intakeCommand(0.5, 0.2,
+		return intakeSubsystem.intakeCommand(0, 0.2,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
 				&& targetingSubsystem.isAnglePositionAccurate(7)), time);
 	}
