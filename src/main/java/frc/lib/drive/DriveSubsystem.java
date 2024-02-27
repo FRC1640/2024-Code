@@ -63,9 +63,9 @@ public class DriveSubsystem extends SubsystemBase {
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
-    public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
+    public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
-        visions.add(vision);
+        this.visions = visions;
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -50,9 +51,11 @@ import frc.robot.sensors.Gyro.GyroIONavX;
 import frc.robot.sensors.Gyro.GyroIOSim;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
+import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -81,7 +84,8 @@ import frc.robot.util.drive.MovingWhileShooting;
 public class RobotContainer {
 
 	private Gyro gyro;
-	private AprilTagVision aprilTagVision;
+	private AprilTagVision aprilTagVision1;
+	private AprilTagVision aprilTagVision2;
 	private MLVision mlVision;
 
 	private DriveSubsystem driveSubsystem;
@@ -112,11 +116,11 @@ public class RobotContainer {
 		switch (Robot.getMode()) {
 			case REAL:
 				gyro = new Gyro(new GyroIONavX());
-				// aprilTagVision = new AprilTagVision(new
-				// AprilTagVisionIOLimelight("limelight"));
-				// mlVision = new MLVision(new MLVisionIOLimelight());
-				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-				mlVision = new MLVision(new MLVisionIOSim());
+				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-1"));
+				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-2"));
+				mlVision = new MLVision(new MLVisionIOLimelight());
+				// aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+				// mlVision = new MLVision(new MLVisionIOSim());
 
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
@@ -133,7 +137,7 @@ public class RobotContainer {
 						.toChassisSpeeds(
 								driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
-				aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
+				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim());
 				mlVision = new MLVision(new MLVisionIOSim());
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
@@ -146,7 +150,7 @@ public class RobotContainer {
 				});
 				shooterSubsystem = new ShooterSubsystem(new ShooterIO() {
 				});
-				aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {
+				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIO() {
 				});
 				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
 				});
@@ -158,7 +162,10 @@ public class RobotContainer {
 				});
 				break;
 		}
-		driveSubsystem = new DriveSubsystem(gyro, aprilTagVision);
+		ArrayList<AprilTagVision> visions = new ArrayList<>();
+		visions.add(aprilTagVision1);
+		visions.add(aprilTagVision2);
+		driveSubsystem = new DriveSubsystem(gyro, visions);
 
 		
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
@@ -207,7 +214,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
-		DashboardInit.init(driveSubsystem, driveController, aprilTagVision, targetingSubsystem, mlVision, shooterSubsystem);
+		DashboardInit.init(driveSubsystem, driveController, aprilTagVision1, targetingSubsystem, mlVision, shooterSubsystem);
 		configureBindings();
 	}
 
@@ -286,7 +293,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return DashboardInit.getAutoChooserCommand()
+		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
 			.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
 	}
 
