@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +10,8 @@ public class ShooterSubsystem extends SubsystemBase {
     ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     ShooterIO io;
     double[] targetSpeed = new double[] { 0, 0, 0, 0 };
+
+    private Command testCommand;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
@@ -103,60 +107,76 @@ public class ShooterSubsystem extends SubsystemBase {
         return true;
     }
 
-    public Command testTopLeftSpeed(double speed) {
+    public Command testTopLeftSpeed(DoubleSupplier speed) {
         Command c = new Command() {
             @Override
-            public void execute() {
-                io.testTopLeftSpeed(speed);
+            public void initialize() {
+                testCommand = this;
             }
             @Override
-            public void end(boolean interrupted) {
-                io.testTopLeftSpeed(0);
+            public void execute() {
+                io.testTopLeftSpeed(speed.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
             }
         };
         c.addRequirements(this);
         return c;
     }
 
-    public Command testTopRightSpeed(double speed) {
+    public Command testTopRightSpeed(DoubleSupplier speed) {
         Command c = new Command() {
             @Override
-            public void execute() {
-                io.testTopRightSpeed(speed);
+            public void initialize() {
+                testCommand = this;
             }
             @Override
-            public void end(boolean interrupted) {
-                io.testTopRightSpeed(0);
+            public void execute() {
+                io.testTopRightSpeed(speed.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
             }
         };
         c.addRequirements(this);
         return c;
     }
 
-    public Command testBottomLeftSpeed(double speed) {
+    public Command testBottomLeftSpeed(DoubleSupplier speed) {
         Command c = new Command() {
             @Override
-            public void execute() {
-                io.testBottomLeftSpeed(speed);
+            public void initialize() {
+                testCommand = this;
             }
             @Override
-            public void end(boolean interrupted) {
-                io.testBottomLeftSpeed(0);
+            public void execute() {
+                io.testBottomLeftSpeed(speed.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
             }
         };
         c.addRequirements(this);
         return c;
     }
 
-    public Command testBottomRightSpeed(double speed) {
+    public Command testBottomRightSpeed(DoubleSupplier speed) {
         Command c = new Command() {
             @Override
-            public void execute() {
-                io.testBottomRightSpeed(speed);
+            public void initialize() {
+                testCommand = this;
             }
             @Override
-            public void end(boolean interrupted) {
-                io.testBottomRightSpeed(0);
+            public void execute() {
+                io.testBottomRightSpeed(speed.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
             }
         };
         c.addRequirements(this);
@@ -178,6 +198,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getBottomRightSpeed() {
         return io.getBottomRightSpeed();
     }
+
+    // TODO VERY BAD METHODS BELOW
 
     public void testTopLeftSpeedNonCommand(double speed) {
         io.testTopLeftSpeed(speed);

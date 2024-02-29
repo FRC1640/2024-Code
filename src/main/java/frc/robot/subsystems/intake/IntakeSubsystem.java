@@ -1,6 +1,8 @@
 package frc.robot.subsystems.intake;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
     IntakeIO io;
+
+    private Command testCommand;
 
     public IntakeSubsystem(IntakeIO io) {
         this.io = io;
@@ -111,30 +115,38 @@ public class IntakeSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command testIntakeSpeedCommand(double intakeSpeed) {
+    public Command testIntakeSpeedCommand(DoubleSupplier intakeSpeed) {
         Command c = new Command() {
             @Override
-            public void execute() {
-                io.setIntakeSpeedPercent(intakeSpeed);
+            public void initialize() {
+                testCommand = this;
             }
             @Override
-            public void end(boolean interrupted) {
-                io.setIntakeSpeedPercent(0);
+            public void execute() {
+                io.setIntakeSpeedPercent(intakeSpeed.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
             }
         };
         c.addRequirements(this);
         return c;
     }
 
-    public Command testIndexerSpeedCommand(double indexerSpeed) {
+    public Command testIndexerSpeedCommand(DoubleSupplier indexerSpeed) {
         Command c = new Command() {
             @Override
-            public void execute() {
-                io.setIndexerSpeedPercent(indexerSpeed);
+            public void initialize() {
+                testCommand = this;
             }
             @Override
-            public void end(boolean interrupted) {
-                io.setIndexerSpeedPercent(0);
+            public void execute() {
+                io.setIndexerSpeedPercent(indexerSpeed.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
             }
         };
         c.addRequirements(this);
@@ -148,6 +160,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public double getIndexerPercentOutput() {
         return io.getIndexerPercentOutput();        
     }
+
+    // TODO BAD METHODS! GET RID OF THEM!
 
     public void testIntakeSpeed(double speed) {
         io.setIntakeSpeedPercent(speed);

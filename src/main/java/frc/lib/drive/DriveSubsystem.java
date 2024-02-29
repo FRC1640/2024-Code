@@ -1,6 +1,7 @@
 package frc.lib.drive;
 
 import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -15,6 +16,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -62,6 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDrivePoseEstimator swervePoseEstimator;
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
+
+    private Command testCommand;
 
     public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
         this.gyro = gyro;
@@ -329,5 +333,223 @@ public class DriveSubsystem extends SubsystemBase {
             }
         }
         return getPose();
+    }
+
+    // motor test methods
+
+    private void testFrontLeftAngle(double angle) {
+        frontLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(frontLeft.getVelocity(), new Rotation2d(angle)));
+    }
+
+    private void testFrontRightAngle(double angle) {
+        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(frontRight.getVelocity(), new Rotation2d(angle)));
+    }
+
+    private void testBackLeftAngle(double angle) {
+        backLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(backLeft.getVelocity(), new Rotation2d(angle)));
+    }
+
+    private void testBackRightAngle(double angle) {
+        backRight.setDesiredStateMetersPerSecond(new SwerveModuleState(backRight.getVelocity(), new Rotation2d(angle)));
+    }
+
+    private void testFrontLeftVelocity(double velocity) {
+        frontLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(velocity, new Rotation2d(frontLeft.getState().angle.getDegrees())));
+    }
+
+    private void testFrontRightVelocity(double velocity) {
+        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(velocity, new Rotation2d(frontRight.getState().angle.getDegrees())));
+    }
+
+    private void testBackLeftVelocity(double velocity) {
+        backLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(velocity, new Rotation2d(backLeft.getState().angle.getDegrees())));
+    }
+
+    private void testBackRightVelocity(double velocity) {
+        backRight.setDesiredStateMetersPerSecond(new SwerveModuleState(velocity, new Rotation2d(backRight.getState().angle.getDegrees())));
+    }
+
+    public Command testFrontLeftAngleCommand(DoubleSupplier angle) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testFrontLeftAngle(angle.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testFrontRightAngleCommand(DoubleSupplier angle) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testFrontRightAngle(angle.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testBackLeftAngleCommand(DoubleSupplier angle) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testBackLeftAngle(angle.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testBackRightAngleCommand(DoubleSupplier angle) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testBackRightAngle(angle.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testFrontLeftVelocityCommand(DoubleSupplier velocity) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testFrontLeftVelocity(velocity.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testFrontRightVelocityCommand(DoubleSupplier velocity) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testFrontRightVelocity(velocity.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testBackLeftVelocityCommand(DoubleSupplier velocity) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testBackLeftVelocity(velocity.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command testBackRightVelocityCommand(DoubleSupplier velocity) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testBackRightVelocity(velocity.getAsDouble());
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public double getFrontLeftAngle() {
+        return frontLeft.getState().angle.getDegrees();
+    }
+
+    public double getFrontRightAngle() {
+        return frontRight.getState().angle.getDegrees();
+    }
+
+    public double getBackLeftAngle() {
+        return backLeft.getState().angle.getDegrees();
+    }
+
+    public double getBackRightAngle() {
+        return backRight.getState().angle.getDegrees();
+    }
+
+    public double getFrontLeftVelocity() {
+        return frontLeft.getVelocity();
+    }
+
+    public double getFrontRightVelocity() {
+        return frontRight.getVelocity();
+    }
+
+    public double getBackLeftVelocity() {
+        return backLeft.getVelocity();
+    }
+
+    public double getBackRightVelocity() {
+        return backRight.getVelocity();
     }
 }

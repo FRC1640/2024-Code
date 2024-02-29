@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
@@ -19,6 +20,9 @@ public class ClimberSubsystem extends SubsystemBase{
     private Mechanism2d climberVisualization = new Mechanism2d(5.75, 3);
     private MechanismLigament2d climberLeft = new MechanismLigament2d("leftClimber", 2.5, 0);
     private MechanismLigament2d climberRight = new MechanismLigament2d("rightClimber", 2.5, 0);
+
+    private Command testCommand;
+
     public ClimberSubsystem(ClimberIO io) {
         this.io = io;
         MechanismRoot2d leftRoot = climberVisualization.getRoot("leftRoot", 0.25, 0.25);
@@ -102,7 +106,29 @@ public class ClimberSubsystem extends SubsystemBase{
         return io.getLimitsOff();
     }
 
-    public void testSpeedPercent(double speedLeft, double speedRight) {
+    private void testSpeedPercent(double speedLeft, double speedRight) {
         setSpeedPercent(speedLeft, speedRight);
+    }
+
+    public Command updateClimberShuffleboardCommand(DoubleSupplier speed, BooleanSupplier limits) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                testSpeedPercent(speed.getAsDouble(), speed.getAsDouble());
+                if (io.getLimitsOff() == limits.getAsBoolean()) {
+                    io.toggleLimits();
+                }
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 }

@@ -4,8 +4,14 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
+import java.util.function.DoubleFunction;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,7 +35,9 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
+import frc.robot.util.dashboard.TriConsumer;
 import frc.robot.util.dashboard.MotorUpdate.TargetingFunction;
+import frc.robot.util.dashboard.AltMotorUpdate;
 import frc.robot.util.dashboard.MotorUpdate;
 import frc.robot.util.dashboard.MotorUpdatePeriodicHandler;
 
@@ -117,7 +125,7 @@ public class DashboardInit {
                 break;
 
             case MOTOR:
-                motorInit(intakeSubsystem, climberSubsystem, shooterSubsystem, targetingSubsystem);
+                motorInit(intakeSubsystem, climberSubsystem, shooterSubsystem, targetingSubsystem, driveSubsystem);
                 break;
 
             case PID:
@@ -165,43 +173,90 @@ public class DashboardInit {
     }
 
     private static void motorInit(IntakeSubsystem intakeSubsystem, ClimberSubsystem climberSubsystem,
-            ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem) { // TODO motor ids, drive motors
-        DoubleConsumer[] consumers = {(intakeSpeed) -> intakeSubsystem.testIntakeSpeed(intakeSpeed),
-            (indexerSpeed) -> intakeSubsystem.testIndexerSpeed(indexerSpeed),
-            (climberSpeed) -> climberSubsystem.testSpeedPercent(climberSpeed, climberSpeed),
-            (topLeftSpeed) -> shooterSubsystem.testTopLeftSpeedNonCommand(topLeftSpeed),
-            (topRightSpeed) -> shooterSubsystem.testTopRightSpeedNonCommand(topRightSpeed),
-            (bottomLeftSpeed) -> shooterSubsystem.testBottomLeftSpeedNonCommand(bottomLeftSpeed),
-            (bottomRightSpeed) -> shooterSubsystem.testBottomRightSpeedNonCommand(bottomRightSpeed),
-            (angleSpeed) -> targetingSubsystem.testAnglerSpeed(angleSpeed),
-            (extensionSpeed) -> targetingSubsystem.testExtensionSpeed(extensionSpeed)};
-        List<DoubleConsumer> motorSetSpeed = new ArrayList<>(Arrays.asList(consumers));
-        DoubleSupplier[] suppliers = {() -> intakeSubsystem.getIntakePercentOutput(),
+            ShooterSubsystem shooterSubsystem, TargetingSubsystem targetingSubsystem, DriveSubsystem driveSubsystem) { // TODO motor ids, drive motors
+        List<Function<DoubleSupplier, Command>> motorSetSpeed = new ArrayList<>();
+        motorSetSpeed.add((speed) -> intakeSubsystem.testIntakeSpeedCommand(speed));
+        motorSetSpeed.add((speed) -> intakeSubsystem.testIndexerSpeedCommand(speed));
+        motorSetSpeed.add((speed) -> shooterSubsystem.testTopLeftSpeed(speed));
+        motorSetSpeed.add((speed) -> shooterSubsystem.testTopRightSpeed(speed));
+        motorSetSpeed.add((speed) -> shooterSubsystem.testBottomLeftSpeed(speed));
+        motorSetSpeed.add((speed) -> shooterSubsystem.testBottomRightSpeed(speed));
+        motorSetSpeed.add((speed) -> driveSubsystem.testFrontLeftVelocityCommand(speed));
+        motorSetSpeed.add((speed) -> driveSubsystem.testFrontRightVelocityCommand(speed));
+        motorSetSpeed.add((speed) -> driveSubsystem.testBackLeftVelocityCommand(speed));
+        motorSetSpeed.add((speed) -> driveSubsystem.testBackRightVelocityCommand(speed));
+        motorSetSpeed.add((angle) -> driveSubsystem.testFrontLeftAngleCommand(angle));
+        motorSetSpeed.add((angle) -> driveSubsystem.testFrontRightAngleCommand(angle));
+        motorSetSpeed.add((angle) -> driveSubsystem.testBackLeftAngleCommand(angle));
+        motorSetSpeed.add((angle) -> driveSubsystem.testBackRightAngleCommand(angle));
+        List<BiFunction<DoubleSupplier, BooleanSupplier, Command>> motorSetSpeedLimits = new ArrayList<>();
+        motorSetSpeedLimits.add((speed, limits) -> climberSubsystem.updateClimberShuffleboardCommand(speed, limits));
+        motorSetSpeedLimits.add((speed, limits) -> targetingSubsystem.updateAnglerShuffleboardCommand(speed, limits));
+        motorSetSpeedLimits.add((speed, limits) -> targetingSubsystem.updateExtensionShuffleboardCommand(speed, limits));
+        DoubleSupplier[] suppliers = { () -> intakeSubsystem.getIntakePercentOutput(),
             () -> intakeSubsystem.getIndexerPercentOutput(), () -> climberSubsystem.getPercentOutput(),
             () -> shooterSubsystem.getTopLeftSpeed(), () -> shooterSubsystem.getTopRightSpeed(),
             () -> shooterSubsystem.getBottomLeftSpeed(), () -> shooterSubsystem.getBottomRightSpeed(),
-            () -> targetingSubsystem.getAnglerSpeedPercent(), () -> targetingSubsystem.getExtensionSpeedPercent()};
+            () -> targetingSubsystem.getAnglerSpeedPercent(), () -> targetingSubsystem.getExtensionSpeedPercent(),
+            () -> driveSubsystem.getFrontLeftVelocity(), () -> driveSubsystem.getFrontRightVelocity(),
+            () -> driveSubsystem.getBackLeftVelocity(), () -> driveSubsystem.getBackRightVelocity(),
+            () -> driveSubsystem.getFrontLeftAngle(), () -> driveSubsystem.getFrontRightAngle(),
+            () -> driveSubsystem.getBackLeftAngle(), () -> driveSubsystem.getBackRightAngle() };
         List<DoubleSupplier> motorGetSpeed = new ArrayList<>(Arrays.asList(suppliers));
-        String[] names = {"Intake", "Indexer", "Climber Motors", "Shooter TL", "Shooter TR", "Shooter BL",
-            "Shooter BR", "Angler Motors", "Extension"};
-        int[] coords = { 0, 4, 2, 4, 4, 0, 5, 4, 7, 4, 9, 4, 11, 4, 0, 0, 2, 0 };
+        String[] names = {"Intake", "Indexer", "Shooter TL", "Shooter TR", "Shooter BL",
+            "Shooter BR", "Drive FL", "Drive FR", "Drive BL", "Drive BR", "Drive FL",
+            "Drive FR", "Drive BL", "Drive BR", "Climber Motors", "Angler Motors",
+            "Extension" };
+        int[] coords = { 0, 4, 4, 0, 5, 4, 7, 4, 9, 4, 11, 4, 6, 0, 8, 0, 10, 0, 12, 0, 6, 2, 8, 2, 10, 2, 12, 2, 2, 4, 0, 0, 2, 0 };
         List<GenericEntry> sliderEntries = new ArrayList<>(NUMBER_OF_MOTORS);
         ShuffleboardTab motorTab = Shuffleboard.getTab("Motor");
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 6; i++) {
             sliderEntries.add(motorTab.add(names[i], 0)
                 .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", -1, "max", 1, "display value", false))
+                .withProperties(Map.of("min", -1, "max", 1, "display value", true))
+                .withPosition(coords[i * 2], coords[i * 2 + 1])
+                .withSize(2, 1)
+                .getEntry());
+            motorTab.addDouble(names[i] + " -Applied", motorGetSpeed.get(i))
+                    .withWidget(BuiltInWidgets.kNumberBar)
+                    .withProperties(Map.of("min", -1, "max", 1, "show text", true))
+                    .withPosition(coords[i * 2], coords[i * 2 + 1] + 1)
+                    .withSize(2, 1);
+                // (i % 7) * 2, (i / 7) * 2 + 1
+        }
+        for (int i = 6; i < 10; i++) {
+            sliderEntries.add(motorTab.add(names[i], 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", -1, "max", 1, "display value", true))
+                .withPosition(coords[i * 2], coords[i * 2 + 1])
+                .withSize(2, 1)
+                .getEntry());
+            motorTab.addDouble(names[i] + " Velocity", motorGetSpeed.get(i))
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -1, "max", 1, "show text", true))
+                .withPosition(coords[i * 2], coords[i * 2 + 1] + 1)
+                .withSize(2, 1);
+        }
+        for (int i = 10; i < 14; i++) {
+            sliderEntries.add(motorTab.add(names[i] + "°", 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", -360, "max", 360, "show value", true))
                 .withPosition(coords[i * 2], coords[i * 2 + 1])
                 .withSize(2, 1)
                 .getEntry());
         }
-        for (int i = 0; i < 9; i++) {
-                motorTab.addDouble(names[i] + " -Applied", motorGetSpeed.get(i))
-                    .withWidget(BuiltInWidgets.kNumberBar)
-                    .withProperties(Map.of("min", -1, "max", 1, "show text", false))
-                    .withPosition(coords[i * 2], coords[i * 2 + 1] + 1)
-                    .withSize(2, 1);
-                // (i % 7) * 2, (i / 7) * 2 + 1
+        for (int i = 14; i < 17; i++) {
+            sliderEntries.add(motorTab.add(names[i], 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", -1, "max", 1, "display value", true))
+                .withPosition(coords[i * 2], coords[i * 2 + 1])
+                .withSize(2, 1)
+                .getEntry());
+            motorTab.add(names[i] + " -Applied", 0)
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -1, "max", 1, "show value", true))
+                .withPosition(coords[i * 2], coords[i * 2 + 1] + 1)
+                .withSize(2, 1);
         }
         motorTab.addDouble("Climber Encoder", () -> climberSubsystem.getEncoderValue()).withPosition(4, 2).withSize(1, 1);
         motorTab.addDouble("Angler Encoder", () -> targetingSubsystem.getAnglerEncoderValue()).withPosition(0, 2).withSize(1, 1);
@@ -222,21 +277,17 @@ public class DashboardInit {
             .withPosition(5, 2)
             .withSize(1, 1)
             .getEntry());
-        List<MotorUpdate> updatiers = new ArrayList<>(9);
-        for (int i = 0; i < 2; i++) {
-            updatiers.add(new MotorUpdate(sliderEntries.get(i), motorSetSpeed.get(i)));
+        List<AltMotorUpdate> updatiers = new ArrayList<>(19);
+        for (int i = 0; i < 14; i++) {
+            updatiers.add(new AltMotorUpdate(sliderEntries.get(i), motorSetSpeed.get(i)));
         }
-        updatiers.add(new MotorUpdate(sliderEntries.get(2), motorSetSpeed.get(2), climberSubsystem,
-            toggliers.get(2)));
-        for (int i = 3; i < 7; i++) {
-            updatiers.add(new MotorUpdate(sliderEntries.get(i), motorSetSpeed.get(i)));
+        for (int i = 14; i < 17; i++) {
+            updatiers.add(new AltMotorUpdate(sliderEntries.get(i), toggliers.get(i - 14), motorSetSpeedLimits.get(i)));
         }
-        updatiers.add(new MotorUpdate(sliderEntries.get(7), motorSetSpeed.get(7),
-            targetingSubsystem, toggliers.get(0), TargetingFunction.ANGLER));
-        updatiers.add(new MotorUpdate(sliderEntries.get(8), motorSetSpeed.get(8),
-            targetingSubsystem, toggliers.get(1), TargetingFunction.EXTENSION));
-        MotorUpdatePeriodicHandler.giveMotorUpdates(updatiers.get(0), updatiers.get(1), updatiers.get(2), updatiers.get(3),
-             updatiers.get(4), updatiers.get(5), updatiers.get(6), updatiers.get(7), updatiers.get(8));
+        MotorUpdatePeriodicHandler.giveMotorUpdates(updatiers.get(0), updatiers.get(1), updatiers.get(2),
+            updatiers.get(3), updatiers.get(4), updatiers.get(5), updatiers.get(6), updatiers.get(7),
+            updatiers.get(8), updatiers.get(9), updatiers.get(10), updatiers.get(11), updatiers.get(12),
+            updatiers.get(13), updatiers.get(14), updatiers.get(15), updatiers.get(16));
     }
 
     public static TestMode getTestMode() {

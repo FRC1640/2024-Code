@@ -1,5 +1,6 @@
 package frc.robot.subsystems.targeting;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
@@ -22,6 +23,8 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public double extensionSetpoint = 0.0;
     PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID, "extension");
+
+    private Command testCommand;
 
     public TargetingSubsystem(TargetingIO io) {
         this.io = io;
@@ -382,14 +385,14 @@ public class TargetingSubsystem extends SubsystemBase {
     /**
      * Toggles the limits of the angler.
      */
-    public void toggleAnglerLimits() {
+    private void toggleAnglerLimits() {
         io.toggleAnglerLimits();
     }
 
     /**
      * Toggles the limits of the extension.
      */
-    public void toggleExtensionLimits() {
+    private void toggleExtensionLimits() {
         io.toggleExtensionLimits();
     }
 
@@ -429,24 +432,58 @@ public class TargetingSubsystem extends SubsystemBase {
         return io.getAnglerSpeedPercent();
     }
 
-    /**
-     * Sets the angler to a percent output.
-     * 
-     * <p> Note that this method must <strong> NEVER </strong> be used outside of test mode.
-     * 
-     * @param speed Percent output to set the angler to.
-     */
+    public Command updateAnglerShuffleboardCommand(DoubleSupplier speed, BooleanSupplier limits) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                io.setTargetingSpeedPercent(speed.getAsDouble());
+                if (io.getAnglerLimitsOff() == limits.getAsBoolean()) {
+                    io.toggleAnglerLimits();
+                }
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command updateExtensionShuffleboardCommand(DoubleSupplier speed, BooleanSupplier limits) {
+        Command c = new Command() {
+            @Override
+            public void initialize() {
+                testCommand = this;
+            }
+            @Override
+            public void execute() {
+                io.setExtensionPercentOutput(speed.getAsDouble());
+                if (io.getExtensionLimitsOff() == limits.getAsBoolean()) {
+                    io.toggleExtensionLimits();
+                }
+            }
+            @Override
+            public boolean isFinished() {
+                return testCommand != this;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    
+    //                  |
+    // TODO BAD METHODS V
+    
     public void testAnglerSpeed(double speed) {
         setAnglePercentOutput(speed);
     }
 
-    /**
-     * Sets the extension to a percent output.
-     * 
-     * <p> Note that this method must <strong> NEVER </strong> be used outside of test mode.
-     * 
-     * @param speed Percent output to set the extension to.
-     */
     public void testExtensionSpeed(double speed) {
         setExtensionPercentOutput(speed);
     }

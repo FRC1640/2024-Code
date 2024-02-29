@@ -107,13 +107,13 @@ public class MotorUpdate {
     public void updateExtensionLimits(TargetingSubsystem targetingSubsystem, GenericEntry entry) {
         while (targetingSubsystem.getExtensionLimitsOff() == entry.getBoolean(false)) {
             targetingSubsystem.toggleExtensionLimits();
-        }        
+        }
     }
-
     /**
      * Calls the {@code DoubleConsumer} with the speed from the {@code GenericEntry} and updates limits (if any).
      */
     public void periodic() {
+        System.out.println("Entry reads " + motorSpeed.getDouble(Math.E));
         setter.accept(motorSpeed.getDouble(0));
         switch (limitedSubsystem) {
             case CLIMBER:

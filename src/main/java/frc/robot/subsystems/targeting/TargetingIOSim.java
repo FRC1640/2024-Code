@@ -33,10 +33,10 @@ public class TargetingIOSim implements TargetingIO {
     @Override
     public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
         double speedClamped = speed;
-        double averagePosition = getPositionAverage(rightPosition, rightPosition);
-        speedClamped = clampSpeeds(averagePosition, speedClamped);
-        setTargetingVoltage(speedClamped * 12);
-
+        speedClamped = clampSpeeds(rightPosition, speedClamped);
+        rightTargetingMotorSimulated.setInputVoltage(speedClamped * 12);
+        System.out.println("Speed " + speedClamped);
+        rightMotorVoltage = speedClamped * 12;
     }
 
     @Override
@@ -90,8 +90,9 @@ public class TargetingIOSim implements TargetingIO {
     public void setExtensionPercentOutput(double speed) {
         double speedClamped = speed;
         speedClamped = clampSpeedsExtension(extensionPosition, speedClamped);
-        setExtensionVoltage(speedClamped * 12);
+        extensionMotorSimulated.setInputVoltage(speedClamped * 12);
         cappedExtensionSpeed = speedClamped;
+        extensionMotorVoltage = speedClamped * 12;
     }
 
     @Override
@@ -108,7 +109,8 @@ public class TargetingIOSim implements TargetingIO {
 
     @Override
     public double getAnglerSpeedPercent() {
-        return (rightMotorVoltage + rightMotorVoltage) / 24;
+        System.out.println("Angler motor voltage reads " + rightMotorVoltage);
+        return rightMotorVoltage / 12;
     }
 
     @Override

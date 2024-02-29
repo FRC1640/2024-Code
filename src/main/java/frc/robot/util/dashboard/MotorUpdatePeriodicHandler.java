@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MotorUpdatePeriodicHandler {
     
-    private static List<MotorUpdate> motorUpdates = new ArrayList<>();
+    private static List<AltMotorUpdate> motorUpdates = new ArrayList<>();
 
     /**
      * Handles the periodics of all {@code MotorUpdates}.
@@ -18,8 +18,8 @@ public class MotorUpdatePeriodicHandler {
      * 
      * @param updates New updates to run periodics of.
      */
-    public static void giveMotorUpdates(MotorUpdate ... updates) {
-        for (MotorUpdate update : updates) {
+    public static void giveMotorUpdates(AltMotorUpdate ... updates) {
+        for (AltMotorUpdate update : updates) {
             motorUpdates.add(update);
         }
     }

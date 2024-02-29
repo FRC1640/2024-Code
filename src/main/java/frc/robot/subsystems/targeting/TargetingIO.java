@@ -139,6 +139,7 @@ public interface TargetingIO {
     }
 
     public default double getAnglerSpeedPercent() {
+        System.out.println("Default called. Something is wrong.");
         return 0;
     }
     
