@@ -170,13 +170,13 @@ public class MLVision extends PeriodicBase {
             for (int i = 0; i < notesWithinThreshold.size(); i++) {
                 LimelightHelpers.LimelightTarget_Detector detector = notesWithinThreshold.get(i);
                 double tx = detector.tx;
-                System.out.println("TX VAL "+ detector.tx);
+                // System.out.println("TX VAL "+ detector.tx);
                 if (tx < minTX) { 
                     minTX = tx;
                     finalNote = detector;
                 }
             }
-            System.out.println("TX VAL Fin "+ finalNote.tx);
+            // System.out.println("TX VAL Fin "+ finalNote.tx);
         }
 
         return finalNote;

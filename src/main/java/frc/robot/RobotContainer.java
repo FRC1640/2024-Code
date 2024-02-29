@@ -116,8 +116,8 @@ public class RobotContainer {
 		switch (Robot.getMode()) {
 			case REAL:
 				gyro = new Gyro(new GyroIONavX());
-				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-front"));
-				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-back"));
+				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-front"), "-front");
+				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-back"), "-back");
 				mlVision = new MLVision(new MLVisionIOLimelight());
 				// aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
 				// mlVision = new MLVision(new MLVisionIOSim());
@@ -137,7 +137,8 @@ public class RobotContainer {
 						.toChassisSpeeds(
 								driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
-				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim());
+				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim(),"-front");
+				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim(),"-back");
 				mlVision = new MLVision(new MLVisionIOSim());
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
@@ -151,7 +152,9 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIO() {
 				});
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIO() {
-				});
+				},"-front");
+				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIO() {
+				},"-back");
 				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
 				});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
@@ -226,13 +229,13 @@ public class RobotContainer {
 		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
-				.whileTrue(ampCommand());
+				.whileTrue(ampCommandNoShoot());
 
 		driveController.rightBumper()
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
 						.alongWith(Commands.race(
-								ampCommand()),
-								new WaitCommand(ShooterConstants.waitTime)));
+								ampCommandNoShoot(),
+								new WaitCommand(ShooterConstants.waitTime))));
 
 		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
@@ -367,6 +370,12 @@ public class RobotContainer {
 		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
 			()->0.08, ()->0.23, ()->true)
 			.alongWith(generateIntakeNoRobot(500))
+			.alongWith(targetingSubsystem.anglePIDCommand(50));
+	}
+
+	public Command ampCommandNoShoot(){
+		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
+			()->0.08, ()->0.23, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 

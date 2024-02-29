@@ -25,7 +25,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     // private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 6;
+    private double distanceLim = 10;
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
 
     private double initTime = 0;
@@ -77,7 +77,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
             
             //verticalVelocity = verticalVelocityConstant;
-            verticalVelocity = 0.2;
+            verticalVelocity = 0.4;
 
             angularVelocity = 0;
             
