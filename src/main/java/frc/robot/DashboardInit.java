@@ -16,11 +16,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
+import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
@@ -129,6 +131,10 @@ public class DashboardInit {
     }
 
     private static void matchInit(AprilTagVision vision, MLVision ml) {
+        boolean speedConstraint = shooterSubsystem.isSpeedAccurate(0.05);
+        boolean angleConstraint = targetingSubsystem.isAnglePositionAccurate(7);
+		boolean posConstraint = Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3;
+       
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -150,8 +156,8 @@ public class DashboardInit {
             .withPosition(5, 0);
         teleop.add(field)
                 .withSize(4, 4)
-                .withPosition(6, 0);
-    }
+                .withPosition(6, 0);}
+    
 
 
     public static void setFieldPos(Pose2d pose) {

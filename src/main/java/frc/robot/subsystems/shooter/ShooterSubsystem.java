@@ -214,6 +214,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return targetSpeed;
     }
 
+    // CONSTRAINT 1
     public boolean isSpeedAccurate(double percentError) {
         int count = 0;
         for (double d : getTargetSpeeds()) {
