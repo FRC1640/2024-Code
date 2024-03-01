@@ -8,7 +8,7 @@ public interface AprilTagVisionIO {
     @AutoLog
     public static class AprilTagVisionIOInputs {
         public double latency;
-        public Pose2d aprilTagPose;
+        public Pose2d aprilTagPose = new Pose2d();
         public boolean isTarget;
         public double aprilTagDistance;
     }

@@ -9,14 +9,16 @@ import frc.robot.Constants.FieldConstants;
 public class AprilTagVision extends PeriodicBase {
     private AprilTagVisionIO io;
     private AprilTagVisionIOInputsAutoLogged inputs = new AprilTagVisionIOInputsAutoLogged();
+    private String key;
 
-    public AprilTagVision(AprilTagVisionIO io) {
+    public AprilTagVision(AprilTagVisionIO io, String key) {
         this.io = io;
+        this.key = key;
     }
 
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("AprilTagVision", inputs);
+        Logger.processInputs("AprilTagVision" + key, inputs);
     }
 
     public Pose2d getAprilTagPose2d(){

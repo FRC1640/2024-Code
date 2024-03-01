@@ -57,6 +57,48 @@ public class IntakeSubsystem extends SubsystemBase {
         return c;
     }
 
+    public Command intakeCommand(double speedIntake, double speedIndexer, BooleanSupplier runIntake, double time) {
+        Command c = new Command() {
+
+            long initTime;
+
+            @Override
+            public void execute() {
+                if (runIntake.getAsBoolean() && initTime + time <= System.currentTimeMillis()) {
+                    io.setIntakeSpeedPercent(speedIntake);
+                    io.setIndexerSpeedPercent(speedIndexer);
+                    shooting = true;
+                }
+                else{
+                    io.setIntakeSpeedPercent(0);
+                    io.setIndexerSpeedPercent(0);
+                    shooting = false;
+                }
+                
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                io.setIntakeSpeedPercent(0);
+                io.setIndexerSpeedPercent(0);
+                shooting = false;
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+
+            @Override 
+            public void initialize(){
+                initTime = System.currentTimeMillis();
+            }
+
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
     public boolean isShooting(){
         return shooting;
     }
