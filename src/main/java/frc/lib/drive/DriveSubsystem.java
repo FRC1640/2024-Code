@@ -1,6 +1,7 @@
 package frc.lib.drive;
 
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -15,6 +16,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -42,6 +44,8 @@ import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.sensors.Gyro.GyroIO;
+import frc.robot.sensors.Gyro.GyroIOInputsAutoLogged;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -344,4 +348,13 @@ public class DriveSubsystem extends SubsystemBase {
         }
         return getPose();
     }
+
+    // Rotation2d angle = gyro.getAngleRotation2d();
+    // GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
+
+    // public boolean rotationAccuracyGet(){
+    //     if (inputs.angleRadiansRaw = angle.getRadians()){
+    //         return true;
+    //     }
+    // }
 }
