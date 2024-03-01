@@ -162,7 +162,7 @@ public class DriveSubsystem extends SubsystemBase {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
                 Logger.recordOutput("Distance to april tag", vision.getDistance());
-                double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+                double distConst = Math.pow(vision.getDistance() * 1.5, 2.0); // distance standard deviation constant
 
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
