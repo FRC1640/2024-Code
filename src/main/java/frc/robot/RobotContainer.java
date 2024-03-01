@@ -370,18 +370,22 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 	}
 
-	public BooleanSupplier isShootingSpeedCorrect (){
-		BooleanSupplier supplier = () -> shooterSubsystem.isSpeedAccurate(5);
-        return supplier;  
-    } 
+	// public BooleanSupplier isShootingSpeedCorrect (){
+	// 	BooleanSupplier supplier = () -> shooterSubsystem.isSpeedAccurate(5);
+    //     return supplier;  
+    // } 
 
-	public BooleanSupplier isRobotAngleCorrect (){
-		BooleanSupplier supplier = () -> Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3;
-        return supplier;  
-    } 
+	// public BooleanSupplier isRobotAngleCorrect (){
+	// 	BooleanSupplier supplier = () -> Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3;
+    //     return supplier;  
+    // } 
 	
-	public BooleanSupplier isShootingAngleCorrect (){
-		BooleanSupplier supplier = () -> targetingSubsystem.isAnglePositionAccurate(7);
-        return supplier;  
-    } 
+	// public BooleanSupplier isShootingAngleCorrect (){
+	// 	BooleanSupplier supplier = () -> targetingSubsystem.isAnglePositionAccurate(7);
+    //     return supplier;  
+    // } 
+
+	// // public BooleanSupplier isTargetingAtLimit(){
+	// // 	BooleanSupplier supplier = () -> targetingSubsystem.
+	// // }
 }

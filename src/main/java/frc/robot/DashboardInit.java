@@ -155,7 +155,21 @@ public class DashboardInit {
                 .withSize(4, 2)
                 .withPosition(6, 0);
         // SHOOTING CONSTRAINTS
-        //teleop.addBoolean("Shooter Speed Correct?", RobotContainer.isShootingSpeedCorrect());
+        teleop.addBoolean("Shooter Speed Correct?", () -> shooterSubsystem.isSpeedAccurate(0)) //this & below need to test if updates
+            .withSize(1,1)
+            .withPosition(6,2);
+        teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(0))
+            .withSize(1,1)
+            .withPosition(7,2);
+        teleop.addBoolean("Targeting at limit?", ) //need to get the limit, also needs operator controller to rumble if at limit
+            .withSize(1,1)
+            .withPosition(8,2);
+        teleop.addBoolean("Rotation Lock Button?", ) //needs get button
+            .withSize(1,1)
+            .withPosition(6,3);
+        teleop.addBoolean("Is rotation right?", ) //need get rotation (unsure if exists)
+            .withSize(1,1)
+            .withPosition(8,3);
     
         
         }

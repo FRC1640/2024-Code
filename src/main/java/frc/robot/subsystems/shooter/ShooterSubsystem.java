@@ -23,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine;
 
+    //public static boolean shootCorrect;
+
     SimpleMotorFeedforward ff = new SimpleMotorFeedforward(2, 0.01);
 
     private PIDController topLeftPID = PIDConstants.constructPID(PIDConstants.shooterVelocityPID, "topLeftShooter");
