@@ -152,9 +152,16 @@ public class DashboardInit {
             .withSize(1, 2)
             .withPosition(5, 0);
         teleop.add(field)
-                .withSize(4, 4)
-                .withPosition(6, 0);}
+                .withSize(4, 2)
+                .withPosition(6, 0);
+        // SHOOTING CONSTRAINTS
+        //teleop.addBoolean("Shooter Speed Correct?", RobotContainer.isShootingSpeedCorrect());
     
+        
+        }
+        
+        
+                
 
 
     public static void setFieldPos(Pose2d pose) {
