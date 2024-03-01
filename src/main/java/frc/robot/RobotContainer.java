@@ -63,6 +63,7 @@ import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
@@ -126,8 +127,7 @@ public class RobotContainer {
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
 						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting()));
-				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
-				});
+				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
@@ -256,7 +256,7 @@ public class RobotContainer {
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
 				Math.abs(operatorController.getRightY()) > 0.1)
 				.whileTrue(climberSubsystem.setSpeedCommand(
-						() -> -operatorController.getLeftY() * 0.5, () -> -operatorController.getRightY() * 0.5));
+						() -> -operatorController.getLeftY() * 0.75, () -> -operatorController.getRightY() * 0.75));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onTrue(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
