@@ -169,9 +169,9 @@ public class DriveSubsystem extends SubsystemBase {
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
                         1);
                 swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
-                                AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
-                                AprilTagVisionConstants.thetaStdDev * distConst + velConst / 5));
+                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst,
+                                AprilTagVisionConstants.xyStdDev * distConst,
+                                AprilTagVisionConstants.thetaStdDev * distConst));
             }
 
         }

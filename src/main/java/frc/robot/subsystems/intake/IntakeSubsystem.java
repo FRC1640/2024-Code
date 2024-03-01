@@ -137,6 +137,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
             @Override
             public void execute() {
+                Logger.recordOutput("Started", true);
                 if (!hasNote.getAsBoolean()){
                     io.setIntakeSpeedPercent(speedIntake);
                     io.setIndexerSpeedPercent(speedIndexer);

@@ -177,6 +177,7 @@ public class RobotContainer {
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
 		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote()));
+		
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -187,9 +188,9 @@ public class RobotContainer {
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
+		targetingSubsystem.setDefaultCommand(autoTarget());
 
-		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->40));
-		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->50));
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
@@ -323,8 +324,14 @@ public class RobotContainer {
 	}
 
     private Command generateIntakeCommandAuto() {
-			return new ParallelDeadlineGroup(new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5)), intakeSubsystem.intakeCommand(0, 0.5,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))));
+			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5))
+				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))).repeatedly());
+	}
+
+	public Command intakeNote(){
+		return intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote())
+			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
 
 	public Command generateIntakeNoRobot(double time){
@@ -367,20 +374,21 @@ public class RobotContainer {
 	}
 
 	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
-			()->0.08, ()->0.23, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.20,
+			()->0.03, ()->0.20, ()->true)
 			.alongWith(generateIntakeNoRobot(500))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
-			()->0.08, ()->0.23, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.20,
+			()->0.03, ()->0.20, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
+		NamedCommands.registerCommand("Run Intake", intakeNote());
 	}
 }
