@@ -369,4 +369,19 @@ public class RobotContainer {
 		// NamedCommands.registerCommand("", )
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 	}
+
+	public Supplier<Boolean> isShootingSpeedCorrect (){
+		Supplier<Boolean> supplier = () -> shooterSubsystem.isSpeedAccurate(5);
+        return supplier;  
+    } 
+
+	public Supplier<Boolean> isRobotAngleCorrect (){
+		Supplier<Boolean> supplier = () -> Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3;
+        return supplier;  
+    } 
+	
+	public Supplier<Boolean> isShootingAngleCorrect (){
+		Supplier<Boolean> supplier = () -> targetingSubsystem.isAnglePositionAccurate(7);
+        return supplier;  
+    } 
 }

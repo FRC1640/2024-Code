@@ -131,10 +131,7 @@ public class DashboardInit {
     }
 
     private static void matchInit(AprilTagVision vision, MLVision ml) {
-        boolean speedConstraint = shooterSubsystem.isSpeedAccurate(0.05);
-        boolean angleConstraint = targetingSubsystem.isAnglePositionAccurate(7);
-		boolean posConstraint = Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3;
-       
+    
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
