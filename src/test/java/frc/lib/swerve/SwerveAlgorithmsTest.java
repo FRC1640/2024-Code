@@ -38,4 +38,9 @@ class SwerveAlgorithmsTest {
         Translation2d[] exceptionTranslations = {};
         assertThrowsExactly(NoSuchElementException.class, () -> SwerveAlgorithms.computeMaxNorm(exceptionTranslations, centerOfRotation));
     }
+
+    @Test
+    void testMaxNorm() {
+        assertEquals(0.40860165350864647, SwerveAlgorithms.maxNorm);
+    }
 }
