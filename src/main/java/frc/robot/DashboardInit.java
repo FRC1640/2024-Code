@@ -139,7 +139,7 @@ public class DashboardInit {
                 .withSize(1, 1)
                 .withPosition(0, 0);
         // LIMELIGHT STREAM
-        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.70:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
         teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())

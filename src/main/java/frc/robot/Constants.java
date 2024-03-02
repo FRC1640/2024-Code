@@ -15,8 +15,8 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 0.4;
-        public static final double thetaStdDev = 0.5;
+        public static final double xyStdDev = 0.35;
+        public static final double thetaStdDev = 0.2;
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = Units.inchesToMeters(2);
@@ -150,7 +150,7 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 35;
+        public static double angleLowerLimit = 45;
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         
