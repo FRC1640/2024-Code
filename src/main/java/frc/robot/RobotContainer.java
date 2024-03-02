@@ -219,7 +219,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
-		DashboardInit.init(driveSubsystem, driveController, aprilTagVision1, targetingSubsystem, mlVision, shooterSubsystem);
+		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, mlVision, shooterSubsystem);
 		configureBindings();
 	}
 

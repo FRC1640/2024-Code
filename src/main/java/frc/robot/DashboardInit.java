@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -56,7 +57,7 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem, MLVision ml, ShooterSubsystem shooterSubsystem) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, ArrayList<AprilTagVision> vision, TargetingSubsystem targetingSubsystem, MLVision ml, ShooterSubsystem shooterSubsystem) {
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
@@ -130,7 +131,7 @@ public class DashboardInit {
         }
     }
 
-    private static void matchInit(AprilTagVision vision, MLVision ml) {
+    private static void matchInit(ArrayList<AprilTagVision> vision, MLVision ml) {
     
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
@@ -145,7 +146,7 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
-        teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget()) //update for any kind of vision seeing
+        teleop.addBoolean("Apriltag Sighted?", () -> vision.get(0).isTarget() || vision.get(1).isTarget())
                 .withSize(1, 2)
                 .withPosition(5, 2);
         teleop.addBoolean("Note sighted?", () -> ml.isTarget())
@@ -174,7 +175,9 @@ public class DashboardInit {
         
         }
         
-        
+        // public boolean isVisionTrue(){
+
+        // }
                 
 
 

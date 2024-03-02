@@ -3,8 +3,8 @@ package frc.robot.sensors.Vision.MLVision;
 
 
 import org.littletonrobotics.junction.Logger;
-
 import frc.lib.periodic.PeriodicBase;
+import frc.robot.Constants;
 
 
 public class MLVision extends PeriodicBase {

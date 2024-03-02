@@ -348,6 +348,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
         return getPose();
     }
+}
 
     // Rotation2d angle = gyro.getAngleRotation2d();
     // GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
@@ -357,4 +358,10 @@ public class DriveSubsystem extends SubsystemBase {
     //         return true;
     //     }
     // }
-}
+
+//     public boolean getRotAccuracy(){
+//         if(){ //desiried = actual (margin?)
+//             return true;
+//         }
+//     }
+// }
