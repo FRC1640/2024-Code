@@ -277,6 +277,8 @@ public class RobotContainer {
 		driveController.b().whileTrue(manualShot(60, Math.PI, 0,
 			()->!driveController.b().getAsBoolean()));
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
+		driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
+
 
 
 		
