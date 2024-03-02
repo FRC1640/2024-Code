@@ -93,7 +93,6 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
                 horizontalVelocity = horizontalController.calculate(vision.getTX());
                 horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
                 horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
-            
             //verticalVelocity = verticalVelocityConstant;
             verticalVelocity = 0.4;
 

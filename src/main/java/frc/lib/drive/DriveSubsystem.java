@@ -160,18 +160,18 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
-            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
+            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getDistance() < 3.7) {
                 Logger.recordOutput("Distance to april tag", vision.getDistance());
-                double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+                double distConst = Math.pow(vision.getDistance() * 1.2, 2.0); // distance standard deviation constant
 
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
                         1);
                 swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
-                                AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
-                                AprilTagVisionConstants.thetaStdDev * distConst + velConst / 5));
+                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst,
+                                AprilTagVisionConstants.xyStdDev * distConst,
+                                AprilTagVisionConstants.thetaStdDev * distConst));
             }
 
         }
@@ -192,6 +192,7 @@ public class DriveSubsystem extends SubsystemBase {
         else{
             resetOdometry(pose);
         }
+        gyro.setOffset(pose.getRotation().getRadians());
     }
 
     public ChassisSpeeds getChassisSpeeds(){

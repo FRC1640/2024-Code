@@ -118,9 +118,9 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.55, 0.00000, 0.000);
+        public static PIDController rotPID = new PIDController(0.5, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
-        public static PIDController gyroCorrectPid = new PIDController(0.4, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(0.3, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.007, 0, 0);
@@ -133,7 +133,7 @@ public final class Constants {
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
         
 
-        public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
+        public static PIDController drivePIDController = new PIDController(0.49677, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
         
@@ -142,7 +142,7 @@ public final class Constants {
         public static double height = 8.21;
         public static double width = 16.54;
         public static Translation2d ampPositionRed = new Translation2d(14.697, 7.779);
-        public static Translation2d ampPositionBlue = new Translation2d(1.813, 7.779);
+        public static Translation2d ampPositionBlue = new Translation2d(2.064, 7.8);
         public static Translation2d speakerPositionRed = new Translation2d(16.155, 5.544);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.544);
     }

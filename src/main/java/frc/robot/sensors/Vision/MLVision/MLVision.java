@@ -105,7 +105,24 @@ public class MLVision extends PeriodicBase {
             return inputs.ta;
         }
     }
+    public double getDistance(){
+        // Using data points and trigonometry for distance calculations from the
+        // Limelight to the object detected.
+        if (!inputs.isTarget){
+            trigDistance = -1;
+        }
+        else{
+            trigDistance = Units.inchesToMeters( // "d = (h2-h1) / tan(a1+a2)"
+                (Constants.MLVisionLimelightConstants.noteHeightInches - Constants.MLVisionLimelightConstants.limelightLensHeight)
+                        / Math.tan(Math.toRadians(getTY() + Constants.MLVisionLimelightConstants.limelightAngle)));
+        
+        }
+        return trigDistance;
+    }
 
+    public LimelightHelpers.LimelightTarget_Detector calculateTargetNote(){
+        
+        ArrayList<LimelightHelpers.LimelightTarget_Detector> notesArray = new ArrayList<LimelightHelpers.LimelightTarget_Detector>() ;
     public double getDistance(){
         // Using data points and trigonometry for distance calculations from the
         // Limelight to the object detected.
@@ -181,6 +198,5 @@ public class MLVision extends PeriodicBase {
 
         return finalNote;
     }
-
    
     }

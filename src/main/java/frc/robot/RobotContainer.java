@@ -64,6 +64,7 @@ import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
@@ -127,8 +128,7 @@ public class RobotContainer {
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
 						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting()));
-				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
-				});
+				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
@@ -188,9 +188,9 @@ public class RobotContainer {
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
+		targetingSubsystem.setDefaultCommand(autoTarget());
 
-		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->40));
-		targetingSubsystem.setDefaultCommand(autoTarget()); // actual def
+		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->50));
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
@@ -257,7 +257,7 @@ public class RobotContainer {
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
 				Math.abs(operatorController.getRightY()) > 0.1)
 				.whileTrue(climberSubsystem.setSpeedCommand(
-						() -> -operatorController.getLeftY() * 0.5, () -> -operatorController.getRightY() * 0.5));
+						() -> -operatorController.getLeftY() * 0.75, () -> -operatorController.getRightY() * 0.75));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onTrue(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
@@ -276,6 +276,8 @@ public class RobotContainer {
 		driveController.b().whileTrue(manualShot(60, Math.PI, 0,
 			()->!driveController.b().getAsBoolean()));
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
+		driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
+
 
 
 		
@@ -318,16 +320,22 @@ public class RobotContainer {
 
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(3)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
 
     private Command generateIntakeCommandAuto() {
-			return new ParallelDeadlineGroup(new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5)), intakeSubsystem.intakeCommand(0, 0.5,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))));
+			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5))
+				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
+					&& targetingSubsystem.isAnglePositionAccurate(3))).repeatedly());
 	}
 
+	public Command intakeNote(){
+		return intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote())
+			.repeatedly().until(() -> intakeSubsystem.hasNote());
+	}
 	public Command generateIntakeNoRobot(double time){
 		return intakeSubsystem.intakeCommand(0, 0.2,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
@@ -368,20 +376,21 @@ public class RobotContainer {
 	}
 
 	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
-			()->0.08, ()->0.23, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.20,
+			()->0.03, ()->0.20, ()->true)
 			.alongWith(generateIntakeNoRobot(500))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.23,
-			()->0.08, ()->0.23, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.20,
+			()->0.03, ()->0.20, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
+		NamedCommands.registerCommand("Run Intake", intakeNote());
 	}
 }

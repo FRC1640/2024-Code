@@ -24,7 +24,7 @@ public class Module {
     // public final PIDController turningPIDController = new PIDController(1,0,0);
     // //sim PID
 
-    public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(-0.049744, 2.8423, 0.13785);
+    public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.26124, 3.2144, 0.68367);
 
     public Module(ModuleIO io, PivotId id) {
         this.io = io;
