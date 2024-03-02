@@ -1,6 +1,7 @@
 package frc.lib.swerve;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.util.NoSuchElementException;
@@ -9,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 class SwerveAlgorithmsTest {
     @ParameterizedTest
@@ -41,6 +44,44 @@ class SwerveAlgorithmsTest {
 
     @Test
     void testMaxNorm() {
-        assertEquals(0.40860165350864647, SwerveAlgorithms.maxNorm);
+        assertEquals(0.4086, SwerveAlgorithms.maxNorm, 0.0001);
+    }
+
+    @Test
+    void testRawSpeeds() {
+        Rotation2d angle = new Rotation2d();
+
+        SwerveModuleState[] states = SwerveAlgorithms.rawSpeeds(0, 0, 0);
+        assertEquals(4, states.length);
+        for (int i = 0; i < states.length; i++) {
+            assertSwerveModuleState(states[i], 0, angle.getDegrees());
+        }
+
+        states = SwerveAlgorithms.rawSpeeds(2, 0, 0);
+        assertEquals(4, states.length);
+        for (int i = 0; i < states.length; i++) {
+            assertSwerveModuleState(states[i], 2, angle.getDegrees());
+        }
+
+        states = SwerveAlgorithms.rawSpeeds(2, 2, 0);
+        angle = Rotation2d.fromDegrees(45);
+        assertEquals(4, states.length);
+        for (int i = 0; i < states.length; i++) {
+            assertSwerveModuleState(states[i], 2 * Math.sqrt(2), angle.getDegrees());
+        }
+
+        states = SwerveAlgorithms.rawSpeeds(2, 2, Math.PI / 6);
+        assertEquals(4, states.length);
+        assertSwerveModuleState(states[0], 2.84, 49.33);
+        assertSwerveModuleState(states[1], 3.04, 45);
+        assertSwerveModuleState(states[2], 2.61, 45);
+        assertSwerveModuleState(states[3], 2.84, 40.67);
+    }
+
+    private void assertSwerveModuleState(SwerveModuleState state, double expectedSpeed, double expectedAngle) {
+        assertNotNull(state);
+        assertEquals(expectedSpeed, state.speedMetersPerSecond, 0.01);
+        assertNotNull(state.angle);
+        assertEquals(expectedAngle, state.angle.getDegrees(), 0.01);
     }
 }
