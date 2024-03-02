@@ -67,9 +67,9 @@ public class DriveSubsystem extends SubsystemBase {
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
-    public DriveSubsystem(Gyro gyro, AprilTagVision vision) {
+    public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
-        visions.add(vision);
+        this.visions = visions;
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -166,16 +166,16 @@ public class DriveSubsystem extends SubsystemBase {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
                 Logger.recordOutput("Distance to april tag", vision.getDistance());
-                double distConst = Math.pow(vision.getDistance(), 2.0); // distance standard deviation constant
+                double distConst = Math.pow(vision.getDistance() * 1.5, 2.0); // distance standard deviation constant
 
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
                         1);
                 swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
-                                AprilTagVisionConstants.xyStdDev * distConst + velConst / 5,
-                                AprilTagVisionConstants.thetaStdDev * distConst + velConst / 5));
+                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst,
+                                AprilTagVisionConstants.xyStdDev * distConst,
+                                AprilTagVisionConstants.thetaStdDev * distConst));
             }
 
         }

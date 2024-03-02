@@ -183,12 +183,10 @@ public class ShooterSubsystem extends SubsystemBase {
             public void execute() {
                 if (condition.getAsBoolean()){
 
-                    // System.out.println("good: " + speeds[0].getAsDouble());
                     setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble());
                     targetSpeed = speeds;
                 }
                 else{
-                    // System.out.println("AHHHHHH");
                     setVoltage(0,0,0,0);
                 }
             }

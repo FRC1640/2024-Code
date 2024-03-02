@@ -30,8 +30,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     // private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 4; // angular tx disparity deadband idk if thats what i should call it
-
+    private double distanceLim = 10;
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
     
     private double timeOutMillisecs = 200;
@@ -95,8 +94,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
                 horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
                 horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
             
-                //verticalVelocity = verticalVelocityConstant;
-                verticalVelocity = 0.2;
+            //verticalVelocity = verticalVelocityConstant;
+            verticalVelocity = 0.4;
 
                 angularVelocity = 0;
             
