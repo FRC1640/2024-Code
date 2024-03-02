@@ -31,7 +31,7 @@ public class ModuleIOSparkMax implements ModuleIO{
         driveMotor.setSmartCurrentLimit(60);
 		steeringMotor.setIdleMode(IdleMode.kCoast);
 		steeringMotor.setSmartCurrentLimit(40);
-		driveMotor.setIdleMode(IdleMode.kCoast);
+		driveMotor.setIdleMode(IdleMode.kBrake);
         steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
 		steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 		steeringMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);

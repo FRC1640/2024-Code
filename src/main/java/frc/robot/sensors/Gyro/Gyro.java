@@ -52,4 +52,7 @@ public class Gyro extends PeriodicBase {
     public double getOffset(){
         return io.getOffset();
     }
+    public void setOffset(double offset){
+        io.setOffset(offset);
+    }
 }

@@ -28,4 +28,9 @@ public class GyroIONavX implements GyroIO{
     public double getOffset(){
         return offset;
     }
+
+    @Override
+    public void setOffset(double offset){
+        this.offset = offset;
+    }
 }
