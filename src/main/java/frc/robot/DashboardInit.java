@@ -20,6 +20,9 @@ import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
 
 /**
@@ -33,20 +36,33 @@ public class DashboardInit {
 
     private static DriveSubsystem driveSubsystem;
     private static CommandXboxController controller;
+    private static ShooterSubsystem shooterSubsystem;
+    private static TargetingSubsystem targetingSubsystem;
 
     private static final Field2d field = new Field2d();
+
+    static boolean sysIdInit = false;
+    static boolean pidInit = false;
+
+    private static GenericEntry kP;
+    private static GenericEntry kI;
+    private static GenericEntry kD;
+    private static GenericEntry kS;
 
     public DashboardInit() {
 
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision) {
-        autonInit();
-        matchInit(vision);
-        testInit();
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem, MLVision ml, ShooterSubsystem shooterSubsystem) {
         DashboardInit.driveSubsystem = driveSubsystem;
+        DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
+        DashboardInit.shooterSubsystem = shooterSubsystem;
+        autonInit();
+        matchInit(vision, ml);
+        testInit();
+
     }
 
     private static void autonInit() {
@@ -76,25 +92,35 @@ public class DashboardInit {
         PIDTab.add(pidChooser)
                 .withSize(4, 4)
                 .withPosition(0, 1);
-        GenericEntry kP = PIDTab.add("P", 0).withSize(1,1).withPosition(0,0).getEntry();
-        GenericEntry kI = PIDTab.add("I", 0).withSize(1,1).withPosition(1,0).getEntry();
-        GenericEntry kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
-        PIDUpdate.setEntries(kP, kI, kD);
+        
+        kP = PIDTab.add("P", 0).withSize(1,1).withPosition(0,0).getEntry();
+        kI = PIDTab.add("I", 0).withSize(1,1).withPosition(1,0).getEntry();
+        kD = PIDTab.add("D", 0).withSize(1,1).withPosition(2,0).getEntry();
+        kS = PIDTab.add("Setpoint", 0).withSize(1,1).withPosition(3,0).getEntry();
+        PIDUpdate.setEntries(kP, kI, kD, kS);
         pidChooser.onChange(DashboardInit::onPIDChooserChange);
+        pidInit = true;
     }
 
     private static void onPIDChooserChange(PIDController controller) {
         PIDUpdate.setPID(controller);
+        kP.setDouble(controller.getP());
+        kI.setDouble(controller.getI());
+        kD.setDouble(controller.getD());
     }
 
     private static void onTestChange(TestMode mode) {
         switch (mode) {
             case SYSID:
-                sysidInit(driveSubsystem, controller);
+                if (!sysIdInit){
+                    sysidInit();
+                }
                 break;
 
             case PID:
-                pidInit();
+                if (!pidInit){
+                    pidInit();
+                }
                 break;
 
             default:
@@ -102,7 +128,7 @@ public class DashboardInit {
         }
     }
 
-    private static void matchInit(AprilTagVision vision) {
+    private static void matchInit(AprilTagVision vision, MLVision ml) {
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -119,22 +145,35 @@ public class DashboardInit {
         teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
                 .withSize(1, 2)
                 .withPosition(5, 2);
+        teleop.addBoolean("Note sighted?", () -> ml.isTarget())
+            .withSize(1, 2)
+            .withPosition(5, 0);
         teleop.add(field)
                 .withSize(4, 4)
                 .withPosition(6, 0);
     }
 
+
     public static void setFieldPos(Pose2d pose) {
         field.setRobotPose(pose);
     }
 
-    private static void sysidInit(DriveSubsystem driveSubsystem, CommandXboxController controller) {
+    private static void sysidInit() {
         ShuffleboardTab sysidTab = Shuffleboard.getTab("Sysid");
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
+        sysidChooser.addOption("AnglerSysID", CreateSysidCommand.createCommand(targetingSubsystem::sysIdQuasistatic, 
+        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
                         "SwerveSysId", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
+
+        sysidChooser.addOption("ShooterSysID",
+            CreateSysidCommand.createCommand(
+                shooterSubsystem::sysIdQuasistatic, 
+                shooterSubsystem::sysIdDynamic, 
+                "ShooterSysID", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
+        sysIdInit = true;
     }
 
     public static TestMode getTestMode() {

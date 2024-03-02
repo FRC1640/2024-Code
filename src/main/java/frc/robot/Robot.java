@@ -90,6 +90,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
+
+        
         // Runs the PeriodicScheduler. This is responsible for running periodic()
         // in all PeriodicBase instances.
         PeriodicScheduler.getInstance().run();
@@ -102,6 +104,8 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance().run();
 
         Logger.recordOutput("Memory", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+
+        m_robotContainer.get3dDistance(()->m_robotContainer.getSpeakerPos());
     }
 
     @Override
@@ -166,6 +170,8 @@ public class Robot extends LoggedRobot {
                 break;
             case PID:
                 System.out.println("PID MODE");
+                // m_robotContainer.removeAllDefaultCommands();
+                m_robotContainer.pidTriggers();
                 break;
         }
     }

@@ -28,21 +28,29 @@ public class TargetingIOSim implements TargetingIO {
     }
 
     @Override
-    public void setTargetingSpeedPercent(double speed) {  // TODO negative or positive limits & speeds
+    public void setTargetingSpeedPercent(double speed) {
         double speedClamped = speed;
-        double averagePosition = getPositionAverage(leftPositon, rightPosition);
-        speedClamped = clampSpeeds(averagePosition, speedClamped);
+        // double averagePosition = getPositionAverage(leftPositon, rightPosition);
+        speedClamped = clampSpeeds(rightPosition, speedClamped);
         setTargetingVoltage(speedClamped * 12);
 
+    }
+
+    @Override 
+    public double getPositionAverage(double motorOneEncoderValue, double motorTwoEncoderValue) {
+        return motorTwoEncoderValue;
     }
 
     @Override
     public void setTargetingVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
-        leftMotorVoltage = voltage;
+        // leftMotorVoltage = voltage;
         rightMotorVoltage = voltage;
-        leftTargetingMotorSimulated.setInputVoltage(voltage);
-        rightTargetingMotorSimulated.setInputVoltage(voltage);
+        double speedClamped = voltage;
+        // double averagePosition = getPositionAverage(leftPositon, rightPosition);
+        speedClamped = clampSpeeds(rightPosition, speedClamped);
+        // leftTargetingMotorSimulated.setInputVoltage(voltage);
+        rightTargetingMotorSimulated.setInputVoltage(speedClamped);
     }
 
     @Override
@@ -69,7 +77,7 @@ public class TargetingIOSim implements TargetingIO {
         inputs.extensionSpeedPercent = extensionMotorVoltage/12;
         inputs.extensionAppliedVoltage = extensionMotorVoltage;
         inputs.extensionCurrentAmps = extensionMotorSimulated.getCurrentDrawAmps();
-        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4; // TODO gears
+        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4;
         extensionPosition = inputs.extensionPosition;
     }
 
