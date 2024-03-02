@@ -17,8 +17,8 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 0.3;
-        public static final double thetaStdDev = 0.3;
+        public static final double xyStdDev = 0.4;
+        public static final double thetaStdDev = 0.5;
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = Units.inchesToMeters(2);
@@ -109,7 +109,7 @@ public final class Constants {
         public static final int bottomLeftCanID = 7;
         public static final int topRightCanID = 6;
         public static final int bottomRightCanID = 5;
-        public static double waitTime = 2;
+        public static double waitTime = 1;
     }
 
     public static class PIDConstants{
@@ -120,9 +120,9 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.55, 0.00000, 0.000);
+        public static PIDController rotPID = new PIDController(0.5, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
-        public static PIDController gyroCorrectPid = new PIDController(0.65, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(0.3, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.007, 0, 0);
@@ -132,10 +132,10 @@ public final class Constants {
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
         
-        public static PIDController shooterVelocityPID = new PIDController(0.03, 0.04, 0.00004);
+        public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
         
 
-        public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
+        public static PIDController drivePIDController = new PIDController(0.49677, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
         
@@ -143,8 +143,8 @@ public final class Constants {
     public static class FieldConstants{
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.667, 7.4);
-        public static Translation2d ampPositionBlue = new Translation2d(1.7, 7.4);
+        public static Translation2d ampPositionRed = new Translation2d(14.697, 7.779);
+        public static Translation2d ampPositionBlue = new Translation2d(2.064, 7.8);
         public static Translation2d speakerPositionRed = new Translation2d(16.155, 5.544);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.544);
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.62, 3.572), new Rotation2d(-2.1)), new Pose2d(new Translation2d(4.624, 4.538), new Rotation2d(2.01)), new Pose2d(new Translation2d(5.388, 4.068), new Rotation2d(0))};
