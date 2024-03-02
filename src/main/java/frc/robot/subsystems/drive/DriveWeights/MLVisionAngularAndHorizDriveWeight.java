@@ -40,8 +40,11 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private double initIntakeModeTime = -1; // initialize drive straight until intookith or timithed out 
 
     private double previousTA;
-    private double deltaTAlim = 3; // if delta ty > than this, enter drive straight to intake mode
+    private double deltaTAlim = 2; // if delta ty > than this, enter drive straight to intake mode
 
+    private double previousTY;
+    private double previousTYlim = -5;
+    
     private boolean intakeMode;
     private boolean rotateMode;
     
@@ -52,7 +55,9 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         
         intakeMode = false;
         rotateMode = true;
+        
         previousTA = vision.getTA();
+        previousTY = vision.getTY();
 
         initTime = -1;
         initIntakeModeTime = -1;
@@ -89,6 +94,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             else{ // Otherwise enter horrizorntal strafe mode
                 rotateMode = false;
                 previousTA = vision.getTA();
+                previousTY = vision.getTY();
+
 
 
                 horizontalVelocity = horizontalController.calculate(vision.getTX());
@@ -112,10 +119,6 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
                     angleSupplier.get()); 
         }
 
-        Logger.recordOutput("MLVision/Input Rotational Velocity", angularVelocity);
-        Logger.recordOutput("MLVision/Input Horizontal Velocity", horizontalVelocity);
-        Logger.recordOutput("MLVision/Input Vertical Velocity", verticalVelocity);
-     
         
         return chassisSpeedsToTurn;
     }
@@ -124,6 +127,8 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         intakeMode = false;
         rotateMode = true;
         previousTA = vision.getTA();
+        previousTY = vision.getTY();
+
 
         initTime = -1;
         initIntakeModeTime = -1;
@@ -150,7 +155,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     }
 
     private void determineIntakeNoteMode(){
-        if (previousTA - vision.getTA() > deltaTAlim){ // IF the ta makes a big jump and it used to be small
+        if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim){ // IF the ta makes a big jump and it used to be small
             initIntakeModeTime = System.currentTimeMillis(); // enter intake mode
             intakeMode = true;
         }
