@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -133,8 +134,11 @@ public class DashboardInit {
         }
     }
 
-    private static void matchInit(ArrayList<AprilTagVision> vision, MLVision ml) {
+
     
+    private static void matchInit(ArrayList<AprilTagVision> vision, MLVision ml) {
+        BooleanSupplier visionOne = () -> vision.get(0).isTarget();
+        BooleanSupplier visionTwo = () -> vision.get(1).isTarget();
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -148,9 +152,16 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
-        teleop.addBoolean("Apriltag Sighted?", () -> isVisionTrue(vision))
-                .withSize(1, 2)
-                .withPosition(5, 2);
+        // teleop.addBoolean("Apriltag Sighted?", () -> isVisionTrue(vision))
+        //         .withSize(1, 2)
+        //         .withPosition(5, 2);
+
+        teleop.addBoolean("Apriltag 1", visionOne)
+            .withSize(1,1)
+            .withPosition(5,2);
+        teleop.addBoolean("Apriltag 2", visionTwo)
+            .withSize(1,1)
+            .withPosition(5,3);
         teleop.addBoolean("Note sighted?", () -> ml.isTarget())
             .withSize(1, 2)
             .withPosition(5, 0);
@@ -158,35 +169,33 @@ public class DashboardInit {
                 .withSize(4, 2)
                 .withPosition(6, 0);
         // SHOOTING CONSTRAINTS
-        teleop.addBoolean("Shooter Speed Correct?", () -> shooterSubsystem.isSpeedAccurate(0)) //this & below need to test if updates
+        teleop.addBoolean("Shooter Speed Correct?", () -> shooterSubsystem.isSpeedAccurate(0))
             .withSize(1,1)
             .withPosition(6,2);
         teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(0))
             .withSize(1,1)
             .withPosition(7,2);
-        teleop.addBoolean("Targeting at limit?", () -> pos) //need to get the limit, also needs operator controller to rumble if at limit
+        teleop.addBoolean("Targeting at limit?", () -> pos)
             .withSize(1,1)
             .withPosition(8,2);
-        teleop.addBoolean("Rotation Lock Button?", () -> a) //needs get button
+        teleop.addBoolean("Rotation Lock Button?", () -> a) 
             .withSize(1,1)
             .withPosition(6,3);
         teleop.addBoolean("Is rotation right?", () -> driveSubsystem.getRotAccuracy()) 
             .withSize(1,1)
             .withPosition(8,3);
-    
-        
         }
-        static boolean b;
-        public static boolean isVisionTrue(ArrayList<AprilTagVision> visions){
+        // static boolean b;
+        // public static boolean isVisionTrue(ArrayList<AprilTagVision> visions){
             
-            for(AprilTagVision vision : visions){
-                if(vision.isTarget()){
-                    b = true;
-                }
-                else b = false;
-            }
-            return b;
-        }
+        //     for(AprilTagVision vision : visions){
+        //         if(vision.isTarget()){
+        //             b = true;
+        //         }
+        //         else b = false;
+        //     }
+        //     return b;
+        //}
         static boolean pos;
         public void posGet(){
             if(TargetingConstants.angleLowerLimit <= targetingSubsystem.getAnglePosition() || (targetingSubsystem.getAnglePosition() <= TargetingConstants.angleUpperLimit)){
