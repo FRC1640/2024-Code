@@ -22,4 +22,6 @@ public interface GyroIO {
     public default double getActual(GyroIOInputs inputs){ return 0; }
 
     public default double getOffset(){return 0;}
+
+    public default void setOffset(double offset){};
 }

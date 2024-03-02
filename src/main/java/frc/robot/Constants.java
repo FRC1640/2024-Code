@@ -118,9 +118,9 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.55, 0.00000, 0.000);
+        public static PIDController rotPID = new PIDController(0.5, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
-        public static PIDController gyroCorrectPid = new PIDController(0.4, 0, 0);
+        public static PIDController gyroCorrectPid = new PIDController(0.3, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.008, 0, 0);
@@ -133,7 +133,7 @@ public final class Constants {
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
         
 
-        public static PIDController drivePIDController = new PIDController(0, 0.0, 0);
+        public static PIDController drivePIDController = new PIDController(0.49677, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
         
