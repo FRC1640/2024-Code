@@ -145,7 +145,7 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
-        teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
+        teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget()) //update for any kind of vision seeing
                 .withSize(1, 2)
                 .withPosition(5, 2);
         teleop.addBoolean("Note sighted?", () -> ml.isTarget())
@@ -161,15 +161,15 @@ public class DashboardInit {
         teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(0))
             .withSize(1,1)
             .withPosition(7,2);
-        teleop.addBoolean("Targeting at limit?", ) //need to get the limit, also needs operator controller to rumble if at limit
-            .withSize(1,1)
-            .withPosition(8,2);
-        teleop.addBoolean("Rotation Lock Button?", ) //needs get button
-            .withSize(1,1)
-            .withPosition(6,3);
-        teleop.addBoolean("Is rotation right?", ) //need get rotation (unsure if exists)
-            .withSize(1,1)
-            .withPosition(8,3);
+        // teleop.addBoolean("Targeting at limit?", ) //need to get the limit, also needs operator controller to rumble if at limit
+        //     .withSize(1,1)
+        //     .withPosition(8,2);
+        // teleop.addBoolean("Rotation Lock Button?", ) //needs get button
+        //     .withSize(1,1)
+        //     .withPosition(6,3);
+        // teleop.addBoolean("Is rotation right?", ) //need get rotation (unsure if exists)
+        //     .withSize(1,1)
+        //     .withPosition(8,3);
     
         
         }
