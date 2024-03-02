@@ -20,6 +20,7 @@ import frc.lib.drive.DriveSubsystem;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.TargetingConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.MLVision.MLVision;
@@ -41,6 +42,7 @@ public class DashboardInit {
     private static CommandXboxController controller;
     private static ShooterSubsystem shooterSubsystem;
     private static TargetingSubsystem targetingSubsystem;
+    private static CommandXboxController pseudoDriver = new CommandXboxController(0);
 
     private static final Field2d field = new Field2d();
 
@@ -146,7 +148,7 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
-        teleop.addBoolean("Apriltag Sighted?", () -> vision.get(0).isTarget() || vision.get(1).isTarget())
+        teleop.addBoolean("Apriltag Sighted?", () -> isVisionTrue(vision))
                 .withSize(1, 2)
                 .withPosition(5, 2);
         teleop.addBoolean("Note sighted?", () -> ml.isTarget())
@@ -162,22 +164,55 @@ public class DashboardInit {
         teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(0))
             .withSize(1,1)
             .withPosition(7,2);
-        // teleop.addBoolean("Targeting at limit?", ) //need to get the limit, also needs operator controller to rumble if at limit
-        //     .withSize(1,1)
-        //     .withPosition(8,2);
-        // teleop.addBoolean("Rotation Lock Button?", ) //needs get button
-        //     .withSize(1,1)
-        //     .withPosition(6,3);
-        // teleop.addBoolean("Is rotation right?", ) //need get rotation (unsure if exists)
-        //     .withSize(1,1)
-        //     .withPosition(8,3);
+        teleop.addBoolean("Targeting at limit?", () -> pos) //need to get the limit, also needs operator controller to rumble if at limit
+            .withSize(1,1)
+            .withPosition(8,2);
+        teleop.addBoolean("Rotation Lock Button?", () -> a) //needs get button
+            .withSize(1,1)
+            .withPosition(6,3);
+        teleop.addBoolean("Is rotation right?", () -> driveSubsystem.getRotAccuracy()) 
+            .withSize(1,1)
+            .withPosition(8,3);
     
         
         }
-        
-        // public boolean isVisionTrue(){
+        static boolean b;
+        public static boolean isVisionTrue(ArrayList<AprilTagVision> visions){
+            
+            for(AprilTagVision vision : visions){
+                if(vision.isTarget()){
+                    b = true;
+                }
+                else b = false;
+            }
+            return b;
+        }
+        static boolean pos;
+        public void posGet(){
+            if(TargetingConstants.angleLowerLimit <= targetingSubsystem.getAnglePosition() || (targetingSubsystem.getAnglePosition() <= TargetingConstants.angleUpperLimit)){
+                pos = true;
+            }
+            else pos = false;
+        }
+        static boolean a = false;
+        private static void pseudoDriverAGet(){
+            pseudoDriver.a().whileTrue(setA());
+        }
+        private static Command setA(){
+            Command c = new Command(){
+                @Override
+                public void execute(){
+                    a = true;
+                }
+                @Override
+                public void end(boolean interrupted){
+                    a = false;
+                }
+            };
+            return c;
+        }
 
-        // }
+        
                 
 
 

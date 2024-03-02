@@ -348,9 +348,9 @@ public class DriveSubsystem extends SubsystemBase {
         }
         return getPose();
     }
-}
 
-    // Rotation2d angle = gyro.getAngleRotation2d();
+
+    // Rotation2d angle = gyro.getAngleRotation2d()
     // GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
 
     // public boolean rotationAccuracyGet(){
@@ -359,9 +359,12 @@ public class DriveSubsystem extends SubsystemBase {
     //     }
     // }
 
-//     public boolean getRotAccuracy(){
-//         if(){ //desiried = actual (margin?)
-//             return true;
-//         }
-//     }
-// }
+
+    public SwerveModuleState[]actualSwerveStates = getActualSwerveStates();
+    public boolean getRotAccuracy(){
+        if(desiredSwerveStates == actualSwerveStates){ //desiried = actual (margin?)
+            return true;
+        }
+        else return false;
+    }
+}

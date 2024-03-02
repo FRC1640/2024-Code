@@ -238,7 +238,6 @@ public class RobotContainer {
 						.alongWith(Commands.race(
 								ampCommandNoShoot(),
 								new WaitCommand(ShooterConstants.waitTime))));
-
 		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
 				// .alongWith(autoTarget()));
