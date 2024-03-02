@@ -20,7 +20,6 @@ public class MLVision extends PeriodicBase {
 
         Logger.processInputs("ML Vision", inputs);
 
-        io.takeSnapshot(inputs);
     }
     
 
