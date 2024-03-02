@@ -178,7 +178,6 @@ public class RobotContainer {
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
 		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote()));
-		
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -337,7 +336,6 @@ public class RobotContainer {
 		return intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote())
 			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
-
 	public Command generateIntakeNoRobot(double time){
 		return intakeSubsystem.intakeCommand(0, 0.2,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
