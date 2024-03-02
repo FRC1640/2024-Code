@@ -352,9 +352,8 @@ public class DriveSubsystem extends SubsystemBase {
 
 
 
-    public SwerveModuleState[]actualSwerveStates = getActualSwerveStates();
     public boolean getRotAccuracy(){
-        if(desiredSwerveStates == actualSwerveStates){ //desiried = actual (margin?)
+        if(desiredSwerveStates == getActualSwerveStates()){ 
             return true;
         }
         else return false;
