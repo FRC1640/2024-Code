@@ -350,14 +350,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
 
-    // Rotation2d angle = gyro.getAngleRotation2d()
-    // GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
-
-    // public boolean rotationAccuracyGet(){
-    //     if (inputs.angleRadiansRaw = angle.getRadians()){
-    //         return true;
-    //     }
-    // }
 
 
     public SwerveModuleState[]actualSwerveStates = getActualSwerveStates();
