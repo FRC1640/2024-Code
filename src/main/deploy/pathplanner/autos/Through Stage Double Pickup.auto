@@ -18,9 +18,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Stage Post Pickup 2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Stage Post Pickup 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,9 +43,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Center Middle Pickup"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Middle Pickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
           }
         }
       ]
