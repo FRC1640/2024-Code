@@ -21,6 +21,10 @@ public class AprilTagVision extends PeriodicBase {
         Logger.processInputs("AprilTagVision" + key, inputs);
     }
 
+    public int getNumVisibleTags(){
+        return inputs.numVisibleTags;
+    }
+
     public Pose2d getAprilTagPose2d(){
         return inputs.aprilTagPose;
     }
