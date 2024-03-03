@@ -36,7 +36,6 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
     private double timeOutMillisecs = 200;
 
-    private double initTime = -1;
     private double initIntakeModeTime = -1; // initialize drive straight until intookith or timithed out 
 
     private double previousTA;
@@ -47,9 +46,11 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
     private boolean intakeMode;
     private boolean rotateMode;
+
+    private Supplier<Boolean> hasNote;
     
 
-    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier) {
+    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier) { //Supplier<Boolean> hasNote
         this.vision = vision;
         this.angleSupplier = angleSupplier;
         
@@ -59,9 +60,9 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         previousTA = vision.getTA();
         previousTY = vision.getTY();
 
-        initTime = -1;
         initIntakeModeTime = -1;
 
+        //this.hasNote = hasNote;
     }
 
     @Override
@@ -69,6 +70,10 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         horizontalVelocity = 0;
         verticalVelocity = 0;
         angularVelocity = 0;
+
+       // if (hasNote.get()){
+            //return new ChassisSpeeds(0 , 0, 0); 
+        //}
 
         if (!intakeMode){
             
@@ -114,7 +119,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         }
         else { // If the robot is IN intake mode, just go straight
             if (!isDriveToNoteFinished()){
-                verticalVelocity = 0.4;
+                verticalVelocity = 0.2;
                     chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                         new ChassisSpeeds(-verticalVelocity, 0, 0),
                         angleSupplier.get()); 
@@ -135,8 +140,6 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         previousTA = vision.getTA();
         previousTY = vision.getTY();
 
-
-        initTime = -1;
         initIntakeModeTime = -1;
     }
 
@@ -147,13 +150,12 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             return false;
         } 
         else {
-            //if (initTime == -1) {
-                //initTime = System.currentTimeMillis();
-                //return false;
-            //}
+            if (initIntakeModeTime == -1) {
+                initIntakeModeTime = System.currentTimeMillis();
+                return false;
+            }
 
-            if (initTime + 200 > System.currentTimeMillis()) {
-                initTime = 0;
+            if (initIntakeModeTime + 200 < System.currentTimeMillis()) {
                 return true;
             }
 
@@ -165,7 +167,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim){ // IF the ta makes a big jump and it used to be small
             initIntakeModeTime = System.currentTimeMillis(); // enter intake mode
             intakeMode = true;
-            initTime = System.currentTimeMillis();
+            //initTime = System.currentTimeMillis();
         }
         else{
             intakeMode = false;
