@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.06, 0.06, 0.06),
+                VecBuilder.fill(0.04, 0.04, 0.04),
                 VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
 
         // Configure pathplanner
@@ -164,9 +164,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
-            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getDistance() < 3.2) {
+            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
                 Logger.recordOutput("Distance to april tag", vision.getDistance());
-                double distConst = Math.pow(vision.getDistance() * 1.2, 2.0); // distance standard deviation constant
+                double distConst = Math.pow(vision.getDistance() * 1.5, 2.0); // distance standard deviation constant
 
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,

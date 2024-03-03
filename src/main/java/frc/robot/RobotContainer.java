@@ -308,7 +308,7 @@ public class RobotContainer {
 
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(3)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(2)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
@@ -317,7 +317,7 @@ public class RobotContainer {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-					&& targetingSubsystem.isAnglePositionAccurate(3))).repeatedly());
+					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
 	}
 
 	public Command intakeNote(){
@@ -327,7 +327,7 @@ public class RobotContainer {
 	public Command generateIntakeNoRobot(double time){
 		return intakeSubsystem.intakeCommand(0, 0.2,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
-				&& targetingSubsystem.isAnglePositionAccurate(7)), time);
+				&& targetingSubsystem.isAnglePositionAccurate(2)), time);
 	}
 
 	public Pose2d getSpeakerPos() {
