@@ -198,22 +198,4 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getBottomRightSpeed() {
         return io.getBottomRightSpeed();
     }
-
-    // TODO VERY BAD METHODS BELOW
-
-    public void testTopLeftSpeedNonCommand(double speed) {
-        io.testTopLeftSpeed(speed);
-    }
-
-    public void testTopRightSpeedNonCommand(double speed) {
-        io.testTopRightSpeed(speed);
-    }
-
-    public void testBottomLeftSpeedNonCommand(double speed) {
-        io.testBottomLeftSpeed(speed);
-    }
-
-    public void testBottomRightSpeedNonCommand(double speed) {
-        io.testBottomRightSpeed(speed);
-    }
 }

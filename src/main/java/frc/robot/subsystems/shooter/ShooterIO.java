@@ -2,10 +2,6 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import com.revrobotics.CANSparkMax;
-
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {

@@ -442,8 +442,9 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 io.setTargetingSpeedPercent(speed.getAsDouble());
                 if (io.getAnglerLimitsOff() == limits.getAsBoolean()) {
-                    io.toggleAnglerLimits();
+                    toggleAnglerLimits();
                 }
+                System.out.println("Executed.");
             }
             @Override
             public boolean isFinished() {
@@ -464,7 +465,8 @@ public class TargetingSubsystem extends SubsystemBase {
             public void execute() {
                 io.setExtensionPercentOutput(speed.getAsDouble());
                 if (io.getExtensionLimitsOff() == limits.getAsBoolean()) {
-                    io.toggleExtensionLimits();
+                    toggleExtensionLimits();
+                    System.out.println("Executed.");
                 }
             }
             @Override
@@ -474,17 +476,5 @@ public class TargetingSubsystem extends SubsystemBase {
         };
         c.addRequirements(this);
         return c;
-    }
-
-    
-    //                  |
-    // TODO BAD METHODS V
-    
-    public void testAnglerSpeed(double speed) {
-        setAnglePercentOutput(speed);
-    }
-
-    public void testExtensionSpeed(double speed) {
-        setExtensionPercentOutput(speed);
     }
 }

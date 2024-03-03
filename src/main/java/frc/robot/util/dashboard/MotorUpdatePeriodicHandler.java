@@ -3,15 +3,12 @@ package frc.robot.util.dashboard;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the periodics of all {@code AltMotorUpdates}.
+ */
 public class MotorUpdatePeriodicHandler {
     
     private static List<AltMotorUpdate> motorUpdates = new ArrayList<>();
-
-    /**
-     * Handles the periodics of all {@code MotorUpdates}.
-     */
-    public MotorUpdatePeriodicHandler() {
-    }
 
     /**
      * Add new {@code MotorUpdates} for the handler to manage.
