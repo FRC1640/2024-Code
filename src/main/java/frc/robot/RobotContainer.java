@@ -155,8 +155,8 @@ public class RobotContainer {
 				break;
 		}
 		ArrayList<AprilTagVision> visions = new ArrayList<>();
-		// visions.add(aprilTagVision1);
-		// visions.add(aprilTagVision2);
+		visions.add(aprilTagVision1);
+		visions.add(aprilTagVision2);
 		driveSubsystem = new DriveSubsystem(gyro, visions);
 
 		
