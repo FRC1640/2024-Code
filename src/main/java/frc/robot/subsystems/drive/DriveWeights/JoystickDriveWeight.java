@@ -92,30 +92,30 @@ public class JoystickDriveWeight implements DriveWeight {
         rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 2.0);
 
         /* Gyro correction */
-        if (Math.abs(rot) == 0 && DriveWeightCommand.getWeightsSize() == 1 && 
-            (Math.abs(xSpeed) > 0 || Math.abs(ySpeed) > 0)){
-            rot = rotPID.calculate(-SwerveAlgorithms.angleDistance(gyro.getRawAngleRadians(),
-                lastAngle), 0);
+        // if (Math.abs(rot) == 0 && DriveWeightCommand.getWeightsSize() == 1 && 
+        //     (Math.abs(xSpeed) > 0 || Math.abs(ySpeed) > 0)){
+        //     rot = rotPID.calculate(-SwerveAlgorithms.angleDistance(gyro.getRawAngleRadians(),
+        //         lastAngle), 0);
 
-            double k;
-            double linearRotSpeed = Math.abs(rot * SwerveAlgorithms.maxNorm);
-            rot = MathUtil.clamp(rot, -1, 1);
-            if (Math.hypot(xSpeed, ySpeed) == 0 || rot ==0){
-                k = 1;
-            }
-            else{
-                k = 1+Math.min(Math.hypot(xSpeed, ySpeed) / linearRotSpeed, linearRotSpeed / Math.hypot(xSpeed, ySpeed));
-            }
-            rot = rot * k;
-            rot = MathUtil.clamp(rot, -1, 1);
+        //     double k;
+        //     double linearRotSpeed = Math.abs(rot * SwerveAlgorithms.maxNorm);
+        //     rot = MathUtil.clamp(rot, -1, 1);
+        //     if (Math.hypot(xSpeed, ySpeed) == 0 || rot ==0){
+        //         k = 1;
+        //     }
+        //     else{
+        //         k = 1+Math.min(Math.hypot(xSpeed, ySpeed) / linearRotSpeed, linearRotSpeed / Math.hypot(xSpeed, ySpeed));
+        //     }
+        //     rot = rot * k;
+        //     rot = MathUtil.clamp(rot, -1, 1);
             
-            if (Math.abs(rot) < 0.01){
-                rot = 0;
-            }
-        }
-        else{
-            lastAngle = gyro.getRawAngleRadians();
-        }
+        //     if (Math.abs(rot) < 0.01){
+        //         rot = 0;
+        //     }
+        // }
+        // else{
+        //     lastAngle = gyro.getRawAngleRadians();
+        // }
         return new ChassisSpeeds(xSpeed, ySpeed, rot);
 
         // if (!hold && leftTrigger.getAsBoolean()) {

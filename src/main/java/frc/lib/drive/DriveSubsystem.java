@@ -8,11 +8,13 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 // for pose est.
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -108,10 +110,12 @@ public class DriveSubsystem extends SubsystemBase {
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
                 this::getPose,
-                this::resetOdometryAuton,
+                this::resetOdometry,
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
+                        new PIDConstants(3.5,0,0),
+                        new PIDConstants(3.5, 0, 0),
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),

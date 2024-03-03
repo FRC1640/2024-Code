@@ -9,6 +9,7 @@ public interface GyroIO {
         public boolean isCalibrating = false;
         public double angleRadiansRaw = 0.0;
         public double angularVelocityDegreesPerSecond = 0.0;
+        public double angleDegreesRaw = 0.0;
     }
 
     public default void updateInputs(GyroIOInputs inputs) {

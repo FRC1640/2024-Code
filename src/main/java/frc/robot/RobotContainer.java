@@ -162,8 +162,8 @@ public class RobotContainer {
 				break;
 		}
 		ArrayList<AprilTagVision> visions = new ArrayList<>();
-		visions.add(aprilTagVision1);
-		visions.add(aprilTagVision2);
+		// visions.add(aprilTagVision1);
+		// visions.add(aprilTagVision2);
 		driveSubsystem = new DriveSubsystem(gyro, visions);
 
 		
@@ -255,7 +255,7 @@ public class RobotContainer {
 						() -> -operatorController.getLeftY() * 0.75, () -> -operatorController.getRightY() * 0.75));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onTrue(new InstantCommand(
-						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
+						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1)));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onFalse(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
