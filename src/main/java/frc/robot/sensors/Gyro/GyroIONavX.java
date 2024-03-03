@@ -14,6 +14,7 @@ public class GyroIONavX implements GyroIO{
         inputs.isCalibrating = gyro.isCalibrating();
         inputs.angleRadiansRaw = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
+        inputs.angleDegreesRaw = Math.toDegrees(inputs.angleRadiansRaw);
     }
     @Override
     public void resetGyro(GyroIOInputs inputs) {
@@ -27,5 +28,10 @@ public class GyroIONavX implements GyroIO{
     @Override
     public double getOffset(){
         return offset;
+    }
+
+    @Override
+    public void setOffset(double offset){
+        this.offset = offset;
     }
 }

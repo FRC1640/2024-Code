@@ -7,34 +7,20 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-
-import javax.management.openmbean.TabularType;
-
 import org.littletonrobotics.junction.Logger;
-
-import java.time.Instant;
-
-
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -52,8 +38,8 @@ import frc.robot.sensors.Gyro.GyroIONavX;
 import frc.robot.sensors.Gyro.GyroIOSim;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
-import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
+import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
@@ -120,9 +106,7 @@ public class RobotContainer {
 				gyro = new Gyro(new GyroIONavX());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-front"), "-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-back"), "-back");
-				mlVision = new MLVision(new MLVisionIOLimelight());
-				// aprilTagVision = new AprilTagVision(new AprilTagVisionIOSim());
-				// mlVision = new MLVision(new MLVisionIOSim());
+			 	mlVision = new MLVision(new MLVisionIOLimelight());
 
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
@@ -178,7 +162,6 @@ public class RobotContainer {
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
 		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote()));
-		
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -208,7 +191,7 @@ public class RobotContainer {
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());
 
 		movingWhileShootingWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
-			driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
+		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false);
 
 		autoDriveWeight = new AutoDriveWeight(
@@ -219,7 +202,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
-		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, mlVision, shooterSubsystem);
+		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem);
 		configureBindings();
 	}
 
@@ -260,14 +243,14 @@ public class RobotContainer {
 						() -> -operatorController.getLeftY() * 0.75, () -> -operatorController.getRightY() * 0.75));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onTrue(new InstantCommand(
-						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.3)));
+						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1)));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onFalse(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
 		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		driveController.rightTrigger()
-				.onFalse(new ParallelCommandGroup(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
+						.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
@@ -300,7 +283,7 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
-			.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
+				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -320,7 +303,7 @@ public class RobotContainer {
 
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(3)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
@@ -328,14 +311,14 @@ public class RobotContainer {
     private Command generateIntakeCommandAuto() {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(7))).repeatedly());
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
+					&& targetingSubsystem.isAnglePositionAccurate(3))).repeatedly());
 	}
 
 	public Command intakeNote(){
 		return intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote())
 			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
-
 	public Command generateIntakeNoRobot(double time){
 		return intakeSubsystem.intakeCommand(0, 0.2,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 

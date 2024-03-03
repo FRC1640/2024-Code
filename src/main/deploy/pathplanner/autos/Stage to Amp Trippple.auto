@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3768462609067285,
-      "y": 5.55492627078484
+      "x": 0.6700651803079412,
+      "y": 4.370838486405053
     },
-    "rotation": 180.0
+    "rotation": 120.0
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,32 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle Pickup 1"
+                  "pathName": "Stage Post Pickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run Indexer"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle Pickup 2"
                 }
               },
               {

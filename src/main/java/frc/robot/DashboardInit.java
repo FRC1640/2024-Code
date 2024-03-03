@@ -18,14 +18,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
-import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.MLVision.MLVision;
-import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
@@ -60,13 +58,13 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, ArrayList<AprilTagVision> vision, TargetingSubsystem targetingSubsystem, MLVision ml, ShooterSubsystem shooterSubsystem) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, ArrayList<AprilTagVision> vision, TargetingSubsystem targetingSubsystem, ShooterSubsystem shooterSubsystem) {
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
         DashboardInit.shooterSubsystem = shooterSubsystem;
         autonInit();
-        matchInit(vision, ml);
+        matchInit(vision);
         testInit();
 
     }
@@ -136,7 +134,7 @@ public class DashboardInit {
 
 
     
-    private static void matchInit(ArrayList<AprilTagVision> vision, MLVision ml) {
+    private static void matchInit(ArrayList<AprilTagVision> vision) {
         BooleanSupplier visionOne = () -> vision.get(0).isTarget();
         BooleanSupplier visionTwo = () -> vision.get(1).isTarget();
         // ENDGAME INDICATOR
@@ -149,7 +147,7 @@ public class DashboardInit {
                 .withSize(1, 1)
                 .withPosition(0, 0);
         // LIMELIGHT STREAM
-        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.109:5800/stream.mjpg")
+        teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.70:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
         // teleop.addBoolean("Apriltag Sighted?", () -> isVisionTrue(vision))
@@ -162,9 +160,9 @@ public class DashboardInit {
         teleop.addBoolean("Apriltag 2", visionTwo)
             .withSize(1,1)
             .withPosition(5,3);
-        teleop.addBoolean("Note sighted?", () -> ml.isTarget())
-            .withSize(1, 2)
-            .withPosition(5, 0);
+        // teleop.addBoolean("Note sighted?", () -> ml.isTarget())
+        //     .withSize(1, 2)
+        //     .withPosition(5, 0);
         teleop.add(field)
                 .withSize(4, 2)
                 .withPosition(6, 0);
