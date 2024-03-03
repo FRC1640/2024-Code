@@ -160,6 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
+            //            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getDistance() < 3.2) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getDistance() < 3.2) {
                 Logger.recordOutput("Distance to april tag", vision.getDistance());
                 double distConst = Math.pow(vision.getDistance() * 1.2, 2.0); // distance standard deviation constant
