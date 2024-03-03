@@ -112,11 +112,17 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
                     angleSupplier.get()); 
             }
         }
-        else { // If the robot is IN intake mode
-            verticalVelocity = 0.4;
-                chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                    new ChassisSpeeds(-verticalVelocity, 0, 0),
-                    angleSupplier.get()); 
+        else { // If the robot is IN intake mode, just go straight
+            if (!isDriveToNoteFinished()){
+                verticalVelocity = 0.4;
+                    chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
+                        new ChassisSpeeds(-verticalVelocity, 0, 0),
+                        angleSupplier.get()); 
+            }
+            else{
+                chassisSpeedsToTurn = 
+                    new ChassisSpeeds(0 , 0, 0); 
+            }
         }
 
         
@@ -137,15 +143,16 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
     private boolean isDriveToNoteFinished() { // add intake limit later
 
-        if (vision.isTarget()) {
+        if (!intakeMode) {
             return false;
-        } else if (!vision.isTarget()) {
-            if (initTime == -1) {
-                initTime = System.currentTimeMillis();
-                return false;
-            }
+        } 
+        else {
+            //if (initTime == -1) {
+                //initTime = System.currentTimeMillis();
+                //return false;
+            //}
 
-            if (initTime + 500 > System.currentTimeMillis()) {
+            if (initTime + 200 > System.currentTimeMillis()) {
                 initTime = 0;
                 return true;
             }
@@ -158,13 +165,11 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim){ // IF the ta makes a big jump and it used to be small
             initIntakeModeTime = System.currentTimeMillis(); // enter intake mode
             intakeMode = true;
+            initTime = System.currentTimeMillis();
         }
         else{
-            intakeMode= false;
+            intakeMode = false;
+    }
     }
 
-
-
-
-    }
 }
