@@ -28,6 +28,7 @@ public class AltMotorUpdate {
         this.data.add(data);
         this.doubleFunction = doubleFunction;
         this.shelteredCommand = this.doubleFunction.apply(() -> this.data.get(0).getDouble(0));
+        shelteredCommand.schedule();
     }
     
     /**
@@ -47,6 +48,8 @@ public class AltMotorUpdate {
         this.biFunctionDouble = biFunction;
         this.shelteredCommand = this.biFunctionDouble.apply(() -> this.data.get(0).getDouble(0),
                 () -> this.data.get(1).getBoolean(true));
+        shelteredCommand.schedule();
+        System.out.println("Constructed with limits!");
     }
 
     /**
@@ -58,28 +61,30 @@ public class AltMotorUpdate {
         return shelteredCommand;
     }
     
-    /**
-     * Resurrects this object's {@code Command} if this object's
-     * {@code GenericEntries} have changed but the command no longer exists.
-     */
+    ///
+    /// Resurrects this object's {@code Command} if this object's
+    /// {@code GenericEntries} have changed but the command no longer exists.
+    ///
     public void periodic() {
-        if (shelteredCommand.isFinished()) {
-            try (GenericEntry entry = data.get(0)) {
-                if (entry.readQueue().length != 0 || data.get(data.size() - 1).readQueue().length != 0) {
-                    if (doubleFunction != null) {
-                        shelteredCommand = doubleFunction.apply(() -> data.get(0).getDouble(0));
-                        System.out.println("Complete.");
-                    } else {
-                        shelteredCommand = biFunctionDouble.apply(() -> data.get(0).getDouble(0),
-                           () -> data.get(1).getBoolean(false));
-                        System.out.println("Over.");
-                    }
-                    System.out.println("Ready.");
-                }
-                shelteredCommand.schedule();
-                System.out.println("Done.");
-            }
-        }
-        System.out.println("Finished.");
+        // if (shelteredCommand.isFinished()) {
+        //     try (GenericEntry entry = data.get(0)) {
+        //         try (GenericEntry entry1 = data.get(data.size() - 1)) {
+        //             if (entry.readQueue().length != 0 || entry.readQueue().length != 0) {
+        //                 if (doubleFunction != null) {
+        //                     shelteredCommand = doubleFunction.apply(() -> data.get(0).getDouble(0));
+        //                     System.out.println("Complete.");
+        //                 } else {
+        //                     shelteredCommand = biFunctionDouble.apply(() -> data.get(0).getDouble(0),
+        //                        () -> data.get(1).getBoolean(false));
+        //                     System.out.println("Over.");
+        //                 }
+        //                 System.out.println("Ready.");
+        //             }
+        //             shelteredCommand.schedule();
+        //             System.out.println("Done.");
+        //         }
+        //     }
+        // }
+        // System.out.println("Finished.");
     }
 }

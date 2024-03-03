@@ -33,6 +33,8 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
 import frc.robot.util.dashboard.AltMotorUpdate;
+import frc.robot.util.dashboard.DitriggerCommandSarcophagus;
+import frc.robot.util.dashboard.MonotriggerCommandSarcophagus;
 import frc.robot.util.dashboard.MotorUpdatePeriodicHandler;
 
 /**
@@ -292,8 +294,15 @@ public class DashboardInit {
             updatiers.get(3), updatiers.get(4), updatiers.get(5), updatiers.get(6), updatiers.get(7),
             updatiers.get(8), updatiers.get(9), updatiers.get(10), updatiers.get(11), updatiers.get(12),
             updatiers.get(13), updatiers.get(14), updatiers.get(15), updatiers.get(16));
-        for (int i = 0; i < 17; i++) {
-            updatiers.get(i).publishCommand().schedule();
+        List<MonotriggerCommandSarcophagus> monoSarcophagi = new ArrayList<>(17);
+        for (int i = 0; i < 14; i++) {
+            monoSarcophagi.add(new MonotriggerCommandSarcophagus(updatiers.get(i).publishCommand(),
+                sliderEntries.get(i), motorSetSpeed.get(i)));
+        }
+        List<DitriggerCommandSarcophagus> diSarcophagi = new ArrayList<>();
+        for (int i = 14; i < 17; i++) {
+            diSarcophagi.add(new DitriggerCommandSarcophagus(updatiers.get(i).publishCommand(),
+                sliderEntries.get(i), toggliers.get(i - 14), motorSetSpeedLimits.get(i - 14)));
         }
     }
 
