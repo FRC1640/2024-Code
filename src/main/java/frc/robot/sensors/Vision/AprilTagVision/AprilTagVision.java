@@ -38,6 +38,10 @@ public class AprilTagVision extends PeriodicBase {
         return inputs.aprilTagDistance;
     }
 
+    public double getTa(){
+        return inputs.ta;
+    }
+
     public boolean isPoseValid(Pose2d pose){
         return FieldConstants.width >= pose.getX() && 
         FieldConstants.height >= pose.getY() && pose.getX() >= 0 && pose.getY() >= 0 && pose.getTranslation().getX() != 0;

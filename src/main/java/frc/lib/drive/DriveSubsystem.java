@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.04, 0.04, 0.04),
+                VecBuilder.fill(0.6, 0.6, Math.toRadians(2)),
                 VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
 
         // Configure pathplanner
@@ -114,8 +114,8 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(3.5,0,0),
-                        new PIDConstants(3.5, 0, 0),
+                        new PIDConstants(3,0,0),
+                        new PIDConstants(3, 0, 0),
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
@@ -164,17 +164,40 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
-            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())) {
-                double distConst = Math.pow(vision.getDistance() * 1.5, 2.0); // distance standard deviation constant
+            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getNumVisibleTags() != 0) {
+                double distConst = Math.pow(vision.getDistance() * 2, 2.0) / vision.getNumVisibleTags();  // distance standard deviation constant
+                double poseDifference = vision.getAprilTagPose2d().getTranslation().getDistance(getPose().getTranslation());
+                double poseDifferenceDeviation = 1 / (1 + poseDifference);
 
+                double xy = AprilTagVisionConstants.xyStdDev;
+                double theta = AprilTagVisionConstants.thetaStdDev;
+                boolean useEstimate = true;
+
+                // if (vision.getNumVisibleTags() >= 2){
+                //     xy = AprilTagVisionConstants.xyStdDev;
+                //     theta = AprilTagVisionConstants.thetaStdDev;
+                //     useEstimate = true;
+                // }
+                // else if (vision.getTa() > 0.8){
+                //     xy = AprilTagVisionConstants.xyStdDev * 2;
+                //     theta = AprilTagVisionConstants.thetaStdDev * 2;
+                //     useEstimate = true;
+                // }
+                // else if (vision.getTa() > 0.1){
+                //     xy = AprilTagVisionConstants.xyStdDev * 5;
+                //     theta = AprilTagVisionConstants.thetaStdDev * 5;
+                //     useEstimate = true;
+                // }
                 double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
                         1);
-                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                        VecBuilder.fill(AprilTagVisionConstants.xyStdDev * distConst,
-                                AprilTagVisionConstants.xyStdDev * distConst,
-                                AprilTagVisionConstants.thetaStdDev * distConst));
+                if (useEstimate){
+                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                        VecBuilder.fill(xy * distConst,
+                                xy * distConst,
+                                Math.toRadians(theta) * distConst));
+                }
             }
 
         }

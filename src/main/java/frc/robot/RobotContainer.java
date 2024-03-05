@@ -261,11 +261,12 @@ public class RobotContainer {
 		operatorController.leftBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
-		driveController.b().whileTrue(manualShot(60, Math.PI, 0,
+		driveController.b().whileTrue(manualShotNoAngle(60,
 			()->!driveController.b().getAsBoolean()));
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
-		driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
+		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
+		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
 
 		
@@ -336,6 +337,14 @@ public class RobotContainer {
 				: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
 	}
 
+	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
+		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(400));
+	}
+
+	public Command manualShotAuto(double targetAngle) {
+		return targetingSubsystem.anglePIDCommand(targetAngle).repeatedly();
+	}
+
 	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
@@ -378,7 +387,13 @@ public class RobotContainer {
 
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
+		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(2)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(36));
+		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7));
+		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(40));
+		NamedCommands.registerCommand("StageShot", manualShotAuto(38.5));
 	}
 }

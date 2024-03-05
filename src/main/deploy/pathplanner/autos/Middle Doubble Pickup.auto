@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3768462609067285,
-      "y": 5.55492627078484
+      "x": 1.2888463383764373,
+      "y": 5.4377818157345725
     },
     "rotation": 180.0
   },
@@ -12,9 +12,54 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "Run Indexer"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "deadline",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Middle Pickup 1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Run Intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "MidShot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -22,24 +67,12 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Middle Pickup 1"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "Run Intake"
+                  "name": "Run Indexer"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Run Indexer"
           }
         },
         {
@@ -57,14 +90,27 @@
                 "data": {
                   "name": "Run Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AmpNoteShot"
+                }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "Run Indexer"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              }
+            ]
           }
         }
       ]

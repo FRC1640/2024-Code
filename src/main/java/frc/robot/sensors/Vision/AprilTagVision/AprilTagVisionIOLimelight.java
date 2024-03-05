@@ -37,7 +37,13 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         Translation3d robotPoseTranslation = new Translation3d(robotPoseArray[0], robotPoseArray[1], robotPoseArray[2]);
         inputs.aprilTagDistance = robotPoseTranslation.getNorm();
 
+        llresults = LimelightHelpers.getLatestResults(key);
+
+        resultsArray = llresults.targetingResults.targets_Fiducials;
+
         inputs.numVisibleTags = (inputs.isTarget) ? resultsArray.length : 0;
+
+        inputs.ta = networkTable.getEntry("ta").getDouble(0);
 
 
     }
