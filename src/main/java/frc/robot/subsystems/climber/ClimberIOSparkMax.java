@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.sensors.Resolver;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax leftMotor;

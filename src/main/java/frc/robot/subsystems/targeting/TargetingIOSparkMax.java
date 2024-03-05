@@ -10,14 +10,13 @@ import edu.wpi.first.wpilibj.RobotController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.TargetingConstants;
-import frc.robot.sensors.ResolverSlope;
+import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
 public class TargetingIOSparkMax implements TargetingIO {
     // private final CANSparkMax leftTargetingMotor;
     private final CANSparkMax rightTargetingMotor;
     private final CANSparkMax extensionMotor;
-    private final ResolverSlope targetingEncoder = new ResolverSlope(TargetingConstants.resolverID, 0.52, 0,
-        59, 30, 30);
+    private final ResolverPointSlope targetingEncoder = new ResolverPointSlope(TargetingConstants.resolverID, 2.106,2.46,70,90);
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);

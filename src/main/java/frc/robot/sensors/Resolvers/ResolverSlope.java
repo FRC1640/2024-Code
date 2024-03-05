@@ -1,4 +1,4 @@
-package frc.robot.sensors;
+package frc.robot.sensors.Resolvers;
 
 import java.util.ArrayList;
 
