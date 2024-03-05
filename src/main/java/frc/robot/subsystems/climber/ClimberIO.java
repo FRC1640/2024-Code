@@ -20,40 +20,47 @@ public interface ClimberIO {
         public double rightClimberPositionDegrees = 0.0;
     }
 
-    public default void updateInputs(ClimberIOInputs inputs){
+    public default void updateInputs(ClimberIOInputs inputs) {
 
     }
 
-    public default void setLeftVoltage(double lVoltage){
+    public default void setLeftVoltage(double lVoltage) {
 
     }
 
-    public default void setRightVoltage(double rVoltage){
+    public default void setRightVoltage(double rVoltage) {
 
     }
 
-    public default void setLeftSpeedPercent(double lSpeed){
-        
-    }
-
-    public default void setRightSpeedPercent(double rSpeed){
+    public default void setLeftSpeedPercent(double lSpeed) {
 
     }
+
+    public default void setRightSpeedPercent(double rSpeed) {
+
+    }
+
     /**
      * Modifies the inputted speed so as to not move out of limits
      * 
-     * @param pos the current position.
+     * @param pos   the current position.
      * @param speed the base speed to clamp.
      * @return clamped speed.
      */
     public default double clampSpeeds(double pos, double speed) {
         double speedClamped = speed;
-        if (pos < ClimberConstants.lowerLimit) {
-            speedClamped = Math.max(speed, 0);
+        if (!(Double.isNaN(speedClamped) || Double.isNaN(pos))) {
+            if (pos < ClimberConstants.lowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > ClimberConstants.upperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
         }
-        if (pos > ClimberConstants.upperLimit) {
-            speedClamped = Math.min(speed, 0);
+        else{
+            return 0;
         }
+
         return speedClamped;
     }
 }
