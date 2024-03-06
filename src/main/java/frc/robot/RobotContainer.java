@@ -100,8 +100,7 @@ public class RobotContainer {
 
 	MovingWhileShooting movingWhileShooting;
 
-	IntakeNoteCommand um = new IntakeNoteCommand();
-
+	IntakeNoteCommand mlVisCommands;
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -192,6 +191,8 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
+		mlVisCommands = new IntakeNoteCommand(mlVision, gyro::getAngleRotation2d);
+
 		DashboardInit.init(driveSubsystem, driveController, aprilTagVision, targetingSubsystem, mlVision);
 		configureBindings();
 	}
@@ -205,9 +206,10 @@ public class RobotContainer {
 		// .alongWith(targetingSubsystem.anglePIDCommand(60)));
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-		driveController.y().onTrue(new ParallelCommandGroup(new RunCommand(() -> mlVision.mlVisionIntakeNoteCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem)), new InstantCommand(()-> System.out.println("running "))).until(() -> mlVision.isDriveToNoteFinished()));
+		driveController.y().onTrue(driveSubsystem.driveDoubleConeCommand(()-> mlVisCommands.calculateSpeeds(), () -> new Translation2d()).until(() -> mlVisCommands.isDriveToNoteFinished()));
 		
-		
+
+
 		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
 				.whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)

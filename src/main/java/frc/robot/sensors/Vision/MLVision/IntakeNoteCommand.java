@@ -50,15 +50,9 @@ public class IntakeNoteCommand{
     private boolean intakeMode;
     private boolean rotateMode;
 
-    private DriveSubsystem driveSubsystem;
-
     private Supplier<Boolean> hasNote; 
     
-    public IntakeNoteCommand(){
-        
-    }
-
-    public Command mlVisionIntakeNoteCommand(MLVision vision, Supplier<Rotation2d> angleSupplier, DriveSubsystem driveSubsystem) {
+    public IntakeNoteCommand (MLVision vision, Supplier<Rotation2d> angleSupplier) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;
         
@@ -70,10 +64,12 @@ public class IntakeNoteCommand{
 
         initIntakeModeTime = -1;
 
-        this.driveSubsystem = driveSubsystem;
-
-        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateSpeeds(), () -> new Translation2d()));
     }
+
+    // public Command mlVisionIntakeNoteCommand(){
+    //     System.out.println(" running in command");
+    //     return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateSpeeds(), () -> new Translation2d()).until(() -> isDriveToNoteFinished()));
+    // }
 
     public ChassisSpeeds calculateSpeeds() {
 
@@ -147,7 +143,7 @@ public class IntakeNoteCommand{
     }
 
 
-    private boolean isDriveToNoteFinished() { // add intake limit later
+    public boolean isDriveToNoteFinished() { // add intake limit later
         
         if (!intakeMode) {
             return false;
