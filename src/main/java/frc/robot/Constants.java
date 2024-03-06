@@ -15,8 +15,8 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 0.6;
-        public static final double thetaStdDev = 6;
+        public static final double xyStdDevAuto = 0.1;
+        public static final double thetaStdDevAuto = 1;
     }
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = Units.inchesToMeters(2);
@@ -128,6 +128,8 @@ public final class Constants {
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
+
+        public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);
 
         
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);

@@ -13,7 +13,7 @@ public interface AprilTagVisionIO {
         public double aprilTagDistance;
         public double ta;
         public int numVisibleTags;
-        
+        public double tx;
 
     }
     public default void updateInputs(AprilTagVisionIOInputs inputs) {

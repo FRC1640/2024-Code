@@ -1,5 +1,7 @@
 package frc.robot.sensors.Vision.AprilTagVision;
 
+import com.fasterxml.jackson.core.format.InputAccessor;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -42,6 +44,8 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         resultsArray = llresults.targetingResults.targets_Fiducials;
 
         inputs.numVisibleTags = (inputs.isTarget) ? resultsArray.length : 0;
+
+        inputs.tx = networkTable.getEntry("tx").getDouble(0);
 
         inputs.ta = networkTable.getEntry("ta").getDouble(0);
 
