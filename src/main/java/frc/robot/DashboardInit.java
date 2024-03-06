@@ -41,7 +41,7 @@ public class DashboardInit {
     private static CommandXboxController controller;
     private static ShooterSubsystem shooterSubsystem;
     private static TargetingSubsystem targetingSubsystem;
-    private static CommandXboxController pseudoDriver = new CommandXboxController(0);
+    //private static CommandXboxController pseudoDriver = new CommandXboxController(0);
 
     private static final Field2d field = new Field2d();
 
@@ -137,6 +137,7 @@ public class DashboardInit {
     private static void matchInit(ArrayList<AprilTagVision> vision) {
         BooleanSupplier visionOne = () -> vision.get(0).isTarget();
         BooleanSupplier visionTwo = () -> vision.get(1).isTarget();
+        
         // ENDGAME INDICATOR
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
@@ -166,7 +167,8 @@ public class DashboardInit {
         teleop.add(field)
                 .withSize(4, 2)
                 .withPosition(6, 0);
-        // SHOOTING CONSTRAINTS
+        
+                // SHOOTING CONSTRAINTS
         teleop.addBoolean("Shooter Speed Correct?", () -> shooterSubsystem.isSpeedAccurate(0))
             .withSize(1,1)
             .withPosition(6,2);
@@ -176,9 +178,9 @@ public class DashboardInit {
         teleop.addBoolean("Targeting at limit?", () -> pos)
             .withSize(1,1)
             .withPosition(8,2);
-        teleop.addBoolean("Rotation Lock Button?", () -> a) 
-            .withSize(1,1)
-            .withPosition(6,3);
+        // teleop.addBoolean("Rotation Lock Button?", () -> a) 
+        //     .withSize(1,1)
+        //     .withPosition(6,3);
         teleop.addBoolean("Is rotation right?", () -> driveSubsystem.getRotAccuracy()) 
             .withSize(1,1)
             .withPosition(8,3);
@@ -201,23 +203,27 @@ public class DashboardInit {
             }
             else pos = false;
         }
-        static boolean a = false;
-        private static void pseudoDriverAGet(){
-            pseudoDriver.a().whileTrue(setA());
-        }
-        private static Command setA(){
-            Command c = new Command(){
-                @Override
-                public void execute(){
-                    a = true;
-                }
-                @Override
-                public void end(boolean interrupted){
-                    a = false;
-                }
-            };
-            return c;
-        }
+
+
+        // static boolean a = false;
+        // private static void pseudoDriverAGet(){
+        //     pseudoDriver.a().whileTrue(setA());
+        // }
+
+        
+        // private static Command setA(){
+        //     Command c = new Command(){
+        //         @Override
+        //         public void execute(){
+        //             a = true;
+        //         }
+        //         @Override
+        //         public void end(boolean interrupted){
+        //             a = false;
+        //         }
+        //     };
+        //     return c;
+        // }
 
         
                 
