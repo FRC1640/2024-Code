@@ -206,7 +206,7 @@ public class RobotContainer {
 		// .alongWith(targetingSubsystem.anglePIDCommand(60)));
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-		driveController.y().onTrue(driveSubsystem.driveDoubleConeCommand(()-> mlVisCommands.calculateSpeeds(), () -> new Translation2d()).until(() -> mlVisCommands.isDriveToNoteFinished()));
+		driveController.y().onTrue(driveSubsystem.driveDoubleConeCommand(()-> mlVisCommands.calculateSpeeds(), () -> new Translation2d()).until(() -> mlVisCommands.isDriveToNoteFinished()).andThen(new InstantCommand(() -> mlVisCommands.resetMode())));
 		
 
 
