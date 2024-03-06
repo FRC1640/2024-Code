@@ -103,7 +103,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
                 horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
             
                 //verticalVelocity = verticalVelocityConstant;
-                verticalVelocity = 0.2;
+                verticalVelocity = 0.4;
 
                 angularVelocity = 0;
             
@@ -113,7 +113,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
             }
         }
         else { // If the robot is IN intake mode
-            verticalVelocity = 0.1;
+            verticalVelocity = 0.4;
                 chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                     new ChassisSpeeds(-verticalVelocity, 0, 0),
                     angleSupplier.get()); 
