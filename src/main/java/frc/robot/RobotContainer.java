@@ -390,10 +390,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(2)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(36));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(33));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7));
 		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(40));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(38.5));
+		NamedCommands.registerCommand("CenterShot", manualShotAuto(31));
 	}
 }
