@@ -1,7 +1,6 @@
 package frc.robot.sensors.Vision.MLVision;
 
-
-
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -13,64 +12,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.lib.drive.DriveSubsystem;
-import frc.lib.periodic.PeriodicBase;
 import frc.robot.Constants.PIDConstants;
+import frc.lib.drive.DriveSubsystem;
 
 
-public class MLVision extends PeriodicBase {
-    private MLVisionIO io;
-    private MLVisionIOInputsAutoLogged inputs = new MLVisionIOInputsAutoLogged();
-
-    public MLVision(MLVisionIO io) {
-        this.io = io;
-    }
-
-    public void periodic() {
-        io.updateInputs(inputs);
-
-        Logger.processInputs("ML Vision", inputs);
-
-    }
-    
-
-
-    // Getters 
-
-    public double getLatency(){
-        return inputs.latency;
-    }
-    public boolean isTarget(){
-        return inputs.isTarget;
-    }
-
-    public double getTX(){
-        if (inputs.isTargetNote){   
-            return inputs.calculatedTx;
-        }
-        else{
-            return inputs.tx;
-        }
-    }
-    
-    public double getTY(){
-        if (inputs.isTargetNote){   
-            return inputs.calculatedTy;
-        }
-        else{
-            return inputs.ty;
-        }
-    }
-    
-    public double getTA(){
-        if (inputs.isTargetNote){   
-            return inputs.calculatedTa;
-        }
-        else{
-            return inputs.ta;
-        }
-    }
-
+public class IntakeNoteCommand{
 
     //private PIDController angularController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
     //private PIDController horizontalController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
@@ -108,6 +54,9 @@ public class MLVision extends PeriodicBase {
 
     private Supplier<Boolean> hasNote; 
     
+    public IntakeNoteCommand(){
+        
+    }
 
     public Command mlVisionIntakeNoteCommand(MLVision vision, Supplier<Rotation2d> angleSupplier, DriveSubsystem driveSubsystem) {
         this.vision = vision;
@@ -123,13 +72,10 @@ public class MLVision extends PeriodicBase {
 
         this.driveSubsystem = driveSubsystem;
 
-        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateSpeeds(), () -> new Translation2d()).repeatedly().until(() -> isDriveToNoteFinished()));
+        return new RunCommand(()->driveSubsystem.driveDoubleConeCommand(()-> calculateSpeeds(), () -> new Translation2d()));
     }
 
     public ChassisSpeeds calculateSpeeds() {
-
-        System.out.println("CALCULATING SPEEDS");
-
 
         //this.hasNote = hasNote;
         horizontalVelocity = 0;
@@ -201,7 +147,7 @@ public class MLVision extends PeriodicBase {
     }
 
 
-    public boolean isDriveToNoteFinished() { // add intake limit later
+    private boolean isDriveToNoteFinished() { // add intake limit later
         
         if (!intakeMode) {
             return false;
@@ -232,6 +178,5 @@ public class MLVision extends PeriodicBase {
     }
 
     
+}
 
-   
-    }

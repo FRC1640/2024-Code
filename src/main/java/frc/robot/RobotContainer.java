@@ -45,6 +45,7 @@ import frc.robot.sensors.Gyro.GyroIOSim;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
+import frc.robot.sensors.Vision.MLVision.IntakeNoteCommand;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
@@ -98,6 +99,9 @@ public class RobotContainer {
 	JoystickDriveWeight joystickDriveWeight;
 
 	MovingWhileShooting movingWhileShooting;
+
+	IntakeNoteCommand um = new IntakeNoteCommand();
+
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -178,6 +182,8 @@ public class RobotContainer {
 		// RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
 		// driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed());
 
+		
+
 		autoDriveWeight = new AutoDriveWeight(
 				() -> (getAlliance() == Alliance.Blue
 						? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
@@ -192,13 +198,16 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
+
 		// driveController.x().whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25,
 		// 0.1, 0.25)
 		// .alongWith(generateIntakeCommand())
 		// .alongWith(targetingSubsystem.anglePIDCommand(60)));
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+		driveController.y().onTrue(new ParallelCommandGroup(new RunCommand(() -> mlVision.mlVisionIntakeNoteCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem)), new InstantCommand(()-> System.out.println("running "))).until(() -> mlVision.isDriveToNoteFinished()));
+		
+		
 		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
 				.whileTrue(shooterSubsystem.setSpeedCommand(0.1, 0.25, 0.1, 0.25)
