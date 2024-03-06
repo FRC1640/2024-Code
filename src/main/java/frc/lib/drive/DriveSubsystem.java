@@ -105,7 +105,7 @@ public class DriveSubsystem extends SubsystemBase {
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.6, 0.6, Math.toRadians(2)),
-                VecBuilder.fill(AprilTagVisionConstants.xyStdDevAuto, AprilTagVisionConstants.xyStdDevAuto, AprilTagVisionConstants.thetaStdDevAuto));
+                VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -169,8 +169,17 @@ public class DriveSubsystem extends SubsystemBase {
                 double poseDifference = vision.getAprilTagPose2d().getTranslation().getDistance(getPose().getTranslation());
                 double poseDifferenceDeviation = 1 / (1 + poseDifference);
 
-                double xy = AprilTagVisionConstants.xyStdDevAuto;
-                double theta = AprilTagVisionConstants.thetaStdDevAuto;
+                double xy = 0;
+                double theta = 0;
+
+                if (Robot.inTeleop){
+                    xy = AprilTagVisionConstants.xyStdDev;
+                    theta = AprilTagVisionConstants.thetaStdDev;
+                }
+                else{
+                    xy = AprilTagVisionConstants.xyStdDevAuto;
+                    theta = AprilTagVisionConstants.thetaStdDevAuto;
+                }
                 boolean useEstimate = true;
 
                 // if (vision.getNumVisibleTags() >= 2){

@@ -254,9 +254,9 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
-		// driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
-		// driveController.rightTrigger()
-		// 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
+		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
+		driveController.rightTrigger()
+						.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
@@ -391,11 +391,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(2)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(33));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(31));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7));
-		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(40));
-		NamedCommands.registerCommand("StageShot", manualShotAuto(38.5));
+		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35));
+		NamedCommands.registerCommand("StageShot", manualShotAuto(35));
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(31));
 	}
 }
