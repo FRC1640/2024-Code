@@ -127,7 +127,7 @@ public class RobotContainer {
 			case SIM:
 				gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
 						.toChassisSpeeds(
-								driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
+							driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim(),"-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim(),"-back");
@@ -238,9 +238,9 @@ public class RobotContainer {
 
 		
 		operatorController.leftTrigger()
-				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.05));
+				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.03));
 		operatorController.rightTrigger()
-				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(0.05));
+				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(0.03));
 
 		driveController.povDown().onTrue(new InstantCommand(()->toggleAutoTarget(true)));
 
@@ -258,7 +258,7 @@ public class RobotContainer {
 
 		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		driveController.rightTrigger()
-						.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
+		 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
