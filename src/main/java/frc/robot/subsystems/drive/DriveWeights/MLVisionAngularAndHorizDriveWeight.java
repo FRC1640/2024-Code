@@ -30,7 +30,7 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     // private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 4; // angular tx disparity deadband idk if thats what i should call it
+    private double distanceLim = 3; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
     

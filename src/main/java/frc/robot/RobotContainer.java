@@ -111,7 +111,7 @@ public class RobotContainer {
 				gyro = new Gyro(new GyroIONavX());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-front"), "-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-back"), "-back");
-			 	//mlVision = new MLVision(new MLVisionIOLimelight());
+			 	mlVision = new MLVision(new MLVisionIOLimelight());
 
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
@@ -205,7 +205,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
 				driveSubsystem::getPose, gyro);
 
-		//mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
+		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
 
 		DashboardInit.init(driveSubsystem, driveController, aprilTagVision1, targetingSubsystem, shooterSubsystem);
 		configureBindings();
@@ -254,9 +254,9 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
-		// driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
-		// driveController.rightTrigger()
-		// 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
+		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
+		driveController.rightTrigger()
+		 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
