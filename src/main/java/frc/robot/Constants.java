@@ -19,10 +19,10 @@ public final class Constants {
         public static final double thetaStdDev = 1;
 
         public static final double xyStdDevAuto = 0.25;
-        public static final double thetaStdDevAuto = 1;
+        public static final double thetaStdDevAuto = 99999999;
     }
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = Units.inchesToMeters(2);
+        public static final double wheelRadius = Units.inchesToMeters(4.23/2);
         public static final double driveGearRatio = 7.73;
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75/2);
