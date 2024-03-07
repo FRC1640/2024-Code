@@ -123,8 +123,8 @@ public class RobotContainer {
 						.toChassisSpeeds(
 								driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
-				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim(),"-front");
-				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim(),"-back");
+				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim("limelight-front"),"-front");
+				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim("limelight-back"),"-back");
 				mlVision = new MLVision(new MLVisionIOSim());
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));

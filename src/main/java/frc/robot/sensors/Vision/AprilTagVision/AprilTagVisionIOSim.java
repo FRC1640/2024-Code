@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.Timer;
 public class AprilTagVisionIOSim implements AprilTagVisionIO {
     DoublePublisher tv;
     DoubleArrayPublisher botpose_wpiblue, targetpose_robotspace;
+    String key;
 
-    public AprilTagVisionIOSim() {
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    public AprilTagVisionIOSim(String key) {
+        this.key = key;
+        NetworkTable table = NetworkTableInstance.getDefault().getTable(key);
         botpose_wpiblue = table.getDoubleArrayTopic("botpose_wpiblue").publish();
         botpose_wpiblue.set(new double[] { 0, 0, 0, 0, 0, 0, 0 });
 
@@ -28,7 +30,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
 
     @Override
     public void updateInputs(AprilTagVisionIOInputs inputs) {
-        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
+        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable(key);
         double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0 };
         double[] botPose = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
         inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
