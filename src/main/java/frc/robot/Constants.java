@@ -15,16 +15,19 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 0.05;
-        public static final double thetaStdDev = 0.05;
+        public static final double xyStdDev = 0.25;
+        public static final double thetaStdDev = 1;
+
+        public static final double xyStdDevAuto = 0.25;
+        public static final double thetaStdDevAuto = 99999999;
     }
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = Units.inchesToMeters(2);
+        public static final double wheelRadius = Units.inchesToMeters(4.23/2);
         public static final double driveGearRatio = 7.73;
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75/2);
         public static final double wheelXPos = Units.inchesToMeters(22.75/2);
-        public static final double maxSpeed = 4;
+        public static final double maxSpeed = 4;    
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
@@ -90,7 +93,7 @@ public final class Constants {
         public static final int intakeCanID = 15;
         public static final int indexerCanID = 4;
         public static final double proximityVoltageThreshold = 4.0;
-        public static final int proximitySensorChannel = 0;
+        public static final int proximitySensorChannel = 9;
     }
 
     public static class ClimberConstants{
@@ -118,7 +121,7 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.5, 0.00000, 0.000);
+        public static PIDController rotPID = new PIDController(0.4, 0.00000, 0.000);
         public static PIDController rotMovingPID = new PIDController(1, 0, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
@@ -128,6 +131,8 @@ public final class Constants {
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
+
+        public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);
 
         
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
@@ -141,16 +146,16 @@ public final class Constants {
     public static class FieldConstants{
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.697, 7.779);
+        public static Translation2d ampPositionRed = new Translation2d(14.701, 7.881);
         public static Translation2d ampPositionBlue = new Translation2d(2.064, 7.8);
-        public static Translation2d speakerPositionRed = new Translation2d(16.155, 5.544);
+        public static Translation2d speakerPositionRed = new Translation2d(16.789, 5.590);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.544);
     }
 
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 45;
+        public static double angleLowerLimit = 29;
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         

@@ -1,4 +1,4 @@
-package frc.robot.sensors;
+package frc.robot.sensors.Resolvers;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import lombok.Getter;

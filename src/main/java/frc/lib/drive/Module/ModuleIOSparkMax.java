@@ -5,7 +5,7 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.sensors.Resolver;
+import frc.robot.sensors.Resolvers.Resolver;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;

@@ -42,7 +42,7 @@ public interface TargetingIO {
 
     /**
      * Sets the voltage of the motors.
-     *  
+     * 
      * @param voltage the voltage to set the motor to.
      */
     public default void setTargetingVoltage(double voltage) {
@@ -72,24 +72,31 @@ public interface TargetingIO {
     /**
      * Modifies the inputted speed so as to not move out of limits
      * 
-     * @param pos the current position.
+     * @param pos   the current position.
      * @param speed the base speed to clamp.
      * @return clamped speed.
      */
     public default double clampSpeeds(double pos, double speed) {
         double speedClamped = speed;
-        if (pos < TargetingConstants.angleLowerLimit) {
-            speedClamped = Math.max(speed, 0);
+
+        if (!(Double.isNaN(speedClamped) || Double.isNaN(pos))) {
+            if (pos < TargetingConstants.angleLowerLimit) {
+                speedClamped = Math.max(speed, 0);
+            }
+            if (pos > TargetingConstants.angleUpperLimit) {
+                speedClamped = Math.min(speed, 0);
+            }
         }
-        if (pos > TargetingConstants.angleUpperLimit) {
-            speedClamped = Math.min(speed, 0);
+        else{
+            speedClamped = 0;
         }
+
         return speedClamped;
     }
 
     /**
      * Sets the voltage of the extension motor.
-     *  
+     * 
      * @param voltage the voltage to set the motor to.
      */
     public default void setExtensionVoltage(double voltage) {
@@ -108,7 +115,7 @@ public interface TargetingIO {
     /**
      * Modifies the inputted speed so as to not move out of extension limits.
      * 
-     * @param pos the current position.
+     * @param pos   the current position.
      * @param speed the base speed to cap.
      * @return Capped speed.
      */

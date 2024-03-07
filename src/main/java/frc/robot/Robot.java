@@ -30,6 +30,8 @@ public class Robot extends LoggedRobot {
         NONE, SYSID, PID
     };
 
+    public static boolean inTeleop;
+
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
@@ -143,6 +145,7 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        inTeleop = true;
     }
 
     @Override
