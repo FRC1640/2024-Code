@@ -15,11 +15,14 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 0.6;
-        public static final double thetaStdDev = 6;
+        public static final double xyStdDev = 0.25;
+        public static final double thetaStdDev = 1;
+
+        public static final double xyStdDevAuto = 0.25;
+        public static final double thetaStdDevAuto = 99999999;
     }
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = Units.inchesToMeters(2);
+        public static final double wheelRadius = Units.inchesToMeters(4.23/2);
         public static final double driveGearRatio = 7.73;
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75/2);
@@ -129,6 +132,8 @@ public final class Constants {
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
+        public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);
+
         
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
         
@@ -150,7 +155,7 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 14;
         public static int rightAngleMotorId = 13;
-        public static double angleLowerLimit = 35;
+        public static double angleLowerLimit = 29;
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         

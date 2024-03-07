@@ -65,8 +65,8 @@ public class Module {
         final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
 
         //calculates drive speed with feedforward
-        double pidSpeed = (driveFeedforward.calculate(targetSpeed) + 
-            drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
+        double pidSpeed = (driveFeedforward.calculate(targetSpeed));
+            // drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
 
         //pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);

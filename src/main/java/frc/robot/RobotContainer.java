@@ -61,6 +61,7 @@ import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
+import frc.robot.subsystems.drive.DriveWeights.RotateLockWeightTrack;
 import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -104,6 +105,8 @@ public class RobotContainer {
 
 	boolean autoTargetBool = false;
 
+	private boolean startAuto = false;
+
 	public RobotContainer() {
 		switch (Robot.getMode()) {
 			case REAL:
@@ -115,7 +118,7 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
-						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting()));
+						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
@@ -192,7 +195,7 @@ public class RobotContainer {
 				() -> (getAlliance() == Alliance.Blue
 						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());
+				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
 		movingWhileShootingWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
 		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
@@ -253,9 +256,9 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
-		// driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
-		// driveController.rightTrigger()
-		// 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
+		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
+		driveController.rightTrigger()
+						.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
@@ -289,7 +292,9 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
-				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
+				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()))
+				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
+				.alongWith(new InstantCommand(()->{startAuto = true;}));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -315,7 +320,7 @@ public class RobotContainer {
 	}
 
     private Command generateIntakeCommandAuto() {
-			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.5))
+			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.75))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
@@ -390,10 +395,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(2)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(36));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7));
-		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(40));
-		NamedCommands.registerCommand("StageShot", manualShotAuto(38.5));
+		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35));
+		NamedCommands.registerCommand("StageShot", manualShotAuto(33));
+		NamedCommands.registerCommand("CenterShot", manualShotAuto(31));
 	}
 }

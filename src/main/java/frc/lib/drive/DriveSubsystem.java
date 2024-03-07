@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.6, 0.6, Math.toRadians(2)),
+                VecBuilder.fill(0.6, 0.6, Math.toRadians(0.00001)),
                 VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
 
         // Configure pathplanner
@@ -167,11 +167,33 @@ public class DriveSubsystem extends SubsystemBase {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getNumVisibleTags() != 0) {
                 double distConst = Math.pow(vision.getDistance() * 2, 2.0) / vision.getNumVisibleTags();  // distance standard deviation constant
                 double poseDifference = vision.getAprilTagPose2d().getTranslation().getDistance(getPose().getTranslation());
+                double poseDifferenceTheta = Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(vision.getAprilTagPose2d().getRotation().getRadians(), getPose().getRotation().getRadians())));
                 double poseDifferenceDeviation = 1 / (1 + poseDifference);
 
-                double xy = AprilTagVisionConstants.xyStdDev;
-                double theta = AprilTagVisionConstants.thetaStdDev;
+                double posDifX = vision.getAprilTagPose2d().getTranslation().getX() - getPose().getX();
+                double posDifY = vision.getAprilTagPose2d().getTranslation().getY() - getPose().getY();
+
+                double xy = 0;
+                double theta = 0;
+
+                if (Robot.inTeleop){
+                    xy = AprilTagVisionConstants.xyStdDev;
+                    theta = AprilTagVisionConstants.thetaStdDev;
+                }
+                else{
+                    xy = AprilTagVisionConstants.xyStdDevAuto;
+                    theta = AprilTagVisionConstants.thetaStdDevAuto;
+                }
                 boolean useEstimate = true;
+
+                if (poseDifference > 1){
+                    useEstimate = false;
+                }
+
+                if (vision.getNumVisibleTags() > 1){
+                    useEstimate = true;
+                    xy /= 2;
+                }
 
                 // if (vision.getNumVisibleTags() >= 2){
                 //     xy = AprilTagVisionConstants.xyStdDev;
@@ -192,6 +214,11 @@ public class DriveSubsystem extends SubsystemBase {
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
                         1);
+
+                Logger.recordOutput("PosDifference", poseDifference);
+                Logger.recordOutput("PosDifX", posDifX);
+                Logger.recordOutput("PosDifY", posDifY);
+                Logger.recordOutput("PosDifTheta", poseDifferenceTheta);
                 if (useEstimate){
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                         VecBuilder.fill(xy * distConst,
