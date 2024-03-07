@@ -247,7 +247,7 @@ public class DriveSubsystem extends SubsystemBase {
         // }
 
         resetOdometry(pose);
-        gyro.setOffset(pose.getRotation().getRadians());
+        // gyro.setOffset(pose.getRotation().getRadians());
     }
 
     public ChassisSpeeds getChassisSpeeds(){

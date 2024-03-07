@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -10,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 
@@ -47,11 +49,13 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     
     private boolean intakeMode;
     private boolean rotateMode;
+    private BooleanSupplier hasNote;
     
 
-    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier) {
+    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier, BooleanSupplier hasNote) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;
+        this.hasNote = hasNote;
         
         intakeMode = false;
         rotateMode = true;
@@ -69,6 +73,10 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         horizontalVelocity = 0;
         verticalVelocity = 0;
         angularVelocity = 0;
+
+        if (hasNote.getAsBoolean()){
+            return new ChassisSpeeds();
+        }
 
         if (!intakeMode){
             

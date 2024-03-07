@@ -207,7 +207,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
 				driveSubsystem::getPose, gyro);
 
-		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d);
+		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
 		DashboardInit.init(driveSubsystem, driveController, aprilTagVision1, targetingSubsystem, shooterSubsystem);
 		configureBindings();
@@ -378,28 +378,29 @@ public class RobotContainer {
 	}
 
 	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.20,
-			()->0.03, ()->0.20, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
+			()->0.03, ()->0.27, ()->true)
 			.alongWith(generateIntakeNoRobot(500))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.20,
-			()->0.03, ()->0.20, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
+			()->0.03, ()->0.27, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
+		double offset = 5.5;
 		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(2)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32 + offset));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7));
-		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35));
-		NamedCommands.registerCommand("StageShot", manualShotAuto(33));
-		NamedCommands.registerCommand("CenterShot", manualShotAuto(31));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7 + offset));
+		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35 + offset));
+		NamedCommands.registerCommand("StageShot", manualShotAuto(33+ offset));
+		NamedCommands.registerCommand("CenterShot", manualShotAuto(31 + offset));
 	}
 }
