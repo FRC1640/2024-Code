@@ -49,6 +49,7 @@ import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIOInputsAutoLogged;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.subsystems.drive.DriveWeightCommand;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -409,9 +410,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 
     public boolean getRotAccuracy(){
-        if(desiredSwerveStates == getActualSwerveStates()){ 
-            return true;
-        }
-        else return false;
+        return Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
+								DriveWeightCommand.getAngle(), getPose().getRotation().getRadians()))) < 3;
     }
 }

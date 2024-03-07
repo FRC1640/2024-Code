@@ -169,18 +169,13 @@ public class DashboardInit {
                 .withPosition(6, 0);
         
                 // SHOOTING CONSTRAINTS
-        teleop.addBoolean("Shooter Speed Correct?", () -> shooterSubsystem.isSpeedAccurate(0))
-            .withSize(1,1)
-            .withPosition(6,2);
-        teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(0))
+        teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError))
             .withSize(1,1)
             .withPosition(7,2);
         teleop.addBoolean("Targeting at limit?", () -> pos)
             .withSize(1,1)
             .withPosition(8,2);
-        // teleop.addBoolean("Rotation Lock Button?", () -> a) 
-        //     .withSize(1,1)
-        //     .withPosition(6,3);
+
         teleop.addBoolean("Is rotation right?", () -> driveSubsystem.getRotAccuracy()) 
             .withSize(1,1)
             .withPosition(8,3);
@@ -198,7 +193,7 @@ public class DashboardInit {
         //}
         static boolean pos;
         public void posGet(){
-            if(TargetingConstants.angleLowerLimit <= targetingSubsystem.getAnglePosition() || (targetingSubsystem.getAnglePosition() <= TargetingConstants.angleUpperLimit)){
+            if(TargetingConstants.angleLowerLimit >= targetingSubsystem.getAnglePosition() || (targetingSubsystem.getAnglePosition() >= TargetingConstants.angleUpperLimit)){
                 pos = true;
             }
             else pos = false;
