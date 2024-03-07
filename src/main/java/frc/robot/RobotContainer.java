@@ -118,7 +118,7 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
-						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting(), ()->startAuto));
+						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting() || driveController.y().getAsBoolean(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
@@ -269,7 +269,7 @@ public class RobotContainer {
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
-		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+		// driveController.y().onTrue();
 
 
 		
