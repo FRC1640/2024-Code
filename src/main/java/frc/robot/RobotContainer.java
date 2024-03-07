@@ -285,7 +285,8 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
-				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()));
+				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()))
+				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -386,11 +387,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(31));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(35.7));
 		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35));
-		NamedCommands.registerCommand("StageShot", manualShotAuto(35));
+		NamedCommands.registerCommand("StageShot", manualShotAuto(33));
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(31));
 	}
 
