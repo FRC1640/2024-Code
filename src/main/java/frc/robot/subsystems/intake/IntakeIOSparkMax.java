@@ -21,11 +21,15 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     long initTime;
     boolean first = false;
-    private BooleanSupplier clearCondition;;
+    private BooleanSupplier clearCondition;
+
+    private boolean autoStarted;
+    private BooleanSupplier startAuto;
     
 
-    public IntakeIOSparkMax(BooleanSupplier hasNote, BooleanSupplier clearCondition) {
+    public IntakeIOSparkMax(BooleanSupplier hasNote, BooleanSupplier clearCondition, BooleanSupplier startAuto) {
         this.clearCondition = clearCondition;
+        this.startAuto = startAuto;
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
         indexerMotor.setInverted(true);
@@ -66,8 +70,16 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
         // inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold;
-        inputs.hasNote = noteDelay(!proximityDigitalInput.get(), clearCondition.getAsBoolean());
+        // if (autoStarted){
+        //     autoStarted = !autoStarted;
+        // }
+        // if (startAuto.getAsBoolean()){
+        //     autoStarted = true;
+        // }
+        inputs.hasNote = noteDelay(!proximityDigitalInput.get() || autoStarted, clearCondition.getAsBoolean());
         // inputs.hasNote = !proximityDigitalInput.get();
+
+
     } 
 
     public boolean noteDelay(boolean value, boolean clear){
