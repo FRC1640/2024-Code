@@ -172,7 +172,7 @@ public class DashboardInit {
         teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError))
             .withSize(1,1)
             .withPosition(7,2);
-        teleop.addBoolean("Targeting at limit?", () -> pos)
+        teleop.addBoolean("Targeting at limit?", () -> posGet())
             .withSize(1,1)
             .withPosition(8,2);
 
@@ -191,13 +191,10 @@ public class DashboardInit {
         //     }
         //     return b;
         //}
-        static boolean pos;
-        public void posGet(){
-            if(TargetingConstants.angleLowerLimit >= targetingSubsystem.getAnglePosition() || (targetingSubsystem.getAnglePosition() >= TargetingConstants.angleUpperLimit)){
-                pos = true;
-            }
-            else pos = false;
+        public static boolean posGet(){
+            return (TargetingConstants.angleLowerLimit >= Math.toDegrees(targetingSubsystem.getAnglePosition()) || Math.toDegrees((targetingSubsystem.getAnglePosition())) >= TargetingConstants.angleUpperLimit);
         }
+
 
 
         // static boolean a = false;
