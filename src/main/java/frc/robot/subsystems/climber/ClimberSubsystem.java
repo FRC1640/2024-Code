@@ -67,7 +67,9 @@ public class ClimberSubsystem extends SubsystemBase{
             Command c = new Command() {
             @Override
             public void execute(){
-                setSpeedPercent(leftSpeed.getAsDouble(), rightSpeed.getAsDouble());
+                setSpeedPercent(
+                    Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0, 
+                    Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0);
             }
             @Override
             public void end(boolean interrupted){

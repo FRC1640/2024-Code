@@ -17,8 +17,8 @@ public class ClimberIOSparkMax implements ClimberIO {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
         rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
 
-        leftMotor.setInverted(true);
-        rightMotor.setInverted(true);
+        leftMotor.setInverted(false);
+        rightMotor.setInverted(false);
 
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
