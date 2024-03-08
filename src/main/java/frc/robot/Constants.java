@@ -158,6 +158,7 @@ public final class Constants {
         public static double angleLowerLimit = 29;
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
+        public static double angleError =2;
         
         public static double extensionLowerLimit = 0;
         public static double extensionUpperLimit = 100.0;

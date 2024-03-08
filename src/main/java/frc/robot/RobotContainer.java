@@ -209,7 +209,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
-		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem);
+		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem, mlVision);
 		configureBindings();
 	}
 
@@ -314,7 +314,7 @@ public class RobotContainer {
 
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(2)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 3));
 	}
@@ -323,7 +323,7 @@ public class RobotContainer {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.75))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
+					&& targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError))).repeatedly());
 	}
 
 	public Command intakeNote(){
@@ -333,7 +333,7 @@ public class RobotContainer {
 	public Command generateIntakeNoRobot(double time){
 		return intakeSubsystem.intakeCommand(0, 0.2,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
-				&& targetingSubsystem.isAnglePositionAccurate(2)), time);
+				&& targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)), time);
 	}
 
 	public Pose2d getSpeakerPos() {
@@ -393,7 +393,7 @@ public class RobotContainer {
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
 		double offset = 5.5;
-		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(2)));
+		NamedCommands.registerCommand("AutoTarget", autoTarget().repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)));
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
 		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32 + offset));
