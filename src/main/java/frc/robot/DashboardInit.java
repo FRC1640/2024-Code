@@ -1,6 +1,8 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -18,9 +20,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.TargetingConstants;
 import frc.robot.Robot.TestMode;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
-// import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 import frc.robot.util.dashboard.PIDUpdate;
@@ -38,6 +41,7 @@ public class DashboardInit {
     private static CommandXboxController controller;
     private static ShooterSubsystem shooterSubsystem;
     private static TargetingSubsystem targetingSubsystem;
+    private static MLVision mlVision;
 
     private static final Field2d field = new Field2d();
 
@@ -54,7 +58,8 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, AprilTagVision vision, TargetingSubsystem targetingSubsystem, ShooterSubsystem shooterSubsystem) {
+    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, ArrayList<AprilTagVision> vision, TargetingSubsystem targetingSubsystem, ShooterSubsystem shooterSubsystem, MLVision mlVision) {
+        DashboardInit.mlVision = mlVision;
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
@@ -128,8 +133,10 @@ public class DashboardInit {
         }
     }
 
-    private static void matchInit(AprilTagVision vision) {
+    private static void matchInit(ArrayList<AprilTagVision> vision) {
         // ENDGAME INDICATOR
+        BooleanSupplier visionOne = () -> vision.get(0).isTarget();
+        BooleanSupplier visionTwo = () -> vision.get(1).isTarget();
         ShuffleboardTab teleop = Shuffleboard.getTab("Teleop");
         teleop.addBoolean("Endgame", () -> DriverStation.getMatchTime() <= 21 && DriverStation.isTeleop())
                 .withSize(1, 3)
@@ -142,16 +149,35 @@ public class DashboardInit {
         teleop.addCamera("Limelight Feed", "limelight camera(placeholder?)", "http://10.16.40.70:5800/stream.mjpg")
                 .withSize(4, 4)
                 .withPosition(1, 0);
-        teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
-                .withSize(1, 2)
-                .withPosition(5, 2);
-        // teleop.addBoolean("Note sighted?", () -> ml.isTarget())
-        //     .withSize(1, 2)
-        //     .withPosition(5, 0);
+        // teleop.addBoolean("Apriltag Sighted?", () -> vision.isTarget())
+        //         .withSize(1, 2)
+        //         .withPosition(5, 2);
+        teleop.addBoolean("Apriltag 1", visionOne)
+                .withSize(1,1)
+                .withPosition(5,2);
+        teleop.addBoolean("Apriltag 2", visionTwo)
+                .withSize(1,1)
+                .withPosition(5,3);
+        teleop.addBoolean("Note sighted?", () -> mlVision.isTarget())
+            .withSize(1, 2)
+            .withPosition(5, 0);
         teleop.add(field)
-                .withSize(4, 4)
+                .withSize(4, 2)
                 .withPosition(6, 0);
+        teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError))
+                .withSize(1,1)
+                .withPosition(7,2);
+        teleop.addBoolean("Targeting at limit?", () -> posGet())
+            .withSize(1,1)
+            .withPosition(8,2);
+        teleop.addBoolean("Is rotation right?", () -> driveSubsystem.getRotAccuracy()) 
+            .withSize(1,1)
+            .withPosition(8,3);
     }
+
+    public static boolean posGet(){
+            return (TargetingConstants.angleLowerLimit >= Math.toDegrees(targetingSubsystem.getAnglePosition()) || Math.toDegrees((targetingSubsystem.getAnglePosition())) >= TargetingConstants.angleUpperLimit);
+        }
 
 
     public static void setFieldPos(Pose2d pose) {
