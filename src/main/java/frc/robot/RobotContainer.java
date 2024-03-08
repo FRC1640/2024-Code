@@ -259,10 +259,13 @@ public class RobotContainer {
 		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		driveController.rightTrigger()
 		 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
-		operatorController.rightBumper().whileTrue(
-				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
-		operatorController.leftBumper().whileTrue(
-				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+		// operatorController.rightBumper().whileTrue(
+		// 		targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+		// operatorController.leftBumper().whileTrue(
+		// 		targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+
+		operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
+		operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
 		driveController.b().whileTrue(manualShotNoAngle(60,
 			()->!driveController.b().getAsBoolean()));
