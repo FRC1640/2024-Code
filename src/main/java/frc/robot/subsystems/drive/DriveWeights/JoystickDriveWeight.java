@@ -72,11 +72,17 @@ public class JoystickDriveWeight implements DriveWeight {
             xSpeed = -driverController.getLeftY() * SLOW_LINEAR_SPEED;
             ySpeed = -driverController.getLeftX() * SLOW_LINEAR_SPEED;
             rot = -driverController.getRightX() * SLOW_ROTATIONAL_SPEED;
+        } 
+        else if (driverController.rightBumper().getAsBoolean()){
+            xSpeed = -driverController.getLeftY() * 0.1;
+            ySpeed = -driverController.getLeftX() * 0.1;
+            rot = -driverController.getRightX() * 0.1;
         } else {
             xSpeed = -m_xspeedLimiter.calculate(driverController.getLeftY());
             ySpeed = -m_yspeedLimiter.calculate(driverController.getLeftX());
             rot = -m_rotLimiter.calculate(driverController.getRightX()) * 0.8;
         }
+
 
         /* Apply linear deadband */
         joystickCleaner.setX(xSpeed);

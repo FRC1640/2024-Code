@@ -76,8 +76,8 @@ public class IntakeIOSparkMax implements IntakeIO {
         // if (startAuto.getAsBoolean()){
         //     autoStarted = true;
         // }
-        inputs.hasNote = noteDelay(!proximityDigitalInput.get() || autoStarted, clearCondition.getAsBoolean());
-        // inputs.hasNote = !proximityDigitalInput.get();
+        // inputs.hasNote = noteDelay(!proximityDigitalInput.get() || autoStarted, clearCondition.getAsBoolean());
+        inputs.hasNote = !proximityDigitalInput.get();
 
 
     } 
