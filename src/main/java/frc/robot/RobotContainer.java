@@ -296,6 +296,7 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
 				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()))
+				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
 				.alongWith(new InstantCommand(()->{startAuto = true;}));
 	}
