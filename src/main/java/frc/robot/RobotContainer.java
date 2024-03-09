@@ -339,7 +339,7 @@ public class RobotContainer {
 			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
 	public Command generateIntakeNoRobot(double time){
-		return intakeSubsystem.intakeCommand(0, 0.2,
+		return intakeSubsystem.intakeCommand(0, 0.45,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
 				&& targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)), time);
 	}
