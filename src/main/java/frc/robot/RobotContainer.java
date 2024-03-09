@@ -89,6 +89,8 @@ public class RobotContainer {
 	private ClimberSubsystem climberSubsystem;
 	private TargetingSubsystem targetingSubsystem;
 
+	double angleOffset = 0;
+
 	RotateLockWeight rotateLockWeight;
 
 	// RotateToAngleWeight rotateLockWeight;
@@ -121,7 +123,7 @@ public class RobotContainer {
 						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting() || driveController.y().getAsBoolean(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset);
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
 				break;
 			case SIM:
@@ -135,7 +137,7 @@ public class RobotContainer {
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim(), ()->angleOffset);
 				break;
 
 			default:
@@ -150,7 +152,7 @@ public class RobotContainer {
 				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
 				});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
-				});
+				},()->angleOffset);
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
 				mlVision = new MLVision(new MLVisionIO() {
@@ -244,6 +246,8 @@ public class RobotContainer {
 
 		driveController.povDown().onTrue(new InstantCommand(()->toggleAutoTarget(true)));
 
+		operatorController.povDown().onTrue(new InstantCommand(()->{angleOffset -= 0.5;}));
+		operatorController.povUp().onTrue(new InstantCommand(()->{angleOffset += 0.5;}));
 
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
 				Math.abs(operatorController.getRightY()) > 0.1)
