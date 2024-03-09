@@ -66,6 +66,8 @@ public class TargetingSubsystem extends SubsystemBase {
         angler.setLength(inputs.extensionPosition / 40 * 2 * Math.PI );
         Logger.recordOutput("Targeting/mech", targetVisualization);
         // Logger.recordOutput("Targeting/velocity", inputs.);
+
+        Logger.recordOutput("Targeting/angleoffset", angleOffset.getAsDouble());
         
     }
 
