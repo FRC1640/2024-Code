@@ -351,7 +351,7 @@ public class RobotContainer {
 	}
 
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
-		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(400));
+		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0));
 	}
 
 	public Command manualShotAuto(double targetAngle) {
