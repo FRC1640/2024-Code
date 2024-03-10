@@ -278,7 +278,7 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		driveController.y().whileTrue(manualShotNoAngle(38.5,
+		driveController.y().whileTrue(manualShotNoAngle(41.8,
 			()->!driveController.y().getAsBoolean()));
 
 
