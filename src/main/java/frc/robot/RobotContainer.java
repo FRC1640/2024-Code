@@ -403,7 +403,7 @@ public class RobotContainer {
 		double offset = 5.5;//5.5
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32 + offset));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(34 + offset));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(37 + offset));
 		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35 + offset));
