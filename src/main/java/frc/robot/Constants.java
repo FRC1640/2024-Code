@@ -51,7 +51,7 @@ public final class Constants {
         public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
             2, 
-            21, 
+            3, 
             0, 
             45, 
             true, 
