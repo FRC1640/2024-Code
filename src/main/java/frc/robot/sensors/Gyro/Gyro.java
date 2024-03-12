@@ -16,6 +16,7 @@ public class Gyro extends PeriodicBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Gyro", inputs);
+        Logger.recordOutput("GyroOffset", io.getOffset());
     }
 
     public void reset() {
@@ -54,5 +55,8 @@ public class Gyro extends PeriodicBase {
     }
     public void setOffset(double offset){
         io.setOffset(offset);
+    }
+    public void addOffset(double offset){
+        io.setOffset(offset + io.getOffset());
     }
 }

@@ -51,7 +51,7 @@ public final class Constants {
         public static final ModuleInfo FL = new ModuleInfo(
             PivotId.FL,
             2, 
-            21, 
+            3, 
             0, 
             45, 
             true, 
@@ -148,7 +148,7 @@ public final class Constants {
         public static double width = 16.54;
         public static Translation2d ampPositionRed = new Translation2d(14.701, 7.881);
         public static Translation2d ampPositionBlue = new Translation2d(2.064, 7.8);
-        public static Translation2d speakerPositionRed = new Translation2d(16.789, 5.590);
+        public static Translation2d speakerPositionRed = new Translation2d(width-0.4, 5.544);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.544);
     }
 
@@ -166,7 +166,7 @@ public final class Constants {
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;
 
-        public static int extensionMotorId = 3;
+        public static int extensionMotorId = 254;
         public static double extensionManualSpeed = 0.5;
 
         public static int resolverID = 4;

@@ -247,8 +247,11 @@ public class DriveSubsystem extends SubsystemBase {
         //     resetOdometry(pose);
         // }
 
+        gyro.setOffset(gyro.getRawAngleRadians()-pose.getRotation().getRadians() + 
+            (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red?Math.PI:0));
         resetOdometry(pose);
-        // gyro.setOffset(pose.getRotation().getRadians());
+        // gyro.setOffset(gyro.getRawAngleRadians() - pose.getRotation().getRadians());
+
     }
 
     public ChassisSpeeds getChassisSpeeds(){
@@ -358,6 +361,14 @@ public class DriveSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+    // public Command resetGyroCommand(double angle) {
+    //     Command c = new InstantCommand(() -> {
+            
+    //         resetOdometry(getPose());
+    //     });
+    //     c.addRequirements(this);
+    //     return c;
+    // }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);

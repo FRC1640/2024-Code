@@ -89,6 +89,8 @@ public class RobotContainer {
 	private ClimberSubsystem climberSubsystem;
 	private TargetingSubsystem targetingSubsystem;
 
+	double angleOffset = 0;
+
 	RotateLockWeight rotateLockWeight;
 
 	// RotateToAngleWeight rotateLockWeight;
@@ -121,7 +123,7 @@ public class RobotContainer {
 						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting() || driveController.y().getAsBoolean(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax());
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset);
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
 				break;
 			case SIM:
@@ -135,7 +137,7 @@ public class RobotContainer {
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim());
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim(), ()->angleOffset);
 				break;
 
 			default:
@@ -150,7 +152,7 @@ public class RobotContainer {
 				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
 				});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
-				});
+				},()->angleOffset);
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
 				mlVision = new MLVision(new MLVisionIO() {
@@ -244,6 +246,8 @@ public class RobotContainer {
 
 		driveController.povDown().onTrue(new InstantCommand(()->toggleAutoTarget(true)));
 
+		operatorController.povDown().onTrue(new InstantCommand(()->{angleOffset -= 0.5;}));
+		operatorController.povUp().onTrue(new InstantCommand(()->{angleOffset += 0.5;}));
 
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
 				Math.abs(operatorController.getRightY()) > 0.1)
@@ -272,7 +276,10 @@ public class RobotContainer {
 		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
-		driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+
+		driveController.y().whileTrue(manualShotNoAngle(41.8,
+			()->!driveController.y().getAsBoolean()));
 
 
 		
@@ -296,6 +303,7 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
 				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()))
+				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
 				.alongWith(new InstantCommand(()->{startAuto = true;}));
 	}
@@ -334,7 +342,7 @@ public class RobotContainer {
 			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
 	public Command generateIntakeNoRobot(double time){
-		return intakeSubsystem.intakeCommand(0, 0.2,
+		return intakeSubsystem.intakeCommand(0, 0.45,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
 				&& targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)), time);
 	}
@@ -346,7 +354,7 @@ public class RobotContainer {
 	}
 
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
-		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(400));
+		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0));
 	}
 
 	public Command manualShotAuto(double targetAngle) {
@@ -398,12 +406,12 @@ public class RobotContainer {
 		double offset = 5.5;//5.5
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32 + offset));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(34 + offset));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(37 + offset));
 		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35 + offset));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(33+ offset));
-		NamedCommands.registerCommand("CenterShot", manualShotAuto(31 + offset));
+		NamedCommands.registerCommand("CenterShot", manualShotAuto(27 + offset));
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
 	}
 }
