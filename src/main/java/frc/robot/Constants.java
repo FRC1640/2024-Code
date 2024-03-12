@@ -166,7 +166,7 @@ public final class Constants {
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;
 
-        public static int extensionMotorId = 3;
+        public static int extensionMotorId = 254;
         public static double extensionManualSpeed = 0.5;
 
         public static int resolverID = 4;

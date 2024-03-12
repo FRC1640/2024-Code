@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
@@ -15,6 +16,33 @@ public class ShooterIOSparkMax implements ShooterIO {
         bottomLeftShooter = new CANSparkMax(ShooterConstants.bottomLeftCanID, MotorType.kBrushless);
         topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); 
         bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
+
+
+        
+        bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+        
+        topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+
+
+        
+        bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+
+
+        
+        topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+
 
         topLeftShooter.setInverted(true);
         bottomRightShooter.setInverted(true);
