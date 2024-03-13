@@ -160,14 +160,14 @@ public final class Constants {
         public static double angleManualSpeed = 0.05;
         public static double angleError =2;
         
-        public static double extensionLowerLimit = 0;
-        public static double extensionUpperLimit = 100.0;
+        public static double extensionLowerLimit = -100.0;
+        public static double extensionUpperLimit = 0;
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;
 
-        public static int extensionMotorId = 254;
-        public static double extensionManualSpeed = 0.5;
+        public static int extensionMotorId = 21;
+        public static double extensionManualSpeed = 0.85;
 
         public static int resolverID = 4;
     }

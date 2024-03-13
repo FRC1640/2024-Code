@@ -263,13 +263,13 @@ public class RobotContainer {
 		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		driveController.rightTrigger()
 		 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
-		// operatorController.rightBumper().whileTrue(
-		// 		targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
-		// operatorController.leftBumper().whileTrue(
-		// 		targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+		operatorController.rightBumper().whileTrue(
+				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+		operatorController.leftBumper().whileTrue(
+				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
-		operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
-		operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
+		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
+		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
 		driveController.b().whileTrue(manualShotNoAngle(60,
 			()->!driveController.b().getAsBoolean()));
@@ -342,7 +342,7 @@ public class RobotContainer {
 			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
 	public Command generateIntakeNoRobot(double time){
-		return intakeSubsystem.intakeCommand(0, 0.45,
+		return intakeSubsystem.intakeCommand(0, 0.6,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
 				&& targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError)), time);
 	}
@@ -389,15 +389,15 @@ public class RobotContainer {
 	}
 
 	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
-			()->0.03, ()->0.27, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.2, ()->0.2,
+			()->0.2, ()->0.2, ()->true)
 			.alongWith(generateIntakeNoRobot(500))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
-			()->0.03, ()->0.27, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.2, ()->0.2,
+			()->0.2, ()->0.2, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 

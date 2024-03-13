@@ -98,11 +98,11 @@ public class TargetingSubsystem extends SubsystemBase {
         Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4?60:
         -27.0366 *
         Math.asin(-1.12258 * (2.11
-        / dist.getAsDouble()) + 0.0298483)+17.378 + 2 + angleOffset.getAsDouble());
+        / dist.getAsDouble()) + 0.0298483)+17.378 + angleOffset.getAsDouble());
         return dist.getAsDouble() < 2.4?60:
         -27.0366 *
         Math.asin(-1.12258 * 2.11
-        / dist.getAsDouble() + 0.0298483)+17.378 +2 + angleOffset.getAsDouble();
+        / dist.getAsDouble() + 0.0298483)+17.378 + angleOffset.getAsDouble();
     }
 
     public double getAngleVoltage(){

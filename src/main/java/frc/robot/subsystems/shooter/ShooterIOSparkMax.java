@@ -19,29 +19,29 @@ public class ShooterIOSparkMax implements ShooterIO {
 
 
         
-        bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+        // bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        // bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		// bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		// bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
         
-        topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
-
-
-        
-        bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+        // topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        // topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		// topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		// topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
 
 
         
-        topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+        // bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        // bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		// bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		// bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
+
+
+        
+        // topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        // topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+		// topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+		// topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
 
 
         topLeftShooter.setInverted(true);
