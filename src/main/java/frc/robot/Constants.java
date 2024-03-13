@@ -15,10 +15,10 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 0.25;
-        public static final double thetaStdDev = 1;
+        public static final double xyStdDev = 4;
+        public static final double thetaStdDev = 99999999;
 
-        public static final double xyStdDevAuto = 0.7;
+        public static final double xyStdDevAuto = 4;
         public static final double thetaStdDevAuto = 99999999;
     }
     public static class SwerveDriveDimensions {

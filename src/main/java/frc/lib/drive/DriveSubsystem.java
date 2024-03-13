@@ -105,8 +105,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.6, 0.6, Math.toRadians(0.00001)),
-                VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
+                VecBuilder.fill(0.1, 0.1, Math.toRadians(0.00001)),
+                VecBuilder.fill(1, 1, 1));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -166,7 +166,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getNumVisibleTags() != 0) {
-                double distConst = Math.pow(vision.getDistance() * 2, 2.0) / vision.getNumVisibleTags();  // distance standard deviation constant
+                double distConst = 1 + (vision.getDistance() * vision.getDistance() / 30);  // distance standard deviation constant
                 double poseDifference = vision.getAprilTagPose2d().getTranslation().getDistance(getPose().getTranslation());
                 double poseDifferenceTheta = Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(vision.getAprilTagPose2d().getRotation().getRadians(), getPose().getRotation().getRadians())));
                 double poseDifferenceDeviation = 1 / (1 + poseDifference);
@@ -187,13 +187,13 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 boolean useEstimate = true;
 
-                if (poseDifference > 1){
+                if (poseDifference > 1 || vision.getDistance() > 4){
                     useEstimate = false;
                 }
 
                 if (vision.getNumVisibleTags() > 1){
                     useEstimate = true;
-                    xy /= 2;
+                    xy = 0.5;
                 }
 
                 // if (vision.getNumVisibleTags() >= 2){
