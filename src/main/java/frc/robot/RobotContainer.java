@@ -181,7 +181,7 @@ public class RobotContainer {
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
-		targetingSubsystem.setDefaultCommand(autoTarget());
+		targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
 
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->50));
 		// targetingSubsystem.setDefaultCommand(
@@ -231,12 +231,21 @@ public class RobotContainer {
 		// 						ampCommandNoShoot(),
 		// 						new WaitCommand(ShooterConstants.waitTime))));
 
-		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
+		
+		// static robot rotation
+		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
+		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
+		// 		// .alongWith(autoTarget()));
+		// driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
+		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
+		// 		// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
+
+		// moving while shooting robot rotation
+		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
 				// .alongWith(autoTarget()));
-		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
+		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
-				// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
 
 		
 		operatorController.leftTrigger()
@@ -386,6 +395,10 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(() -> 
 			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
 
+	}
+	public Command autoTargetMovingWhileShooting(){
+		return targetingSubsystem.anglePIDCommand(() -> 
+			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool);
 	}
 
 	public Command ampCommand(){
