@@ -52,6 +52,8 @@ public class MLVisionAutonCommand extends Command {
         this.driveSubsystem = driveSubsystem;
 
         this.hasNote = hasNote; 
+
+        addRequirements(driveSubsystem);
     }
 
     @Override
