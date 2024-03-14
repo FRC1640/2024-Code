@@ -132,11 +132,7 @@ public final class Constants {
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
-        public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);
-
-        
-        public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
-        
+        public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);            
 
         public static PIDController drivePIDController = new PIDController(0.49677, 0.0, 0);
 

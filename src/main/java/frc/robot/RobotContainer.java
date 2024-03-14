@@ -287,12 +287,7 @@ public class RobotContainer {
 
 	public void pidTriggers(){
 		// targetingSubsystem.setDefaultCommand(
-		// 	targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
-		shooterSubsystem.setDefaultCommand(
-			shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
-			()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
-		);
-		
+		// 	targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));	
 	}
 
 	public void toggleAutoTarget(boolean toggled){
