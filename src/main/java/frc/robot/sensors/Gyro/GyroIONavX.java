@@ -15,6 +15,9 @@ public class GyroIONavX implements GyroIO{
         inputs.angleRadiansRaw = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
         inputs.angleDegreesRaw = Math.toDegrees(inputs.angleRadiansRaw);
+
+        inputs.displacementX = gyro.getDisplacementX();
+        inputs.displacementY = gyro.getDisplacementY();
     }
     @Override
     public void resetGyro(GyroIOInputs inputs) {

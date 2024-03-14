@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -56,6 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Module frontRight;
     private Module backLeft;
     private Module backRight;
+    boolean usedAprilTag;
 
     private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
 
@@ -105,8 +107,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.7, 0.7, Math.toRadians(0.00001)),
-                VecBuilder.fill(2, 2, 1));
+                VecBuilder.fill(0.6, 0.6, 0.001),
+                VecBuilder.fill(5, 5, 500));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -166,7 +168,8 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getNumVisibleTags() != 0) {
-                double distConst = 1 + (vision.getDistance() * vision.getDistance() / 30);  // distance standard deviation constant
+                
+                double distConst = 1 + (vision.getDistance() * vision.getDistance());  // distance standard deviation constant
                 double poseDifference = vision.getAprilTagPose2d().getTranslation().getDistance(getPose().getTranslation());
                 double poseDifferenceTheta = Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(vision.getAprilTagPose2d().getRotation().getRadians(), getPose().getRotation().getRadians())));
                 double poseDifferenceDeviation = 1 / (1 + poseDifference);
@@ -194,7 +197,7 @@ public class DriveSubsystem extends SubsystemBase {
                 if (vision.getNumVisibleTags() > 1){
                     useEstimate = true;
                     if (Robot.inTeleop){
-                        xy = 0.8;
+                        xy = 0.1;
                     }
                     else{
                         xy = AprilTagVisionConstants.xyStdDev;
@@ -226,6 +229,7 @@ public class DriveSubsystem extends SubsystemBase {
                 Logger.recordOutput("PosDifY", posDifY);
                 Logger.recordOutput("PosDifTheta", poseDifferenceTheta);
                 if (useEstimate){
+                    usedAprilTag = true;
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                         VecBuilder.fill(xy * distConst,
                                 xy * distConst,
@@ -235,8 +239,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         }
         // update odometry
-        odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-
+        odometryPose = swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyro.getRawAngleRotation2d(), getModulePositionsArray());
+        
     }
 
     private void resetOdometry(Pose2d newPose) {
