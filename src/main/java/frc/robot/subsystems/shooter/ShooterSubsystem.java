@@ -65,6 +65,18 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
+    public Command setSpeedCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+            DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
+
+        return setVoltageCommand(
+            topLeft, bottomRight, topRight, bottomRight, condition,
+            new double[] {
+                topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble()
+            }
+        );
+
+    }
+
     public Command setSpeedCommand(double speed) {
         return Commands.startEnd(
             () -> setSpeedPercent(speed, speed, speed, speed),
@@ -89,38 +101,38 @@ public class ShooterSubsystem extends SubsystemBase {
         return inputs.topLeftPositionRadians;
     }
 
-    // public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
-    //     Command c = new Command() {
-    //         @Override
-    //         public void end(boolean interrupted) {
-    //             setVoltage(0, 0, 0, 0);
-    //         }
+    public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
+        Command c = new Command() {
+            @Override
+            public void end(boolean interrupted) {
+                setVoltage(0, 0, 0, 0);
+            }
 
-    //         @Override
-    //         public void execute() {
-    //             if (condition.getAsBoolean()){
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()){
 
-    //                 setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble());
-    //                 targetSpeed = speeds;
-    //             }
-    //             else{
-    //                 setVoltage(0,0,0,0);
-    //             }
-    //         }
+                    setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble());
+                    targetSpeed = speeds;
+                }
+                else{
+                    setVoltage(0,0,0,0);
+                }
+            }
 
-    //         @Override
-    //         public void initialize() {
+            @Override
+            public void initialize() {
 
-    //         }
+            }
 
-    //         @Override
-    //         public boolean isFinished() {
-    //             return false;
-    //         }
-    //     };
-    //     c.addRequirements(this);
-    //     return c;
-    // }
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
 
     public double[] getSpeeds() {
         return new double[] { inputs.topLeftSpeedPercent, inputs.bottomLeftSpeedPercent, inputs.topRightSpeedPercent,
