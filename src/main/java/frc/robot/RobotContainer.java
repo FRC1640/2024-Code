@@ -45,6 +45,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVisionAutonCommand;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
@@ -221,6 +222,11 @@ public class RobotContainer {
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
 		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+
+		
+		driveController.leftTrigger().onTrue(new MLVisionAutonCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote()));
+		
+		
 		driveController.leftBumper().whileTrue(generateIntakeCommand());//.alongWith(autoTarget())
 		// driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
 		// 		.whileTrue(ampCommandNoShoot());
