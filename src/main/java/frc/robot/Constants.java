@@ -15,10 +15,10 @@ public final class Constants {
         public static final double noteHeightInches = 2.0;
     }
     public static class AprilTagVisionConstants{
-        public static final double xyStdDev = 4;
+        public static final double xyStdDev = 2.1;
         public static final double thetaStdDev = 99999999;
 
-        public static final double xyStdDevAuto = 4;
+        public static final double xyStdDevAuto = 6;
         public static final double thetaStdDevAuto = 99999999;
     }
     public static class SwerveDriveDimensions {
@@ -121,8 +121,8 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.4, 0.00000, 0.000);
-        public static PIDController rotMovingPID = new PIDController(0.4, 0, 0);
+        public static PIDController rotPID = new PIDController(0.4, 0.0001, 0.000);
+        public static PIDController rotMovingPID = new PIDController(0.8, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
@@ -158,10 +158,10 @@ public final class Constants {
         public static double angleLowerLimit = 29;
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
-        public static double angleError =2;
+        public static double angleError = 1;
         
-        public static double extensionLowerLimit = -100.0;
-        public static double extensionUpperLimit = 0;
+        public static double extensionLowerLimit = 18;
+        public static double extensionUpperLimit = 100;
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;

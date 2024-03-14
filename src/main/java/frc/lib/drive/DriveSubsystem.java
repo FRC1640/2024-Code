@@ -105,8 +105,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.1, 0.1, Math.toRadians(0.00001)),
-                VecBuilder.fill(1, 1, 1));
+                VecBuilder.fill(0.7, 0.7, Math.toRadians(0.00001)),
+                VecBuilder.fill(2, 2, 1));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -193,7 +193,12 @@ public class DriveSubsystem extends SubsystemBase {
 
                 if (vision.getNumVisibleTags() > 1){
                     useEstimate = true;
-                    xy = 0.5;
+                    if (Robot.inTeleop){
+                        xy = 0.8;
+                    }
+                    else{
+                        xy = AprilTagVisionConstants.xyStdDev;
+                    }
                 }
 
                 // if (vision.getNumVisibleTags() >= 2){
