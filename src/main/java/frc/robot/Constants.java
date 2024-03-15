@@ -121,8 +121,8 @@ public final class Constants {
             return n;
         }
         //controllers
-        public static PIDController rotPID = new PIDController(0.4, 0.0001, 0.000);
-        public static PIDController rotMovingPID = new PIDController(0.8, 0.0001, 0);
+        public static PIDController rotPID = new PIDController(0.3, 0.0001, 0.000);
+        public static PIDController rotMovingPID = new PIDController(0.6, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
@@ -148,8 +148,8 @@ public final class Constants {
         public static double width = 16.54;
         public static Translation2d ampPositionRed = new Translation2d(14.701, 7.881);
         public static Translation2d ampPositionBlue = new Translation2d(2.064, 7.8);
-        public static Translation2d speakerPositionRed = new Translation2d(width-0.4, 5.544);
-        public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.544);
+        public static Translation2d speakerPositionRed = new Translation2d(width-0.4, 5.5);
+        public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
     }
 
     public static class TargetingConstants {

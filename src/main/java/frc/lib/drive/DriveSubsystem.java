@@ -190,7 +190,7 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 boolean useEstimate = true;
 
-                if (poseDifference > 1 || vision.getDistance() > 4){
+                if (poseDifference > 1.5){
                     useEstimate = false;
                 }
 
