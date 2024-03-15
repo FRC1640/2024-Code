@@ -1,20 +1,34 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
+
+    private SparkPIDController topLeftShooterPID;
+    private SparkPIDController topRightShooterPID;
+    private SparkPIDController bottomLeftShooterPID;
+    private SparkPIDController bottomRightShooterPID;
 
     public ShooterIOSparkMax() {
         topLeftShooter = new CANSparkMax(ShooterConstants.topLeftCanID, MotorType.kBrushless); 
         bottomLeftShooter = new CANSparkMax(ShooterConstants.bottomLeftCanID, MotorType.kBrushless);
         topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); 
         bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
+        topLeftShooterPID = topLeftShooter.getPIDController();
+        topRightShooterPID = topRightShooter.getPIDController();
+        bottomLeftShooterPID = bottomLeftShooter.getPIDController();
+        bottomRightShooterPID = bottomRightShooter.getPIDController();
 
 
         
@@ -56,21 +70,25 @@ public class ShooterIOSparkMax implements ShooterIO {
     }
 
     @Override
-    public void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+    public void setVoltage(double topLeftVelocity, double bottomLeftVelocity, double topRightVelocity, double bottomRightVelocity) {
+
         double topLeftClamped = 0;
         double bottomLeftClamped = 0;
         double topRightClamped = 0;
         double bottomRightClamped = 0;
 
-        topLeftClamped = MathUtil.clamp(topLeft, -12, 12);
-        bottomLeftClamped = MathUtil.clamp(bottomLeft, -12, 12);
-        topRightClamped = MathUtil.clamp(topRight, -12, 12);
-        bottomRightClamped = MathUtil.clamp(bottomRight, -12, 12);
+        topLeftClamped = MathUtil.clamp(topLeftVelocity, -12, 12);
+        bottomLeftClamped = MathUtil.clamp(bottomLeftVelocity, -12, 12);
+        topRightClamped = MathUtil.clamp(topRightVelocity, -12, 12);
+        bottomRightClamped = MathUtil.clamp(bottomRightVelocity, -12, 12);
+
+        topLeftShooterPID.setReference(topLeftVelocity, ControlType.kSmartVelocity);
 
         topLeftShooter.setVoltage(topLeftClamped);
         bottomLeftShooter.setVoltage(bottomLeftClamped);
         topRightShooter.setVoltage(topRightClamped);
         bottomRightShooter.setVoltage(bottomRightClamped);
+
     }
 
     @Override
