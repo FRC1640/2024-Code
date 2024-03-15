@@ -65,16 +65,53 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-    public Command setSpeedCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+    public Command setSmartVelocityCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
             DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
 
-        return setVoltageCommand(
+        return setSmartVelocityCommand(
             topLeft, bottomRight, topRight, bottomRight, condition,
             new double[] {
                 topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble()
             }
         );
 
+    }
+
+    public Command setSmartVelocityCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
+        Command c = new Command() {
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()){
+
+                    setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble());
+                    targetSpeed = speeds;
+                }
+                else{
+                    setVoltage(0,0,0,0);
+                }
+            }
+
+            @Override
+            public void initialize() {
+
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public void setSmartVelocity(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        io.setSmartVelocity(topLeft, bottomLeft, topRight, bottomRight);
     }
 
     public Command setSpeedCommand(double speed) {

@@ -6,10 +6,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
@@ -70,19 +67,25 @@ public class ShooterIOSparkMax implements ShooterIO {
     }
 
     @Override
-    public void setVoltage(double topLeftVelocity, double bottomLeftVelocity, double topRightVelocity, double bottomRightVelocity) {
+    public void setSmartVelocity(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        topLeftShooterPID.setReference(topLeft, ControlType.kSmartVelocity);
+        bottomLeftShooterPID.setReference(bottomLeft, ControlType.kSmartVelocity);
+        topRightShooterPID.setReference(topRight, ControlType.kSmartVelocity);
+        bottomRightShooterPID.setReference(bottomRight, ControlType.kSmartVelocity);
+    }
+
+    @Override
+    public void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
 
         double topLeftClamped = 0;
         double bottomLeftClamped = 0;
         double topRightClamped = 0;
         double bottomRightClamped = 0;
 
-        topLeftClamped = MathUtil.clamp(topLeftVelocity, -12, 12);
-        bottomLeftClamped = MathUtil.clamp(bottomLeftVelocity, -12, 12);
-        topRightClamped = MathUtil.clamp(topRightVelocity, -12, 12);
-        bottomRightClamped = MathUtil.clamp(bottomRightVelocity, -12, 12);
-
-        topLeftShooterPID.setReference(topLeftVelocity, ControlType.kSmartVelocity);
+        topLeftClamped = MathUtil.clamp(topLeft, -12, 12);
+        bottomLeftClamped = MathUtil.clamp(bottomLeft, -12, 12);
+        topRightClamped = MathUtil.clamp(topRight, -12, 12);
+        bottomRightClamped = MathUtil.clamp(bottomRight, -12, 12);
 
         topLeftShooter.setVoltage(topLeftClamped);
         bottomLeftShooter.setVoltage(bottomLeftClamped);

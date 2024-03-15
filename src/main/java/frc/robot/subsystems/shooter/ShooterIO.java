@@ -39,4 +39,7 @@ public interface ShooterIO {
 
     public default void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
     }
+
+    public default void setSmartVelocity(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+    }
 }
