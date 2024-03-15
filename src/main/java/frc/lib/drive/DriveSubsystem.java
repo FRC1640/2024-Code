@@ -63,6 +63,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
 
+    double dynamicThreshold = 0.8;
+
     // SwerveDriveOdometry odometry;
     SwerveDrivePoseEstimator swervePoseEstimator;
     SysIdRoutine sysIdRoutine;
@@ -190,14 +192,14 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 boolean useEstimate = true;
 
-                double dynamicThreshold = 0.8;
+                
 
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 if (speed > 0.3){
-                    dynamicThreshold += speed - 0.3;
+                    dynamicThreshold += (speed - 0.3) * 0.02;
                 }
 
                 if (poseDifference > dynamicThreshold){
@@ -220,6 +222,8 @@ public class DriveSubsystem extends SubsystemBase {
                 Logger.recordOutput("PosDifTheta", poseDifferenceTheta);
                 if (useEstimate){
                     usedAprilTag = true;
+                    dynamicThreshold -= (0.1 * 0.02 * vision.getNumVisibleTags()) / (distConst * 2);
+                    dynamicThreshold = Math.max(dynamicThreshold, 0.6);
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                         VecBuilder.fill(xy * distConst,
                                 xy * distConst,
