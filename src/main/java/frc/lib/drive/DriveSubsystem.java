@@ -190,7 +190,17 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 boolean useEstimate = true;
 
-                if (poseDifference > 1.5){
+                double dynamicThreshold = 0.8;
+
+                double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                        getActualSwerveStates()).vxMetersPerSecond,
+                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
+
+                if (speed > 0.3){
+                    dynamicThreshold += speed - 0.3;
+                }
+
+                if (poseDifference > dynamicThreshold){
                     useEstimate = false;
                 }
 
@@ -203,26 +213,6 @@ public class DriveSubsystem extends SubsystemBase {
                         xy = AprilTagVisionConstants.xyStdDev;
                     }
                 }
-
-                // if (vision.getNumVisibleTags() >= 2){
-                //     xy = AprilTagVisionConstants.xyStdDev;
-                //     theta = AprilTagVisionConstants.thetaStdDev;
-                //     useEstimate = true;
-                // }
-                // else if (vision.getTa() > 0.8){
-                //     xy = AprilTagVisionConstants.xyStdDev * 2;
-                //     theta = AprilTagVisionConstants.thetaStdDev * 2;
-                //     useEstimate = true;
-                // }
-                // else if (vision.getTa() > 0.1){
-                //     xy = AprilTagVisionConstants.xyStdDev * 5;
-                //     theta = AprilTagVisionConstants.thetaStdDev * 5;
-                //     useEstimate = true;
-                // }
-                double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                        getActualSwerveStates()).vxMetersPerSecond,
-                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
-                        1);
 
                 Logger.recordOutput("PosDifference", poseDifference);
                 Logger.recordOutput("PosDifX", posDifX);
