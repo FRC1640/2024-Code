@@ -187,7 +187,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSmartVelocityCommand(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 10.249));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltageCommand(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 10.249));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 		
@@ -384,14 +384,14 @@ public class RobotContainer {
 	}
 
 	public Command ampCommand(){
-		return shooterSubsystem.setSmartVelocityCommand(()->0.2, ()->0.2,
+		return shooterSubsystem.setVoltageCommand(()->0.2, ()->0.2,
 			()->0.2, ()->0.2, ()->true)
 			.alongWith(generateIntakeNoRobot(500))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSmartVelocityCommand(()->0.2, ()->0.2,
+		return shooterSubsystem.setVoltageCommand(()->0.2, ()->0.2,
 			()->0.2, ()->0.2, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}

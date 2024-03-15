@@ -65,7 +65,7 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-    public Command setSmartVelocityCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+    public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
             DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
 
         return setSmartVelocityCommand(
@@ -77,7 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public Command setSmartVelocityCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
+    private Command setSmartVelocityCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
         Command c = new Command() {
             @Override
             public void end(boolean interrupted) {
