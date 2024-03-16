@@ -64,6 +64,10 @@ import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeigh
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeightTrack;
 import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
+import frc.robot.subsystems.extension.ExtensionIO;
+import frc.robot.subsystems.extension.ExtensionIOSim;
+import frc.robot.subsystems.extension.ExtensionIOSparkMax;
+import frc.robot.subsystems.extension.ExtensionSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
@@ -89,6 +93,7 @@ public class RobotContainer {
 	private IntakeSubsystem intakeSubsystem;
 	private ClimberSubsystem climberSubsystem;
 	private TargetingSubsystem targetingSubsystem;
+	private ExtensionSubsystem extensionSubsystem;
 
 	double angleOffset = 0;
 
@@ -113,6 +118,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		switch (Robot.getMode()) {
 			case REAL:
+				extensionSubsystem = new ExtensionSubsystem(new ExtensionIOSparkMax());
 				gyro = new Gyro(new GyroIONavX());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-front"), "-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-back"), "-back");
@@ -128,6 +134,7 @@ public class RobotContainer {
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
 				break;
 			case SIM:
+				extensionSubsystem = new ExtensionSubsystem(new ExtensionIOSim());
 				gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
 						.toChassisSpeeds(
 							driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
@@ -142,6 +149,7 @@ public class RobotContainer {
 				break;
 
 			default:
+				extensionSubsystem = new ExtensionSubsystem(new ExtensionIO(){});
 				gyro = new Gyro(new GyroIO() {
 				});
 				shooterSubsystem = new ShooterSubsystem(new ShooterIO() {
@@ -218,7 +226,7 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
-		driveController.x().whileTrue(ampCommand());
+		operatorController.x().whileTrue(ampCommand());
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
 		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
@@ -275,16 +283,15 @@ public class RobotContainer {
 		driveController.rightTrigger()
 		 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
-				targetingSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+				extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
-				targetingSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+				extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
 		driveController.b().whileTrue(manualShotNoAngle(60,
 			()->!driveController.b().getAsBoolean()));
-		// operatorController.x().onTrue(targetingSubsystem.extend(0.5));
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
@@ -357,6 +364,12 @@ public class RobotContainer {
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
 				&& targetingSubsystem.isAnglePositionAccurate(6)), time);
 	}
+	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
+		return intakeSubsystem.intakeCommand(0, indexSpeed,
+				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
+				&& targetingSubsystem.isAnglePositionAccurate(6) 
+				&& extensionSubsystem.isExtensionAccurate()), time);
+	}
 
 	public Pose2d getSpeakerPos() {
 		return (getAlliance() == Alliance.Blue
@@ -400,13 +413,13 @@ public class RobotContainer {
 	}
 	public Command autoTargetMovingWhileShooting(){
 		return targetingSubsystem.anglePIDCommand(() -> 
-			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool);
+			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool && extensionSubsystem.getExtensionPosition() < 20);
 	}
 
 	public Command ampCommand(){
 		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
 			()->0.03, ()->0.27, ()->true)
-			.alongWith(generateIntakeNoRobot(500, 0.6))
+			.alongWith(generateIntakeNoRobotAmp(500, 0.6))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 

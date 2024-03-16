@@ -33,9 +33,6 @@ public class TargetingSubsystem extends SubsystemBase {
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
     private MechanismLigament2d angler = new MechanismLigament2d("angler", 1, 0);
 
-    public double extensionSetpoint = 0.0;
-    PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID, "extension");
-
     SysIdRoutine sysIdRoutine;
 
     ArmFeedforward feedforward = new ArmFeedforward(0.55, 0.08, 0.75);
@@ -63,15 +60,11 @@ public class TargetingSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Targeting", inputs);
         angler.setAngle(inputs.targetingPositionAverage);
-        angler.setLength(inputs.extensionPosition / 40 * 2 * Math.PI );
+        // angler.setLength(inputs.extensionPosition / 40 * 2 * Math.PI );
         Logger.recordOutput("Targeting/mech", targetVisualization);
         // Logger.recordOutput("Targeting/velocity", inputs.);
 
         Logger.recordOutput("Targeting/angleoffset", angleOffset.getAsDouble());
-
-        if (inputs.extensionLimitSwitch){
-            io.resetExtension();
-        }
         
     }
 
@@ -145,24 +138,6 @@ public class TargetingSubsystem extends SubsystemBase {
     }
     public Command anglePIDCommand(DoubleSupplier angle,BooleanSupplier condition) {
         return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()),condition);
-    }
-
-    public Command extendAndAngleSpeed(double extend, double angle) {
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setExtensionPercentOutput(extend);
-                setAnglePercentOutput(angle);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setAnglePercentOutput(0);
-                setExtensionPercentOutput(0);
-            }
-        };
-        c.addRequirements(this);
-        return c;
     }
 
     /**
@@ -374,167 +349,12 @@ public class TargetingSubsystem extends SubsystemBase {
         return Math.abs(getAngleSetpoint() - inputs.targetingPositionAverage) < error;
     }
 
-    /**
-     * Extends to the given position.
-     * 
-     * @param position The position to extend to.
-     * @return New Command.
-     */
-    public Command extensionPIDCommand(double position) {
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setExtensionPercentOutput(getExtensionPIDSpeed(position));
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setExtensionPercentOutput(0);
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    /**
-     * Extends to the given position.
-     * 
-     * @param position Supplier giving the position to extend to.
-     * @return New Command.
-     */
-    public Command extensionPIDCommand(DoubleSupplier position) {
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setExtensionPercentOutput(getExtensionPIDSpeed(position.getAsDouble()));
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setExtensionPercentOutput(0);
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    /**
-     * Calculates the percent output of the extension motor needed
-     * to reach the inputted position as quickly as possible.
-     * 
-     * @param position The position to extend to.
-     * @return Percent output.
-     */
-    private double getExtensionPIDSpeed(double position) {
-        double speed = extensionPID.calculate(inputs.extensionPosition, position);
-        speed = MathUtil.clamp(speed, -1, 1);
-        if (Math.abs(speed) < 0.01) {
-            speed = 0;
-        }
-        return speed;
-    }
-
-    /**
-     * Returns a new Command which sets the extension to a percent output,
-     * setting the percent output to 0 when the command ends.
-     * 
-     * @param output The percent output to set the extension motor to.
-     * @return New Command.
-     */
-    public Command setExtensionPercentOutputCommand(double output) {
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setExtensionPercentOutput(output);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setExtensionPercentOutput(0);
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    /**
-     * Returns a new Command which sets the extension to a percent output,
-     * setting the percent output to 0 when the command ends.
-     * 
-     * @param output Supplier giving the percent output to set the extension motor
-     *               to.
-     * @return New Command.
-     */
-    public Command setExtensionPercentOutputCommand(DoubleSupplier output) {
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setExtensionPercentOutput(output.getAsDouble());
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setExtensionPercentOutput(0);
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    /**
-     * Returns a new Command which sets the extension to a voltage,
-     * setting the voltage to 0 when the command is canceled.
-     * 
-     * @param voltage The voltage to set the extension motor to.
-     * @return New Command.
-     */
-    public Command setExtensionVoltageCommand(double voltage) {
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setExtensionVoltage(voltage);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setExtensionVoltage(0);
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    /**
-     * Sets the percent output of the extension motor.
-     * 
-     * @param output The percent output to set the motor to.
-     */
-    private void setExtensionPercentOutput(double output) {
-        io.setExtensionPercentOutput(output);
-    }
-
-    /**
-     * Sets the voltage of the extension motor.
-     * 
-     * @param voltage The voltage to set the motor to.
-     */
-    private void setExtensionVoltage(double voltage) {
-        io.setExtensionVoltage(voltage);
-    }
-
-    /**
-     * Gets the position of the extension.
-     * 
-     * @return The position of the extension.
-     */
-    public double getExtensionPosition() {
-        return inputs.extensionPosition;
-    }
-
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
     }
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
+
+
 }
