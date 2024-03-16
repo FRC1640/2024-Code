@@ -91,7 +91,7 @@ public class MLVisionAutonCommand extends Command {
             return true;
         }
 
-        if (intakeMode && (System.currentTimeMillis() - initIntakeModeTime > 500)) { // 
+        if (intakeMode && (System.currentTimeMillis() - initIntakeModeTime > 2000)) { // 
             return true; 
         }
 
