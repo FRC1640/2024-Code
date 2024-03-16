@@ -68,6 +68,10 @@ public class TargetingSubsystem extends SubsystemBase {
         // Logger.recordOutput("Targeting/velocity", inputs.);
 
         Logger.recordOutput("Targeting/angleoffset", angleOffset.getAsDouble());
+
+        if (inputs.extensionLimitSwitch){
+            io.resetExtension();
+        }
         
     }
 
@@ -95,14 +99,12 @@ public class TargetingSubsystem extends SubsystemBase {
         return speed;
     }
     public double distToAngle(DoubleSupplier dist){
-        Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4?60:
-        -27.0366 *
-        Math.asin(-1.12258 * (2.11
-        / dist.getAsDouble()) + 0.0298483)+17.378 + angleOffset.getAsDouble());
-        return dist.getAsDouble() < 2.4?60:
-        -27.0366 *
-        Math.asin(-1.12258 * 2.11
-        / dist.getAsDouble() + 0.0298483)+17.378 + angleOffset.getAsDouble();
+        Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4?60:equation(dist.getAsDouble()));
+        return dist.getAsDouble() < 2.4?60:equation(dist.getAsDouble());
+    }
+
+    public double equation(double v){
+        return 46.1704 * Math.asin(0.36223*(2.11/v) + 0.669132) - 12.6316;
     }
 
     public double getAngleVoltage(){

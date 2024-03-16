@@ -10,6 +10,8 @@ public interface GyroIO {
         public double angleRadiansRaw = 0.0;
         public double angularVelocityDegreesPerSecond = 0.0;
         public double angleDegreesRaw = 0.0;
+        public double displacementX = 0.0;
+        public double displacementY = 0.0;
     }
 
     public default void updateInputs(GyroIOInputs inputs) {

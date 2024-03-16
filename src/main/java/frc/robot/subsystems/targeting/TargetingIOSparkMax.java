@@ -2,13 +2,17 @@ package frc.robot.subsystems.targeting;
 
 import java.util.function.IntUnaryOperator;
 
+import javax.imageio.plugins.tiff.ExifTIFFTagSet;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.RobotController;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.Constants;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
@@ -26,6 +30,10 @@ public class TargetingIOSparkMax implements TargetingIO {
         extensionMotor.setIdleMode(IdleMode.kBrake);
         rightTargetingMotor.setInverted(true);
         extensionMotor.setInverted(true);
+        extensionMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
+        
+        Constants.updateStatusFrames(rightTargetingMotor, 100, 20, 20, 500, 500, 500, 500);
+        Constants.updateStatusFrames(extensionMotor, 100, 20, 20, 500, 500, 500, 500);
     }
 
     @Override
@@ -68,6 +76,8 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
         inputs.extensionPosition = extensionMotor.getEncoder().getPosition();
         inputs.targetingVoltage = targetingEncoder.getV();
+
+        inputs.extensionLimitSwitch = extensionMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
     }
 
     /**
@@ -85,5 +95,10 @@ public class TargetingIOSparkMax implements TargetingIO {
         double speedClamped = speed;
         speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped);
         extensionMotor.set(speedClamped);
+    }
+
+    @Override
+    public void resetExtension(){
+        extensionMotor.getEncoder().setPosition(0);
     }
 }
