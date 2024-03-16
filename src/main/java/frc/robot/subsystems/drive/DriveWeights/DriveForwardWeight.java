@@ -30,6 +30,9 @@ public class DriveForwardWeight implements DriveWeight {
     }
     @Override
     public boolean cancelCondition() {
+        if (timeUp == true){
+            initTime = -1;
+        }
         return timeUp;
     }
 }

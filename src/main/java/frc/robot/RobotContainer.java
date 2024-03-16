@@ -394,7 +394,7 @@ public class RobotContainer {
                         targetingSubsystem.extensionPIDCommand(0);  //change this to the value we want
                         climberSubsystem.climberPIDCommand(90,90);
 						DriveWeightCommand.addWeight(new DriveForwardWeight(0.5,0.1));
-						targetingSubsystem.setExtensionPercentOutputCommand(0.5).until(() -> targetingSubsystem.getExtensionPosition() > 1);
+						targetingSubsystem.extensionPIDCommand(1);
                         climberSubsystem.climberPIDCommand(0,0);
 
 						
