@@ -123,7 +123,7 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
-						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting() || operatorController.a().getAsBoolean(), ()->startAuto));
+						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset);
