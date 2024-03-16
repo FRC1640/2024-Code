@@ -95,7 +95,7 @@ public class MLVisionAutonCommand extends Command {
             return true; 
         }
 
-        if (System.currentTimeMillis() - initTime > 10000){
+        if (System.currentTimeMillis() - initTime > 2000){
             return true;
         }
 
