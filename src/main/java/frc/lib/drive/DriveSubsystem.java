@@ -110,7 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.6, 0.6, 0.001),
-                VecBuilder.fill(5, 5, 500));
+                VecBuilder.fill(3.5, 3.5, 500));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -211,16 +211,21 @@ public class DriveSubsystem extends SubsystemBase {
                     useEstimate = true;
                     if (Robot.inTeleop){
                         xy = 0.1;
+                        distConst = distConst /= 10;
                     }
                     else{
                         xy = AprilTagVisionConstants.xyStdDev;
                     }
+                }
+                else{
+                    distConst *= 3;
                 }
 
                 Logger.recordOutput("PosDifference", poseDifference);
                 Logger.recordOutput("PosDifX", posDifX);
                 Logger.recordOutput("PosDifY", posDifY);
                 Logger.recordOutput("PosDifTheta", poseDifferenceTheta);
+                Logger.recordOutput("DynamicThreshold", dynamicThreshold);
                 if (useEstimate){
                     usedAprilTag = true;
                     dynamicThreshold -= (0.1 * 0.02 * vision.getNumVisibleTags()) / (distConst / 2);
@@ -230,6 +235,8 @@ public class DriveSubsystem extends SubsystemBase {
                                 xy * distConst,
                                 Math.toRadians(theta) * distConst));
                 }
+
+                Logger.recordOutput("DynamicThreshold", dynamicThreshold);
             }
 
         }

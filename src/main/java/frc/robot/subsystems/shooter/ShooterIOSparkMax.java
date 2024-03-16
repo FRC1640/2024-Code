@@ -26,6 +26,8 @@ public class ShooterIOSparkMax implements ShooterIO {
 
         topLeftShooter.setInverted(true);
         bottomRightShooter.setInverted(true);
+        topRightShooter.setInverted(false);
+        bottomLeftShooter.setInverted(false);
     }
 
     @Override

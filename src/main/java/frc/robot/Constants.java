@@ -23,7 +23,7 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 1.5;
+        public static final double xyStdDev = 2;
         public static final double thetaStdDev = 99999999;
 
         public static final double xyStdDevAuto = 4;
@@ -134,8 +134,8 @@ public final class Constants {
         }
 
         // controllers
-        public static PIDController rotPID = new PIDController(0.3, 0.0001, 0.000);
-        public static PIDController rotMovingPID = new PIDController(0.6, 0.0001, 0);
+        public static PIDController rotPID = new PIDController(0.4, 0.0001, 0.000);
+        public static PIDController rotMovingPID = new PIDController(0.75, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.01, 0, 0);
@@ -172,7 +172,7 @@ public final class Constants {
         public static double angleManualSpeed = 0.05;
         public static double angleError = 1;
 
-        public static double extensionLowerLimit = 18;
+        public static double extensionLowerLimit = 5;
         public static double extensionUpperLimit = 100;
 
         public static double angleMinVoltage = 0.05;
@@ -188,12 +188,12 @@ public final class Constants {
             int status3, int status4, int status5, int status6) {
 
         motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status0);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status1);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status2);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status3);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status4);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status5);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status6);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, status1);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, status2);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, status3);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, status4);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, status5);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, status6);
 
     }
 }
