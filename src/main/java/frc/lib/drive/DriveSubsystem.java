@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -56,10 +57,13 @@ public class DriveSubsystem extends SubsystemBase {
     private Module frontRight;
     private Module backLeft;
     private Module backRight;
+    boolean usedAprilTag;
 
     private final double maxSpeed = Constants.SwerveDriveDimensions.maxSpeed;
 
     private SwerveModuleState[] desiredSwerveStates = new SwerveModuleState[] {};
+
+    double dynamicThreshold = 0.8;
 
     // SwerveDriveOdometry odometry;
     SwerveDrivePoseEstimator swervePoseEstimator;
@@ -105,8 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.6, 0.6, Math.toRadians(0.00001)),
-                VecBuilder.fill(AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.xyStdDev, AprilTagVisionConstants.thetaStdDev));
+                VecBuilder.fill(0.6, 0.6, 0.001),
+                VecBuilder.fill(5, 5, 500));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -166,7 +170,8 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d()) && vision.getNumVisibleTags() != 0) {
-                double distConst = Math.pow(vision.getDistance() * 2, 2.0) / vision.getNumVisibleTags();  // distance standard deviation constant
+                
+                double distConst = 1 + (vision.getDistance() * vision.getDistance());  // distance standard deviation constant
                 double poseDifference = vision.getAprilTagPose2d().getTranslation().getDistance(getPose().getTranslation());
                 double poseDifferenceTheta = Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(vision.getAprilTagPose2d().getRotation().getRadians(), getPose().getRotation().getRadians())));
                 double poseDifferenceDeviation = 1 / (1 + poseDifference);
@@ -187,40 +192,38 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 boolean useEstimate = true;
 
-                if (poseDifference > 1){
+                
+
+                double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                        getActualSwerveStates()).vxMetersPerSecond,
+                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
+
+                if (speed > 0.3){
+                    dynamicThreshold += (speed - 0.3) * 0.02;
+                }
+
+                if (poseDifference > dynamicThreshold){
                     useEstimate = false;
                 }
 
                 if (vision.getNumVisibleTags() > 1){
                     useEstimate = true;
-                    xy /= 2;
+                    if (Robot.inTeleop){
+                        xy = 0.1;
+                    }
+                    else{
+                        xy = AprilTagVisionConstants.xyStdDev;
+                    }
                 }
-
-                // if (vision.getNumVisibleTags() >= 2){
-                //     xy = AprilTagVisionConstants.xyStdDev;
-                //     theta = AprilTagVisionConstants.thetaStdDev;
-                //     useEstimate = true;
-                // }
-                // else if (vision.getTa() > 0.8){
-                //     xy = AprilTagVisionConstants.xyStdDev * 2;
-                //     theta = AprilTagVisionConstants.thetaStdDev * 2;
-                //     useEstimate = true;
-                // }
-                // else if (vision.getTa() > 0.1){
-                //     xy = AprilTagVisionConstants.xyStdDev * 5;
-                //     theta = AprilTagVisionConstants.thetaStdDev * 5;
-                //     useEstimate = true;
-                // }
-                double velConst = Math.pow(Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                        getActualSwerveStates()).vxMetersPerSecond,
-                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond),
-                        1);
 
                 Logger.recordOutput("PosDifference", poseDifference);
                 Logger.recordOutput("PosDifX", posDifX);
                 Logger.recordOutput("PosDifY", posDifY);
                 Logger.recordOutput("PosDifTheta", poseDifferenceTheta);
                 if (useEstimate){
+                    usedAprilTag = true;
+                    dynamicThreshold -= (0.1 * 0.02 * vision.getNumVisibleTags()) / (distConst * 2);
+                    dynamicThreshold = Math.max(dynamicThreshold, 0.6);
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                         VecBuilder.fill(xy * distConst,
                                 xy * distConst,
@@ -230,8 +233,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         }
         // update odometry
-        odometryPose = swervePoseEstimator.update(gyro.getRawAngleRotation2d(), getModulePositionsArray());
-
+        odometryPose = swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyro.getRawAngleRotation2d(), getModulePositionsArray());
+        
     }
 
     private void resetOdometry(Pose2d newPose) {
