@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
@@ -18,31 +19,10 @@ public class ShooterIOSparkMax implements ShooterIO {
         bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
 
 
-        
-        // bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        // bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		// bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		// bottomRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
-        
-        // topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        // topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		// topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		// topRightShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
-
-
-        
-        // bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        // bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		// bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		// bottomLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
-
-
-        
-        // topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        // topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-		// topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-		// topLeftShooter.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
-
+        Constants.updateStatusFrames(topLeftShooter, 100, 200, 200, 500, 500, 500, 500);
+        Constants.updateStatusFrames(topRightShooter, 100, 200, 200, 500, 500, 500, 500);
+        Constants.updateStatusFrames(bottomLeftShooter, 100, 200, 200, 500, 500, 500, 500);
+        Constants.updateStatusFrames(bottomRightShooter, 100, 200, 200, 500, 500, 500, 500);
 
         topLeftShooter.setInverted(true);
         bottomRightShooter.setInverted(true);

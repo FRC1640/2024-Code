@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.Constants;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
@@ -26,6 +27,9 @@ public class TargetingIOSparkMax implements TargetingIO {
         extensionMotor.setIdleMode(IdleMode.kBrake);
         rightTargetingMotor.setInverted(true);
         extensionMotor.setInverted(true);
+
+        Constants.updateStatusFrames(rightTargetingMotor, 100, 20, 20, 500, 500, 500, 500);
+        Constants.updateStatusFrames(extensionMotor, 100, 20, 20, 500, 500, 500, 500);
     }
 
     @Override
