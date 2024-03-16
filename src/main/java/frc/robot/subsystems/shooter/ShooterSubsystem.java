@@ -65,7 +65,7 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-    public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+    public Command setSpeedPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
             DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
 
         return setSmartVelocityCommand(
@@ -88,11 +88,11 @@ public class ShooterSubsystem extends SubsystemBase {
             public void execute() {
                 if (condition.getAsBoolean()){
 
-                    setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble());
+                    setSmartVelocity(topLeft.getAsDouble() * 5480, bottomLeft.getAsDouble() * 5480, topRight.getAsDouble() * 5480, bottomRight.getAsDouble() * 5480);
                     targetSpeed = speeds;
                 }
                 else{
-                    setVoltage(0,0,0,0);
+                    setSmartVelocity(0,0,0,0);
                 }
             }
 
