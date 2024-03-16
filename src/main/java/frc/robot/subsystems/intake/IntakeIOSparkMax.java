@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import lombok.val;
 
@@ -34,6 +35,9 @@ public class IntakeIOSparkMax implements IntakeIO {
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
         indexerMotor.setInverted(true);
         indexerMotor.setIdleMode(IdleMode.kBrake);
+
+        Constants.updateStatusFrames(intakeMotor, 100, 200, 200, 500, 500, 500, 500);
+        Constants.updateStatusFrames(indexerMotor, 100, 200, 200, 500, 500, 500, 500);
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }

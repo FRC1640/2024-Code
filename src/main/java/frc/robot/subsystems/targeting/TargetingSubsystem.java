@@ -68,6 +68,10 @@ public class TargetingSubsystem extends SubsystemBase {
         // Logger.recordOutput("Targeting/velocity", inputs.);
 
         Logger.recordOutput("Targeting/angleoffset", angleOffset.getAsDouble());
+
+        if (inputs.extensionLimitSwitch){
+            io.resetExtension();
+        }
         
     }
 

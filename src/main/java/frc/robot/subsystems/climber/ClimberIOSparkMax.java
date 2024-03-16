@@ -1,10 +1,13 @@
 package frc.robot.subsystems.climber;
 
+import java.io.Console;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
@@ -23,6 +26,9 @@ public class ClimberIOSparkMax implements ClimberIO {
 
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
+
+        Constants.updateStatusFrames(leftMotor, 100, 20, 20, 500, 500, 500, 500);
+        Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 0, 0, 0, 0);
         rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 0, 0, 0, 0); //note: to create resolver constants class for min/max
     }

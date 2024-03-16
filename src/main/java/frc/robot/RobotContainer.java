@@ -337,7 +337,7 @@ public class RobotContainer {
 		return intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
-								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 1));
+								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 2.5));
 	}
 
     private Command generateIntakeCommandAuto() {
