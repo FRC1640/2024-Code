@@ -158,8 +158,8 @@ public final class Constants {
     public static class FieldConstants {
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.701, 7.881);
-        public static Translation2d ampPositionBlue = new Translation2d(2.064, 7.8);
+        public static Translation2d ampPositionRed = new Translation2d(14.716, 7.830);
+        public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.830);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
     }
