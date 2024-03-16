@@ -9,17 +9,12 @@ public class TargetingIOSim implements TargetingIO {
         50, 0.00019125);
     private DCMotorSim rightTargetingMotorSimulated = new DCMotorSim(DCMotor.getNEO(1), 
         50, 0.00019125);
-    private DCMotorSim extensionMotorSimulated = new DCMotorSim(DCMotor.getNEO(1),
-        50, 0.00019125);
 
     private double leftMotorVoltage = 0.0;
     private double rightMotorVoltage = 0.0;
-    private double extensionMotorVoltage = 0.0;
-    private double cappedExtensionSpeed;
 
     private double leftPositon;
     private double rightPosition;
-    private double extensionPosition;
 
 
 
@@ -58,7 +53,6 @@ public class TargetingIOSim implements TargetingIO {
 
         leftTargetingMotorSimulated.update(0.02);
         rightTargetingMotorSimulated.update(0.02);
-        extensionMotorSimulated.update(0.02);
 
         // inputs.leftTargetingSpeedPercent = leftMotorVoltage/12;
         // inputs.leftTargetingAppliedVoltage = leftMotorVoltage;
@@ -73,12 +67,6 @@ public class TargetingIOSim implements TargetingIO {
         rightPosition = inputs.rightTargetingPositionDegrees;
 
         inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
-
-        inputs.extensionSpeedPercent = extensionMotorVoltage/12;
-        inputs.extensionAppliedVoltage = extensionMotorVoltage;
-        inputs.extensionCurrentAmps = extensionMotorSimulated.getCurrentDrawAmps();
-        inputs.extensionPosition += ((extensionMotorSimulated.getAngularVelocityRPM()) / 60 * 0.02) * 4;
-        extensionPosition = inputs.extensionPosition;
     }
 
     /**
@@ -89,20 +77,5 @@ public class TargetingIOSim implements TargetingIO {
      */
     public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
         return motorEncoderValue;
-    }
-
-    @Override
-    public void setExtensionPercentOutput(double speed) {
-        double speedClamped = speed;
-        speedClamped = clampSpeedsExtension(extensionPosition, speedClamped);
-        setExtensionVoltage(speedClamped * 12);
-        cappedExtensionSpeed = speedClamped;
-    }
-
-    @Override
-    public void setExtensionVoltage(double voltage) {
-        voltage = MathUtil.clamp(voltage, -12, 12);
-        extensionMotorVoltage = voltage;
-        extensionMotorSimulated.setInputVoltage(voltage);
     }
 }
