@@ -6,12 +6,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
-    // private final Resolver leftEncoder;
-    // private final Resolver rightEncoder;
+    private final ResolverPointSlope leftEncoder;
+    private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
@@ -22,8 +23,8 @@ public class ClimberIOSparkMax implements ClimberIO {
 
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
-        // leftEncoder = new Resolver(ClimberConstants.leftClimberResolver, .05, 4.95, 0, false);
-        // rightEncoder = new Resolver(ClimberConstants.rightClimberResolver, .05, 4.95, 0, false); //note: to create resolver constants class for min/max
+        leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 0, 0, 0, 0);
+        rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 0, 0, 0, 0); //note: to create resolver constants class for min/max
     }
 
     // @Override
@@ -54,12 +55,14 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.leftAppliedVoltage = leftMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.leftCurrentAmps = leftMotor.getOutputCurrent();
         inputs.leftTempCelcius = leftMotor.getMotorTemperature();
-        // inputs.leftClimberPositionDegrees = leftEncoder.getD();
+        inputs.leftClimberPositionDegrees = leftEncoder.getD();
+        inputs.leftClimberVoltage = leftEncoder.getV();
 
         inputs.rightSpeedPercent = rightMotor.getAppliedOutput();
         inputs.rightAppliedVoltage = rightMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.rightCurrentAmps = rightMotor.getOutputCurrent();
         inputs.rightTempCelcius = rightMotor.getMotorTemperature();
-        // inputs.rightClimberPositionDegrees = rightEncoder.getD();
+        inputs.rightClimberPositionDegrees = rightEncoder.getD();
+        inputs.rightClimberVoltage = rightEncoder.getV();
     }
 }
