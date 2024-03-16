@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.sensors.Gyro.Gyro;
 
 public class ClimberSubsystem extends SubsystemBase{
     ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
@@ -78,6 +79,15 @@ public class ClimberSubsystem extends SubsystemBase{
         };
         c.addRequirements(this);
         return c;
+    }
+
+    public Command climbBalancedCommand(Gyro gyro){
+        Command c = new Command() {
+            @Override
+            public void execute(){
+                gyro.
+            }
+        }
     }
 
     private double getPIDSpeed(double position, DoubleSupplier getPos) {
