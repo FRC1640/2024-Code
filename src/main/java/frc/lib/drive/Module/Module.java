@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.swerve.SwerveAlgorithms;
+import frc.robot.Robot;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.PivotId;
 
@@ -66,7 +67,9 @@ public class Module {
 
         //calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
-            // drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed)); 
+        if (!Robot.inTeleop){
+            pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
+        }
 
         //pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);

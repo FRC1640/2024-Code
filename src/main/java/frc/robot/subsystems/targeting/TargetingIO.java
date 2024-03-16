@@ -30,6 +30,7 @@ public interface TargetingIO {
         public double extensionCurrentAmps = 0.0;
         public double extensionTempCelsius = 0.0;
         public double extensionPosition = 0.0;
+        public boolean extensionLimitSwitch = false;
     }
 
     /**
@@ -129,4 +130,6 @@ public interface TargetingIO {
         }
         return speedClamped;
     }
+
+    public default void resetExtension(){}
 }
