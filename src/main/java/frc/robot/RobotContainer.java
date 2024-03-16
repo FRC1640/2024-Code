@@ -430,7 +430,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
 		
 		NamedCommands.registerCommand("MLVisionAutonCommand", new MLVisionAutonCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote()));
-		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand( mlVision.getTA(),  mlVision.getTX()));
+		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(mlVision.getTA(),  mlVision.getTX()));
 
 	}
 }
