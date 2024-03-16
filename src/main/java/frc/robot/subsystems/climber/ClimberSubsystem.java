@@ -32,7 +32,7 @@ public class ClimberSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Inputs", inputs);
+        Logger.processInputs("Climber", inputs);
         climberLeft.setAngle(inputs.leftClimberPositionDegrees);
         climberRight.setAngle(inputs.rightClimberPositionDegrees);
         Logger.recordOutput("Climber/ClimberMechanism", climberVisualization);
