@@ -90,6 +90,15 @@ public class MLVisionAutonCommand extends Command {
         if (hasNote.get()){
             return true;
         }
+
+        if (intakeMode && (System.currentTimeMillis() - initIntakeModeTime > 500)) { // 
+            return true; 
+        }
+
+        if (System.currentTimeMillis() - initTime > 10000){
+            return true;
+        }
+
         return false;
     }
 
