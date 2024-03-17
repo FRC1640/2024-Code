@@ -2,8 +2,6 @@ package frc.robot.sensors.Vision.MLVision;
 
 import java.util.function.Supplier;
 
-import javax.sound.midi.SysexMessage;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,11 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.PIDConstants;
 
-public class MLVisionAutonCommand {
-    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision, "mlrot"); //;
+public class MLVisionAutonStraifeCommand {
     private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
-    private double angularVelocity = 0;
     private double horizontalVelocity = 0;
     private double verticalVelocity = 0; // ADD CONSTANT
 
@@ -41,13 +37,12 @@ public class MLVisionAutonCommand {
     private double previousTYlim = -5;
     
     private boolean intakeMode;
-    private boolean rotateMode;
 
     private DriveSubsystem driveSubsystem;
 
     private Supplier<Boolean> hasNote;
 
-    public MLVisionAutonCommand(MLVision vision, Supplier<Rotation2d> angleSupplier, DriveSubsystem driveSubsystem, Supplier<Boolean> hasNote){
+    public MLVisionAutonStraifeCommand(MLVision vision, Supplier<Rotation2d> angleSupplier, DriveSubsystem driveSubsystem, Supplier<Boolean> hasNote){
         this.vision = vision;
         this.angleSupplier = angleSupplier;
         
@@ -56,7 +51,6 @@ public class MLVisionAutonCommand {
         this.hasNote = hasNote; 
 
         intakeMode = false;
-        rotateMode = true;
         
         previousTA = vision.getTA();
         previousTY = vision.getTY();
@@ -64,15 +58,13 @@ public class MLVisionAutonCommand {
         initIntakeModeTime = -1;
         initTime = System.currentTimeMillis();
 
-
-        resetMode();
     }
 
     public Command getCommand(){
         return driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).until(()->isFinished());
     }
 
-   
+
     public boolean isFinished(){
         return hasNote.get() || System.currentTimeMillis() - initTime > 5000;
     }
@@ -80,9 +72,7 @@ public class MLVisionAutonCommand {
     public ChassisSpeeds getSpeeds() {
         horizontalVelocity = 0;
         verticalVelocity = 0;
-        angularVelocity = 0;
 
-        
         if (!intakeMode){
             
             determineIntakeNoteMode();
@@ -92,36 +82,17 @@ public class MLVisionAutonCommand {
                     new ChassisSpeeds(0 , 0, 0); 
 
             }
-            else if (Math.abs(vision.getTX()) > distanceLim && rotateMode) { // if the target tx is within the accepted tx range AND the the weight has never exited rotate mode, JUST rotate
-                horizontalVelocity = 0;
-            
-                verticalVelocity = 0;
-           
-                angularVelocity = angularController.calculate(vision.getTX());
-                angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
-                angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
-
-                chassisSpeedsToTurn = 
-                    new ChassisSpeeds(0 , 0, angularVelocity); 
-            }
             else{ // Otherwise enter horrizorntal strafe mode
-                rotateMode = false;
                 previousTA = vision.getTA();
                 previousTY = vision.getTY();
-
-
 
                 horizontalVelocity = horizontalController.calculate(vision.getTX());
                 horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
                 horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
-            
-                //verticalVelocity = verticalVelocityConstant;
-                verticalVelocity = 0.4;
 
-                angularVelocity = 0;
             
                 chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                    new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
+                    new ChassisSpeeds(0, -horizontalVelocity, 0),
                     angleSupplier.get()); 
             }
         }
@@ -136,8 +107,6 @@ public class MLVisionAutonCommand {
         return chassisSpeedsToTurn;
     }
 
-
-
     private void determineIntakeNoteMode(){
         if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim){ // IF the ta makes a big jump and it used to be small
             if (initTime == -1){
@@ -148,16 +117,5 @@ public class MLVisionAutonCommand {
         else{
             intakeMode= false;
         }
-    }
-    
-    public void resetMode(){
-        intakeMode = false;
-        rotateMode = true;
-        previousTA = vision.getTA();
-        previousTY = vision.getTY();
-
-
-        initTime = -1;
-        initIntakeModeTime = -1;
     }
 }

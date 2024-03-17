@@ -65,7 +65,7 @@ public class MLVision extends PeriodicBase {
     public Command waitUntilMLCommand(double taMin, double txMax){
         //return new WaitUntilCommand(()->(getTA() > ta) && (getTX() > tx));
         //return new WaitUntilCommand
-        return new WaitUntilCommand(()->(isTarget()) ? ((getTA() > taMin) && ((getTX() > txMax))): false); // 15 is a guess and 3 is the value when we switch to driving straight with adjustments
+        return new WaitUntilCommand(()->isTarget() && getTA() < taMin); 
 
     }
 }

@@ -110,7 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.6, 0.6, 0.001),
-                VecBuilder.fill(3.5, 3.5, 500));
+                VecBuilder.fill(3.5, 3.5, 9999999));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
