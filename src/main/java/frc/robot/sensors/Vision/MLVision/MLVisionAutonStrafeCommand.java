@@ -16,7 +16,7 @@ public class MLVisionAutonStrafeCommand {
     private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
     private double horizontalVelocity = 0;
-    private double verticalVelocity = 0; // ADD CONSTANT
+    private double verticalVelocity = 0.4;
 
     private MLVision vision;
     private Supplier<Rotation2d> angleSupplier; // current angle (for us to offset the chassis speed angular position to drive straight)
@@ -29,7 +29,6 @@ public class MLVisionAutonStrafeCommand {
     //private double timeOutMillisecs = 200;
 
     private double initTime = -1;
-    private double initIntakeModeTime = -1; // initialize drive straight until intookith or timithed out 
 
     private double previousTA;
     private double deltaTAlim = 2; // if delta ty > than this, enter drive straight to intake mode
@@ -55,8 +54,6 @@ public class MLVisionAutonStrafeCommand {
         
         previousTA = vision.getTA();
         previousTY = vision.getTY();
-
-        initIntakeModeTime = -1;
         initTime = System.currentTimeMillis();
 
     }
@@ -72,7 +69,6 @@ public class MLVisionAutonStrafeCommand {
 
     public ChassisSpeeds getSpeeds() {
         horizontalVelocity = 0;
-        verticalVelocity = 0;
 
         if (!intakeMode){
             
@@ -98,8 +94,6 @@ public class MLVisionAutonStrafeCommand {
             }
         }
         else { // If the robot is IN intake mode
-            verticalVelocity = 0.4;
-            
             chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                     new ChassisSpeeds(-verticalVelocity, 0, 0),
                     angleSupplier.get()); 
@@ -121,7 +115,6 @@ public class MLVisionAutonStrafeCommand {
         previousTY = vision.getTY();
 
 
-        initTime = -1;
-        initIntakeModeTime = -1;
+        initTime = System.currentTimeMillis();
     }
 }
