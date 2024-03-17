@@ -2,6 +2,8 @@ package frc.robot.sensors.Gyro;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+
 public interface GyroIO {
     @AutoLog
     public static class GyroIOInputs{
@@ -23,6 +25,8 @@ public interface GyroIO {
     public default double getActual(GyroIOInputs inputs){ return 0; }
 
     public default double getOffset(){return 0;}
+
+    public default Rotation3d getRotation3d() { return null; }
 
     public default void setOffset(double offset){};
 }

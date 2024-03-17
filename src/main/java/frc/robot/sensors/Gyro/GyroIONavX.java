@@ -2,6 +2,7 @@ package frc.robot.sensors.Gyro;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.SPI;
 
 public class GyroIONavX implements GyroIO{
@@ -15,6 +16,10 @@ public class GyroIONavX implements GyroIO{
         inputs.angleRadiansRaw = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
         inputs.angleDegreesRaw = Math.toDegrees(inputs.angleRadiansRaw);
+    }
+    @Override
+    public Rotation3d getRotation3d() {
+        return gyro.getRotation3d();
     }
     @Override
     public void resetGyro(GyroIOInputs inputs) {

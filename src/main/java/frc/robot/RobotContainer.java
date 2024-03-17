@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -33,7 +32,6 @@ import frc.lib.drive.DriveSubsystem;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Gyro.Gyro;
@@ -61,7 +59,6 @@ import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
-import frc.robot.subsystems.drive.DriveWeights.RotateLockWeightTrack;
 import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -121,7 +118,7 @@ public class RobotContainer {
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
 						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting() || driveController.y().getAsBoolean(), ()->startAuto));
-				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
+				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax(), gyro);
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset);
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
@@ -136,7 +133,7 @@ public class RobotContainer {
 				mlVision = new MLVision(new MLVisionIOSim());
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
-				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+				climberSubsystem = new ClimberSubsystem(new ClimberIOSim(), gyro);
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim(), ()->angleOffset);
 				break;
 
@@ -154,7 +151,7 @@ public class RobotContainer {
 				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
 				},()->angleOffset);
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
-				});
+				}, gyro);
 				mlVision = new MLVision(new MLVisionIO() {
 				});
 				break;

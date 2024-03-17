@@ -27,11 +27,11 @@ public class Gyro extends PeriodicBase {
         return new Rotation2d(io.getActual(inputs));
     }
 
-    public double getRawAngleRadians(){
+    public double getRawAngleRadians() {
         return inputs.angleRadiansRaw;
     }
 
-    public Rotation2d getRawAngleRotation2d(){
+    public Rotation2d getRawAngleRotation2d() {
         return new Rotation2d(inputs.angleRadiansRaw);
     }
 
@@ -50,13 +50,28 @@ public class Gyro extends PeriodicBase {
     public boolean isCalibrating() {
         return inputs.isCalibrating;
     }
-    public double getOffset(){
+
+    public double getOffset() {
         return io.getOffset();
     }
-    public void setOffset(double offset){
+
+    public void setOffset(double offset) {
         io.setOffset(offset);
     }
-    public void addOffset(double offset){
+
+    public void addOffset(double offset) {
         io.setOffset(offset + io.getOffset());
+    }
+
+    public double getRoll() {
+        return io.getRotation3d().getX();
+    }
+
+    public double getPitch() {
+        return io.getRotation3d().getY();
+    }
+
+    public double getYaw() {
+        return io.getRotation3d().getZ();
     }
 }
