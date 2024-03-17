@@ -32,6 +32,7 @@ import frc.lib.drive.DriveSubsystem;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Gyro.Gyro;
@@ -228,14 +229,14 @@ public class RobotContainer {
 		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());
 		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
-		// driveController.rightBumper().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
-		// 		.whileTrue(ampCommandNoShoot());
+		driveController.y().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
+				.whileTrue(ampCommandNoShoot());
 
-		// driveController.rightBumper()
-		// 		.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
-		// 				.alongWith(Commands.race(
-		// 						ampCommandNoShoot(),
-		// 						new WaitCommand(ShooterConstants.waitTime))));
+		driveController.y()
+				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
+						.alongWith(Commands.race(
+								ampCommandNoShoot(),
+								new WaitCommand(ShooterConstants.waitTime))));
 
 		
 		// static robot rotation
@@ -295,7 +296,7 @@ public class RobotContainer {
 		operatorController.a().whileTrue(manualShotNoAngle(41.8,
 			()->!operatorController.a().getAsBoolean()));
 
-
+		// driveController.y().whileTrue(() -> );
 		
 	}
 
