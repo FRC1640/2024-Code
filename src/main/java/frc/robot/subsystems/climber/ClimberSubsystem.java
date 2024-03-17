@@ -45,6 +45,19 @@ public class ClimberSubsystem extends SubsystemBase{
         Logger.recordOutput("Climber/ClimberMechanism", climberVisualization);
     }
 
+    public Command automatedClimbCommand() {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (gyro.getRoll() < 10) { // TODO deadband
+                    
+                }
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
     public Command climberPIDCommand(double posLeft, double posRight) {
         return setSpeedCommand(()->getPIDSpeed(posLeft, ()->inputs.leftClimberPositionDegrees), 
             ()->getPIDSpeed(posRight, ()->inputs.rightClimberPositionDegrees));
