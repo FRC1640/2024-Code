@@ -110,10 +110,10 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int leftCanID = 18;
         public static final int rightCanID = 17;
-        public static final double lowerLimit = -15;
+        public static final double lowerLimit = -5;
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
-        public static final int rightClimberResolver = 7;
+        public static final int rightClimberResolver = 5;
     }
 
     public static class ShooterConstants {

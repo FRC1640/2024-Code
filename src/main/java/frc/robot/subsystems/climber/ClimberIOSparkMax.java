@@ -9,12 +9,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
-    // private final Resolver leftEncoder;
-    // private final Resolver rightEncoder;
+    private final ResolverPointSlope leftEncoder;
+    private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
@@ -28,8 +29,8 @@ public class ClimberIOSparkMax implements ClimberIO {
 
         Constants.updateStatusFrames(leftMotor, 100, 20, 20, 500, 500, 500, 500);
         Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);
-        // leftEncoder = new Resolver(ClimberConstants.leftClimberResolver, .05, 4.95, 0, false);
-        // rightEncoder = new Resolver(ClimberConstants.rightClimberResolver, .05, 4.95, 0, false); //note: to create resolver constants class for min/max
+        leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);
+        rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 3.637, 2.585, 11, 84); //note: to create resolver constants class for min/max
     }
 
     // @Override
@@ -44,13 +45,13 @@ public class ClimberIOSparkMax implements ClimberIO {
 
     @Override
     public void setLeftSpeedPercent(double speed){
-        // speed = clampSpeeds(leftEncoder.getD(), speed);
+        speed = clampSpeeds(leftEncoder.getD(), speed);
         leftMotor.set(speed);
     }
 
     @Override
     public void setRightSpeedPercent(double speed){
-        // speed = clampSpeeds(rightEncoder.getD(), speed);
+        speed = clampSpeeds(rightEncoder.getD(), speed);
         rightMotor.set(speed);
     }
 
@@ -60,12 +61,14 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.leftAppliedVoltage = leftMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.leftCurrentAmps = leftMotor.getOutputCurrent();
         inputs.leftTempCelcius = leftMotor.getMotorTemperature();
-        // inputs.leftClimberPositionDegrees = leftEncoder.getD();
+        inputs.leftClimberPositionDegrees = leftEncoder.getD();
+        inputs.leftClimberVoltage = leftEncoder.getV();
 
         inputs.rightSpeedPercent = rightMotor.getAppliedOutput();
         inputs.rightAppliedVoltage = rightMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.rightCurrentAmps = rightMotor.getOutputCurrent();
         inputs.rightTempCelcius = rightMotor.getMotorTemperature();
-        // inputs.rightClimberPositionDegrees = rightEncoder.getD();
+        inputs.rightClimberPositionDegrees = rightEncoder.getD();
+        inputs.rightClimberVoltage = rightEncoder.getV();
     }
 }
