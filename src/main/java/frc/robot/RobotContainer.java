@@ -229,14 +229,10 @@ public class RobotContainer {
 		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());
 		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
-		driveController.y().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)))
-				.whileTrue(ampCommandNoShoot());
+		driveController.y().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
 
 		driveController.y()
-				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight))
-						.alongWith(Commands.race(
-								ampCommandNoShoot(),
-								new WaitCommand(ShooterConstants.waitTime))));
+				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
 
 		
 		// static robot rotation
