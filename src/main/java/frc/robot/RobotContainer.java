@@ -280,7 +280,9 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
-		driveController.rightTrigger().whileTrue((new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote()).getCommand()));
+		
+		driveController.rightTrigger().whileTrue((new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
+			.getCommand()));
 
 
 		//driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
@@ -356,7 +358,7 @@ public class RobotContainer {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.75))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-					&& targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError))).repeatedly());
+					&& targetingSubsystem.isAnglePositionAccurate(3))).repeatedly());
 	}
 
 	public Command intakeNote(){
@@ -446,8 +448,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(27 + offset));
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
 		
-		NamedCommands.registerCommand("MLVisionAutonCommand", new MLVisionAutonCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote()).getCommand());
-		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(10, 0));
+		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
+			.getCommand()));
+		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(15, 0));
+		//NamedCommands.registerCommand("MLVisionAutonStrafeCommand", (new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
+		//	.getCommand()));
 
 	}
 }

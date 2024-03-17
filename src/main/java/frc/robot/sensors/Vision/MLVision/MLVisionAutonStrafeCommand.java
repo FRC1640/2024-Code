@@ -16,7 +16,7 @@ public class MLVisionAutonStrafeCommand {
     private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
     private double horizontalVelocity = 0;
-    private double verticalVelocity = 0.4;
+    private double verticalVelocity = 0.2;
 
     private MLVision vision;
     private Supplier<Rotation2d> angleSupplier; // current angle (for us to offset the chassis speed angular position to drive straight)
@@ -29,6 +29,7 @@ public class MLVisionAutonStrafeCommand {
     //private double timeOutMillisecs = 200;
 
     private double initTime = -1;
+     private double intakeModeInitTime = -1;
 
     private double previousTA;
     private double deltaTAlim = 2; // if delta ty > than this, enter drive straight to intake mode
@@ -59,7 +60,7 @@ public class MLVisionAutonStrafeCommand {
     }
 
     public Command getCommand(){
-        return new InstantCommand(()->resetMode()).andThen(driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).until(()->isFinished()).repeatedly());
+        return new InstantCommand(()->resetMode()).andThen(driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).repeatedly()).until(()->isFinished());
     }
 
 
@@ -107,6 +108,7 @@ public class MLVisionAutonStrafeCommand {
 
         intakeMode = previousTA - vision.getTA() > deltaTAlim 
             && previousTY < previousTYlim ||  (Math.abs(vision.getTX()) < distanceLim);// IF the ta makes a big jump and it used to be small
+       
     }
     
     public void resetMode(){
