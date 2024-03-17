@@ -211,14 +211,14 @@ public class DriveSubsystem extends SubsystemBase {
                     useEstimate = true;
                     if (Robot.inTeleop){
                         xy = 0.1;
-                        distConst = distConst /= 10;
+                        distConst = distConst /= 2;
                     }
                     else{
                         xy = AprilTagVisionConstants.xyStdDev;
                     }
                 }
                 else{
-                    distConst *= 3;
+                    distConst = distConst * 2;
                 }
 
                 Logger.recordOutput("PosDifference", poseDifference);
@@ -228,7 +228,7 @@ public class DriveSubsystem extends SubsystemBase {
                 Logger.recordOutput("DynamicThreshold", dynamicThreshold);
                 if (useEstimate){
                     usedAprilTag = true;
-                    dynamicThreshold -= (0.1 * 0.02 * vision.getNumVisibleTags()) / (distConst / 2);
+                    dynamicThreshold -= (0.2 * 0.02 * vision.getNumVisibleTags()) / (distConst / 2);
                     dynamicThreshold = Math.max(dynamicThreshold, 0.4);
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                         VecBuilder.fill(xy * distConst,
