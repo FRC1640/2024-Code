@@ -22,7 +22,7 @@ public class MLVisionAutonStrafeCommand {
     private Supplier<Rotation2d> angleSupplier; // current angle (for us to offset the chassis speed angular position to drive straight)
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 1.5; // angular tx disparity deadband idk if thats what i should call it
+    private double acceptableTX = 0.5; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0); // this is, in fact, the chassis speed we will be using to turn
     
@@ -106,8 +106,7 @@ public class MLVisionAutonStrafeCommand {
 
     private void determineIntakeNoteMode(){
 
-        intakeMode = previousTA - vision.getTA() > deltaTAlim 
-            && previousTY < previousTYlim ||  (Math.abs(vision.getTX()) < distanceLim);// IF the ta makes a big jump and it used to be small
+        intakeMode = vision.isTarget() && Math.abs(vision.getTX()) < acceptableTX;
        
     }
     
