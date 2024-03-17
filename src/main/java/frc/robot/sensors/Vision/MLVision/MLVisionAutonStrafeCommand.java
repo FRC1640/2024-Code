@@ -16,20 +16,20 @@ public class MLVisionAutonStrafeCommand {
     private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
     private double horizontalVelocity = 0;
-    private double verticalVelocity = 0.2;
+    private double verticalVelocity = 0.3;
 
     private MLVision vision;
     private Supplier<Rotation2d> angleSupplier; // current angle (for us to offset the chassis speed angular position to drive straight)
 
     private double deadband = 0; // 0.1;
-    private double acceptableTX = 0.5; // angular tx disparity deadband idk if thats what i should call it
+    private double acceptableTX = 1; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0); // this is, in fact, the chassis speed we will be using to turn
     
     //private double timeOutMillisecs = 200;
 
     private double initTime = -1;
-     private double intakeModeInitTime = -1;
+    private double intakeModeInitTime = -1;
 
     private double previousTA;
     private double deltaTAlim = 2; // if delta ty > than this, enter drive straight to intake mode
@@ -90,7 +90,7 @@ public class MLVisionAutonStrafeCommand {
 
             
                 chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                    new ChassisSpeeds(0, -horizontalVelocity, 0),
+                    new ChassisSpeeds(-0.1, -horizontalVelocity, 0),
                     angleSupplier.get()); 
             }
         }
