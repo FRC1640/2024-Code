@@ -19,6 +19,7 @@ public class ClimberSubsystem extends SubsystemBase{
     ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
     ClimberIO io;
     PIDController pid = PIDConstants.constructPID(PIDConstants.climberPID, "climber");
+    PIDController ballancePID = PIDConstants.constructPID(PIDConstants.climberBallancePID, "climberBallance");
     double setpoint = 0;
 
     private Mechanism2d climberVisualization = new Mechanism2d(5.75, 3);
@@ -47,11 +48,30 @@ public class ClimberSubsystem extends SubsystemBase{
 
     public Command automatedClimbCommand() {
         Command c = new Command() {
+            boolean done = false;
+            boolean ballancing = false;
             @Override
             public void execute() {
-                if (gyro.getRoll() < 10) { // TODO deadband
-                    
+                if ((Math.abs(gyro.getRoll()) < 10)&& !ballancing && (inputs.leftClimberPositionDegrees > 0 || inputs.rightClimberPositionDegrees > 0)) {
+                    setSpeedPercent(0.1, 0.1);
+                } else if (Math.abs(gyro.getRoll()) >= 10){
+                    ballancing = true;
+                    double speed = ballancePID.calculate(gyro.getRoll());
+                    setSpeedPercent(speed, -speed);
+                    if (Math.abs(gyro.getRoll()) < 3){
+                        ballancing = false;
+                    }
+                } else{
+                    setSpeedPercent(0,0);
+                    done = true;
                 }
+            }
+            public void end(boolean interupted){
+                setSpeedPercent(0,0);
+            }
+            @Override
+            public boolean isFinished(){
+                return done;
             }
         };
         c.addRequirements(this);
