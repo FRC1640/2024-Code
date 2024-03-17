@@ -49,22 +49,30 @@ public class ClimberSubsystem extends SubsystemBase{
     public Command automatedClimbCommand() {
         Command c = new Command() {
             boolean done = false;
-            boolean ballancing = false;
+            double speed = 0;
+            boolean balancing = false;
+            @Override
+            public void initialize() {
+                done = false;
+                balancing = false;
+            }
             @Override
             public void execute() {
-                if ((Math.abs(gyro.getRoll()) < 10)&& !ballancing && (inputs.leftClimberPositionDegrees > 0 || inputs.rightClimberPositionDegrees > 0)) {
-                    setSpeedPercent(0.1, 0.1);
-                } else if (Math.abs(gyro.getRoll()) >= 10){
-                    ballancing = true;
-                    double speed = ballancePID.calculate(gyro.getRoll());
+                if ((Math.abs(gyro.getRoll()) < Math.toRadians(10))&& !balancing && (inputs.leftClimberPositionDegrees > 30 || inputs.rightClimberPositionDegrees > 30)) {
+                    speed = 0.1;
+                    setSpeedPercent(-0.1, -0.1);
+                } else if ((Math.abs(gyro.getRoll()) >= Math.toRadians(10)) && (inputs.leftClimberPositionDegrees > 10 || inputs.rightClimberPositionDegrees > 10)){
+                    balancing = true;
+                    speed = ballancePID.calculate(gyro.getRoll());
                     setSpeedPercent(speed, -speed);
-                    if (Math.abs(gyro.getRoll()) < 3){
-                        ballancing = false;
+                    if (Math.abs(gyro.getRoll()) < Math.toRadians(3)){
+                        balancing = false;
                     }
                 } else{
                     setSpeedPercent(0,0);
                     done = true;
                 }
+                System.out.println(speed);
             }
             public void end(boolean interupted){
                 setSpeedPercent(0,0);

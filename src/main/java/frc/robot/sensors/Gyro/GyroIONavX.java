@@ -16,6 +16,8 @@ public class GyroIONavX implements GyroIO{
         inputs.angleRadiansRaw = gyro.getRotation2d().getRadians();
         inputs.angularVelocityDegreesPerSecond = gyro.getRate();
         inputs.angleDegreesRaw = Math.toDegrees(inputs.angleRadiansRaw);
+        inputs.rotation3d = gyro.getRotation3d();
+        inputs.roll = gyro.getRoll();
     }
     @Override
     public Rotation3d getRotation3d() {

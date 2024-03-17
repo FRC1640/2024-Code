@@ -126,7 +126,7 @@ public class RobotContainer {
 			case SIM:
 				gyro = new Gyro(new GyroIOSim(() -> Math.toDegrees(SwerveDriveDimensions.kinematics
 						.toChassisSpeeds(
-							driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond)));
+							driveSubsystem.getActualSwerveStates()).omegaRadiansPerSecond), operatorController));
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim("limelight-front"),"-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim("limelight-back"),"-back");
@@ -227,6 +227,8 @@ public class RobotContainer {
 		// 				.alongWith(Commands.race(
 		// 						ampCommandNoShoot(),
 		// 						new WaitCommand(ShooterConstants.waitTime))));
+
+		operatorController.a().whileTrue(climberSubsystem.automatedClimbCommand());
 
 		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));

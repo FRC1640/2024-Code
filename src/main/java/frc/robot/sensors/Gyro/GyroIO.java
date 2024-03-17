@@ -2,6 +2,8 @@ package frc.robot.sensors.Gyro;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.kauailabs.navx.frc.Quaternion;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 
 public interface GyroIO {
@@ -12,6 +14,8 @@ public interface GyroIO {
         public double angleRadiansRaw = 0.0;
         public double angularVelocityDegreesPerSecond = 0.0;
         public double angleDegreesRaw = 0.0;
+        public Rotation3d rotation3d;
+        public double roll;
     }
 
     public default void updateInputs(GyroIOInputs inputs) {
