@@ -8,10 +8,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.drive.DriveSubsystem;
 import frc.robot.Constants.PIDConstants;
 
-public class MLVisionAutonStraifeCommand {
+public class MLVisionAutonStrafeCommand {
     private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
 
     private double horizontalVelocity = 0;
@@ -21,7 +22,7 @@ public class MLVisionAutonStraifeCommand {
     private Supplier<Rotation2d> angleSupplier; // current angle (for us to offset the chassis speed angular position to drive straight)
 
     private double deadband = 0; // 0.1;
-    private double distanceLim = 3; // angular tx disparity deadband idk if thats what i should call it
+    private double distanceLim = 1.5; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0); // this is, in fact, the chassis speed we will be using to turn
     
@@ -42,7 +43,7 @@ public class MLVisionAutonStraifeCommand {
 
     private Supplier<Boolean> hasNote;
 
-    public MLVisionAutonStraifeCommand(MLVision vision, Supplier<Rotation2d> angleSupplier, DriveSubsystem driveSubsystem, Supplier<Boolean> hasNote){
+    public MLVisionAutonStrafeCommand(MLVision vision, Supplier<Rotation2d> angleSupplier, DriveSubsystem driveSubsystem, Supplier<Boolean> hasNote){
         this.vision = vision;
         this.angleSupplier = angleSupplier;
         
@@ -61,7 +62,7 @@ public class MLVisionAutonStraifeCommand {
     }
 
     public Command getCommand(){
-        return driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).until(()->isFinished());
+        return new InstantCommand(()->resetMode()).andThen(driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).until(()->isFinished()).repeatedly());
     }
 
 
@@ -98,7 +99,8 @@ public class MLVisionAutonStraifeCommand {
         }
         else { // If the robot is IN intake mode
             verticalVelocity = 0.4;
-                chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
+            
+            chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                     new ChassisSpeeds(-verticalVelocity, 0, 0),
                     angleSupplier.get()); 
         }
@@ -108,14 +110,18 @@ public class MLVisionAutonStraifeCommand {
     }
 
     private void determineIntakeNoteMode(){
-        if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim){ // IF the ta makes a big jump and it used to be small
-            if (initTime == -1){
-                initIntakeModeTime = System.currentTimeMillis();
-            } // enter intake mode
-            intakeMode = true;
-        }
-        else{
-            intakeMode= false;
-        }
+
+        intakeMode = previousTA - vision.getTA() > deltaTAlim 
+            && previousTY < previousTYlim ||  (Math.abs(vision.getTX()) < distanceLim);// IF the ta makes a big jump and it used to be small
+    }
+    
+    public void resetMode(){
+        intakeMode = false;
+        previousTA = vision.getTA();
+        previousTY = vision.getTY();
+
+
+        initTime = -1;
+        initIntakeModeTime = -1;
     }
 }
