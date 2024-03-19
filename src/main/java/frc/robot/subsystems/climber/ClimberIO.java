@@ -12,12 +12,14 @@ public interface ClimberIO {
         public double leftCurrentAmps = 0.0;
         public double leftTempCelcius = 0.0;
         public double leftClimberPositionDegrees = 0.0;
+        public double leftClimberVoltage = 0.0;
 
         public double rightSpeedPercent = 0.0;
         public double rightAppliedVoltage = 0.0;
         public double rightCurrentAmps = 0.0;
         public double rightTempCelcius = 0.0;
         public double rightClimberPositionDegrees = 0.0;
+        public double rightClimberVoltage = 0.0;
     }
 
     public default void updateInputs(ClimberIOInputs inputs) {
