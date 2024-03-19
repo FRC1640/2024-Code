@@ -139,7 +139,8 @@ public final class Constants {
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.015, 0, 0);
-        public static PIDController horizontalMLVision = new PIDController(0.01, 0, 0);
+        public static PIDController horizontalMLVision = new PIDController(0.0045, 0, 0);
+        public static PIDController horizontalMLVisionDrive = new PIDController(0.01, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);

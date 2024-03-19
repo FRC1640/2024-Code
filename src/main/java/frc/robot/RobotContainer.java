@@ -45,6 +45,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.MLVisionAutoCommand2;
 import frc.robot.sensors.Vision.MLVision.MLVisionAutonCommand;
 import frc.robot.sensors.Vision.MLVision.MLVisionAutonStrafeCommand;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
@@ -281,8 +282,7 @@ public class RobotContainer {
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
 		
-		driveController.rightTrigger().whileTrue((new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
-			.getCommand()));
+		driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand());
 
 
 		//driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
@@ -358,7 +358,7 @@ public class RobotContainer {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.75))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-					&& targetingSubsystem.isAnglePositionAccurate(3))).repeatedly());
+					&& targetingSubsystem.isAnglePositionAccurate(1))).repeatedly());
 	}
 
 	public Command intakeNote(){
@@ -441,16 +441,17 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
 		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(34 + offset));
-		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(45));
-		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(60));
+		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
+		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(37 + offset));
-		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(35 + offset));
-		NamedCommands.registerCommand("StageShot", manualShotAuto(33+ offset));
-		NamedCommands.registerCommand("CenterShot", manualShotAuto(27 + offset));
+		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(36 + offset));
+		NamedCommands.registerCommand("StageShot", manualShotAuto(34.5+ offset));
+		NamedCommands.registerCommand("CenterShot", manualShotAuto(28.5 + offset));
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
+
+		NamedCommands.registerCommand("CloseShot", manualShotAuto(45));
 		
-		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
-			.getCommand()));
+		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
 		//NamedCommands.registerCommand("MLVisionAutonStrafeCommand", (new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
 		//	.getCommand()));

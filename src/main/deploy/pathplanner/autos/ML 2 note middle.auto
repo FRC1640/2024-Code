@@ -35,21 +35,22 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "race",
                 "data": {
-                  "pathName": "Amp Side Pickup"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Pickup"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AmpNoteShot"
                 }
               }
             ]
@@ -74,7 +75,26 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpNoteShot"
+                  "name": "CloseShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "free throw 4 note"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CloseShot"
                 }
               }
             ]
@@ -93,7 +113,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpNoteShot"
+                  "name": "CloseShot"
                 }
               }
             ]
@@ -106,19 +126,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Amp to middle"
+                  "pathName": "ml free throw to note"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "MidShotFromAmp"
                 }
               }
             ]
@@ -154,9 +168,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Run Indexer"
+                  "pathName": "center reset"
                 }
               },
               {
@@ -173,56 +187,6 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Mid to stage"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StageShot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "MLVisionAutonCommand"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StageShot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
                 "type": "named",
                 "data": {
                   "name": "Run Indexer"
@@ -231,7 +195,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StageShot"
+                  "name": "MidShotFromAmp"
                 }
               }
             ]
