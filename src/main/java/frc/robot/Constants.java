@@ -167,7 +167,7 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
-        public static double angleLowerLimit = 29;
+        public static double angleLowerLimit = 35;//29 prime
         public static double angleUpperLimit = 90;
         public static double angleManualSpeed = 0.05;
         public static double angleError = 1;
