@@ -53,12 +53,18 @@ public class ShooterSubsystem extends SubsystemBase {
         // PIDUpdate.update(bottomLeftPID);
     }
 
-    public Command setSpeedPercentPIDCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition){
+    public Command setSpeedPercentPIDCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+            DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
+
         return setVoltageCommand(
-            () -> topLeftPID.calculate(inputs.topLeftVelocity, topLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI), 
-            () -> bottomLeftPID.calculate(inputs.bottomLeftVelocity, bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
-            () -> topRightPID.calculate(inputs.topRightVelocity, topRight.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
-            () -> bottomRightPID.calculate(inputs.bottomRightVelocity, bottomRight.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
+            () -> topLeftPID.calculate(inputs.topLeftVelocity, topLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI)
+                + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI), 
+            () -> bottomLeftPID.calculate(inputs.bottomLeftVelocity, bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI)
+                + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
+            () -> topRightPID.calculate(inputs.topRightVelocity, topRight.getAsDouble() * 5480 / 60 * 2 * Math.PI)
+                + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
+            () -> bottomRightPID.calculate(inputs.bottomRightVelocity, bottomRight.getAsDouble() * 5480 / 60 * 2 * Math.PI)
+                + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
             condition
         );
     }
