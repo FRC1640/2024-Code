@@ -290,7 +290,7 @@ public class RobotContainer {
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
-		driveController.b().whileTrue(manualShotNoAngle(60,
+		driveController.b().whileTrue(manualShotNoAngle(55,
 			()->!driveController.b().getAsBoolean()));
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 

@@ -23,7 +23,7 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 2;
+        public static final double xyStdDev = 1.5;
         public static final double thetaStdDev = 99999999;
 
         public static final double xyStdDevAuto = 4;
