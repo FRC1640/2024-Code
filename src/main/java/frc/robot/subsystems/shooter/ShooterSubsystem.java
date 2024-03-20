@@ -427,70 +427,198 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // TODO SV
 
-
-    // private Command setSmartVelocityCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
-    //     Command c = new Command() {
-    //         @Override
-    //         public void end(boolean interrupted) {
-    //             setSmartVelocity(0, 0, 0, 0);
-    //         }
-
-    //         @Override
-    //         public void execute() {
-    //             if (condition.getAsBoolean()){
-
-    //                 setSmartVelocity(topLeft.getAsDouble() * 5480, bottomLeft.getAsDouble() * 5480, topRight.getAsDouble() * 5480, bottomRight.getAsDouble() * 5480);
-    //                 targetSpeed = speeds;
-    //             }
-    //             else{
-    //                 setSmartVelocity(0,0,0,0);
-    //             }
-    //         }
-
-    //         @Override
-    //         public void initialize() {
-
-    //         }
-
-    //         @Override
-    //         public boolean isFinished() {
-    //             return false;
-    //         }
-    //     };
-    //     c.addRequirements(this);
-    //     return c;
-    // }
-
-    public void setSmartVelocity(double velocity) {
-        io.setSmartVelocity(velocity, velocity, velocity, velocity);
-    }
-    
-    public void setSmartVelocity(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
-            DoubleSupplier topRight, DoubleSupplier bottomRight) {
-
-        io.setSmartVelocity(
-            topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble()
-        );
-    }
-
-    public void setSmartVelocity(DoubleSupplier velocity) {
-        io.setSmartVelocity(
-            velocity.getAsDouble(), velocity.getAsDouble(),
-            velocity.getAsDouble(), velocity.getAsDouble()
-        );
-    }
-
-    public Command setSmartVelocity(double topLeft, double bottomLeft,
+    public Command setSmartVelocityPercentCommand(double topLeft, double bottomLeft,
             double topRight, double bottomRight, BooleanSupplier condition) {
 
         Command c = new Command() {
             @Override
             public void execute() {
                 if (condition.getAsBoolean()) {
-                    setSmartVelocity(topLeft, bottomLeft, topRight, bottomRight);
+                    setSmartVelocity(topLeft * 5480, bottomLeft * 5480, topRight * 5480, bottomRight * 5480);
                 } else {
                     setSmartVelocity(0, 0, 0, 0);
                 }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(double speed, BooleanSupplier condition) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    setSmartVelocity(speed * 5480, speed * 5480, speed * 5480, speed * 5480);
+                } else {
+                    setSmartVelocity(0, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+            DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    setSmartVelocity(
+                        topLeft.getAsDouble() * 5480, bottomLeft.getAsDouble() * 5480,
+                        topRight.getAsDouble() * 5480, bottomRight.getAsDouble() * 5480
+                    );
+                } else {
+                    setSmartVelocity(0, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(DoubleSupplier speed, BooleanSupplier condition) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    setSmartVelocity(
+                        speed.getAsDouble() * 5480, speed.getAsDouble() * 5480,
+                        speed.getAsDouble() * 5480, speed.getAsDouble() * 5480
+                    );
+                } else {
+                    setSmartVelocity(0, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(double topLeft, double bottomLeft,
+            double topRight, double bottomRight) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSmartVelocity(topLeft * 5480, bottomLeft * 5480, topRight * 5480, bottomRight * 5480);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(double speed) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSmartVelocity(speed * 5480, speed * 5480, speed * 5480, speed * 5480);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+            DoubleSupplier topRight, DoubleSupplier bottomRight) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSmartVelocity(
+                    topLeft.getAsDouble() * 5480, bottomLeft.getAsDouble() * 5480,
+                    topRight.getAsDouble() * 5480, bottomRight.getAsDouble() * 5480
+                );
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(DoubleSupplier speed) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSmartVelocity(
+                    speed.getAsDouble() * 5480, speed.getAsDouble() * 5480,
+                    speed.getAsDouble() * 5480, speed.getAsDouble() * 5480
+                );
             }
 
             @Override
