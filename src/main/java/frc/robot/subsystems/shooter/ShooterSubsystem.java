@@ -10,10 +10,11 @@ import frc.robot.Constants.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.sysid.ArmSysidRoutine;
+
+// TODO comments
 
 public class ShooterSubsystem extends SubsystemBase {
     ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -52,25 +53,15 @@ public class ShooterSubsystem extends SubsystemBase {
         // PIDUpdate.update(bottomLeftPID);
     }
 
-
-    public Command setSpeedPercentPID(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition){
+    public Command setSpeedPercentPIDCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition){
         return setVoltageCommand(
-            ()->topLeftPID.calculate(inputs.topLeftVelocity,topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI), 
-            ()->bottomLeftPID.calculate(inputs.bottomLeftVelocity,bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
-            ()->topRightPID.calculate(inputs.topRightVelocity,topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
-            ()->bottomRightPID.calculate(inputs.bottomRightVelocity,bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
-            condition, new double[]{topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble()});
+            () -> topLeftPID.calculate(inputs.topLeftVelocity, topLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI), 
+            () -> bottomLeftPID.calculate(inputs.bottomLeftVelocity, bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
+            () -> topRightPID.calculate(inputs.topRightVelocity, topRight.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
+            () -> bottomRightPID.calculate(inputs.bottomRightVelocity, bottomRight.getAsDouble() * 5480 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5480 / 60 * 2 * Math.PI),
+            condition
+        );
     }
-
-
-
-
-
-
-
-
-
-    // TODO comments
 
     public Command setSpeedPercentCommand(double percent) {
         Command c = new Command() {
@@ -274,7 +265,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         io.setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight);
         targetSpeed = new double[] { topLeft, bottomLeft, topRight, bottomRight };
-    } // TODO array
+    }
 
     public Command setVoltageCommand(double voltage) {
         Command c = new Command() {
@@ -694,10 +685,6 @@ public class ShooterSubsystem extends SubsystemBase {
         targetSpeed = new double[] { topLeft / 5480, bottomLeft / 5480, topRight / 5480, bottomRight / 5480 };
     }
 
-
-
-
-
     public double[] getSpeeds() {
         return new double[] { inputs.topLeftSpeedPercent, inputs.bottomLeftSpeedPercent, inputs.topRightSpeedPercent,
                 inputs.bottomRightSpeedPercent };
@@ -727,7 +714,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getPosRadians(){
         return inputs.topLeftPositionRadians;
     }
-
 
     public void setVoltageFL(double v){
         io.setVoltage(v, 0, 0, 0);
