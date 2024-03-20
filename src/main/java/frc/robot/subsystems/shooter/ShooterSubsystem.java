@@ -67,41 +67,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
 
-    // TODO set % speeds in non % methods
-
-    // TODO param names & comments
-
-    // TODO make sure all cancel
-
-    // TODO percent in SV?
-
-    // TODO order in groups
-
-    // TODO conditions in all commands
 
 
+    // TODO comments
 
-
-
-
-
-
-
-
-
-    // TODO percent
-
-
-    public Command setSpeedCommand(double speed) {
+    public Command setSpeedPercentCommand(double percent) {
         return Commands.startEnd(
-            () -> setSpeedPercent(speed, speed, speed, speed),
+            () -> setSpeedPercent(percent, percent, percent, percent),
             () -> setSpeedPercent(0, 0, 0, 0),
             this
         );
     }
 
-
-    public Command setSpeedCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+    public Command setSpeedPercentCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         return Commands.startEnd(
             () -> setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight),
             () -> setSpeedPercent(0, 0, 0, 0),
@@ -109,8 +87,8 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-    public Command setSpeedCommand(DoubleSupplier speed) {
-        double speedExtracted = speed.getAsDouble();
+    public Command setSpeedPercentCommand(DoubleSupplier percent) {
+        double speedExtracted = percent.getAsDouble();
         return Commands.startEnd(
             () -> setSpeedPercent(speedExtracted, speedExtracted, speedExtracted, speedExtracted),
             () -> setSpeedPercent(0, 0, 0, 0),
@@ -118,8 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-
-    public Command setSpeedCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+    public Command setSpeedPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
             DoubleSupplier topRight, DoubleSupplier bottomRight) {
 
         return Commands.startEnd(
@@ -130,12 +107,12 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-    public Command setSpeedCommand(double speed, BooleanSupplier condition) {
+    public Command setSpeedPercentCommand(double percent, BooleanSupplier condition) {
         Command c = new Command() {
             @Override
             public void execute() {
                 if (condition.getAsBoolean()) {
-                    setSpeedPercent(speed, speed, speed, speed);
+                    setSpeedPercent(percent, percent, percent, percent);
                 } else {
                     setSpeedPercent(0, 0, 0, 0);
                 }
@@ -155,8 +132,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-
-    public Command setSpeedCommand(double topLeft, double bottomLeft,
+    public Command setSpeedPercentCommand(double topLeft, double bottomLeft,
             double topRight, double bottomRight, BooleanSupplier condition) {
 
         Command c = new Command() {
@@ -183,14 +159,14 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command setSpeedCommand(DoubleSupplier speed, BooleanSupplier condition) {
+    public Command setSpeedPercentCommand(DoubleSupplier percent, BooleanSupplier condition) {
         Command c = new Command() {
             @Override
             public void execute() {
                 if (condition.getAsBoolean()) {
                   setSpeedPercent(
-                    speed.getAsDouble(), speed.getAsDouble(),
-                    speed.getAsDouble(), speed.getAsDouble()
+                    percent.getAsDouble(), percent.getAsDouble(),
+                    percent.getAsDouble(), percent.getAsDouble()
                   );  
                 } else {
                     setSpeedPercent(0, 0, 0, 0);
@@ -211,8 +187,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-
-    public Command setSpeedCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+    public Command setSpeedPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
             DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
 
         Command c = new Command() {
@@ -242,63 +217,17 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-
-    // TODO voltage
-
+    public Command setVoltageCommand(double voltage) {
+        return Commands.startEnd(
+            () -> setVoltage(voltage, voltage, voltage, voltage),
+            () -> setVoltage(0, 0, 0, 0),
+            this
+        );
+    }
 
     public Command setVoltageCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         return Commands.startEnd(
             () -> setVoltage(topLeft, bottomLeft, topRight, bottomRight),
-            () -> setVoltage(0, 0, 0, 0),
-            this
-        );
-    }
-
-    // public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition, double[] speeds) {
-    //     Command c = new Command() {
-    //         @Override
-    //         public void end(boolean interrupted) {
-    //             setVoltage(0, 0, 0, 0);
-    //         }
-
-    //         @Override
-    //         public void execute() {
-    //             if (condition.getAsBoolean()){
-
-    //                 setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble());
-    //                 targetSpeed = speeds;
-    //             }
-    //             else{
-    //                 setVoltage(0,0,0,0);
-    //             }
-    //         }
-
-    //         @Override
-    //         public void initialize() {
-
-    //         }
-
-    //         @Override
-    //         public boolean isFinished() {
-    //             return false;
-    //         }
-    //     };
-    //     c.addRequirements(this);
-    //     return c;
-    // }
-
-    public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight) {
-        return Commands.startEnd(
-            () -> setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(),
-                topRight.getAsDouble(), bottomRight.getAsDouble()),
-            () -> setVoltage(0, 0, 0, 0),
-            this
-        );
-    }
-
-    public Command setVoltageCommand(double voltage) {
-        return Commands.startEnd(
-            () -> setVoltage(voltage, voltage, voltage, voltage),
             () -> setVoltage(0, 0, 0, 0),
             this
         );
@@ -313,6 +242,40 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
+    public Command setVoltageCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight) {
+        return Commands.startEnd(
+            () -> setVoltage(topLeft.getAsDouble(), bottomLeft.getAsDouble(),
+                topRight.getAsDouble(), bottomRight.getAsDouble()),
+            () -> setVoltage(0, 0, 0, 0),
+            this
+        );
+    }
+
+    public Command setVoltageCommand(double voltage, BooleanSupplier condition) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    setVoltage(voltage, voltage, voltage, voltage);
+                } else {
+                    setVoltage(0, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setVoltage(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }    
+
     public Command setVoltageCommand(double topLeft, double bottomLeft,
             double topRight, double bottomRight, BooleanSupplier condition) {
 
@@ -321,6 +284,34 @@ public class ShooterSubsystem extends SubsystemBase {
             public void execute() {
                 if (condition.getAsBoolean()) {
                     setVoltage(topLeft, bottomLeft, topRight, bottomRight);
+                } else {
+                    setVoltage(0, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setVoltage(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setVoltageCommand(DoubleSupplier voltage, BooleanSupplier condition) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    setVoltage(
+                        voltage.getAsDouble(), voltage.getAsDouble(),
+                        voltage.getAsDouble(), voltage.getAsDouble()
+                    );
                 } else {
                     setVoltage(0, 0, 0, 0);
                 }
@@ -370,20 +361,17 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command setVoltageCommand(double voltage, BooleanSupplier condition) {
+    public Command setSmartVelocityPercentCommand(double percent) {
+
         Command c = new Command() {
             @Override
             public void execute() {
-                if (condition.getAsBoolean()) {
-                    setVoltage(voltage, voltage, voltage, voltage);
-                } else {
-                    setVoltage(0, 0, 0, 0);
-                }
+                setSmartVelocity(percent * 5480, percent * 5480, percent * 5480, percent * 5480);
             }
 
             @Override
             public void end(boolean interrupted) {
-                setVoltage(0, 0, 0, 0);
+                setSmartVelocity(0, 0, 0, 0);
             }
 
             @Override
@@ -395,23 +383,18 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command setVoltageCommand(DoubleSupplier voltage, BooleanSupplier condition) {
+    public Command setSmartVelocityPercentCommand(double topLeft, double bottomLeft,
+            double topRight, double bottomRight) {
+
         Command c = new Command() {
             @Override
             public void execute() {
-                if (condition.getAsBoolean()) {
-                    setVoltage(
-                        voltage.getAsDouble(), voltage.getAsDouble(),
-                        voltage.getAsDouble(), voltage.getAsDouble()
-                    );
-                } else {
-                    setVoltage(0, 0, 0, 0);
-                }
+                setSmartVelocity(topLeft * 5480, bottomLeft * 5480, topRight * 5480, bottomRight * 5480);
             }
 
             @Override
             public void end(boolean interrupted) {
-                setVoltage(0, 0, 0, 0);
+                setSmartVelocity(0, 0, 0, 0);
             }
 
             @Override
@@ -423,9 +406,82 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
+    public Command setSmartVelocityPercentCommand(DoubleSupplier percent) {
 
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSmartVelocity(
+                    percent.getAsDouble() * 5480, percent.getAsDouble() * 5480,
+                    percent.getAsDouble() * 5480, percent.getAsDouble() * 5480
+                );
+            }
 
-    // TODO SV
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
+            DoubleSupplier topRight, DoubleSupplier bottomRight) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSmartVelocity(
+                    topLeft.getAsDouble() * 5480, bottomLeft.getAsDouble() * 5480,
+                    topRight.getAsDouble() * 5480, bottomRight.getAsDouble() * 5480
+                );
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setSmartVelocityPercentCommand(double percent, BooleanSupplier condition) {
+
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    setSmartVelocity(percent * 5480, percent * 5480, percent * 5480, percent * 5480);
+                } else {
+                    setSmartVelocity(0, 0, 0, 0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSmartVelocity(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
 
     public Command setSmartVelocityPercentCommand(double topLeft, double bottomLeft,
             double topRight, double bottomRight, BooleanSupplier condition) {
@@ -454,13 +510,16 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command setSmartVelocityPercentCommand(double speed, BooleanSupplier condition) {
+    public Command setSmartVelocityPercentCommand(DoubleSupplier percent, BooleanSupplier condition) {
 
         Command c = new Command() {
             @Override
             public void execute() {
                 if (condition.getAsBoolean()) {
-                    setSmartVelocity(speed * 5480, speed * 5480, speed * 5480, speed * 5480);
+                    setSmartVelocity(
+                        percent.getAsDouble() * 5480, percent.getAsDouble() * 5480,
+                        percent.getAsDouble() * 5480, percent.getAsDouble() * 5480
+                    );
                 } else {
                     setSmartVelocity(0, 0, 0, 0);
                 }
@@ -510,148 +569,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command setSmartVelocityPercentCommand(DoubleSupplier speed, BooleanSupplier condition) {
-
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                if (condition.getAsBoolean()) {
-                    setSmartVelocity(
-                        speed.getAsDouble() * 5480, speed.getAsDouble() * 5480,
-                        speed.getAsDouble() * 5480, speed.getAsDouble() * 5480
-                    );
-                } else {
-                    setSmartVelocity(0, 0, 0, 0);
-                }
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setSmartVelocity(0, 0, 0, 0);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    public Command setSmartVelocityPercentCommand(double topLeft, double bottomLeft,
-            double topRight, double bottomRight) {
-
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setSmartVelocity(topLeft * 5480, bottomLeft * 5480, topRight * 5480, bottomRight * 5480);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setSmartVelocity(0, 0, 0, 0);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    public Command setSmartVelocityPercentCommand(double speed) {
-
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setSmartVelocity(speed * 5480, speed * 5480, speed * 5480, speed * 5480);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setSmartVelocity(0, 0, 0, 0);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    public Command setSmartVelocityPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
-            DoubleSupplier topRight, DoubleSupplier bottomRight) {
-
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setSmartVelocity(
-                    topLeft.getAsDouble() * 5480, bottomLeft.getAsDouble() * 5480,
-                    topRight.getAsDouble() * 5480, bottomRight.getAsDouble() * 5480
-                );
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setSmartVelocity(0, 0, 0, 0);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-    public Command setSmartVelocityPercentCommand(DoubleSupplier speed) {
-
-        Command c = new Command() {
-            @Override
-            public void execute() {
-                setSmartVelocity(
-                    speed.getAsDouble() * 5480, speed.getAsDouble() * 5480,
-                    speed.getAsDouble() * 5480, speed.getAsDouble() * 5480
-                );
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setSmartVelocity(0, 0, 0, 0);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
-        c.addRequirements(this);
-        return c;
-    }
-
-
-
-
-    // TODO good
-
-    
-
-
-
-
-
-
-
-
-
-
-
     public double[] getSpeeds() {
         return new double[] { inputs.topLeftSpeedPercent, inputs.bottomLeftSpeedPercent, inputs.topRightSpeedPercent,
                 inputs.bottomRightSpeedPercent };
@@ -672,9 +589,7 @@ public class ShooterSubsystem extends SubsystemBase {
         }
      
         return true;
-    }
-
-    
+    }    
 
     public double getSpeedRadians(){
         return inputs.topLeftVelocity;
@@ -695,9 +610,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void setSmartVelocity(double topLeft, double bottomLeft, double topRight, double bottomRight) {
         io.setSmartVelocity(topLeft, bottomLeft, topRight, bottomRight);
-    }
-
-    
+    }    
 
     public void setVoltageFL(double v){
         io.setVoltage(v, 0, 0, 0);
