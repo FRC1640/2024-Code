@@ -26,6 +26,23 @@ public class ShooterIOSparkMax implements ShooterIO {
         topRightShooterPID = topRightShooter.getPIDController();
         bottomLeftShooterPID = bottomLeftShooter.getPIDController();
         bottomRightShooterPID = bottomRightShooter.getPIDController();
+        topLeftShooterPID.setP(0);
+        topLeftShooterPID.setI(0);
+        topLeftShooterPID.setD(0);
+        topLeftShooterPID.setFF(0.000185);
+        bottomLeftShooterPID.setP(0);
+        bottomLeftShooterPID.setI(0);
+        bottomLeftShooterPID.setD(0);
+        bottomLeftShooterPID.setFF(0.000185);
+        topRightShooterPID.setP(0);
+        topRightShooterPID.setI(0);
+        topRightShooterPID.setD(0);
+        topRightShooterPID.setFF(0.000185);
+        bottomRightShooterPID.setP(0);
+        bottomRightShooterPID.setI(0);
+        bottomRightShooterPID.setD(0);
+        bottomRightShooterPID.setFF(0.000185);
+
 
 
         

@@ -136,7 +136,9 @@ public final class Constants {
 
         public static PIDController drivePIDController = new PIDController(0.49677, 0.0, 0);
 
-        public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005); 
+        public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005);
+
+        public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
         
     }
     public static class FieldConstants{
