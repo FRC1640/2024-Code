@@ -72,28 +72,66 @@ public class ShooterSubsystem extends SubsystemBase {
     // TODO comments
 
     public Command setSpeedPercentCommand(double percent) {
-        return Commands.startEnd(
-            () -> setSpeedPercent(percent, percent, percent, percent),
-            () -> setSpeedPercent(0, 0, 0, 0),
-            this
-        );
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSpeedPercent(percent, percent, percent, percent);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSpeedPercent(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     public Command setSpeedPercentCommand(double topLeft, double bottomLeft, double topRight, double bottomRight) {
-        return Commands.startEnd(
-            () -> setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight),
-            () -> setSpeedPercent(0, 0, 0, 0),
-            this
-        );
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSpeedPercent(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     public Command setSpeedPercentCommand(DoubleSupplier percent) {
-        double speedExtracted = percent.getAsDouble();
-        return Commands.startEnd(
-            () -> setSpeedPercent(speedExtracted, speedExtracted, speedExtracted, speedExtracted),
-            () -> setSpeedPercent(0, 0, 0, 0),
-            this
-        );
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSpeedPercent(percent.getAsDouble(), percent.getAsDouble(), percent.getAsDouble(), percent.getAsDouble());
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSpeedPercent(0, 0, 0, 0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     public Command setSpeedPercentCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
@@ -215,6 +253,11 @@ public class ShooterSubsystem extends SubsystemBase {
         };
         c.addRequirements(this);
         return c;
+    }
+
+    private void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        io.setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight);
+        targetSpeed = new double[] { topLeft, bottomLeft, topRight, bottomRight };
     }
 
     public Command setVoltageCommand(double voltage) {
@@ -359,6 +402,10 @@ public class ShooterSubsystem extends SubsystemBase {
         };
         c.addRequirements(this);
         return c;
+    }
+
+    private void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        io.setVoltage(topLeft, bottomLeft, topRight, bottomRight);
     }
 
     public Command setSmartVelocityPercentCommand(double percent) {
@@ -569,6 +616,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return c;
     }
 
+    private void setSmartVelocity(double topLeft, double bottomLeft, double topRight, double bottomRight) {
+        io.setSmartVelocity(topLeft, bottomLeft, topRight, bottomRight);
+    }
+
     public double[] getSpeeds() {
         return new double[] { inputs.topLeftSpeedPercent, inputs.bottomLeftSpeedPercent, inputs.topRightSpeedPercent,
                 inputs.bottomRightSpeedPercent };
@@ -599,18 +650,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return inputs.topLeftPositionRadians;
     }
 
-    private void setSpeedPercent(double topLeft, double bottomLeft, double topRight, double bottomRight) {
-        io.setSpeedPercent(topLeft, bottomLeft, topRight, bottomRight);
-        targetSpeed = new double[] { topLeft, bottomLeft, topRight, bottomRight };
-    }
-
-    private void setVoltage(double topLeft, double bottomLeft, double topRight, double bottomRight) {
-        io.setVoltage(topLeft, bottomLeft, topRight, bottomRight);
-    }
-
-    private void setSmartVelocity(double topLeft, double bottomLeft, double topRight, double bottomRight) {
-        io.setSmartVelocity(topLeft, bottomLeft, topRight, bottomRight);
-    }    
 
     public void setVoltageFL(double v){
         io.setVoltage(v, 0, 0, 0);
