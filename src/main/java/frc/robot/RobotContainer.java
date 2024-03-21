@@ -292,7 +292,28 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().whileTrue(manualShot((getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer amp").get(1),PresetConstants.bluePresetMap.get("subwoofer amp").get(0),PresetConstants.redPresetMap.get("subwoofer amp").get(0), () -> !operatorController.a().getAsBoolean()));
+		operatorController.a().whileTrue(manualShot(
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer amp").get(1),
+			PresetConstants.bluePresetMap.get("subwoofer amp").get(0),
+			PresetConstants.redPresetMap.get("subwoofer amp").get(0),
+			() -> !operatorController.a().getAsBoolean()
+		));
+
+		operatorController.y().whileTrue(manualShot(
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer anti-amp").get(1),
+			PresetConstants.bluePresetMap.get("subwoofer anti-amp").get(0),
+			PresetConstants.redPresetMap.get("subwoofer anti-amp").get(0),
+			() -> !operatorController.y().getAsBoolean()
+		));
+
+		operatorController.b().whileTrue(manualShot(
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer center").get(1),
+			PresetConstants.bluePresetMap.get("subwoofer center").get(0),
+			PresetConstants.redPresetMap.get("subwoofer center").get(0),
+			() -> !operatorController.b().getAsBoolean()
+		));
+
+
 
 		// driveController.y().whileTrue(() -> );
 		
