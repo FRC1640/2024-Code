@@ -1,6 +1,14 @@
 package frc.robot;
 
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
+
+import static java.util.Map.entry;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.DoubleStream;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
@@ -182,6 +190,31 @@ public final class Constants {
         public static double extensionManualSpeed = 0.85;
 
         public static int resolverID = 4;
+    }
+
+    public static class PresetConstants {
+        public static final Map<String, List<Double>> redPresetMap = 
+            Map.ofEntries(
+                entry("subwoofer amp", List.of(300.0, 0.0)),
+			    entry("subwoofer center", List.of(0.0, 0.0)),
+			    entry("subwoofer anti-amp", List.of(60.0, 0.0))
+            );
+        
+        public static final Map<String, List<Double>> bluePresetMap = 
+            Map.ofEntries(
+                entry("subwoofer amp", List.of(120.0, 0.0)),
+			    entry("subwoofer center", List.of(180.0, 0.0)),
+			    entry("subwoofer anti-amp", List.of(240.0, 0.0))
+            );
+
+        // Map presetsBlue = new HashMap();
+		// 	presets.entry("subwoofer amp", double 120);
+		// 	presets.put("subwoofer center", 180);
+		// 	presets.put("subwoofer anti-amp", 240);
+	 	// Map presetsRed = new HashMap();
+		// 	presets.put("subwoofer amp", 300);
+		// 	presets.put("subwoofer center", 0);
+		// 	presets.put("subwoofer anti-amp", 60);
     }
 
     public static void updateStatusFrames(CANSparkMax motor, int status0, int status1, int status2,

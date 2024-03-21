@@ -5,6 +5,8 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -35,6 +37,7 @@ import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
+import frc.robot.Constants.PresetConstants;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -226,7 +229,7 @@ public class RobotContainer {
 		operatorController.x().whileTrue(ampCommand());
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-		operatorController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
+		driveController.back().onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());
 		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
 		driveController.y().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
@@ -289,8 +292,7 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().whileTrue(manualShotNoAngle(41.8,
-			()->!operatorController.a().getAsBoolean()));
+		operatorController.a().whileTrue(manualShot((getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer amp").get(1),PresetConstants.bluePresetMap.get("subwoofer amp").get(0),PresetConstants.redPresetMap.get("subwoofer amp").get(0), () -> !operatorController.a().getAsBoolean()));
 
 		// driveController.y().whileTrue(() -> );
 		
@@ -421,6 +423,7 @@ public class RobotContainer {
 			()->0.03, ()->0.27, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
+
 
 	public void generateNamedCommands(){
 		// NamedCommands.registerCommand("", )
