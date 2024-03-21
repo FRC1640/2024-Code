@@ -106,11 +106,16 @@ public class RobotContainer {
 
 	MovingWhileShooting movingWhileShooting;
 
+	MovingWhileShooting movingWhileSpitting;
+
+
 	RotateToAngleWeight movingWhileShootingWeight;
 
 	boolean autoTargetBool = false;
 
 	private boolean startAuto = false;
+
+	private boolean spittingMode = false; // "spitting mode" when the distance to speaker is within a 9.5 radius  
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -186,6 +191,11 @@ public class RobotContainer {
 
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
+		
+		movingWhileSpitting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
+		driveSubsystem::getChassisSpeeds, targetingSubsystem);
+
+		
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
 		targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
 
@@ -205,7 +215,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
-		movingWhileShootingWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
+		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< 10.249 ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
 		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false);
 
@@ -244,13 +254,13 @@ public class RobotContainer {
 		// 		// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
 
 		// moving while shooting robot rotation
-		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
+
+			driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
 				// .alongWith(autoTarget()));
-		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
+			driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))); // 
 
-		
 		operatorController.leftTrigger()
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
 		operatorController.rightTrigger()
@@ -370,6 +380,12 @@ public class RobotContainer {
 				: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
 	}
 
+	public Pose2d getStashPos() {
+		return (getAlliance() == Alliance.Blue
+				? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d())
+				: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d())); // rep[lace with corrner angle for stashing]
+	}
+
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0, 0.8));
 	}
@@ -404,11 +420,17 @@ public class RobotContainer {
 			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
 
 	}
-	public Command autoTargetMovingWhileShooting(){
-		return targetingSubsystem.anglePIDCommand(() -> 
-			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool && extensionSubsystem.getExtensionPosition() < 20);
-	}
 
+	public double determineTargettingAngle(){
+		return (get3dDistance(() -> getSpeakerPos()) < 10.249
+			? movingWhileShooting.getAngleFromDistance() : 40);
+	}
+	public Command autoTargetMovingWhileShooting(){ // here for targetting angle and toggle long shoot
+		return targetingSubsystem.anglePIDCommand(() -> determineTargettingAngle(), 60, ()->autoTargetBool
+			&& extensionSubsystem.getExtensionPosition() < 20);
+	}
+	
+	
 	public Command ampCommand(){
 		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
 			()->0.03, ()->0.27, ()->true)
