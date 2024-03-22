@@ -295,18 +295,18 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().onTrue(setPreset("subwoofer center"));
+		operatorController.a().onTrue(setPreset("subwoofer center", this));
 
-		operatorController.x().onTrue(setPreset("subwoofer left"));
+		operatorController.x().onTrue(setPreset("subwoofer left", this));
 
-		operatorController.b().onTrue(setPreset("subwoofer right"));
+		operatorController.b().onTrue(setPreset("subwoofer right", this));
 
 		driveController.x().whileTrue(manualShot(
 			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset).get(1),
 			PresetConstants.bluePresetMap.get(preset).get(0),
 			PresetConstants.redPresetMap.get(preset).get(0),
 			() -> !driveController.x().getAsBoolean()
-		));
+		).alongWith(printPreset(preset,this)));
 
 
 
@@ -352,10 +352,51 @@ public class RobotContainer {
 		return Alliance.Blue;
 	}
 
-	private Command setPreset(String preset){
-		this.preset = preset;
-		System.out.println(this.preset);
-		return new InstantCommand();
+	private Command setPreset(String preset, RobotContainer robotContainer){
+		Command c = new Command() {
+			@Override
+			public void initialize(){
+				robotContainer.preset = preset;
+				System.out.println(robotContainer.preset);
+			}
+			@Override
+			public void execute(){
+				System.out.println(robotContainer.preset);
+			}
+
+			@Override
+			public void end(boolean isFinished){}
+
+			@Override
+			public boolean isFinished(){
+				return true;
+			} 
+		};
+		return c;
+		
+	}
+
+	private Command printPreset(String preset, RobotContainer robotContainer){
+		Command c = new Command() {
+			@Override
+			public void initialize(){
+				System.out.println(robotContainer.preset);
+			}
+			@Override
+			public void execute(){
+				System.out.println(robotContainer.preset);
+			}
+
+			@Override
+			public void end(boolean isFinished){}
+
+			@Override
+			public boolean isFinished(){
+				return true;
+			} 
+		};
+		return c;
+		
 	}
 
 	private Command generateIntakeCommand() {
