@@ -116,6 +116,8 @@ public class RobotContainer {
 
 	String preset = "subwoofer center";
 
+	private boolean startAuto = false;
+
 	public enum Preset {
 		RIGHT,
 		CENTER,
@@ -123,8 +125,6 @@ public class RobotContainer {
 	}
 
 	Preset preset2 = Preset.CENTER;
-
-	private boolean startAuto = false;
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -303,11 +303,11 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().onTrue(new InstantCommand(() -> {preset2 = Preset.CENTER;}).alongWith(printPreset(preset2)));
+		operatorController.a().onTrue(new InstantCommand(() -> {preset2 = Preset.CENTER; System.out.println(preset2);}).andThen(printPreset(preset2)));
 
-		operatorController.x().onTrue(new InstantCommand(() -> {preset2 = Preset.LEFT;}).alongWith(printPreset(preset2)));
+		operatorController.x().onTrue(new InstantCommand(() -> {preset2 = Preset.LEFT; System.out.println(preset2);}).andThen(printPreset(preset2)));
 
-		operatorController.b().onTrue(new InstantCommand(() -> {preset2 = Preset.RIGHT;}).alongWith(printPreset(preset2)));
+		operatorController.b().onTrue(new InstantCommand(() -> {preset2 = Preset.RIGHT; System.out.println(preset2);}).andThen(printPreset(preset2)));
 
 		driveController.x().whileTrue(manualShot(
 			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset2).get(1),
@@ -375,7 +375,6 @@ public class RobotContainer {
 			}
 			@Override
 			public void execute(){
-				System.out.println(preset);
 			}
 
 			@Override
