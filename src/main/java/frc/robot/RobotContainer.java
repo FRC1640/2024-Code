@@ -338,14 +338,6 @@ public class RobotContainer {
 			getOnX())
 			);
 
-		
-		// driveController.x().whileTrue(manualShot(
-		// 	(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset).get(1),
-		// 	PresetConstants.bluePresetMap.get(preset).get(0),
-		// 	PresetConstants.redPresetMap.get(preset).get(0),
-		// 	() -> !driveController.x().getAsBoolean()
-		// ).alongWith(printPreset(preset,this)));
-
 
 
 		// driveController.y().whileTrue(() -> );
