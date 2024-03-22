@@ -226,7 +226,7 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
-		operatorController.x().whileTrue(ampCommand());
+		operatorController.y().whileTrue(ampCommand());
 		// amp shot
 		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
 		driveController.back().onTrue(driveSubsystem.resetOdometryAprilTag());
@@ -293,23 +293,23 @@ public class RobotContainer {
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
 		operatorController.a().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer amp").get(1),
-			PresetConstants.bluePresetMap.get("subwoofer amp").get(0),
-			PresetConstants.redPresetMap.get("subwoofer amp").get(0),
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer center").get(1),
+			PresetConstants.bluePresetMap.get("subwoofer center").get(0),
+			PresetConstants.redPresetMap.get("subwoofer center").get(0),
 			() -> !operatorController.a().getAsBoolean()
 		));
 
-		operatorController.y().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer anti-amp").get(1),
-			PresetConstants.bluePresetMap.get("subwoofer anti-amp").get(0),
-			PresetConstants.redPresetMap.get("subwoofer anti-amp").get(0),
+		operatorController.x().whileTrue(manualShot(
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer left").get(1),
+			PresetConstants.bluePresetMap.get("subwoofer left").get(0),
+			PresetConstants.redPresetMap.get("subwoofer left").get(0),
 			() -> !operatorController.y().getAsBoolean()
 		));
 
 		operatorController.b().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer center").get(1),
-			PresetConstants.bluePresetMap.get("subwoofer center").get(0),
-			PresetConstants.redPresetMap.get("subwoofer center").get(0),
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer right").get(1),
+			PresetConstants.bluePresetMap.get("subwoofer right").get(0),
+			PresetConstants.redPresetMap.get("subwoofer right").get(0),
 			() -> !operatorController.b().getAsBoolean()
 		));
 

@@ -195,16 +195,16 @@ public final class Constants {
     public static class PresetConstants {
         public static final Map<String, List<Double>> redPresetMap = 
             Map.ofEntries(
-                entry("subwoofer amp", List.of(-0.55, 38.119)),
+                entry("subwoofer left", List.of(-0.55, 38.119)),
 			    entry("subwoofer center", List.of(-0.011, 40.483)),
-			    entry("subwoofer anti-amp", List.of(0.505, 38.881))
+			    entry("subwoofer right", List.of(0.505, 38.881))
             );
         
         public static final Map<String, List<Double>> bluePresetMap = 
             Map.ofEntries(
-                entry("subwoofer amp", List.of(-2.584, 37.853)),
+                entry("subwoofer right", List.of(-2.584, 37.853)),
 			    entry("subwoofer center", List.of(-3.130, 39.137)),
-			    entry("subwoofer anti-amp", List.of(2.672, 39.529))
+			    entry("subwoofer left", List.of(2.672, 39.529))
             );
 
         // Map presetsBlue = new HashMap();
