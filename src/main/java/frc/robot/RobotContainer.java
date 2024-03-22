@@ -208,7 +208,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
-		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< 7.0 ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
+		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
 		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false);
 
