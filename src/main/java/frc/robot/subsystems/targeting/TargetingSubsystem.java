@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.sysid.ArmSysidRoutine;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.TargetingConstants;
+
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -149,6 +151,9 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Percent output.
      */
     private double getAnglePIDSpeed(double position) {
+        if (getAnglePosition() <= TargetingConstants.angleLowerLimit){
+            pid.reset();
+        }
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
         speed = MathUtil.clamp(speed, -1, 1);
         if (Math.abs(speed) < 0.01) {

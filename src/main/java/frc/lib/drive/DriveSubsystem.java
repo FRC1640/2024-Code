@@ -125,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(3, 0, 0),
-                        new PIDConstants(3, 0, 0),
+                        new PIDConstants(3.5, 0, 0),
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
@@ -175,7 +175,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())
-                    && vision.getNumVisibleTags() != 0) {
+                    && vision.getNumVisibleTags() != 0 && Robot.inTeleop) {
 
                 double distConst = 1 + (vision.getDistance() * vision.getDistance()); // distance standard deviation
                                                                                       // constant
@@ -215,12 +215,14 @@ public class DriveSubsystem extends SubsystemBase {
 
                 if (vision.getNumVisibleTags() > 1) {
                     useEstimate = true;
-                    if (Robot.inTeleop) {
-                        xy = 0.1;
-                        distConst = distConst /= 2;
-                    } else {
-                        xy = AprilTagVisionConstants.xyStdDev;
-                    }
+                    // if (Robot.inTeleop) {
+                        
+                    // } else {
+                    //     xy = AprilTagVisionConstants.xyStdDev;
+                    // }
+
+                    xy = 0.5;
+                    // distConst = distConst
                 } else {
                     distConst = distConst * 2;
                 }
@@ -271,18 +273,27 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public Command rotateToAngleCommand(DoubleSupplier angle) {
+    public Command rotateToAngleCommand(DoubleSupplier angleSupplier) {
         Command c = new Command() {
+            double angle;
+            @Override
+            public void initialize() {
+                angle = angleSupplier.getAsDouble();
+            }
+
             @Override
             public void end(boolean interrupted) {
+                System.out.println("end");
                 driveDoubleConePercent(0, 0, 0, false, new Translation2d());
             }
 
             @Override
             public void execute() {
+                System.out.println(Math.toDegrees(angle));
+                
                 double o;
                 o = pidr.calculate(-SwerveAlgorithms.angleDistance(gyro.getAngleRotation2d().getRadians(),
-                        angle.getAsDouble()), 0);
+                        angle), 0);
                 if (Math.abs(o) < 0.005) {
                     o = 0;
                 }
@@ -294,8 +305,8 @@ public class DriveSubsystem extends SubsystemBase {
 
             @Override
             public boolean isFinished() {
-                return Math.abs(SwerveAlgorithms.angleDistance(gyro.getAngleRotation2d().getRadians(),
-                        angle.getAsDouble())) < 3;
+                return (Math.abs(SwerveAlgorithms.angleDistance(gyro.getAngleRotation2d().getRadians(),
+                        angle)) < 3);
             }
         };
         c.addRequirements(this);
@@ -381,8 +392,9 @@ public class DriveSubsystem extends SubsystemBase {
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
-        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
+        
         frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
+        frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
         backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
         backRight.setDesiredStateMetersPerSecond(swerveModuleStates[3]);
         desiredSwerveStates = swerveModuleStates;

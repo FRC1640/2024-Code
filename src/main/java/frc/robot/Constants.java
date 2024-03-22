@@ -23,10 +23,10 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 2;
+        public static final double xyStdDev = 4;
         public static final double thetaStdDev = 99999999;
 
-        public static final double xyStdDevAuto = 4;
+        public static final double xyStdDevAuto = 2;
         public static final double thetaStdDevAuto = 99999999;
     }
 
@@ -139,7 +139,7 @@ public final class Constants {
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.015, 0.001, 0);
-        public static PIDController horizontalMLVision = new PIDController(0.005, 0, 0);
+        public static PIDController horizontalMLVision = new PIDController(0.01, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.01, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0

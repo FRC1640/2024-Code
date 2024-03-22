@@ -279,12 +279,12 @@ public class RobotContainer {
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
 		
-		driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand());
+		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand());
 
 
-		//driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
-		//driveController.rightTrigger()
-		 				//.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
+		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
+		driveController.rightTrigger()
+		 				.onFalse(Commands.parallel(new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)), new InstantCommand(() -> mlVisionWeight.resetMode())));
 		operatorController.rightBumper().whileTrue(
 				extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		operatorController.leftBumper().whileTrue(
@@ -352,7 +352,7 @@ public class RobotContainer {
 	}
 
     private Command generateIntakeCommandAuto() {
-			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.75))
+			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.1))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.3) 
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
@@ -453,16 +453,21 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(34 + offset));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(32));
+		NamedCommands.registerCommand("AmpNoteShotQuad", manualShotAuto(34));
 		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(37 + offset));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(32 + offset));
 		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(32 + offset));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(35+ offset));
-		NamedCommands.registerCommand("CenterShot", manualShotAuto(28.5 + offset));
+		NamedCommands.registerCommand("CenterShot", manualShotAuto(35));
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
 
-		NamedCommands.registerCommand("RunIndexerLowAccuracy", generateIntakeCommand());
+		NamedCommands.registerCommand("UnderStage", manualShotAuto(29));
+
+		NamedCommands.registerCommand("CenterSourceSide", manualShotAuto(33));
+
+		// NamedCommands.registerCommand("RunIndexerLowAccuracy", generateIntakeCommand());
 
 		NamedCommands.registerCommand("AutoTargetAngle", targetingSubsystem.anglePIDCommand(() -> 
 			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool && extensionSubsystem.getExtensionPosition() < 20));
@@ -475,7 +480,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
 		// NamedCommands.registerCommand("SetAngleFreeThrow", new InstantCommand(()->setAutoTargetAngle(Math.toRadians(-165))));
 
-		NamedCommands.registerCommand("TripletStage", driveSubsystem.rotateToAngleCommand(()->Math.toRadians((157 + (getAlliance() == Alliance.Red?180:0)))));
+		NamedCommands.registerCommand("AmpSideRotate", driveSubsystem.rotateToAngleCommand(()->Math.toRadians((157 + (getAlliance() == Alliance.Red?180:0)))));
 		NamedCommands.registerCommand("SetAngleFreeThrow", driveSubsystem.rotateToAngleCommand(()->(Math.toRadians(-180 + (getAlliance() == Alliance.Red?180:0)))));
 
 		NamedCommands.registerCommand("RotateToGoal", movingWhileShootingWeightAuto.getAsCommand());
