@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -112,6 +113,8 @@ public class RobotContainer {
 	RotateToAngleWeight movingWhileShootingWeight;
 
 	boolean autoTargetBool = false;
+
+	String preset = "subwoofer center";
 
 	private boolean startAuto = false;
 
@@ -292,25 +295,17 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer center").get(1),
-			PresetConstants.bluePresetMap.get("subwoofer center").get(0),
-			PresetConstants.redPresetMap.get("subwoofer center").get(0),
-			() -> !operatorController.a().getAsBoolean()
-		));
+		operatorController.a().onTrue(setPreset("subwoofer center"));
 
-		operatorController.x().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer left").get(1),
-			PresetConstants.bluePresetMap.get("subwoofer left").get(0),
-			PresetConstants.redPresetMap.get("subwoofer left").get(0),
-			() -> !operatorController.y().getAsBoolean()
-		));
+		operatorController.x().onTrue(setPreset("subwoofer left"));
 
-		operatorController.b().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get("subwoofer right").get(1),
-			PresetConstants.bluePresetMap.get("subwoofer right").get(0),
-			PresetConstants.redPresetMap.get("subwoofer right").get(0),
-			() -> !operatorController.b().getAsBoolean()
+		operatorController.b().onTrue(setPreset("subwoofer right"));
+
+		driveController.x().whileTrue(manualShot(
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset).get(1),
+			PresetConstants.bluePresetMap.get(preset).get(0),
+			PresetConstants.redPresetMap.get(preset).get(0),
+			() -> !driveController.x().getAsBoolean()
 		));
 
 
@@ -355,6 +350,11 @@ public class RobotContainer {
 			return DriverStation.getAlliance().get();
 		}
 		return Alliance.Blue;
+	}
+
+	private Command setPreset(String preset){
+		this.preset = preset;
+		return null;
 	}
 
 	private Command generateIntakeCommand() {
