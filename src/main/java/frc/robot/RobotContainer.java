@@ -372,6 +372,9 @@ public class RobotContainer {
 				return true;
 			} 
 		};
+		
+		Logger.recordOutput("Targetting Manual Preset", robotContainer.preset);
+
 		return c;
 		
 	}
