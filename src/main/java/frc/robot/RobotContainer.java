@@ -393,7 +393,7 @@ public class RobotContainer {
 	public void setPreset(Preset preset){
 		currentPreset = preset;
 		Logger.recordOutput("Current Preset", currentPreset);
-		System.out.println("Current Preset " + currentPreset);
+		//System.out.println("Current Preset " + currentPreset);
 
 	}
 
