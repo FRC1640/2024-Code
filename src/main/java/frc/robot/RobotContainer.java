@@ -110,9 +110,6 @@ public class RobotContainer {
 
 	MovingWhileShooting movingWhileShooting;
 
-	MovingWhileShooting movingWhileSpitting;
-
-
 	RotateToAngleWeight movingWhileShootingWeight;
 
 	boolean autoTargetBool = false;
@@ -214,7 +211,9 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
-		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
+		movingWhileShootingWeight = new RotateToAngleWeight(()->(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius) 
+			? (movingWhileShooting.getNewRobotAngle()) 
+			: (getAngleToStash()), // this one
 		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false, driveSubsystem);
 
@@ -320,6 +319,11 @@ public class RobotContainer {
 		
 	}
 
+	public double getAngleToStash(){
+		return Math.atan2(getStashPos().getY() - driveSubsystem.getPose().getY(),
+                getStashPos().getX() - driveSubsystem.getPose().getX());
+	}
+
 	public void toggleAutoTarget(boolean toggled){
 		Logger.recordOutput("ToggledAutoTarget", autoTargetBool);
 		autoTargetBool = toggled;
@@ -349,8 +353,7 @@ public class RobotContainer {
 	}
 
 	private Command generateIntakeCommand() {
-		return intakeSubsystem.intakeCommand(0, (get3dDistance(() -> getSpeakerPos()) < 10.249
-			? 0.8 : 0),
+		return intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(5)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 2.5));
