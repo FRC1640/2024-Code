@@ -354,7 +354,8 @@ public class RobotContainer {
 
 	private Command setPreset(String preset){
 		this.preset = preset;
-		return null;
+		System.out.println(this.preset);
+		return new InstantCommand();
 	}
 
 	private Command generateIntakeCommand() {
