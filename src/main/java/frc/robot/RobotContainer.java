@@ -354,7 +354,7 @@ public class RobotContainer {
 
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(5)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 2.5));
 	}
@@ -442,12 +442,12 @@ public class RobotContainer {
 
 	}
 
-	public double determineTargettingAngle(){
+	public double determineTargetingAngle(){
 		return (get3dDistance(() -> getSpeakerPos()) < 7 //10.249
 			? movingWhileShooting.getAngleFromDistance() : 40);
 	}
-	public Command autoTargetMovingWhileShooting(){ // here for targetting angle and toggle long shoot
-		return targetingSubsystem.anglePIDCommand(() -> determineTargettingAngle(), 60, ()->autoTargetBool
+	public Command autoTargetMovingWhileShooting(){
+		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60, ()->autoTargetBool
 			&& extensionSubsystem.getExtensionPosition() < 20);
 	}
 	
