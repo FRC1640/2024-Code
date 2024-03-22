@@ -211,7 +211,9 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
-		movingWhileShootingWeight = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
+		movingWhileShootingWeight = new RotateToAngleWeight(()->(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius) 
+			? (movingWhileShooting.getNewRobotAngle()) 
+			: (getAngleToStash()),
 		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false, driveSubsystem);
 
@@ -244,19 +246,20 @@ public class RobotContainer {
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
-		// 		// .alongWith(autoTarget()));
+		// 		// .alongWith(autoTarget()
+		// ));
 		// driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
 		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
 		// 		// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
 
 		// moving while shooting robot rotation
-		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
-				// .alongWith(autoTarget()));
-		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
 
-		
+		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
+			.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
+			// .alongWith(autoTarget()));
+		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
+			.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))); // 
+
 		operatorController.leftTrigger()
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
 		operatorController.rightTrigger()
@@ -314,6 +317,11 @@ public class RobotContainer {
 		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
 		// );
 		
+	}
+
+	public double getAngleToStash(){
+		return Math.atan2(getStashPos().getY() - driveSubsystem.getPose().getY(),
+                getStashPos().getX() - driveSubsystem.getPose().getX());
 	}
 
 	public void toggleAutoTarget(boolean toggled){
@@ -387,6 +395,12 @@ public class RobotContainer {
 				: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d()));
 	}
 
+	public Pose2d getStashPos() {
+		return (getAlliance() == Alliance.Blue
+				? new Pose2d(FieldConstants.stashPositionBlue, new Rotation2d())
+				: new Pose2d(FieldConstants.stashPositionRed, new Rotation2d()));
+	}
+
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0, 0.8));
 	}
@@ -416,16 +430,28 @@ public class RobotContainer {
 				speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
 
 	}
+
+	// public double generateAngleToStash(){
+	// 	return Math.atan2(.getY() - driveSubsystem.getPose.getY(),
+	// 	goalPose.get().getX() - getPose.get().getX()) - gyro.getOffset();
+	// }
+
 	public Command autoTarget(){
 		return targetingSubsystem.anglePIDCommand(() -> 
 			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
 
 	}
-	public Command autoTargetMovingWhileShooting(){
-		return targetingSubsystem.anglePIDCommand(() -> 
-			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool && extensionSubsystem.getExtensionPosition() < 20);
-	}
 
+	public double determineTargetingAngle(){
+		return (get3dDistance(() -> getSpeakerPos()) < 7 //10.249
+			? movingWhileShooting.getAngleFromDistance() : 40);
+	}
+	public Command autoTargetMovingWhileShooting(){
+		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60, ()->autoTargetBool
+			&& extensionSubsystem.getExtensionPosition() < 20);
+	}
+	
+	
 	public Command ampCommand(){
 		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
 			()->0.03, ()->0.27, ()->true)
