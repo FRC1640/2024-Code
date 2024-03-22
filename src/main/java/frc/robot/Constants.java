@@ -162,6 +162,10 @@ public final class Constants {
         public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.840);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
+        
+        public static Translation2d stashPositionBlue = new Translation2d(15.075, 7.111);
+        public static Translation2d stashPositionRed = new Translation2d(1.0, 5.5);
+ 
     }
 
     public static class TargetingConstants {

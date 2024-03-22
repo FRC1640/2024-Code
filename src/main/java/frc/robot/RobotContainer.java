@@ -192,7 +192,7 @@ public class RobotContainer {
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
 		
-		movingWhileSpitting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
+		movingWhileSpitting = new MovingWhileShooting(gyro, ()->getStashPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
 
 		
@@ -216,7 +216,7 @@ public class RobotContainer {
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
 		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< 10.249 ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
-		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
+driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false);
 
 		autoDriveWeight = new AutoDriveWeight(
@@ -345,7 +345,8 @@ public class RobotContainer {
 	}
 
 	private Command generateIntakeCommand() {
-		return intakeSubsystem.intakeCommand(0, 0.8,
+		return intakeSubsystem.intakeCommand(0, (get3dDistance(() -> getSpeakerPos()) < 10.249
+			? 0.8 : 0),
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 2.5));
@@ -382,8 +383,8 @@ public class RobotContainer {
 
 	public Pose2d getStashPos() {
 		return (getAlliance() == Alliance.Blue
-				? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d())
-				: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d())); // rep[lace with corrner angle for stashing]
+				? new Pose2d(FieldConstants.stashPositionBlue, new Rotation2d())
+				: new Pose2d(FieldConstants.stashPositionRed, new Rotation2d())); // rep[lace with corrner angle for stashing]
 	}
 
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
@@ -422,7 +423,7 @@ public class RobotContainer {
 	}
 
 	public double determineTargettingAngle(){
-		return (get3dDistance(() -> getSpeakerPos()) < 10.249
+		return (get3dDistance(() -> getSpeakerPos()) < 7 //10.249
 			? movingWhileShooting.getAngleFromDistance() : 40);
 	}
 	public Command autoTargetMovingWhileShooting(){ // here for targetting angle and toggle long shoot
