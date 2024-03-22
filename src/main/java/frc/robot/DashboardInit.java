@@ -164,7 +164,7 @@ public class DashboardInit {
         teleop.add(field)
                 .withSize(4, 2)
                 .withPosition(6, 0);
-        teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(Constants.TargetingConstants.angleError))
+        teleop.addBoolean("Is targeting right?", () -> targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError))
                 .withSize(1,1)
                 .withPosition(7,2);
         teleop.addBoolean("Targeting at limit?", () -> posGet())

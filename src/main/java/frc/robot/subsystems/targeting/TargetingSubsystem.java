@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.sysid.ArmSysidRoutine;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.TargetingConstants;
+
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -97,7 +99,8 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     public double equation(double v){
-        return 46.1704 * Math.asin(0.36223*(2.11/v) + 0.669132) - 12.6316;
+        
+        return 48.6324 * Math.asin(0.772692*(1/v) + 0.664047) - 17.0793 + angleOffset.getAsDouble();
     }
 
     public double getAngleVoltage(){
@@ -148,6 +151,9 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Percent output.
      */
     private double getAnglePIDSpeed(double position) {
+        if (getAnglePosition() <= TargetingConstants.angleLowerLimit){
+            pid.reset();
+        }
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
         speed = MathUtil.clamp(speed, -1, 1);
         if (Math.abs(speed) < 0.01) {
