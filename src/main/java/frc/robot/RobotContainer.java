@@ -115,8 +115,6 @@ public class RobotContainer {
 
 	private boolean startAuto = false;
 
-	private boolean spittingMode = false; // "spitting mode" when the distance to speaker is within a 9.5 radius  
-
 	public RobotContainer() {
 		switch (Robot.getMode()) {
 			case REAL:
@@ -191,11 +189,6 @@ public class RobotContainer {
 
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
-		
-		movingWhileSpitting = new MovingWhileShooting(gyro, ()->getStashPos(), driveSubsystem::getPose, 
-		driveSubsystem::getChassisSpeeds, targetingSubsystem);
-
-		
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
 		targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
 
@@ -215,8 +208,8 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
 				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
-		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< 10.249 ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
-driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
+		movingWhileShootingWeight = new RotateToAngleWeight(get3dDistance(() -> getSpeakerPos())< 7.0 ? (()->movingWhileShooting.getNewRobotAngle()) : (()->movingWhileSpitting.getNewRobotAngle()), // this one
+		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false);
 
 		autoDriveWeight = new AutoDriveWeight(
@@ -248,7 +241,8 @@ driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
-		// 		// .alongWith(autoTarget()));
+		// 		// .alongWith(autoTarget()
+		// ));
 		// driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
 		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
 		// 		// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
@@ -347,7 +341,7 @@ driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, (get3dDistance(() -> getSpeakerPos()) < 10.249
 			? 0.8 : 0),
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(5)
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 2.5));
 	}
@@ -416,6 +410,12 @@ driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 				speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
 
 	}
+
+	// public double generateAngleToStash(){
+	// 	return Math.atan2(.getY() - driveSubsystem.getPose.getY(),
+	// 	goalPose.get().getX() - getPose.get().getX()) - gyro.getOffset();
+	// }
+
 	public Command autoTarget(){
 		return targetingSubsystem.anglePIDCommand(() -> 
 			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
