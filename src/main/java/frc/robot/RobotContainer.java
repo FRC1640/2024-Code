@@ -254,11 +254,11 @@ public class RobotContainer {
 
 		// moving while shooting robot rotation
 
-			driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
-				// .alongWith(autoTarget()));
-			driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))); // 
+		driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
+			.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
+			// .alongWith(autoTarget()));
+		driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
+			.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))); // 
 
 		operatorController.leftTrigger()
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
