@@ -193,20 +193,9 @@ public final class Constants {
         public static int resolverID = 4;
     }
 
-    public static class PresetConstants {
-        public static final Map<Preset, List<Double>> redPresetMap = 
-            Map.ofEntries(
-                entry(Preset.LEFT, List.of(-0.55, 38.119)),
-			    entry(Preset.CENTER, List.of(-0.00, 40.483)),
-			    entry(Preset.RIGHT, List.of(0.505, 38.881))
-            );
+    
         
-        public static final Map<Preset, List<Double>> bluePresetMap = 
-            Map.ofEntries(
-                entry(Preset.RIGHT, List.of(-2.584, 37.853)),
-			    entry(Preset.CENTER, List.of(3.14, 39.137)),
-			    entry(Preset.LEFT, List.of(2.672, 39.529))
-            );
+        
 
         // Map presetsBlue = new HashMap();
 		// 	presets.entry("subwoofer amp", double 120);
@@ -216,7 +205,7 @@ public final class Constants {
 		// 	presets.put("subwoofer amp", 300);
 		// 	presets.put("subwoofer center", 0);
 		// 	presets.put("subwoofer anti-amp", 60);
-    }
+    
 
     public static void updateStatusFrames(CANSparkMax motor, int status0, int status1, int status2,
             int status3, int status4, int status5, int status6) {

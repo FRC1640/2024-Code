@@ -5,7 +5,11 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -38,7 +42,6 @@ import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
-import frc.robot.Constants.PresetConstants;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -114,15 +117,29 @@ public class RobotContainer {
 
 	boolean autoTargetBool = false;
 
-	String preset = "subwoofer center";
+	public static enum Preset {
+        subwooferCenter,
+        subwooferLeft,
+        subwooferRight;
+    }
 
-	public enum Preset {
-		RIGHT,
-		CENTER,
-		LEFT
-	}
+	Preset currentPreset = Preset.subwooferCenter;
 
-	Preset preset2 = Preset.CENTER;
+
+	private final Map<Preset,  List<Double>> bluePresetMap = // red needs extra 180
+    new EnumMap<>(Map.ofEntries(
+        Map.entry(Preset.subwooferLeft, List.of(2.672, 39.529)), 
+        Map.entry(Preset.subwooferCenter, List.of(3.14, 39.137)), 
+        Map.entry(Preset.subwooferRight, List.of(-2.584, 37.853))
+    ));
+
+	public static final Map<Preset, List<Double>> redPresetMap = 
+	new EnumMap<>(Map.ofEntries(
+        Map.entry(Preset.subwooferLeft, List.of(-0.55, 38.119)), 
+        Map.entry(Preset.subwooferCenter, List.of(-0.00, 40.483)), // 0 is robot angle 1 is targetting
+        Map.entry(Preset.subwooferRight, List.of(0.505, 38.881))
+    ));
+
 
 	private boolean startAuto = false;
 
@@ -233,6 +250,7 @@ public class RobotContainer {
 
 		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem, mlVision);
 		configureBindings();
+		Logger.recordOutput("Current Preset", currentPreset);
 	}
 
 	private void configureBindings() {
@@ -303,18 +321,30 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().onTrue(new InstantCommand(() -> {preset2 = Preset.CENTER;}).alongWith(printPreset(preset2)));
+		operatorController.a().onTrue(new InstantCommand(() -> setPreset(Preset.subwooferCenter))
+								.alongWith(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset))));
 
-		operatorController.x().onTrue(new InstantCommand(() -> {preset2 = Preset.LEFT;}).alongWith(printPreset(preset2)));
+		operatorController.x().onTrue(new InstantCommand(() ->setPreset(Preset.subwooferLeft))
+							.alongWith(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset))));
 
-		operatorController.b().onTrue(new InstantCommand(() -> {preset2 = Preset.RIGHT;}).alongWith(printPreset(preset2)));
+		operatorController.b().onTrue(new InstantCommand(() -> setPreset(Preset.subwooferRight))
+							.alongWith(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset))));
 
+		
 		driveController.x().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset2).get(1),
-			PresetConstants.bluePresetMap.get(preset2).get(0),
-			PresetConstants.redPresetMap.get(preset2).get(0),
-			() -> !driveController.x().getAsBoolean()
-		).alongWith(printPreset(preset2)));
+			getAlliance()==Alliance.Blue ? bluePresetMap.get(currentPreset).get(1).doubleValue():redPresetMap.get(currentPreset).get(1).doubleValue(),
+			bluePresetMap.get(currentPreset).get(0).doubleValue(),
+			redPresetMap.get(currentPreset).get(0).doubleValue(),
+			getOnX())
+			);
+
+		
+		// driveController.x().whileTrue(manualShot(
+		// 	(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset).get(1),
+		// 	PresetConstants.bluePresetMap.get(preset).get(0),
+		// 	PresetConstants.redPresetMap.get(preset).get(0),
+		// 	() -> !driveController.x().getAsBoolean()
+		// ).alongWith(printPreset(preset,this)));
 
 
 
@@ -360,34 +390,11 @@ public class RobotContainer {
 		return Alliance.Blue;
 	}
 
-	
-		
-		// Logger.recordOutput("Targetting Manual Preset", robotContainer.preset);
+	public void setPreset(Preset preset){
+		currentPreset = preset;
+		Logger.recordOutput("Current Preset", currentPreset);
+		System.out.println("Current Preset " + currentPreset);
 
-		// return c;
-		
-
-	private Command printPreset(Preset preset){
-		Command c = new Command() {
-			@Override
-			public void initialize(){
-				System.out.println(preset);
-			}
-			@Override
-			public void execute(){
-				System.out.println(preset);
-			}
-
-			@Override
-			public void end(boolean isFinished){}
-
-			@Override
-			public boolean isFinished(){
-				return true;
-			} 
-		};
-		return c;
-		
 	}
 
 	private Command generateIntakeCommand() {
@@ -476,6 +483,10 @@ public class RobotContainer {
 		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
 			()->0.03, ()->0.27, ()->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
+	}
+
+	BooleanSupplier getOnX(){
+			return () -> !driveController.x().getAsBoolean();
 	}
 
 
