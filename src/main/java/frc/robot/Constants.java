@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
+import frc.robot.RobotContainer.Preset;
 
 public final class Constants {
     public static enum PivotId {
@@ -193,18 +194,18 @@ public final class Constants {
     }
 
     public static class PresetConstants {
-        public static final Map<String, List<Double>> redPresetMap = 
+        public static final Map<Preset, List<Double>> redPresetMap = 
             Map.ofEntries(
-                entry("subwoofer left", List.of(-0.55, 38.119)),
-			    entry("subwoofer center", List.of(-0.00, 40.483)),
-			    entry("subwoofer right", List.of(0.505, 38.881))
+                entry(Preset.LEFT, List.of(-0.55, 38.119)),
+			    entry(Preset.CENTER, List.of(-0.00, 40.483)),
+			    entry(Preset.RIGHT, List.of(0.505, 38.881))
             );
         
-        public static final Map<String, List<Double>> bluePresetMap = 
+        public static final Map<Preset, List<Double>> bluePresetMap = 
             Map.ofEntries(
-                entry("subwoofer right", List.of(-2.584, 37.853)),
-			    entry("subwoofer center", List.of(3.14, 39.137)),
-			    entry("subwoofer left", List.of(2.672, 39.529))
+                entry(Preset.RIGHT, List.of(-2.584, 37.853)),
+			    entry(Preset.CENTER, List.of(3.14, 39.137)),
+			    entry(Preset.LEFT, List.of(2.672, 39.529))
             );
 
         // Map presetsBlue = new HashMap();

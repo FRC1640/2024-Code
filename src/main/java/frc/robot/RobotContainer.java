@@ -116,6 +116,14 @@ public class RobotContainer {
 
 	String preset = "subwoofer center";
 
+	public enum Preset {
+		RIGHT,
+		CENTER,
+		LEFT
+	}
+
+	Preset preset2 = Preset.CENTER;
+
 	private boolean startAuto = false;
 
 	public RobotContainer() {
@@ -295,18 +303,18 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().onTrue(setPreset("subwoofer center", this));
+		operatorController.a().onTrue(new InstantCommand(() -> {preset2 = Preset.CENTER;}).alongWith(printPreset(preset2)));
 
-		operatorController.x().onTrue(setPreset("subwoofer left", this));
+		operatorController.x().onTrue(new InstantCommand(() -> {preset2 = Preset.LEFT;}).alongWith(printPreset(preset2)));
 
-		operatorController.b().onTrue(setPreset("subwoofer right", this));
+		operatorController.b().onTrue(new InstantCommand(() -> {preset2 = Preset.RIGHT;}).alongWith(printPreset(preset2)));
 
 		driveController.x().whileTrue(manualShot(
-			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset).get(1),
-			PresetConstants.bluePresetMap.get(preset).get(0),
-			PresetConstants.redPresetMap.get(preset).get(0),
+			(getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(preset2).get(1),
+			PresetConstants.bluePresetMap.get(preset2).get(0),
+			PresetConstants.redPresetMap.get(preset2).get(0),
 			() -> !driveController.x().getAsBoolean()
-		).alongWith(printPreset(preset,this)));
+		).alongWith(printPreset(preset2)));
 
 
 
@@ -352,42 +360,22 @@ public class RobotContainer {
 		return Alliance.Blue;
 	}
 
-	private Command setPreset(String preset, RobotContainer robotContainer){
+	
+		
+		// Logger.recordOutput("Targetting Manual Preset", robotContainer.preset);
+
+		// return c;
+		
+
+	private Command printPreset(Preset preset){
 		Command c = new Command() {
 			@Override
 			public void initialize(){
-				robotContainer.preset = preset;
-				System.out.println(robotContainer.preset);
+				System.out.println(preset);
 			}
 			@Override
 			public void execute(){
-				System.out.println(robotContainer.preset);
-			}
-
-			@Override
-			public void end(boolean isFinished){}
-
-			@Override
-			public boolean isFinished(){
-				return true;
-			} 
-		};
-		
-		Logger.recordOutput("Targetting Manual Preset", robotContainer.preset);
-
-		return c;
-		
-	}
-
-	private Command printPreset(String preset, RobotContainer robotContainer){
-		Command c = new Command() {
-			@Override
-			public void initialize(){
-				System.out.println(robotContainer.preset);
-			}
-			@Override
-			public void execute(){
-				System.out.println(robotContainer.preset);
+				System.out.println(preset);
 			}
 
 			@Override
