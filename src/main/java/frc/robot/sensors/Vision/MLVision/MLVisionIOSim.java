@@ -5,7 +5,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class MLVisionIOSim implements MLVisionIO {
-    DoublePublisher tv, tx, ty, ta;
+    DoublePublisher tv, tx, ty, ta, isTargetNote, calculatedTx, calculatedTy, calculatedTa;
 
     public MLVisionIOSim() {
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-ml");
@@ -20,6 +20,18 @@ public class MLVisionIOSim implements MLVisionIO {
 
         tv = table.getDoubleTopic("tv").publish();
         tv.set(0);
+
+        isTargetNote = table.getDoubleTopic("isTargetNote").publish();
+        isTargetNote.set(0);
+       
+        calculatedTx = table.getDoubleTopic("calculatedTx").publish();
+        calculatedTx.set(0);
+        
+        calculatedTy = table.getDoubleTopic("calculatedTy").publish();
+        calculatedTy.set(0);
+        
+        calculatedTa = table.getDoubleTopic("calculatedTa").publish();
+        calculatedTa.set(0);
     }
 
     @Override
@@ -31,5 +43,14 @@ public class MLVisionIOSim implements MLVisionIO {
         inputs.ta = networkTable.getEntry("ta").getDouble(0);
 
         inputs.isTarget = networkTable.getEntry("tv").getDouble(0) > 0;
+
+        inputs.isTargetNote = networkTable.getEntry("isTargetNote").getDouble(0)> 0;
+        inputs.calculatedTx = networkTable.getEntry("calculatedTx").getDouble(0);
+        inputs.calculatedTy = networkTable.getEntry("calculatedTy").getDouble(0);
+        inputs.calculatedTa = networkTable.getEntry("calculatedTa").getDouble(0);
+
+
+
+
     }
 }

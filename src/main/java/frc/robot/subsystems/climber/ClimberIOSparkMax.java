@@ -27,6 +27,9 @@ public class ClimberIOSparkMax implements ClimberIO {
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
 
+        leftMotor.setSmartCurrentLimit(80);
+        rightMotor.setSmartCurrentLimit(80);
+
         Constants.updateStatusFrames(leftMotor, 100, 20, 20, 500, 500, 500, 500);
         Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);

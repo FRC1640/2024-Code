@@ -17,14 +17,16 @@ import frc.robot.sensors.Vision.MLVision.MLVision;
 
 public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
 
-    //private PIDController angularController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
-    //private PIDController horizontalController = new PIDController(0.006, 0, 0); // Constants.PIDConstants.rotPID;
-    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision, "mlrot"); //;
-    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); //Constants.PIDConstants.rotPID;
+    // private PIDController angularController = new PIDController(0.006, 0, 0); //
+    // Constants.PIDConstants.rotPID;
+    // private PIDController horizontalController = new PIDController(0.006, 0, 0);
+    // // Constants.PIDConstants.rotPID;
+    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision, "mlrot"); // ;
+    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); // Constants.PIDConstants.rotPID;
 
     private double angularVelocity = 0;
     private double horizontalVelocity = 0;
-    
+
     private double verticalVelocity = 0; // ADD CONSTANT
 
     private MLVision vision;
@@ -35,31 +37,31 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
     private double distanceLim = 3; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
-    
+
     private double timeOutMillisecs = 200;
 
     private double initTime = -1;
-    private double initIntakeModeTime = -1; // initialize drive straight until intookith or timithed out 
+    private double initIntakeModeTime = -1; // initialize drive straight until intookith or timithed out
 
     private double previousTA;
     private double deltaTAlim = 2; // if delta ty > than this, enter drive straight to intake mode
 
     private double previousTY;
     private double previousTYlim = -5;
-    
+
     private boolean intakeMode;
     private boolean rotateMode;
     private BooleanSupplier hasNote;
-    
 
-    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier, BooleanSupplier hasNote) {
+    public MLVisionAngularAndHorizDriveWeight(MLVision vision, Supplier<Rotation2d> angleSupplier,
+            BooleanSupplier hasNote) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;
         this.hasNote = hasNote;
-        
+
         intakeMode = false;
         rotateMode = true;
-        
+
         previousTA = vision.getTA();
         previousTY = vision.getTY();
 
@@ -74,74 +76,67 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         verticalVelocity = 0;
         angularVelocity = 0;
 
-        if (hasNote.getAsBoolean()){
+        if (hasNote.getAsBoolean()) {
             return new ChassisSpeeds();
         }
 
-        if (!intakeMode){
-            
+        if (!intakeMode) {
+
             determineIntakeNoteMode();
 
-            if (!vision.isTarget()) { // If no target is visible, return no weight                
-                chassisSpeedsToTurn = 
-                    new ChassisSpeeds(0 , 0, 0); 
+            if (!vision.isTarget()) { // If no target is visible, return no weight
+                chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
 
-            }
-            else if (Math.abs(vision.getTX()) > distanceLim && rotateMode) { // if the target tx is within the accepted tx range AND the the weight has never exited rotate mode, JUST rotate
+            } else if (Math.abs(vision.getTX()) > distanceLim && rotateMode) { // if the target tx is within the
+                                                                               // accepted tx range AND the the weight
+                                                                               // has never exited rotate mode, JUST
+                                                                               // rotate
                 horizontalVelocity = 0;
-            
+
                 verticalVelocity = 0;
-           
+
                 angularVelocity = angularController.calculate(vision.getTX());
                 angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
                 angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
 
-                chassisSpeedsToTurn = 
-                    new ChassisSpeeds(0 , 0, angularVelocity); 
-            }
-            else{ // Otherwise enter horrizorntal strafe mode
+                chassisSpeedsToTurn = new ChassisSpeeds(0, 0, angularVelocity);
+            } else { // Otherwise enter horrizorntal strafe mode
                 rotateMode = false;
                 previousTA = vision.getTA();
                 previousTY = vision.getTY();
 
-
-
                 horizontalVelocity = horizontalController.calculate(vision.getTX());
                 horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
                 horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
-            
-                //verticalVelocity = verticalVelocityConstant;
+
+                // verticalVelocity = verticalVelocityConstant;
                 verticalVelocity = 0.4;
 
                 angularVelocity = 0;
-            
+
                 chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                    new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
-                    angleSupplier.get()); 
+                        new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, 0),
+                        angleSupplier.get());
             }
-        }
-        else { // If the robot is IN intake mode
+        } else { // If the robot is IN intake mode
             verticalVelocity = 0.4;
-                chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
+            chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
                     new ChassisSpeeds(-verticalVelocity, 0, 0),
-                    angleSupplier.get()); 
+                    angleSupplier.get());
         }
 
-        
         return chassisSpeedsToTurn;
     }
 
-    public void resetMode(){
+    public void resetMode() {
         intakeMode = false;
         rotateMode = true;
         previousTA = vision.getTA();
         previousTY = vision.getTY();
 
-
         initTime = -1;
         initIntakeModeTime = -1;
     }
-
 
     private boolean isDriveToNoteFinished() { // add intake limit later
 
@@ -162,17 +157,13 @@ public class MLVisionAngularAndHorizDriveWeight implements DriveWeight {
         return false;
     }
 
-    private void determineIntakeNoteMode(){
-        if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim){ // IF the ta makes a big jump and it used to be small
+    private void determineIntakeNoteMode() {
+        if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim) { // IF the ta makes a big jump and it used to be small
             initIntakeModeTime = System.currentTimeMillis(); // enter intake mode
             intakeMode = true;
+        } else {
+            intakeMode = false;
         }
-        else{
-            intakeMode= false;
-    }
-
-
-
 
     }
 }
