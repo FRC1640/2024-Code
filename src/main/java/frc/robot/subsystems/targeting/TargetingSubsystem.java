@@ -151,7 +151,7 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Percent output.
      */
     private double getAnglePIDSpeed(double position) {
-        if (getAnglePosition() <= TargetingConstants.angleLowerLimit){
+        if (position <= TargetingConstants.angleLowerLimit){
             pid.reset();
         }
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
