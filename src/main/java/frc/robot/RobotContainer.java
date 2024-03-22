@@ -213,7 +213,7 @@ public class RobotContainer {
 
 		movingWhileShootingWeight = new RotateToAngleWeight(()->(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius) 
 			? (movingWhileShooting.getNewRobotAngle()) 
-			: (getAngleToStash()), // this one
+			: (getAngleToStash()),
 		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
 			"MovingWhileShooting", ()->false, driveSubsystem);
 
@@ -398,7 +398,7 @@ public class RobotContainer {
 	public Pose2d getStashPos() {
 		return (getAlliance() == Alliance.Blue
 				? new Pose2d(FieldConstants.stashPositionBlue, new Rotation2d())
-				: new Pose2d(FieldConstants.stashPositionRed, new Rotation2d())); // rep[lace with corrner angle for stashing]
+				: new Pose2d(FieldConstants.stashPositionRed, new Rotation2d()));
 	}
 
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
