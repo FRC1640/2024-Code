@@ -209,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase {
                     dynamicThreshold = Math.min(1.5, dynamicThreshold);
                 }
 
-                if (poseDifference > dynamicThreshold) {
+                if (poseDifference > dynamicThreshold || poseDifference < 0.01) {
                     useEstimate = false;
                 }
 
@@ -221,7 +221,7 @@ public class DriveSubsystem extends SubsystemBase {
                     //     xy = AprilTagVisionConstants.xyStdDev;
                     // }
 
-                    xy = 0.3;
+                    xy = 0.2;
                     // distConst = distConst
                 } else {
                     distConst = distConst * 2;
