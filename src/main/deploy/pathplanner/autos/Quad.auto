@@ -113,9 +113,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "back to speaker from stage"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "back to speaker from stage"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
           }
         },
         {
