@@ -282,8 +282,9 @@ public class RobotContainer {
 						() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0)));
 
 		
-		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand());
+		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand())
 
+		driveController.x().whileTrue(manualShotNoAngle(50, ()->!driveController.x().getAsBoolean(), true));
 
 		driveController.rightTrigger().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		driveController.rightTrigger()
@@ -403,6 +404,12 @@ public class RobotContainer {
 
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0, 0.8));
+	}
+	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition, boolean shotSpeeds) {
+		return targetingSubsystem.anglePIDCommand(targetAngle)
+		.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
+			()->0.03, ()->0.27, ()->true))
+		.alongWith(generateIntakeNoRobot(0, 0.8));
 	}
 
 	public Command manualShotAuto(double targetAngle) {
