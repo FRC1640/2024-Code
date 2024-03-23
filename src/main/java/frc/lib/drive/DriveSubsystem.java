@@ -221,7 +221,7 @@ public class DriveSubsystem extends SubsystemBase {
                     //     xy = AprilTagVisionConstants.xyStdDev;
                     // }
 
-                    xy = 0.5;
+                    xy = 0.3;
                     // distConst = distConst
                 } else {
                     distConst = distConst * 2;
