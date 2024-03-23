@@ -35,9 +35,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "MLVisionAutonCommand"
+                  "pathName": "center backup"
                 }
               },
               {
