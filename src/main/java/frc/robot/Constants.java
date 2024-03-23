@@ -142,6 +142,22 @@ public final class Constants {
             return n;
         }
 
+    public static class PresetConstants{
+        public static final Map<Preset,  List<Double>> bluePresetMap = // red needs extra 180
+        new EnumMap<>(Map.ofEntries(
+            Map.entry(Preset.Right, List.of(2.672, 39.529)), 
+            Map.entry(Preset.Center, List.of(3.14, 39.137)), 
+            Map.entry(Preset.Left, List.of(-2.584, 37.853))
+        ));
+
+        public static final Map<Preset, List<Double>> redPresetMap = 
+        new EnumMap<>(Map.ofEntries(
+            Map.entry(Preset.Right, List.of(-0.55, 38.119)), 
+            Map.entry(Preset.Center, List.of(-0.00, 40.483)), // 0 is robot angle 1 is targetting
+            Map.entry(Preset.Left, List.of(0.505, 38.881))
+        ));
+    }
+
         // controllers
         public static PIDController rotPID = new PIDController(0.5, 0.0001, 0.000);
         public static PIDController rotMovingPID = new PIDController(0.75, 0.0001, 0);
@@ -197,14 +213,6 @@ public final class Constants {
         
         
 
-        // Map presetsBlue = new HashMap();
-		// 	presets.entry("subwoofer amp", double 120);
-		// 	presets.put("subwoofer center", 180);
-		// 	presets.put("subwoofer anti-amp", 240);
-	 	// Map presetsRed = new HashMap();
-		// 	presets.put("subwoofer amp", 300);
-		// 	presets.put("subwoofer center", 0);
-		// 	presets.put("subwoofer anti-amp", 60);
     
 
     public static void updateStatusFrames(CANSparkMax motor, int status0, int status1, int status2,

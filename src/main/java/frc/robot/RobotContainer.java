@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -42,6 +43,7 @@ import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
+import frc.robot.Constants.PIDConstants.PresetConstants;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Gyro.GyroIO;
 import frc.robot.sensors.Gyro.GyroIONavX;
@@ -118,27 +120,27 @@ public class RobotContainer {
 	boolean autoTargetBool = false;
 
 	public static enum Preset {
-        subwooferCenter,
-        subwooferLeft,
-        subwooferRight;
+        Center,
+        Left,
+        Right;
     }
 
-	Preset currentPreset = Preset.subwooferCenter;
+	Preset currentPreset = Preset.Center;
 
 
-	private final Map<Preset,  List<Double>> bluePresetMap = // red needs extra 180
-    new EnumMap<>(Map.ofEntries(
-        Map.entry(Preset.subwooferLeft, List.of(2.672, 39.529)), 
-        Map.entry(Preset.subwooferCenter, List.of(3.14, 39.137)), 
-        Map.entry(Preset.subwooferRight, List.of(-2.584, 37.853))
-    ));
+	// private final Map<Preset,  List<Double>> bluePresetMap = // red needs extra 180
+    // new EnumMap<>(Map.ofEntries(
+    //     Map.entry(Preset.Left, List.of(2.672, 39.529)), 
+    //     Map.entry(Preset.Center, List.of(3.14, 39.137)), 
+    //     Map.entry(Preset.Right, List.of(-2.584, 37.853))
+    // ));
 
-	public static final Map<Preset, List<Double>> redPresetMap = 
-	new EnumMap<>(Map.ofEntries(
-        Map.entry(Preset.subwooferLeft, List.of(-0.55, 38.119)), 
-        Map.entry(Preset.subwooferCenter, List.of(-0.00, 40.483)), // 0 is robot angle 1 is targetting
-        Map.entry(Preset.subwooferRight, List.of(0.505, 38.881))
-    ));
+	// public static final Map<Preset, List<Double>> redPresetMap = 
+	// new EnumMap<>(Map.ofEntries(
+    //     Map.entry(Preset.Right, List.of(-0.55, 38.119)), 
+    //     Map.entry(Preset.Center, List.of(-0.00, 40.483)), // 0 is robot angle 1 is targetting
+    //     Map.entry(Preset.Left, List.of(0.505, 38.881))
+    // ));
 
 
 	private boolean startAuto = false;
@@ -321,22 +323,23 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().onTrue(new InstantCommand(() -> setPreset(Preset.subwooferCenter))
-								.alongWith(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset))));
+		operatorController.a().onTrue(new InstantCommand(() -> setPreset(Preset.Center))
+								.andThen(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset)))
+								.andThen(new InstantCommand(() -> {System.out.println(currentPreset);})));
 
-		operatorController.x().onTrue(new InstantCommand(() ->setPreset(Preset.subwooferLeft))
-							.alongWith(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset))));
+		operatorController.x().onTrue(new InstantCommand(() ->setPreset(Preset.Left))
+							.andThen(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset)))
+							.andThen(new InstantCommand(() -> {System.out.println(currentPreset);})));
 
-		operatorController.b().onTrue(new InstantCommand(() -> setPreset(Preset.subwooferRight))
-							.alongWith(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset))));
+		operatorController.b().onTrue(new InstantCommand(() -> setPreset(Preset.Right))
+							.andThen(new InstantCommand(()->Logger.recordOutput("Current Preset", currentPreset)))
+							.andThen(new InstantCommand(() -> {System.out.println(currentPreset);})));
 
 		
 		driveController.x().whileTrue(manualShot(
-			getAlliance()==Alliance.Blue ? bluePresetMap.get(currentPreset).get(1).doubleValue():redPresetMap.get(currentPreset).get(1).doubleValue(),
-			bluePresetMap.get(currentPreset).get(0).doubleValue(),
-			redPresetMap.get(currentPreset).get(0).doubleValue(),
-			getOnX())
-			);
+			() -> (getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(currentPreset).get(1).doubleValue(),
+			() -> (getAlliance()==Alliance.Blue?PresetConstants.bluePresetMap:PresetConstants.redPresetMap).get(currentPreset).get(0).doubleValue(),
+			getOnX()));
 
 
 
@@ -433,14 +436,15 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(targetAngle).repeatedly();
 	}
 
-	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
+	public Command manualShot(DoubleSupplier targetAngle, DoubleSupplier robotAngleRadians, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
-					() -> (getAlliance()==Alliance.Blue?robotAngleBlueRadians:robotAngleRedRadians), 
+					robotAngleRadians, 
 					driveSubsystem::getPose, () -> joystickDriveWeight.getTranslationalSpeed(), "manualShot",
 					cancelCondition);
 			DriveWeightCommand.addWeight(weight);
-		}).alongWith(generateIntakeCommand()));
+		}).alongWith(generateIntakeCommand()).alongWith(new InstantCommand(()->{System.out.println(robotAngleRadians);
+			System.out.println(targetAngle.getAsDouble());})));
 	}
 
 	public double get3dDistance(Supplier<Pose2d> speakerPos) {
