@@ -460,8 +460,8 @@ public class RobotContainer {
 	
 	
 	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
-			()->0.03, ()->0.27, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.15,
+			()->0.03, ()->0.15, ()->true)
 			.alongWith(generateIntakeNoRobotAmp(500, 0.6))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
