@@ -491,7 +491,7 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("UnderStage", manualShotAuto(29));
 
-		NamedCommands.registerCommand("CenterSourceSide", manualShotAuto(33));
+		NamedCommands.registerCommand("CenterSourceSide", manualShotAuto(31.5));
 
 		// NamedCommands.registerCommand("RunIndexerLowAccuracy", generateIntakeCommand());
 
