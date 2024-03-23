@@ -164,8 +164,8 @@ public final class Constants {
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
         
-        public static Translation2d stashPositionBlue = new Translation2d(1.43, 4.586);
-        public static Translation2d stashPositionRed = new Translation2d(14.643, 4.586);
+        public static Translation2d stashPositionBlue = new Translation2d(1.43, 5.5);
+        public static Translation2d stashPositionRed = new Translation2d(14.643, 5.5);
         
         public static double fullCourtShootingRadius = 8; // 6.5 = x blue line, 10.7 = x red line 10.24
  
