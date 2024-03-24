@@ -35,7 +35,7 @@ public final class Constants {
         public static final double xyStdDev = 2;
         public static final double thetaStdDev = 99999999;
 
-        public static final double xyStdDevAuto = 4;
+        public static final double xyStdDevAuto = 2;
         public static final double thetaStdDevAuto = 99999999;
     }
 
@@ -163,9 +163,10 @@ public final class Constants {
         public static PIDController rotMovingPID = new PIDController(0.75, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
-        public static PIDController targetingPID = new PIDController(0.01, 0, 0);
-        public static PIDController horizontalMLVision = new PIDController(0.007, 0, 0);
-        public static PIDController rotMLVision = new PIDController(0.006, 0, 0);
+        public static PIDController targetingPID = new PIDController(0.015, 0.001, 0);
+        public static PIDController horizontalMLVision = new PIDController(0.01, 0, 0);
+        public static PIDController horizontalMLVisionDrive = new PIDController(0.01, 0, 0);
+        public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
@@ -183,10 +184,16 @@ public final class Constants {
     public static class FieldConstants {
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.716, 7.840);
+        public static Translation2d ampPositionRed = new Translation2d(14.9, 7.840);
         public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.840);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
+        
+        public static Translation2d stashPositionBlue = new Translation2d(1.43, 5.5);
+        public static Translation2d stashPositionRed = new Translation2d(14.643, 5.5);
+        
+        public static double fullCourtShootingRadius = 7; // 6.5 = x blue line, 10.7 = x red line 10.24
+ 
     }
 
     public static class TargetingConstants {

@@ -4,6 +4,8 @@ package frc.robot.sensors.Vision.MLVision;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.lib.periodic.PeriodicBase;
 
 
@@ -60,5 +62,10 @@ public class MLVision extends PeriodicBase {
         }
     }
 
-   
+    public Command waitUntilMLCommand(double taMin, double txMax){
+        //return new WaitUntilCommand(()->(getTA() > ta) && (getTX() > tx));
+        //return new WaitUntilCommand
+        return new WaitUntilCommand(()->isTarget() && getTA() > taMin); 
+
     }
+}
