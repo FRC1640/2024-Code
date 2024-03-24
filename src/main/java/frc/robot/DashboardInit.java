@@ -47,6 +47,7 @@ public class DashboardInit {
 
     static boolean sysIdInit = false;
     static boolean pidInit = false;
+    static boolean sysCheckInit = false;
 
     private static GenericEntry kP;
     private static GenericEntry kI;
@@ -114,6 +115,10 @@ public class DashboardInit {
         kD.setDouble(controller.getD());
     }
 
+    private static void syscheckInit(){
+        sysCheckInit = true;
+    }
+
     private static void onTestChange(TestMode mode) {
         switch (mode) {
             case SYSID:
@@ -125,6 +130,12 @@ public class DashboardInit {
             case PID:
                 if (!pidInit){
                     pidInit();
+                }
+                break;
+            
+            case SYSCHECK:
+                if (!sysCheckInit){
+                    syscheckInit();
                 }
                 break;
 

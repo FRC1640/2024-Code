@@ -27,7 +27,7 @@ public class Robot extends LoggedRobot {
     };
 
     public static enum TestMode {
-        NONE, SYSID, PID
+        NONE, SYSID, PID, SYSCHECK
     };
 
     public static boolean inTeleop;
@@ -175,6 +175,11 @@ public class Robot extends LoggedRobot {
                 System.out.println("PID MODE");
                 // m_robotContainer.removeAllDefaultCommands();
                 m_robotContainer.pidTriggers();
+                break;
+
+            case SYSCHECK:
+                CommandScheduler.getInstance().getActiveButtonLoop().clear();
+                m_robotContainer.configureBindingsSyscheck();
                 break;
         }
     }

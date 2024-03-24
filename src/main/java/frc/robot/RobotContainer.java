@@ -57,6 +57,7 @@ import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
+import frc.robot.subsystems.drive.DriveWeights.DriveCircleWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
@@ -117,6 +118,8 @@ public class RobotContainer {
 	private boolean startAuto = false;
 
 	double autoSetAngle;
+
+	final DriveCircleWeight syscheckDriveWeight = new DriveCircleWeight(8.0, 1);
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -307,6 +310,23 @@ public class RobotContainer {
 
 		// driveController.y().whileTrue(() -> );
 		
+	}
+
+	public void configureBindingsSyscheck(){
+		operatorController.leftBumper().onTrue(new InstantCommand(() -> {DriveWeightCommand.addWeight(syscheckDriveWeight);}));
+		operatorController.leftBumper().onFalse(new InstantCommand(() -> {
+			DriveWeightCommand.removeWeight(syscheckDriveWeight);
+			syscheckDriveWeight.reset();
+		}));
+
+		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
+				.whileTrue(climberSubsystem.setSpeedCommand(
+						() -> -operatorController.getLeftY(), () -> -operatorController.getLeftY()));
+		
+		new Trigger(() -> (operatorController.getRightY()>0.1)).whileTrue(
+				extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+		new Trigger(() -> (operatorController.getRightY()<-0.1)).whileTrue(
+				extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 	}
 
 	public void pidTriggers(){
