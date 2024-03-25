@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.2653944433571926,
-      "y": 5.522567875736844
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -37,7 +31,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "center backup"
+                  "pathName": "Foloow the wall"
                 }
               },
               {
@@ -45,11 +39,24 @@
                 "data": {
                   "name": "Run Intake"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MLVisionAutonCommand"
+                }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "Run Intake"
                 }
               }
             ]
@@ -62,7 +69,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "back to speaker from mid"
+                  "pathName": "Center to mid"
                 }
               },
               {
@@ -100,7 +107,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "stage from speaker"
+                  "pathName": "pickup middle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MLVisionAutonCommand"
                 }
               },
               {
@@ -119,13 +145,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "back to speaker from stage"
+                  "pathName": "Peddi auto final shot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Run Intake"
+                  "name": "SpeakerShot"
                 }
               }
             ]
@@ -145,50 +171,6 @@
                 "type": "named",
                 "data": {
                   "name": "SpeakerShot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "final quad note"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AmpNoteShotQuad"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Indexer"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AmpNoteShotQuad"
                 }
               }
             ]

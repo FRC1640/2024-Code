@@ -23,7 +23,7 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 4;
+        public static final double xyStdDev = 2;
         public static final double thetaStdDev = 99999999;
 
         public static final double xyStdDevAuto = 2;
@@ -159,15 +159,15 @@ public final class Constants {
     public static class FieldConstants {
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.716, 7.840);
+        public static Translation2d ampPositionRed = new Translation2d(14.9, 7.840);
         public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.840);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
         
-        public static Translation2d stashPositionBlue = new Translation2d(15, 7.111);
-        public static Translation2d stashPositionRed = new Translation2d(1.0, 5.5);
+        public static Translation2d stashPositionBlue = new Translation2d(1.43, 5.5);
+        public static Translation2d stashPositionRed = new Translation2d(14.643, 5.5);
         
-        public static double fullCourtShootingRadius = 8; // 6.5 = x blue line, 10.7 = x red line 10.24
+        public static double fullCourtShootingRadius = 7; // 6.5 = x blue line, 10.7 = x red line 10.24
  
     }
 
