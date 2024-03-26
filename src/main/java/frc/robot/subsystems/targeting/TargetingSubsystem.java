@@ -1,6 +1,5 @@
 package frc.robot.subsystems.targeting;
 
-import java.util.InputMismatchException;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -12,7 +11,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;

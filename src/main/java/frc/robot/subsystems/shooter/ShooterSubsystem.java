@@ -14,8 +14,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.sysid.ArmSysidRoutine;
 
-// TODO comments
+// TODO PID uses smart velocity in voltage command????
 
+/**
+ * Controls operation of the shooter.
+ */
 public class ShooterSubsystem extends SubsystemBase {
     ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     ShooterIO io;
@@ -30,6 +33,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private PIDController topRightPID = PIDConstants.constructPID(PIDConstants.shooterVelocityPID, "topRightShooter");
     private PIDController bottomRightPID = PIDConstants.constructPID(PIDConstants.shooterVelocityPID, "bottomRightShooter");
 
+    /**
+     * Constructs a new {@code ShooterSubsystem}.
+     * 
+     * @param io {@code ShooterIO} (real or simulated).
+     */
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
         topLeftPID.setIntegratorRange(-3, 3);
@@ -53,6 +61,16 @@ public class ShooterSubsystem extends SubsystemBase {
         // PIDUpdate.update(bottomLeftPID);
     }
 
+    /**
+     * 
+     * 
+     * @param topLeft
+     * @param bottomLeft
+     * @param topRight
+     * @param bottomRight
+     * @param condition
+     * @return
+     */
     public Command setSpeedPercentPIDCommand(DoubleSupplier topLeft, DoubleSupplier bottomLeft,
             DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition) {
 
@@ -69,6 +87,13 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
+    /**
+     * Sets the speed of the shooter wheels to a single percent output.
+     * 
+     * @param percent Percent output to set the shooter to.
+     * @return New {@link Command}. This sets the shooter to the desired speed each execution
+     * and sets the speeds to 0 when canceled.
+     */
     public Command setSpeedPercentCommand(double percent) {
         Command c = new Command() {
             @Override
