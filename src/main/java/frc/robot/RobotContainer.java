@@ -317,16 +317,16 @@ public class RobotContainer {
 		operatorController.leftBumper().onFalse(new InstantCommand(() -> {
 			DriveWeightCommand.removeWeight(syscheckDriveWeight);
 			syscheckDriveWeight.reset();
-		}));
+		}).andThen(new InstantCommand(() -> {DashboardInit.sysCheckComplete[0] = true;})));
 
 		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1)
 				.whileTrue(climberSubsystem.setSpeedCommand(
-						() -> -operatorController.getLeftY(), () -> -operatorController.getLeftY()));
+						() -> -operatorController.getLeftY()/2, () -> -operatorController.getLeftY()/2).alongWith(new InstantCommand(() -> {DashboardInit.sysCheckComplete[1] = true;})));
 		
 		new Trigger(() -> (operatorController.getRightY()>0.1)).whileTrue(
-				extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+				extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed).alongWith(new InstantCommand(() -> {DashboardInit.sysCheckComplete[2] = true;})));
 		new Trigger(() -> (operatorController.getRightY()<-0.1)).whileTrue(
-				extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+				extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed).alongWith(new InstantCommand(() -> {DashboardInit.sysCheckComplete[2] = true;})));
 	}
 
 	public void pidTriggers(){

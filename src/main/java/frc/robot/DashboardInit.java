@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
@@ -48,6 +49,7 @@ public class DashboardInit {
     static boolean sysIdInit = false;
     static boolean pidInit = false;
     static boolean sysCheckInit = false;
+    public static boolean[] sysCheckComplete = {false,false,false};
 
     private static GenericEntry kP;
     private static GenericEntry kI;
@@ -116,6 +118,16 @@ public class DashboardInit {
     }
 
     private static void syscheckInit(){
+        ShuffleboardTab syscheckTab = Shuffleboard.getTab("Systems Check");
+        syscheckTab.addBoolean("Drive in Circle", () -> sysCheckComplete[0])
+                .withSize(1,1)
+                .withPosition(1,1);
+        syscheckTab.addBoolean("Test Climber", () -> sysCheckComplete[1])
+                .withSize(1,1)
+                .withPosition(1,2);
+        syscheckTab.addBoolean("Test Extension", () -> sysCheckComplete[2])
+                .withSize(1,1)
+                .withPosition(1,3);
         sysCheckInit = true;
     }
 
