@@ -145,9 +145,9 @@ public final class Constants {
     public static class PresetConstants{
         public static final Map<Preset,  List<Double>> bluePresetMap = // red needs extra 180
         new EnumMap<>(Map.ofEntries(
-            Map.entry(Preset.Right, List.of(2.672, 39.529)), 
+            Map.entry(Preset.Right, List.of(2.672, 35.54)), 
             Map.entry(Preset.Center, List.of(3.14, 39.137)), 
-            Map.entry(Preset.Left, List.of(-2.584, 37.853))
+            Map.entry(Preset.Left, List.of(-2.7, 36.853))
         ));
 
         public static final Map<Preset, List<Double>> redPresetMap = 
