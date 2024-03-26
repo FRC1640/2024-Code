@@ -5,8 +5,6 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.sysid.ArmSysidRoutine;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.util.dashboard.PIDUpdate;
 
 public class ShooterSubsystem extends SubsystemBase {
     ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();

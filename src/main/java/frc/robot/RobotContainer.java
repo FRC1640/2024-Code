@@ -294,15 +294,19 @@ public class RobotContainer {
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
 		driveController.b().whileTrue(manualShotNoAngle(60,
-			()->!driveController.b().getAsBoolean()));
+			() -> !driveController.b().getAsBoolean()));
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		operatorController.a().whileTrue(manualShotNoAngle(41.8,
-			()->!operatorController.a().getAsBoolean()));
-
 		// driveController.y().whileTrue(() -> );
+
+
+		operatorController.start().whileTrue(targetingSubsystem.anglePIDCommand(() -> 41.8,
+			() -> !operatorController.start().getAsBoolean())).whileTrue(intakeNote());
+
+
+			// TODO button bindings!!!
 		
 	}
 
