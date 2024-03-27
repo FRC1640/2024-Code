@@ -303,7 +303,7 @@ public class RobotContainer {
 
 
 		// operatorController.start().whileTrue(targetingSubsystem.anglePIDCommand(() -> 41.8,
-		// 	() -> !operatorController.start().getAsBoolean())).whileTrue(intakeNote());
+		// 	() -> !operatorController.start().getAsBoolean())).whileTrue(intakeNote());     <- NEW; try if old works not
 
 		operatorController.a().whileTrue(manualShotNoAngle(41.8,
 			() -> !operatorController.a().getAsBoolean()));
