@@ -1,6 +1,7 @@
 package frc.lib.drive;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -176,83 +177,48 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
-            for (int i = 0; i < vision.getNumVisibleTags(); i++) {
-                if (vision.isPoseValid(vision.getTagPoses()[i])
-                        && Robot.inTeleop) {
-                    double distanceToTag = vision.getDistance()[i];
-                    double distConst = 1 + (distanceToTag * distanceToTag); // distance standard deviation
-                                                                                          // constant
-                    double poseDifference = vision.getTagPoses()[i].getTranslation()
-                            .getDistance(getPose().getTranslation());
-                    // double poseDifferenceTheta = Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(
-                    //         vision.getAprilTagPose2d().getRotation().getRadians(),
-                    //         getPose().getRotation().getRadians())));
-                    double poseDifferenceDeviation = 1 / (1 + poseDifference);
+            if (vision.isPoseValid(vision.getAprilTagPose2d())
+                    && Robot.inTeleop && vision.getNumVisibleTags() != 0) {
+                double distanceToTag = vision.getDistance();
+                double distConst = 1 + (distanceToTag * distanceToTag);
+                double poseDifference = vision.getAprilTagPose2d().getTranslation()
+                        .getDistance(getPose().getTranslation());
 
-                    double posDifX = vision.getTagPoses()[i].getTranslation().getX() - getPose().getX();
-                    double posDifY = vision.getTagPoses()[i].getTranslation().getY() - getPose().getY();
+                double posDifX = vision.getAprilTagPose2d().getTranslation().getX() - getPose().getX();
+                double posDifY = vision.getAprilTagPose2d().getTranslation().getY() - getPose().getY();
 
-                    double xy = 0;
-                    double theta = 0;
-
-                    if (Robot.inTeleop) {
-                        xy = AprilTagVisionConstants.xyStdDev;
-                        theta = AprilTagVisionConstants.thetaStdDev;
-                    } else {
-                        xy = AprilTagVisionConstants.xyStdDevAuto;
-                        theta = AprilTagVisionConstants.thetaStdDevAuto;
-                    }
-                    boolean useEstimate = true;
-
-                    double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+                double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                             getActualSwerveStates()).vxMetersPerSecond,
                             SwerveDriveDimensions.kinematics
                                     .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
-                    // if (speed > 0.3) {
-                    // dynamicThreshold += (speed - 0.3) * 0.02;
-                    // dynamicThreshold = Math.min(1.5, dynamicThreshold);
-                    // }
-
-                    if (poseDifference > 1) {
-                        useEstimate = false;
+                double xy = AprilTagVisionConstants.xyStdDev;
+                double theta = Double.MAX_VALUE;
+                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).min().getAsDouble() < 4){
+                    xy = 0.25;
+                    if (speed == 0){
+                        theta = 8;
                     }
-
-                    if (vision.getNumVisibleTags() > 1) {
-                        useEstimate = true;
-                        // if (Robot.inTeleop) {
-
-                        // } else {
-                        // xy = AprilTagVisionConstants.xyStdDev;
-                        // }
-
-                        xy = 0.85;
-                        // distConst = distConst
-                    } else {
-                        // distConst = distConst;
+                }
+                else{
+                    if (speed < 0.3 && vision.getDistance() < 2){
+                        xy = 0.5;
                     }
-
+                    else if (speed < 0.1 && vision.getDistance() < 5){
+                        xy = 1;
+                    }
+                }
+                for (int i = 0; i < vision.getTagPoses().length; i++) {
                     Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
                     Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
                     Logger.recordOutput(vision.getName() + "/PosDifY" + i, posDifY);
-                    // Logger.recordOutput(vision.getName() + "/PosDifTheta" + tag.fiducialID, poseDifferenceTheta);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
-                    // useEstimate = true;
-                    // distConst = 1;
-                    // xy = 0.25;
-                    if (useEstimate) {
-                        usedAprilTag = true;
-                        dynamicThreshold -= (0.2 * 0.02 * vision.getNumVisibleTags()) / (distConst / 2);
-                        dynamicThreshold = Math.max(dynamicThreshold, 0.4);
-                        swervePoseEstimator.addVisionMeasurement(vision.getTagPoses()[i], vision.getLatency(),
-                                VecBuilder.fill(xy * distConst,
-                                        xy * distConst,
-                                        Math.toRadians(theta) * distConst));
-                    }
-
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
-                    Logger.recordOutput(vision.getName() + "/StdDevs" + i, xy * distConst);
                 }
+                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                            VecBuilder.fill(xy * distConst,
+                                    xy * distConst,
+                                    Math.toRadians(theta) * distConst));
             }
         }
         // update odometry

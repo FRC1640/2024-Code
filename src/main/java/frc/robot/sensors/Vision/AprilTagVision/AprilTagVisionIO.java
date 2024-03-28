@@ -11,7 +11,8 @@ public interface AprilTagVisionIO {
         public double latency;
         public Pose2d aprilTagPose = new Pose2d();
         public boolean isTarget;
-        public double[] aprilTagDistance;
+        public double[] aprilTagDistances;
+        public double aprilTagDistance;
         public double ta;
         public int numVisibleTags;
         public double tx;

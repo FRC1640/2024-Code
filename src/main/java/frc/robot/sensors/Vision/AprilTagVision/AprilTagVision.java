@@ -35,8 +35,11 @@ public class AprilTagVision extends PeriodicBase {
     public boolean isTarget(){
         return inputs.isTarget;
     }
-    public double[] getDistance(){
+    public double getDistance(){
         return inputs.aprilTagDistance;
+    }
+    public double[] getDistances(){
+        return inputs.aprilTagDistances;
     }
 
     public double getTa(){

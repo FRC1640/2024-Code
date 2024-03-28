@@ -6,12 +6,14 @@ import com.fasterxml.jackson.core.format.InputAccessor;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.vision.LimelightHelpers;
+import frc.robot.Constants.FieldConstants;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     String key;
@@ -30,7 +32,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         double[] emptyArraySix = { 0, 0, 0, 0, 0, 0 };
 
         double[] botPose = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
-        // inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
+        inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
         Rotation2d aprilTagBotRotation2d = Rotation2d.fromDegrees(botPose[5]);
         inputs.aprilTagPose = new Pose2d(aprilTagBotTran2d, aprilTagBotRotation2d);
@@ -43,16 +45,20 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
         llresults = LimelightHelpers.getLatestResults(key);
 
-        inputs.aprilTagDistance = Arrays.stream(llresults.targetingResults.targets_Fiducials)
+        inputs.aprilTagDistances = Arrays.stream(llresults.targetingResults.targets_Fiducials)
             .mapToDouble((v)->v.getRobotPose_TargetSpace2D().getTranslation().getNorm()).toArray();
 
-        inputs.tagPoses = Arrays.stream(llresults.targetingResults.targets_Fiducials)
-        .map((v)->v.getRobotPose_FieldSpace2D()).toArray(Pose2d[]::new);
+        inputs.aprilTagDistance = robotPoseTranslation.getNorm();
 
-        inputs.latency = 
-            llresults.targetingResults.latency_capture 
-            + llresults.targetingResults.latency_jsonParse
-            + llresults.targetingResults.latency_pipeline;
+        inputs.tagPoses = Arrays.stream(llresults.targetingResults.targets_Fiducials)
+            .map((v)->new Pose2d(v.getRobotPose_FieldSpace2D().getX() + FieldConstants.width / 2, 
+            v.getRobotPose_FieldSpace2D().getY() + FieldConstants.height / 2,v.getRobotPose_FieldSpace2D().getRotation()))
+            .toArray(Pose2d[]::new);
+
+        // inputs.latency = 
+        //     Timer.getFPGATimestamp() - (llresults.targetingResults.latency_capture 
+        //     + llresults.targetingResults.latency_jsonParse
+        //     + llresults.targetingResults.latency_pipeline);
         
         inputs.tl = llresults.targetingResults.latency_pipeline;
         inputs.cl = llresults.targetingResults.latency_capture;
