@@ -1,6 +1,8 @@
 package frc.lib.drive;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -39,6 +41,7 @@ import frc.lib.drive.Module.ModuleIOSparkMax;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
+import frc.lib.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.Constants;
 import frc.robot.DashboardInit;
 import frc.robot.Constants.AprilTagVisionConstants;
@@ -114,8 +117,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.6, 0.6, 0.001),
-                VecBuilder.fill(3.5, 3.5, 9999999));
+                VecBuilder.fill(0.5, 0.5, 0.00001),
+                VecBuilder.fill(3, 3, 9999999));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -174,77 +177,49 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
-            if (vision.isTarget() && vision.isPoseValid(vision.getAprilTagPose2d())
-                    && vision.getNumVisibleTags() != 0 && Robot.inTeleop) {
-
-                double distConst = 1 + (vision.getDistance() * vision.getDistance()); // distance standard deviation
-                                                                                      // constant
+            if (vision.isPoseValid(vision.getAprilTagPose2d())
+                    && Robot.inTeleop && vision.getNumVisibleTags() != 0) {
+                double distanceToTag = vision.getDistance();
+                double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
                         .getDistance(getPose().getTranslation());
-                double poseDifferenceTheta = Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(
-                        vision.getAprilTagPose2d().getRotation().getRadians(), getPose().getRotation().getRadians())));
-                double poseDifferenceDeviation = 1 / (1 + poseDifference);
 
                 double posDifX = vision.getAprilTagPose2d().getTranslation().getX() - getPose().getX();
                 double posDifY = vision.getAprilTagPose2d().getTranslation().getY() - getPose().getY();
 
-                double xy = 0;
-                double theta = 0;
-
-                if (Robot.inTeleop) {
-                    xy = AprilTagVisionConstants.xyStdDev;
-                    theta = AprilTagVisionConstants.thetaStdDev;
-                } else {
-                    xy = AprilTagVisionConstants.xyStdDevAuto;
-                    theta = AprilTagVisionConstants.thetaStdDevAuto;
-                }
-                boolean useEstimate = true;
-
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                        getActualSwerveStates()).vxMetersPerSecond,
-                        SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
+                            getActualSwerveStates()).vxMetersPerSecond,
+                            SwerveDriveDimensions.kinematics
+                                    .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
-                if (speed > 0.3) {
-                    dynamicThreshold += (speed - 0.3) * 0.02;
-                    dynamicThreshold = Math.min(1.5, dynamicThreshold);
+                double xy = AprilTagVisionConstants.xyStdDev;
+                double theta = Double.MAX_VALUE;
+                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).min().getAsDouble() < 4){
+                    xy = 0.25;
+                    if (speed == 0){
+                        theta = 8;
+                    }
                 }
-
-                if (poseDifference > dynamicThreshold || poseDifference < 0.01) {
-                    useEstimate = false;
+                else{
+                    if (speed < 0.3 && vision.getDistance() < 2){
+                        xy = 0.5;
+                    }
+                    else if (speed < 0.1 && vision.getDistance() < 5){
+                        xy = 1;
+                    }
                 }
-
-                if (vision.getNumVisibleTags() > 1) {
-                    useEstimate = true;
-                    // if (Robot.inTeleop) {
-                        
-                    // } else {
-                    //     xy = AprilTagVisionConstants.xyStdDev;
-                    // }
-
-                    xy = 0.1;
-                    // distConst = distConst
-                } else {
-                    distConst = distConst * 2;
+                for (int i = 0; i < vision.getTagPoses().length; i++) {
+                    Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
+                    Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
+                    Logger.recordOutput(vision.getName() + "/PosDifY" + i, posDifY);
+                    Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
+                    Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-
-                Logger.recordOutput("PosDifference", poseDifference);
-                Logger.recordOutput("PosDifX", posDifX);
-                Logger.recordOutput("PosDifY", posDifY);
-                Logger.recordOutput("PosDifTheta", poseDifferenceTheta);
-                Logger.recordOutput("DynamicThreshold", dynamicThreshold);
-                if (useEstimate) {
-                    usedAprilTag = true;
-                    dynamicThreshold -= (0.2 * 0.02 * vision.getNumVisibleTags()) / (distConst / 2);
-                    dynamicThreshold = Math.max(dynamicThreshold, 0.4);
-                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                             VecBuilder.fill(xy * distConst,
                                     xy * distConst,
                                     Math.toRadians(theta) * distConst));
-                }
-
-                Logger.recordOutput("DynamicThreshold", dynamicThreshold);
             }
-
         }
         // update odometry
         odometryPose = swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyro.getRawAngleRotation2d(),
@@ -276,6 +251,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Command rotateToAngleCommand(DoubleSupplier angleSupplier) {
         Command c = new Command() {
             double angle;
+
             @Override
             public void initialize() {
                 angle = angleSupplier.getAsDouble();
@@ -290,7 +266,7 @@ public class DriveSubsystem extends SubsystemBase {
             @Override
             public void execute() {
                 System.out.println(Math.toDegrees(angle));
-                
+
                 double o;
                 o = pidr.calculate(-SwerveAlgorithms.angleDistance(gyro.getAngleRotation2d().getRadians(),
                         angle), 0);
@@ -392,7 +368,7 @@ public class DriveSubsystem extends SubsystemBase {
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
                 gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
-        
+
         frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
         frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
         backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);

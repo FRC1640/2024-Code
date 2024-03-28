@@ -43,8 +43,6 @@ public class TargetingSubsystem extends SubsystemBase {
     PIDController radianAngle = PIDConstants.constructPID(PIDConstants.radianAngle, "radian angle");
     private DoubleSupplier angleOffset;
 
-    
-
     public TargetingSubsystem(TargetingIO io, DoubleSupplier angleOffset) {
         this.io = io;
         this.angleOffset = angleOffset;
@@ -52,9 +50,9 @@ public class TargetingSubsystem extends SubsystemBase {
         root.append(angler);
 
         sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
-            this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition, 
-            this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.05)).per(Seconds.of(1)),
-            mutable(Volts.of(0.75)), mutable(Second.of(60))));
+                this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition,
+                this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.05)).per(Seconds.of(1)),
+                        mutable(Volts.of(0.75)), mutable(Second.of(60))));
     }
 
     @Override
@@ -67,25 +65,30 @@ public class TargetingSubsystem extends SubsystemBase {
         // Logger.recordOutput("Targeting/velocity", inputs.);
 
         Logger.recordOutput("Targeting/angleoffset", angleOffset.getAsDouble());
-        
+
     }
 
-    public Command manualFeedForwardAngle(DoubleSupplier speed){
-        return setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), speed.getAsDouble())
-            + ffPID.calculate(inputs.rightRadiansPerSecond, speed.getAsDouble()));
-    }
-    private Command pidFeedForwardAngle(DoubleSupplier speed){
-        return setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees),
-        speed.getAsDouble()) + ffPID.calculate(inputs.rightRadiansPerSecond, speed.getAsDouble()));
+    // public Command manualFeedForwardAngle(DoubleSupplier speed){
+    // return
+    // setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees),
+    // speed.getAsDouble())
+    // + ffPID.calculate(inputs.rightRadiansPerSecond, speed.getAsDouble()));
+    // }
+    // private Command pidFeedForwardAngle(DoubleSupplier speed){
+    // return
+    // setAngleVoltageCommand(feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees),
+    // speed.getAsDouble()) + ffPID.calculate(inputs.rightRadiansPerSecond,
+    // speed.getAsDouble()));
+    // }
+
+    public Command pidFeedForwardCommand(DoubleSupplier pos) {
+        return setAngleVoltageCommand(() -> feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees),
+                getRadianPIDSpeed(() -> pos.getAsDouble()))
+                + ffPID.calculate(inputs.rightRadiansPerSecond, getRadianPIDSpeed(() -> pos.getAsDouble())));
     }
 
-    public Command pidFeedForwardCommand(DoubleSupplier pos){
-        return setAngleVoltageCommand(()->feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees),
-            getRadianPIDSpeed(()->pos.getAsDouble())) + ffPID.calculate(inputs.rightRadiansPerSecond, getRadianPIDSpeed(()->pos.getAsDouble())));
-    }
+    private double getRadianPIDSpeed(DoubleSupplier pos) {
 
-    private double getRadianPIDSpeed(DoubleSupplier pos){
-        
         double speed = radianAngle.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), pos.getAsDouble());
         if (Math.abs(speed) < 0.01) {
             speed = 0;
@@ -93,23 +96,26 @@ public class TargetingSubsystem extends SubsystemBase {
         setpoint = Math.toDegrees(pos.getAsDouble());
         return speed;
     }
-    public double distToAngle(DoubleSupplier dist){
-        Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4?60:equation(dist.getAsDouble()));
-        return dist.getAsDouble() < 2.4?60:equation(dist.getAsDouble());
+
+    public double distToAngle(DoubleSupplier dist) {
+        Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4 ? 60 : equation(dist.getAsDouble()));
+        return dist.getAsDouble() < 2.4 ? 60 : equation(dist.getAsDouble());
     }
 
-    public double equation(double v){
-        
-        return 48.6324 * Math.asin(0.772692*(1/v) + 0.664047) - 17.0793 + angleOffset.getAsDouble() + 1.5;
+    public double equation(double v) {
+
+        return 48.6324 * Math.asin(0.772692 * (1 / v) + 0.664047) - 17.0793 + angleOffset.getAsDouble() + 1.5;
     }
 
-    public double getAngleVoltage(){
+    public double getAngleVoltage() {
         return inputs.rightTargetingAppliedVoltage;
     }
-    public double getAnglePosition(){
+
+    public double getAnglePosition() {
         return Math.toRadians(inputs.rightTargetingPositionDegrees);
     }
-    public double getAngleVelocity(){
+
+    public double getAngleVelocity() {
         return inputs.rightRadiansPerSecond;
     }
 
@@ -120,27 +126,23 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return New Command.
      */
     public Command anglePIDCommand(double angle) {
-        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle));
+        return setAngleVoltageCommand(() -> getAnglePIDSpeed(angle));
     }
+
     public Command anglePIDCommand(DoubleSupplier angle, double limit) {
-        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit);
+        return setAngleVoltageCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit);
     }
+
     public Command anglePIDCommand(DoubleSupplier angle, double limit, BooleanSupplier condition) {
-        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit, condition);
+        return setAngleVoltageCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), limit, condition);
     }
 
-
-    /**
-     * Moves to the given angle.
-     * 
-     * @param angle Supplier giving the angle to move to.
-     * @return New Command.
-     */
     public Command anglePIDCommand(DoubleSupplier angle) {
-        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()));
+        return setAngleVoltageCommand(() -> getAnglePIDSpeed(angle.getAsDouble()));
     }
-    public Command anglePIDCommand(DoubleSupplier angle,BooleanSupplier condition) {
-        return setAnglePercentOutputCommand(() -> getAnglePIDSpeed(angle.getAsDouble()),condition);
+
+    public Command anglePIDCommand(DoubleSupplier angle, BooleanSupplier condition) {
+        return setAngleVoltageCommand(() -> getAnglePIDSpeed(angle.getAsDouble()), condition);
     }
 
     /**
@@ -151,11 +153,11 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Percent output.
      */
     private double getAnglePIDSpeed(double position) {
-        if (position <= TargetingConstants.angleLowerLimit){
+        if (position <= TargetingConstants.angleLowerLimit) {
             pid.reset();
         }
         double speed = pid.calculate(inputs.targetingPositionAverage, position);
-        speed = MathUtil.clamp(speed, -1, 1);
+        speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.01) {
             speed = 0;
         }
@@ -208,14 +210,14 @@ public class TargetingSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+
     public Command setAnglePercentOutputCommand(DoubleSupplier output, BooleanSupplier condition) {
         Command c = new Command() {
             @Override
             public void execute() {
-                if (condition.getAsBoolean()){
+                if (condition.getAsBoolean()) {
                     setAnglePercentOutput(output.getAsDouble());
-                }
-                else{
+                } else {
                     setAnglePercentOutput(0);
                 }
             }
@@ -233,11 +235,9 @@ public class TargetingSubsystem extends SubsystemBase {
         Command c = new Command() {
             @Override
             public void execute() {
-                if (getAnglePosition() > limit){
+                if (getAnglePosition() > limit) {
                     setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
-                }
-                else
-                {
+                } else {
                     setAnglePercentOutput(output.getAsDouble());
                 }
             }
@@ -255,15 +255,13 @@ public class TargetingSubsystem extends SubsystemBase {
         Command c = new Command() {
             @Override
             public void execute() {
-                if (condition.getAsBoolean()){
-                    if (getAnglePosition() > limit){
+                if (condition.getAsBoolean()) {
+                    if (getAnglePosition() > limit) {
                         setAnglePercentOutput(Math.min(output.getAsDouble(), 0));
-                    }
-                    else{
+                    } else {
                         setAnglePercentOutput(output.getAsDouble());
                     }
-                }
-                else{
+                } else {
                     setAnglePercentOutput(0);
                 }
             }
@@ -284,11 +282,16 @@ public class TargetingSubsystem extends SubsystemBase {
      * @param voltage The voltage to set the angle motors to.
      * @return New Command.
      */
-    public Command setAngleVoltageCommand(double voltage) {
+    public Command setAngleVoltageCommand(DoubleSupplier voltage, BooleanSupplier condition) {
         Command c = new Command() {
             @Override
             public void execute() {
-                setAngleVoltage(voltage);
+                if (condition.getAsBoolean()) {
+                    setAngleVoltage(voltage.getAsDouble());
+                } else {
+                    setAngleVoltage(0);
+                }
+
             }
 
             @Override
@@ -299,6 +302,53 @@ public class TargetingSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+
+    public Command setAngleVoltageCommand(DoubleSupplier voltage, double limit) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (getAnglePosition() > limit) {
+                    setAngleVoltage(Math.min(voltage.getAsDouble(), 0));
+                } else {
+                    setAngleVoltage(voltage.getAsDouble());
+                }
+
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAngleVoltage(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    public Command setAngleVoltageCommand(DoubleSupplier voltage, double limit, BooleanSupplier condition) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                if (condition.getAsBoolean()) {
+                    if (getAnglePosition() > limit) {
+                        setAngleVoltage(Math.min(voltage.getAsDouble(), 0));
+                    } else {
+                        setAngleVoltage(voltage.getAsDouble());
+                    }
+                }
+                else{
+                    setAngleVoltage(0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setAngleVoltage(0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
     public Command setAngleVoltageCommand(DoubleSupplier voltage) {
         Command c = new Command() {
             @Override
@@ -314,7 +364,6 @@ public class TargetingSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
-
 
     /**
      * Sets the percent output of the angle motors.
@@ -358,9 +407,9 @@ public class TargetingSubsystem extends SubsystemBase {
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
     }
+
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
-
 
 }
