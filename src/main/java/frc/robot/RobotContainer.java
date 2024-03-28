@@ -450,8 +450,16 @@ public class RobotContainer {
 	}
 
 	public double determineTargetingAngle(){
-		return (get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius //10.249
-			? movingWhileShooting.getAngleFromDistance() : 40);
+		if(intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius){
+			return movingWhileShooting.getAngleFromDistance();
+		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorController.getHID().getYButton()){
+			return 40;
+		} else {
+			return 30;
+		}
+
+		// return (get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius //10.249
+		// 	? movingWhileShooting.getAngleFromDistance() : 40);
 	}
 	public Command autoTargetMovingWhileShooting(){
 		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60, ()->autoTargetBool
