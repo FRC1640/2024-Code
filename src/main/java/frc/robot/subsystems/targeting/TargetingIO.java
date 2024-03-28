@@ -75,7 +75,7 @@ public interface TargetingIO {
 
         if (!(Double.isNaN(speedClamped) || Double.isNaN(pos))) {
             if (pos < TargetingConstants.angleLowerLimit) {
-                speedClamped = Math.min(speed, 0);
+                speedClamped = Math.max(speed, 0);
             }
             if (pos > TargetingConstants.angleUpperLimit) {
                 speedClamped = Math.min(speed, 0);
