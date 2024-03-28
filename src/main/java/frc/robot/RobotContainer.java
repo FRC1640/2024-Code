@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,6 +20,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,7 +33,6 @@ import frc.lib.drive.DriveSubsystem;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Gyro.Gyro;
@@ -46,8 +45,6 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionAutoCommand2;
-import frc.robot.sensors.Vision.MLVision.MLVisionAutonCommand;
-import frc.robot.sensors.Vision.MLVision.MLVisionAutonStrafeCommand;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
@@ -90,6 +87,8 @@ public class RobotContainer {
 	private DriveSubsystem driveSubsystem;
 	private final CommandXboxController driveController = new CommandXboxController(0);
 	private final CommandXboxController operatorController = new CommandXboxController(1);
+	private final XboxController driveControllerHID = driveController.getHID();
+	private final XboxController operatorControllerHID = operatorController.getHID();
 	private ShooterSubsystem shooterSubsystem;
 	private IntakeSubsystem intakeSubsystem;
 	private ClimberSubsystem climberSubsystem;
@@ -130,7 +129,7 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
 				intakeSubsystem = new IntakeSubsystem(
-						new IntakeIOSparkMax(() -> driveController.povUp().getAsBoolean(), ()->intakeSubsystem.isShooting(), ()->startAuto));
+						new IntakeIOSparkMax(() -> driveControllerHID.getPOV() == 0, ()->intakeSubsystem.isShooting(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset);
@@ -146,7 +145,7 @@ public class RobotContainer {
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim("limelight-back"),"-back");
 				mlVision = new MLVision(new MLVisionIOSim());
 
-				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveController.povUp().getAsBoolean()));
+				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveControllerHID.getPOV() == 0));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
 				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim(), ()->angleOffset);
 				break;
@@ -231,10 +230,9 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
-		operatorController.x().whileTrue(ampCommand());
-		// amp shot
-		driveController.start().onTrue(driveSubsystem.resetGyroCommand());
-		driveController.back().onTrue(driveSubsystem.resetOdometryAprilTag());
+		new Trigger(() -> operatorControllerHID.getXButton()).whileTrue(ampCommand()); // amp shot
+		new Trigger(() -> driveControllerHID.getStartButton()).onTrue(driveSubsystem.resetGyroCommand());
+		new Trigger(() -> driveControllerHID.getBackButton()).onTrue(driveSubsystem.resetOdometryAprilTag());
 		driveController.leftBumper().whileTrue(generateIntakeCommand());
 		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
 		driveController.y().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));

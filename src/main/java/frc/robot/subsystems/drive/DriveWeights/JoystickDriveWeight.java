@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -10,10 +9,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.JoystickCleaner;
-import frc.lib.swerve.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.sensors.Gyro.Gyro;
-import frc.robot.subsystems.drive.DriveWeightCommand;
 
 public class JoystickDriveWeight implements DriveWeight {
     // DRIVE COMMAND VARIABLES:
@@ -62,12 +59,12 @@ public class JoystickDriveWeight implements DriveWeight {
             lastAngle = gyro.getRawAngleRadians();
             firstRun = false;
         }
-        driverController.back().onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
+        new Trigger(() -> driverController.getHID().getBackButton()).onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
 
         Trigger leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
 
         // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
-        if (driverController.rightBumper().getAsBoolean()){
+        if (driverController.getHID().getRightBumper()) {
             xSpeed = -driverController.getLeftY() * 0.1;
             ySpeed = -driverController.getLeftX() * 0.1;
             rot = -driverController.getRightX() * 0.1;
