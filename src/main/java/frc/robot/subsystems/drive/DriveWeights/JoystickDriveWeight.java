@@ -19,8 +19,8 @@ public class JoystickDriveWeight implements DriveWeight {
     private final double SLOW_LINEAR_SPEED = 0.5;
     private final double SLOW_ROTATIONAL_SPEED = 0.3;
 
-    private final double LOWER_DB = 0.15;
-    private final double UPPER_DB = 0.15;
+    private final double LOWER_DB = 0.05;
+    private final double UPPER_DB = 0.05;
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -65,9 +65,9 @@ public class JoystickDriveWeight implements DriveWeight {
 
         // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
         if (driverController.getHID().getRightBumper()) {
-            xSpeed = -driverController.getLeftY() * 0.1;
-            ySpeed = -driverController.getLeftX() * 0.1;
-            rot = -driverController.getRightX() * 0.1;
+            xSpeed = -driverController.getLeftY() * 0.3;
+            ySpeed = -driverController.getLeftX() * 0.3;
+            rot = -driverController.getRightX() * 0.2;
         }
         else if (!leftTrigger.getAsBoolean()) {
             xSpeed = -driverController.getLeftY() * SLOW_LINEAR_SPEED;
