@@ -23,7 +23,7 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 2;
+        public static final double xyStdDev = 2.5;
         public static final double thetaStdDev = 99999999;
 
         public static final double xyStdDevAuto = 2;
@@ -32,7 +32,7 @@ public final class Constants {
 
     public static class SwerveDriveDimensions {
         public static final double wheelRadius = Units.inchesToMeters(4.23 / 2);
-        public static final double driveGearRatio = 7.73;
+        public static final double driveGearRatio = 116/15;
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
@@ -138,7 +138,7 @@ public final class Constants {
         public static PIDController rotMovingPID = new PIDController(0.75, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
-        public static PIDController targetingPID = new PIDController(0.015, 0.001, 0);
+        public static PIDController targetingPID = new PIDController(0.25, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.01, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.01, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);

@@ -199,7 +199,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 12));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 999999));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 		
@@ -355,9 +355,11 @@ public class RobotContainer {
 
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(TargetingConstants.angleError)
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(
+					(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? TargetingConstants.angleError:99999))
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
-								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 2.5));
+								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 
+								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 2.5: 999)));
 	}
 
     private Command generateIntakeCommandAuto() {

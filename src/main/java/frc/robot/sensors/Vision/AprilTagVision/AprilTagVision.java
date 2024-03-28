@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
+import frc.lib.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.Constants.FieldConstants;
 
 public class AprilTagVision extends PeriodicBase {
@@ -34,7 +35,7 @@ public class AprilTagVision extends PeriodicBase {
     public boolean isTarget(){
         return inputs.isTarget;
     }
-    public double getDistance(){
+    public double[] getDistance(){
         return inputs.aprilTagDistance;
     }
 
@@ -49,5 +50,13 @@ public class AprilTagVision extends PeriodicBase {
     public boolean isPoseValid(Pose2d pose){
         return FieldConstants.width >= pose.getX() && 
         FieldConstants.height >= pose.getY() && pose.getX() >= 0 && pose.getY() >= 0 && pose.getTranslation().getX() != 0;
+    }
+
+    public String getName(){
+        return key;
+    }
+
+    public Pose2d[] getTagPoses(){
+        return inputs.tagPoses;
     }
 }
