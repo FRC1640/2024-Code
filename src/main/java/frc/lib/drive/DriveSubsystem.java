@@ -127,7 +127,7 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(3, 0, 0),
+                        new PIDConstants(2, 0, 0),
                         new PIDConstants(3.5, 0, 0),
                         SwerveDriveDimensions.maxSpeed,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),

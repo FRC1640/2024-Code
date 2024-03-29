@@ -31,7 +31,7 @@ public final class Constants {
     }
 
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = Units.inchesToMeters(3.67 / 2);
+        public static final double wheelRadius = Units.inchesToMeters(3.7432661290322 / 2);
         public static final double driveGearRatio = 116/15;
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
