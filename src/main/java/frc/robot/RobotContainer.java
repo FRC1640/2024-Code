@@ -54,6 +54,7 @@ import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
+import frc.robot.subsystems.drive.DriveWeights.ClimberAlignWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
@@ -497,6 +498,7 @@ public class RobotContainer {
 	public Command autoTrapClimb(Supplier<Pose2d> currentLocation){
 		Command c = new Command() {
 			AutoDriveWeight autoStageAlign = new AutoDriveWeight(() -> getNearestStage(), currentLocation, gyro);
+			ClimberAlignWeight finalAlign = new ClimberAlignWeight(climberSubsystem.getDigitalInput(0), climberSubsystem.getDigitalInput(1));
 			@Override
 			public void initialize(){
 				DriveWeightCommand.addWeight(autoStageAlign);
@@ -506,6 +508,7 @@ public class RobotContainer {
 			public void execute(){
 				if(Math.sqrt(Math.pow(currentLocation.get().minus(getNearestStage()).getX(),2) + Math.pow(currentLocation.get().minus(getNearestStage()).getY(),2))<0.05){
 					DriveWeightCommand.removeWeight(autoStageAlign);
+					DriveWeightCommand.addWeight(finalAlign);
 				}
 			}
 		};		

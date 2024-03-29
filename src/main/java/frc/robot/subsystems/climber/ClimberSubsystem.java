@@ -1,11 +1,13 @@
 package frc.robot.subsystems.climber;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -78,6 +80,16 @@ public class ClimberSubsystem extends SubsystemBase{
         };
         c.addRequirements(this);
         return c;
+    }
+
+    public BooleanSupplier getDigitalInput(int sensorNumber){
+        if (sensorNumber == 0){
+            return () -> inputs.rightPoximitySensor;
+        } else if (sensorNumber == 1){
+            return () -> inputs.rightPoximitySensor;
+        } else {
+            return () -> false;
+        }
     }
 
     private double getPIDSpeed(double position, DoubleSupplier getPos) {
