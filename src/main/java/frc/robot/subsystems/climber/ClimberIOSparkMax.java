@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
@@ -14,12 +15,16 @@ import frc.robot.sensors.Resolvers.ResolverPointSlope;
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
+    private final DigitalInput leftProximitySensor;
+    private final DigitalInput rightProximitySensor;
     private final ResolverPointSlope leftEncoder;
     private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
         rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
+        leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
+        rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
 
         leftMotor.setInverted(false);
         rightMotor.setInverted(false);
@@ -66,6 +71,7 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.leftTempCelcius = leftMotor.getMotorTemperature();
         inputs.leftClimberPositionDegrees = leftEncoder.getD();
         inputs.leftClimberVoltage = leftEncoder.getV();
+        inputs.leftPoximitySensor = leftProximitySensor.get();
 
         inputs.rightSpeedPercent = rightMotor.getAppliedOutput();
         inputs.rightAppliedVoltage = rightMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
@@ -73,5 +79,6 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.rightTempCelcius = rightMotor.getMotorTemperature();
         inputs.rightClimberPositionDegrees = rightEncoder.getD();
         inputs.rightClimberVoltage = rightEncoder.getV();
+        inputs.rightPoximitySensor = rightProximitySensor.get();
     }
 }

@@ -114,6 +114,8 @@ public final class Constants {
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 5;
+        public static final int leftProximityChannel = 0;
+        public static final int rightProximityChannel = 0;
     }
 
     public static class ShooterConstants {
