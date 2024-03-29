@@ -365,6 +365,20 @@ public class RobotContainer {
 		return Alliance.Blue;
 	}
 
+	public Pose2d getNearestStage(){ 
+		Pose2d[] list = getAlliance() == Alliance.Blue?FieldConstants.blueStages:FieldConstants.redStages;
+		double best = 999999;
+		Pose2d bestPose = new Pose2d();
+		for (Pose2d position : list){
+			if (position.getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < best){
+				best = position.getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
+				bestPose = position;
+			}
+			
+		}
+		return bestPose;
+    }
+
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(
