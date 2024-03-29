@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -165,6 +167,8 @@ public final class Constants {
         public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.840);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
+        public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.62, 3.572), new Rotation2d(-2.1)), new Pose2d(new Translation2d(4.624, 4.538), new Rotation2d(2.01)), new Pose2d(new Translation2d(5.388, 4.068), new Rotation2d(0))};
+        public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.0, 3.658), new Rotation2d(-1.05)), new Pose2d(new Translation2d(11.982,4.59), new Rotation2d(1.035)), new Pose2d(new Translation2d(11.133,4.05), new Rotation2d(3.135))};
         
         public static Translation2d stashPositionBlue = new Translation2d(1.43, 5.5);
         public static Translation2d stashPositionRed = new Translation2d(14.643, 5.5);
