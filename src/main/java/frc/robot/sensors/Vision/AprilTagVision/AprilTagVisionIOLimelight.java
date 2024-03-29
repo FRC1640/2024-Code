@@ -1,15 +1,19 @@
 package frc.robot.sensors.Vision.AprilTagVision;
 
+import java.util.Arrays;
+
 import com.fasterxml.jackson.core.format.InputAccessor;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.vision.LimelightHelpers;
+import frc.robot.Constants.FieldConstants;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     String key;
@@ -37,12 +41,33 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         double[] robotPoseArray = networkTable.getEntry("targetpose_robotspace").getDoubleArray(emptyArraySix);
         // System.out.println(robotPoseArray + "robotPoseArray len "+ robotPoseArray.length);
         Translation3d robotPoseTranslation = new Translation3d(robotPoseArray[0], robotPoseArray[1], robotPoseArray[2]);
-        inputs.aprilTagDistance = robotPoseTranslation.getNorm();
+        
 
         llresults = LimelightHelpers.getLatestResults(key);
 
-        resultsArray = llresults.targetingResults.targets_Fiducials;
+        inputs.aprilTagDistances = Arrays.stream(llresults.targetingResults.targets_Fiducials)
+            .mapToDouble((v)->v.getRobotPose_TargetSpace2D().getTranslation().getNorm()).toArray();
 
+        inputs.aprilTagDistance = robotPoseTranslation.getNorm();
+
+        inputs.tagPoses = Arrays.stream(llresults.targetingResults.targets_Fiducials)
+            .map((v)->new Pose2d(v.getRobotPose_FieldSpace2D().getX() + FieldConstants.width / 2, 
+            v.getRobotPose_FieldSpace2D().getY() + FieldConstants.height / 2,v.getRobotPose_FieldSpace2D().getRotation()))
+            .toArray(Pose2d[]::new);
+
+        // inputs.latency = 
+        //     Timer.getFPGATimestamp() - (llresults.targetingResults.latency_capture 
+        //     + llresults.targetingResults.latency_jsonParse
+        //     + llresults.targetingResults.latency_pipeline);
+        
+        inputs.tl = llresults.targetingResults.latency_pipeline;
+        inputs.cl = llresults.targetingResults.latency_capture;
+        inputs.jl = llresults.targetingResults.latency_jsonParse;
+
+        
+
+        resultsArray = llresults.targetingResults.targets_Fiducials;
+        
         inputs.numVisibleTags = (inputs.isTarget) ? resultsArray.length : 0;
 
         inputs.tx = networkTable.getEntry("tx").getDouble(0);

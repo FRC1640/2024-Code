@@ -188,16 +188,16 @@ public class DashboardInit {
         ShuffleboardTab sysidTab = Shuffleboard.getTab("Sysid");
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
         sysidChooser.addOption("AnglerSysID", CreateSysidCommand.createCommand(targetingSubsystem::sysIdQuasistatic, 
-        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
+        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
-                        "SwerveSysId", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
+                        "SwerveSysId", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
 
         sysidChooser.addOption("ShooterSysID",
             CreateSysidCommand.createCommand(
                 shooterSubsystem::sysIdQuasistatic, 
                 shooterSubsystem::sysIdDynamic, 
-                "ShooterSysID", () -> controller.a().getAsBoolean(), () -> controller.b().getAsBoolean()));
+                "ShooterSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
         sysIdInit = true;
     }
