@@ -104,13 +104,13 @@ class RegisterIO_SPI implements IRegisterIO{
                         System.out.printf("navX-MXP SPI Read:  CRC error %s\n",
                         ((successive_error_count < NUM_IGNORED_SUCCESSIVE_ERRORS) ? "" : " (Repeated errors omitted)"));
                     }
-                }     	
+                }
+                resetSPI();
 	            return false; // CRC ERROR
             }
             successive_error_count = 0;
 	        System.arraycopy(received_data, 0, buffer, 0, received_data.length - 1);
         }
-        resetSPI();
         return true;
     }
 
