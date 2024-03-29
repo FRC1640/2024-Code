@@ -480,7 +480,21 @@ public class RobotContainer {
 			&& extensionSubsystem.getExtensionPosition() < 20);
 	}
 	
-	
+	public Command autoTrapClimb(){
+		Command c = new Command() {
+			@Override
+			public void initialize(){
+
+			}
+
+			@Override
+			public void execute(){
+				
+			}
+		};		
+		return c;
+	}
+
 	public Command ampCommand(){
 		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.15,
 			()->0.03, ()->0.15, ()->true)
