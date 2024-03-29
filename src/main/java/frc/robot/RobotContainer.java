@@ -481,6 +481,7 @@ public class RobotContainer {
 	}
 	
 	public Command autoTrapClimb(){
+		new DriveWeight autoStageAlign = new AutoDriveWeight(() -> ), null, gyro);
 		Command c = new Command() {
 			@Override
 			public void initialize(){
