@@ -9,6 +9,8 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.sensors.Gyro.Imported;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.AHRSProtocol;
 
 import edu.wpi.first.hal.SPIJNI;
@@ -115,12 +117,13 @@ class RegisterIO_SPI implements IRegisterIO{
     }
 
     private void resetSPI() {
-    port.close();
-    var portNumber = port.getPort();
-    Timer.delay(0.001);
-    SPIJNI.spiInitialize(portNumber);
-    Timer.delay(0.010);
-}
+        port.close();
+        var portNumber = port.getPort();
+        Timer.delay(0.001);
+        SPIJNI.spiInitialize(portNumber);
+        Timer.delay(0.010);
+        Logger.recordOutput("resetSPI()");
+    }
 
     @Override
     public boolean shutdown() {
