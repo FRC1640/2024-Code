@@ -504,7 +504,9 @@ public class RobotContainer {
 
 			@Override
 			public void execute(){
-				
+				if(Math.sqrt(Math.pow(currentLocation.get().minus(getNearestStage()).getX(),2) + Math.pow(currentLocation.get().minus(getNearestStage()).getY(),2))<0.05){
+					DriveWeightCommand.removeWeight(autoStageAlign);
+				}
 			}
 		};		
 		return c;
