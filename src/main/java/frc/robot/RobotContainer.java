@@ -494,8 +494,8 @@ public class RobotContainer {
 			&& extensionSubsystem.getExtensionPosition() < 20);
 	}
 	
-	public Command autoTrapClimb(){
-		new DriveWeight autoStageAlign = new AutoDriveWeight(() -> ), null, gyro);
+	public Command autoTrapClimb(Supplier<Pose2d> currentLocation){
+		new DriveWeight autoStageAlign = new AutoDriveWeight(() -> getNearestStage(), currentLocation, gyro);
 		Command c = new Command() {
 			@Override
 			public void initialize(){
