@@ -26,6 +26,8 @@ class RegisterIO_SPI implements IRegisterIO{
 
     static final int   DEFAULT_SPI_BITRATE_HZ         = 500000;
     static final int   NUM_IGNORED_SUCCESSIVE_ERRORS  = 50;
+
+    double spiResetCount = 0;
     
     public RegisterIO_SPI( SPI spi_port ) {
         port = spi_port;
@@ -122,7 +124,8 @@ class RegisterIO_SPI implements IRegisterIO{
         Timer.delay(0.001);
         SPIJNI.spiInitialize(portNumber);
         Timer.delay(0.010);
-        Logger.recordOutput("resetSPI()");
+        spiResetCount++;
+        Logger.recordOutput("SPI Reset", spiResetCount);
     }
 
     @Override
