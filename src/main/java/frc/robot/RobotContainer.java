@@ -321,7 +321,7 @@ public class RobotContainer {
 
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.onTrue(climbCommandFactory.getAlignToStageCommand());
+			.onTrue(climbCommandFactory.getBackupToStageCommand());
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
 
