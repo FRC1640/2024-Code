@@ -71,7 +71,7 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.leftTempCelcius = leftMotor.getMotorTemperature();
         inputs.leftClimberPositionDegrees = leftEncoder.getD();
         inputs.leftClimberVoltage = leftEncoder.getV();
-        inputs.leftPoximitySensor = leftProximitySensor.get();
+        inputs.leftProximitySensor = !(leftProximitySensor.get());
 
         inputs.rightSpeedPercent = rightMotor.getAppliedOutput();
         inputs.rightAppliedVoltage = rightMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
@@ -79,6 +79,6 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.rightTempCelcius = rightMotor.getMotorTemperature();
         inputs.rightClimberPositionDegrees = rightEncoder.getD();
         inputs.rightClimberVoltage = rightEncoder.getV();
-        inputs.rightPoximitySensor = rightProximitySensor.get();
+        inputs.rightProximitySensor = !(rightProximitySensor.get());
     }
 }

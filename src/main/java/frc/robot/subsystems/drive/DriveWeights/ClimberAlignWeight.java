@@ -6,20 +6,20 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class ClimberAlignWeight implements DriveWeight {
-    BooleanSupplier sensor1;
-    BooleanSupplier sensor2;
-    public ClimberAlignWeight(BooleanSupplier sensor1, BooleanSupplier sensor2){
-        this.sensor1 = sensor1;
-        this.sensor2 = sensor2;
+    BooleanSupplier rightSensor;
+    BooleanSupplier leftSensor;
+    public ClimberAlignWeight(BooleanSupplier rightSensor, BooleanSupplier leftSensor){
+        this.rightSensor = rightSensor;
+        this.leftSensor = leftSensor;
     }
 
     @Override
     public ChassisSpeeds getSpeeds(){
-        if (!sensor1.getAsBoolean() && !sensor1.getAsBoolean()){
+        if (!rightSensor.getAsBoolean() && !leftSensor.getAsBoolean()){ // if neither triggered, go backwards
             return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(-0.01, 0,0), new Rotation2d(0));
-        } else if (!sensor1.getAsBoolean() && sensor1.getAsBoolean()){
+        } else if (!rightSensor.getAsBoolean() && leftSensor.getAsBoolean()){ // if left is triggered and right is not, rotate the right side back by rotating clockwise
             return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(0, 0, 0.05), new Rotation2d(0));
-        } else if (sensor1.getAsBoolean() && !sensor1.getAsBoolean()){
+        } else if (rightSensor.getAsBoolean() && !leftSensor.getAsBoolean()){
             return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(0, 0, -0.05), new Rotation2d(0));
         } else {
             return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(0, 0,0), new Rotation2d(0));
@@ -27,6 +27,6 @@ public class ClimberAlignWeight implements DriveWeight {
     }
     @Override
     public boolean cancelCondition() {
-        return (sensor1.getAsBoolean() && sensor1.getAsBoolean());
+        return (rightSensor.getAsBoolean() && leftSensor.getAsBoolean()); // both are triggered
     }
 }

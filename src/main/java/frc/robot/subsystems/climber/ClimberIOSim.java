@@ -16,6 +16,9 @@ public class ClimberIOSim implements ClimberIO{
     private double leftMotorPosition = 0.0;
     private double rightMotorPosition = 0.0;
 
+    private boolean rightProximitySensor = false;
+    private boolean leftProximitySensor = false;
+
     @Override
     public void updateInputs(ClimberIOInputs inputs) {
         leftClimbingMotorSimulated.update(0.02);

@@ -82,15 +82,14 @@ public class ClimberSubsystem extends SubsystemBase{
         return c;
     }
 
-    public BooleanSupplier getDigitalInput(int sensorNumber){
-        if (sensorNumber == 0){
-            return () -> inputs.rightPoximitySensor;
-        } else if (sensorNumber == 1){
-            return () -> inputs.rightPoximitySensor;
-        } else {
-            return () -> false;
-        }
+    public boolean getRightProximitySensor(){
+        return inputs.rightProximitySensor;
     }
+
+    public boolean getLeftProximitySensor(){
+        return true;
+    }
+
 
     private double getPIDSpeed(double position, DoubleSupplier getPos) {
         double speed = pid.calculate(getPos.getAsDouble(), position);
