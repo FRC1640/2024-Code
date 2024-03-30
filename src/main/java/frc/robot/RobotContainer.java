@@ -495,25 +495,6 @@ public class RobotContainer {
 			&& extensionSubsystem.getExtensionPosition() < 20);
 	}
 	
-	public Command autoTrapClimb(Supplier<Pose2d> currentLocation){
-		Command c = new Command() {
-			AutoDriveWeight autoStageAlign = new AutoDriveWeight(() -> getNearestStage(), currentLocation, gyro);
-			ClimberAlignWeight finalAlign = new ClimberAlignWeight(climberSubsystem.getDigitalInput(0), climberSubsystem.getDigitalInput(1));
-			@Override
-			public void initialize(){
-				DriveWeightCommand.addWeight(autoStageAlign);
-			}
-
-			@Override
-			public void execute(){
-				if(Math.sqrt(Math.pow(currentLocation.get().minus(getNearestStage()).getX(),2) + Math.pow(currentLocation.get().minus(getNearestStage()).getY(),2))<0.05){
-					DriveWeightCommand.removeWeight(autoStageAlign);
-					DriveWeightCommand.addWeight(finalAlign);
-				}
-			}
-		};		
-		return c;
-	}
 
 	public Command ampCommand(){
 		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.15,
