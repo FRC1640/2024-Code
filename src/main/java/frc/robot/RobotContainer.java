@@ -48,6 +48,7 @@ import frc.robot.sensors.Vision.MLVision.MLVisionAutoCommand2;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
+import frc.robot.subsystems.climber.AutoTrapClimbCommandFactory;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
@@ -111,6 +112,8 @@ public class RobotContainer {
 	MovingWhileShooting movingWhileShooting;
 
 	RotateToAngleWeight movingWhileShootingWeight;
+
+	AutoTrapClimbCommandFactory climbCommandFactory;
 
 	boolean autoTargetBool = false;
 
@@ -225,6 +228,8 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
+		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro);
+
 		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem, mlVision);
 		configureBindings();
 
@@ -246,6 +251,9 @@ public class RobotContainer {
 				.onTrue(driveSubsystem.resetOdometryAprilTag());
 		new Trigger(() -> driveControllerHID.getLeftBumper())
 				.whileTrue(generateIntakeCommand());
+		
+		
+		
 		new Trigger(() -> driveControllerHID.getYButton())
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
 		new Trigger(() -> driveControllerHID.getYButton())
@@ -311,8 +319,13 @@ public class RobotContainer {
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
+
 		new Trigger(() -> driveControllerHID.getBButton())
-				.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+			.onTrue(climbCommandFactory.getAlignToStageCommand());
+		// new Trigger(() -> driveControllerHID.getBButton())
+		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+
+
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
@@ -367,17 +380,23 @@ public class RobotContainer {
 	}
 
 	public Pose2d getNearestStage(){ 
-		Pose2d[] list = getAlliance() == Alliance.Blue?FieldConstants.blueStages:FieldConstants.redStages;
-		double best = 999999;
-		Pose2d bestPose = new Pose2d();
-		for (Pose2d position : list){
-			if (position.getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < best){
-				best = position.getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
-				bestPose = position;
+		Pose2d[] allianceStagePoses = getAlliance() == Alliance.Blue?FieldConstants.blueStages:FieldConstants.redStages;
+		double shortestDistance = 999999;
+		Pose2d closestPose = new Pose2d();
+		int index = 0;
+
+		for (int i = 0; i < allianceStagePoses.length ; i++ ){
+			if (allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < shortestDistance){
+		 		shortestDistance = allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
+				closestPose = allianceStagePoses[i];
+				index = i;
 			}
-			
 		}
-		return bestPose;
+
+		Logger.recordOutput("Drive/nearest speaker", index);
+		Logger.recordOutput("Drive/nearest speaker pos", closestPose);
+
+		return closestPose;
     }
 
 	private Command generateIntakeCommand() {
