@@ -381,11 +381,11 @@ public class RobotContainer {
 
 	public Pose2d getNearestStage(){ 
 		Pose2d[] allianceStagePoses = getAlliance() == Alliance.Blue?FieldConstants.blueStages:FieldConstants.redStages;
-		double shortestDistance = 999999;
-		Pose2d closestPose = new Pose2d();
+		double shortestDistance = allianceStagePoses[0].getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
+		Pose2d closestPose = allianceStagePoses[0];
 		int index = 0;
 
-		for (int i = 0; i < allianceStagePoses.length ; i++ ){
+		for (int i = 1; i < allianceStagePoses.length ; i++ ){
 			if (allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < shortestDistance){
 		 		shortestDistance = allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
 				closestPose = allianceStagePoses[i];

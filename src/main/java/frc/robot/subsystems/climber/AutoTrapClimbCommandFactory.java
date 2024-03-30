@@ -19,7 +19,6 @@ public class AutoTrapClimbCommandFactory {
 	private Supplier<Pose2d> getNearestStage;
 	private Gyro gyro;
 
-
     public AutoTrapClimbCommandFactory (ClimberSubsystem climberSubsystem, Supplier<Pose2d> currentLocation, Supplier<Pose2d> getNearestStage, Gyro gyro){
 		this.climberSubsystem = climberSubsystem;
 		this.currentLocation = currentLocation;
@@ -34,12 +33,14 @@ public class AutoTrapClimbCommandFactory {
 
 	public Command getAlignToStageCommand(){
 		// Command c = new Command() {
-		System.out.println(getNearestStage.get() + " is a " + getNearestStage.get().getClass());
+
+		
 		AutoDriveWeight autoStageAlignWeight = new AutoDriveWeight(getNearestStage, currentLocation, gyro);
 		
 		Command c = new InstantCommand(()->DriveWeightCommand.addWeight(autoStageAlignWeight))
-					.andThen(new WaitUntilCommand(() ->Math.sqrt(Math.pow(currentLocation.get().minus(getNearestStage.get()).getX(),2) + Math.pow(currentLocation.get().minus(getNearestStage.get()).getY(),2))<0.05))
-					.andThen(() ->DriveWeightCommand.removeWeight(autoStageAlignWeight));
+					.andThen(new WaitUntilCommand(() -> currentLocation.get().getTranslation().getDistance(getNearestStage.get().getTranslation()) < 0.05)
+					.alongWith(new InstantCommand(() -> {System.out.println(getNearestStage.get() + " is a " + getNearestStage.get().getClass());}))
+					.andThen(() ->DriveWeightCommand.removeWeight(autoStageAlignWeight)));
 		return c;
 	}
 
