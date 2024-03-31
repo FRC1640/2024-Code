@@ -25,6 +25,8 @@ public interface ModuleIO extends AutoCloseable{
     
     public default void updateInputs(ModuleIOInputs inputs) {}
 
+    public default void setBrakeMode(boolean brake){};
+
     public default void setDriveVoltage(double voltage) {}
 
     public default void setDrivePercentage(double percentage) {}

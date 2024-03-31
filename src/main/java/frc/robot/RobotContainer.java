@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -116,6 +117,9 @@ public class RobotContainer {
 	private boolean startAuto = false;
 
 	double autoSetAngle;
+
+	boolean canShoot = true;
+	double angleRotate = 0;
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -237,6 +241,9 @@ public class RobotContainer {
 		// Use triggers & HIDs to avoid >] COMMAND OVERRUN [<.
 
 		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
+
+		// driveController.y().whileTrue(new RunCommand(()->driveSubsystem.rotatePivots(()->angleRotate))
+		// 	.until(Math.abs(driveSubsystem.getActualSwerveStates()[0].angle.getDegrees() - angleRotate) < 3).andThen(new InstantCommand(()->{angleRotate += 90;})));
 		new Trigger(() -> operatorControllerHID.getXButton())
 				.whileTrue(ampCommand()); // amp shot
 		new Trigger(() -> driveControllerHID.getStartButton())
@@ -368,10 +375,10 @@ public class RobotContainer {
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(
-					(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? TargetingConstants.angleError:99999))
+					(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? TargetingConstants.angleError:3))
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 
-								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 2.5: 999)));
+								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 2.5: 8)) && canShoot);
 	}
 
     private Command generateIntakeCommandAuto() {
@@ -465,10 +472,13 @@ public class RobotContainer {
 
 	public double determineTargetingAngle(){
 		if(intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius){
+			canShoot = true;
 			return movingWhileShooting.getAngleFromDistance();
 		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorController.getHID().getYButton()){
+			canShoot = true;
 			return 40;
 		} else {
+			canShoot = false;
 			return 30;
 		}
 
@@ -508,11 +518,11 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(30));
-		NamedCommands.registerCommand("AmpNoteShotQuad", manualShotAuto(34));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(34));
+		NamedCommands.registerCommand("AmpNoteShotQuad", manualShotAuto(35.5));
 		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(30 + offset));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(26 + offset));
 		NamedCommands.registerCommand("MidShotFromAmp", manualShotAuto(32 + offset));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(35+ offset));
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(35));
@@ -530,6 +540,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("CloseShot", manualShotAuto(45));
 
 		NamedCommands.registerCommand("4NoteAmp", manualShotAuto(35));
+
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(33));
 		
 		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));

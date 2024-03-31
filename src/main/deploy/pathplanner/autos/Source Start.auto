@@ -2,19 +2,32 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.79769185179396,
-      "y": 4.537331923666697
+      "x": 0.4446807760471048,
+      "y": 1.9825567129887796
     },
-    "rotation": 122.57405713457253
+    "rotation": 90.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "source start to shot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SourceStartShot"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,7 +43,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "SourceStartShot"
                 }
               }
             ]
@@ -43,7 +56,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Source side pickup 1"
+                  "pathName": "source shot to pickup"
                 }
               },
               {
@@ -55,7 +68,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "CenterSourceSide"
+                  "name": "SourceStartShot"
                 }
               }
             ]
@@ -68,13 +81,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Source pickup return"
+                  "pathName": "source pickup to shot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "CenterSourceSide"
+                  "name": "SourceStartShot"
                 }
               }
             ]
@@ -93,70 +106,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "CenterSourceSide"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Source side pickup 2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "CenterSourceSide"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "center return 2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "CenterSourceSide"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Indexer"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "CenterSourceSide"
+                  "name": "SourceStartShot"
                 }
               }
             ]

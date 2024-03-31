@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.sensors.Resolvers.Resolver;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
@@ -22,15 +23,19 @@ public class ModuleIOSparkMax implements ModuleIO{
     
 	private RelativeEncoder driveEncoder;
 	public ResolverSlope steeringEncoder;
-    private final double kWheelRadius = Constants.SwerveDriveDimensions.wheelRadius;
+    // private final double kWheelRadius = Constants.SwerveDriveDimensions.wheelRadius;
     private final double kDriveGearRatio = Constants.SwerveDriveDimensions.driveGearRatio;
+    private ModuleInfo id;
 
 
 
     public ModuleIOSparkMax(ModuleInfo id){
+        this.id = id;
         driveMotor = new CANSparkMax(id.driveChannel, MotorType.kBrushless);
         steeringMotor = new CANSparkMax(id.steerChannel, MotorType.kBrushless);
         driveMotor.setSmartCurrentLimit(60);
+        driveMotor.getEncoder().setMeasurementPeriod(8);
+        driveMotor.getEncoder().setAverageDepth(2);
 		steeringMotor.setIdleMode(IdleMode.kCoast);
 		steeringMotor.setSmartCurrentLimit(40);
 		driveMotor.setIdleMode(IdleMode.kCoast);
@@ -81,10 +86,22 @@ public class ModuleIOSparkMax implements ModuleIO{
         steeringMotor.setVoltage(voltage);
     }
 
+    @Override 
+    public void setBrakeMode(boolean brake){
+        if (brake){
+            driveMotor.setIdleMode(IdleMode.kBrake);
+            steeringMotor.setIdleMode(IdleMode.kBrake);
+        }
+        else{
+            driveMotor.setIdleMode(IdleMode.kCoast);
+            steeringMotor.setIdleMode(IdleMode.kCoast);
+        }
+    }
+
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-        inputs.drivePositionMeters = -(driveEncoder.getPosition() / kDriveGearRatio) * kWheelRadius * 2 * Math.PI;
-        inputs.driveVelocityMetersPerSecond =  -((driveEncoder.getVelocity() / kDriveGearRatio) / 60) * 2 * Math.PI * kWheelRadius;
+        inputs.drivePositionMeters = -(driveEncoder.getPosition() / kDriveGearRatio) * id.wheelRadius * 2 * Math.PI;
+        inputs.driveVelocityMetersPerSecond =  -((driveEncoder.getVelocity() / kDriveGearRatio) / 60) * 2 * Math.PI * id.wheelRadius;
         inputs.driveAppliedVoltage = driveMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.driveCurrentAmps = driveMotor.getOutputCurrent();
         inputs.driveTempCelsius = driveMotor.getMotorTemperature();

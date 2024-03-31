@@ -1,8 +1,7 @@
 package frc.robot.sensors.Gyro;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.sensors.Gyro.Imported.AHRS;
 
 public class GyroIONavX implements GyroIO{
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
