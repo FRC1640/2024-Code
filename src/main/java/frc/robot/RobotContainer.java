@@ -209,7 +209,7 @@ public class RobotContainer {
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 		
-		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, null, getAlliance() == Alliance.Red);
+		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, targetingSubsystem, intakeSubsystem, shooterSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, null, getAlliance() == Alliance.Red);
 
 		generateNamedCommands();
 
@@ -330,7 +330,7 @@ public class RobotContainer {
 
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.whileTrue(climbCommandFactory.getAlignToStageCommand());
+			.whileTrue(climbCommandFactory.getAlignToStageCommand().andThen(climbCommandFactory.getBackupToStageCommand()).andThen(climbCommandFactory.prepareForClimbCommand()).andThen(climbCommandFactory.climbAndTrapCommand()));
 
 		new Trigger(() -> driveControllerHID.getBButton())
 			.onFalse(climbCommandFactory.cancelAutoTrap());
