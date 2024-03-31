@@ -83,11 +83,11 @@ public class ClimberSubsystem extends SubsystemBase{
     }
 
     public boolean getRightProximitySensor(){
-        return inputs.rightProximitySensor;
+        return true; //inputs.rightProximitySensor;
     }
 
     public boolean getLeftProximitySensor(){
-        return true;
+        return inputs.leftProximitySensor;
     }
 
 

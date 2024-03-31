@@ -52,7 +52,7 @@ public class AutoTrapClimbCommandFactory {
 		
 		Command c = new InstantCommand(()->DriveWeightCommand.addWeight(climberAlignWeight))
 					.andThen(new WaitUntilCommand(() -> climberAlignWeight.cancelCondition()))
-					.andThen(() ->DriveWeightCommand.removeWeight(climberAlignWeight));
+					.andThen(() ->DriveWeightCommand.removeWeight(climberAlignWeight)).finallyDo(()->DriveWeightCommand.removeWeight(climberAlignWeight));
 		return c;
 	}
 

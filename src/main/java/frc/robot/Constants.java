@@ -42,8 +42,8 @@ public final class Constants {
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
-        private static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
-        private static final Translation2d backRightLocation = new Translation2d(-wheelXPos, -wheelYPos);
+        public static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
+        public static final Translation2d backRightLocation = new Translation2d(-wheelXPos, -wheelYPos);
 
         public static final Translation2d[] positions = new Translation2d[] { frontLeftLocation, frontRightLocation,
                 backLeftLocation, backRightLocation };
@@ -116,8 +116,8 @@ public final class Constants {
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 5;
-        public static final int leftProximityChannel = 7;
-        public static final int rightProximityChannel = 8;
+        public static final int leftProximityChannel = 8;
+        public static final int rightProximityChannel = 7;
     }
 
     public static class ShooterConstants {

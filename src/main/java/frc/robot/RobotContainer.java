@@ -55,7 +55,6 @@ import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
-import frc.robot.subsystems.drive.DriveWeights.ClimberAlignWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
@@ -321,7 +320,7 @@ public class RobotContainer {
 
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.onTrue(climbCommandFactory.getBackupToStageCommand());
+			.whileTrue(climbCommandFactory.getBackupToStageCommand());
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
 
