@@ -209,6 +209,8 @@ public class RobotContainer {
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 		
+		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, null, getAlliance() == Alliance.Red);
+
 		generateNamedCommands();
 
 		rotateLockWeight = new RotateLockWeight(
@@ -241,8 +243,6 @@ public class RobotContainer {
 
 		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem, mlVision);
 		configureBindings();
-
-
 	}
 
 	private void configureBindings() {
@@ -330,10 +330,10 @@ public class RobotContainer {
 
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
+			.whileTrue(climbCommandFactory.getAlignToStageCommand());
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateToStageWeight)));
+			.onFalse(climbCommandFactory.cancelAutoTrap());
 
 			// new Trigger(() -> driveControllerHID.getBButton())
 		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));

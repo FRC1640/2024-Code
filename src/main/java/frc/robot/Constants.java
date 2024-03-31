@@ -167,8 +167,8 @@ public final class Constants {
         public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.840);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
-        public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(Math.PI/2)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(Math.PI/2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(Math.PI/2))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
-        public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(Math.PI/2)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(Math.PI/2)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(Math.PI/2))};
+        public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(Math.PI-1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(Math.PI+1)), new Pose2d(new Translation2d(6, 4.0), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
+        public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(Math.PI))};
         
         public static Rotation2d[] blueStageAngles = {new Rotation2d(2.1), new Rotation2d(-2.2), new Rotation2d(0)}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
         public static Rotation2d[] redStageAngles = {new Rotation2d(1), new Rotation2d(-1), new Rotation2d(3.14159265)};
