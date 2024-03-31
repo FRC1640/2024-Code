@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -169,10 +175,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpNoteShotQuad"
+                  "name": "SpeakerShot"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "back to subwoofer from amp"
           }
         },
         {
@@ -188,7 +200,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpNoteShotQuad"
+                  "name": "SpeakerShot"
                 }
               }
             ]

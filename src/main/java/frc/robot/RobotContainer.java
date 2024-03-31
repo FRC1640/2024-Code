@@ -518,7 +518,7 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(34));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(35));
 		NamedCommands.registerCommand("AmpNoteShotQuad", manualShotAuto(35.5));
 		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
@@ -541,13 +541,14 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("4NoteAmp", manualShotAuto(35));
 
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(33));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(34.5));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(31));
 		
 		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
 		// NamedCommands.registerCommand("SetAngleFreeThrow", new InstantCommand(()->setAutoTargetAngle(Math.toRadians(-165))));
 
-		NamedCommands.registerCommand("AmpSideRotate", driveSubsystem.rotateToAngleCommand(()->Math.toRadians((157 + (getAlliance() == Alliance.Red?180:0)))));
+		NamedCommands.registerCommand("AmpSideRotate", driveSubsystem.rotateToAngleCommand(()->Math.toRadians((-142.31 + (getAlliance() == Alliance.Red?180:0)))));
 		NamedCommands.registerCommand("SetAngleFreeThrow", driveSubsystem.rotateToAngleCommand(()->(Math.toRadians(-180 + (getAlliance() == Alliance.Red?180:0)))));
 
 		NamedCommands.registerCommand("RotateToGoal", movingWhileShootingWeightAuto.getAsCommand());
