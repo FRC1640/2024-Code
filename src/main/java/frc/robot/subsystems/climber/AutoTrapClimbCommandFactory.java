@@ -8,6 +8,7 @@ import frc.robot.subsystems.drive.DriveWeights.ClimberAlignWeight;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -21,13 +22,16 @@ public class AutoTrapClimbCommandFactory {
 	private Gyro gyro;
 	private AutoDriveWeight autoStageAlignWeight;
 	private ClimberAlignWeight climberAlignWeight;
+	private boolean isRedAlliance;
+	private Rotation2d targetAngle;
 
 
-    public AutoTrapClimbCommandFactory (ClimberSubsystem climberSubsystem, Supplier<Pose2d> currentLocation, Supplier<Pose2d> getNearestStage, Gyro gyro){
+    public AutoTrapClimbCommandFactory (ClimberSubsystem climberSubsystem, Supplier<Pose2d> currentLocation, Supplier<Pose2d> getNearestStage, Gyro gyro, Supplier<Integer> speakerIndex, boolean isRedAlliance){
 		this.climberSubsystem = climberSubsystem;
 		this.currentLocation = currentLocation;
 		this.getNearestStage = getNearestStage;
 		this.gyro = gyro;
+		this.isRedAlliance = isRedAlliance;
 		autoStageAlignWeight = new AutoDriveWeight(()->getNearestStage.get(), ()->currentLocation.get(), gyro);
 		
 		climberAlignWeight = new ClimberAlignWeight(climberSubsystem.getDigitalInput(0), climberSubsystem.getDigitalInput(1));;
@@ -54,6 +58,19 @@ public class AutoTrapClimbCommandFactory {
 					.andThen(new WaitUntilCommand(() -> climberAlignWeight.cancelCondition()))
 					.andThen(() ->DriveWeightCommand.removeWeight(climberAlignWeight));
 		return c;
+	}
+
+	public Command manualRotateToStageCommand(){
+		// Command c = new Command() {
+		if (isRedAlliance){
+
+		}
+		
+		Command c = new Command(){
+		
+		};
+			return c;
+
 	}
 
     

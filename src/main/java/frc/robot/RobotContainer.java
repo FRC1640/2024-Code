@@ -113,6 +113,9 @@ public class RobotContainer {
 
 	RotateToAngleWeight movingWhileShootingWeight;
 
+	RotateToAngleWeight rotateToStageWeight;
+
+
 	AutoTrapClimbCommandFactory climbCommandFactory;
 
 	boolean autoTargetBool = false;
@@ -228,7 +231,13 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
-		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro);
+		rotateToStageWeight = new RotateToAngleWeight(() -> (getNearestStage().getRotation().getDegrees()), 
+		driveSubsystem::getPose, 
+		(()->0.06), 
+		"rotateToStageWeight", 
+		()->false, 
+		driveSubsystem);
+		
 
 		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem, mlVision);
 		configureBindings();
@@ -321,8 +330,12 @@ public class RobotContainer {
 
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.onTrue(climbCommandFactory.getAlignToStageCommand());
-		// new Trigger(() -> driveControllerHID.getBButton())
+			.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
+
+		new Trigger(() -> driveControllerHID.getBButton())
+			.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateToStageWeight)));
+
+			// new Trigger(() -> driveControllerHID.getBButton())
 		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
 
 
@@ -399,6 +412,7 @@ public class RobotContainer {
 		return closestPose;
     }
 
+
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(
@@ -463,6 +477,8 @@ public class RobotContainer {
 	public Command manualShotAuto(double targetAngle) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).repeatedly();
 	}
+
+
 
 	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
