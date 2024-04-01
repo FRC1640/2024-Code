@@ -52,7 +52,7 @@ public class AutoDriveWeight implements DriveWeight {
         Logger.recordOutput("AutoDriveDestination", pose.get());
         double xSpeed = (Math.cos(angle) * s / scale);
         double ySpeed = (Math.sin(angle) * s / scale);
-        double offset = gyro.getOffset();
+        double offset = gyro.getOffset() - gyro.getRawAngleRadians(); // plus odometry angle 
         ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset), o);
         return cspeeds;
     }
