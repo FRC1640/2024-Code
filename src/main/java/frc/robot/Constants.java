@@ -33,12 +33,12 @@ public final class Constants {
     }
 
     public static class SwerveDriveDimensions {
-        public static final double wheelRadius = Units.inchesToMeters(4.23 / 2);
+        
         public static final double driveGearRatio = 116/15;
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
-        public static final double maxSpeed = 4;
+        public static final double maxSpeed = 4.267;
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
@@ -69,7 +69,8 @@ public final class Constants {
                 45,
                 true,
                 true,
-                true);
+                true,
+                Units.inchesToMeters(3.7432661290322 / 2));
 
         public static final ModuleInfo FR = new ModuleInfo(
                 PivotId.FR,
@@ -79,7 +80,8 @@ public final class Constants {
                 -45,
                 true,
                 true,
-                true);
+                true,
+                Units.inchesToMeters(3.7432661290322 / 2));
 
         public static final ModuleInfo BL = new ModuleInfo(
                 PivotId.BL,
@@ -89,7 +91,8 @@ public final class Constants {
                 135,
                 true,
                 true,
-                true);
+                true,
+                Units.inchesToMeters(3.7432661290322 / 2));
 
         public static final ModuleInfo BR = new ModuleInfo(
                 PivotId.BR,
@@ -99,7 +102,8 @@ public final class Constants {
                 -135,
                 true,
                 true,
-                true);
+                true,
+                Units.inchesToMeters(3.7432661290322 / 2));
     }
 
     public static class IntakeConstants {
@@ -112,7 +116,7 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int leftCanID = 18;
         public static final int rightCanID = 17;
-        public static final double lowerLimit = -5;
+        public static final double lowerLimit = -15;
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 5;
@@ -143,8 +147,8 @@ public final class Constants {
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.25, 0, 0);
-        public static PIDController horizontalMLVision = new PIDController(0.01, 0, 0);
-        public static PIDController horizontalMLVisionDrive = new PIDController(0.01, 0, 0);
+        public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
+        public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
         public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(0.01, 0, 0);
@@ -181,9 +185,9 @@ public final class Constants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
         public static double angleLowerLimit = 29;
-        public static double angleUpperLimit = 90;
+        public static double angleUpperLimit = 110;
         public static double angleManualSpeed = 0.05;
-        public static double angleError = 1;
+        public static double angleError = 0.5;
 
         public static double extensionLowerLimit = 5;
         public static double extensionUpperLimit = 100;
