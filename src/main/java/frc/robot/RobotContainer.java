@@ -111,6 +111,8 @@ public class RobotContainer {
 	MovingWhileShooting movingWhileShooting;
 
 	RotateToAngleWeight movingWhileShootingWeight;
+	
+	RotateToAngleWeight rotateToStageWeight;
 
 	AutoTrapClimbCommandFactory climbCommandFactory;
 
@@ -229,6 +231,13 @@ public class RobotContainer {
 
 		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro);
 
+		rotateToStageWeight = new RotateToAngleWeight(() -> (getNearestStage().getRotation().getRadians()), 
+			driveSubsystem::getPose, 
+			(()->0.06), 
+			"rotateToStageWeight", 
+			()->false, 
+			driveSubsystem);
+
 		DashboardInit.init(driveSubsystem, driveController, visions, targetingSubsystem, shooterSubsystem, mlVision);
 		configureBindings();
 
@@ -319,9 +328,19 @@ public class RobotContainer {
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
 
-		new Trigger(() -> driveControllerHID.getBButton())
-			.whileTrue(climbCommandFactory.getBackupToStageCommand());
 		// new Trigger(() -> driveControllerHID.getBButton())
+		// 	.whileTrue(climbCommandFactory.getBackupToStageCommand());
+		
+		new Trigger(() -> driveControllerHID.getBButton())
+			.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
+
+		new Trigger(() -> driveControllerHID.getBButton())
+			.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateToStageWeight)));
+
+			// new Trigger(() -> driveControllerHID.getBButton())
+		
+		
+			// new Trigger(() -> driveControllerHID.getBButton())
 		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
 
 
