@@ -114,7 +114,7 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int leftCanID = 18;
         public static final int rightCanID = 17;
-        public static final double lowerLimit = -5;
+        public static final double lowerLimit = -15;
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 5;
@@ -179,12 +179,12 @@ public final class Constants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
         public static double angleLowerLimit = 29;
-        public static double angleUpperLimit = 90;
+        public static double angleUpperLimit = 110;
         public static double angleManualSpeed = 0.05;
         public static double angleError = 0.5;
 
         public static double extensionLowerLimit = 5;
-        public static double extensionUpperLimit = 100;
+        public static double extensionUpperLimit = 150;
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;
