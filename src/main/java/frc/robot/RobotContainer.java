@@ -330,7 +330,7 @@ public class RobotContainer {
 
 
 		new Trigger(() -> driveControllerHID.getBButton())
-			.whileTrue(climbCommandFactory.getAlignToStageCommand().andThen(climbCommandFactory.getBackupToStageCommand()).andThen(climbCommandFactory.prepareForClimbCommand()).andThen(climbCommandFactory.climbAndTrapCommand()));
+			.whileTrue(climbCommandFactory.getAlignToStageCommand());//.andThen(climbCommandFactory.getBackupToStageCommand()).andThen(climbCommandFactory.prepareForClimbCommand()).andThen(climbCommandFactory.climbAndTrapCommand()));
 
 		new Trigger(() -> driveControllerHID.getBButton())
 			.onFalse(climbCommandFactory.cancelAutoTrap());
