@@ -71,7 +71,7 @@ public class AutoTrapClimbCommandFactory {
 	}
 
 	private boolean proximityCancelCondition(){
-		return (getNearestStage.get().getTranslation().getDistance(driveSubsystem.getPose().getTranslation())) < 1.5 && Math.abs((getNearestStage.get().getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees())) < 0.3; // angle error < 0.1
+		return (getNearestStage.get().getTranslation().getDistance(driveSubsystem.getPose().getTranslation())) < 1 && Math.abs((getNearestStage.get().getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees())) < 0.3; // angle error < 0.1
 	}
 
     
