@@ -30,7 +30,7 @@ public class AutoTrapClimbCommandFactory {
 		this.gyro = gyro;
 		autoStageAlignWeight = new AutoDriveWeight(()->getNearestStage.get(), ()->currentLocation.get(), gyro);
 		
-		climberAlignWeight = new ClimberAlignWeight(() -> climberSubsystem.getRightProximitySensor(), () -> climberSubsystem.getLeftProximitySensor());;
+		climberAlignWeight = new ClimberAlignWeight(() -> climberSubsystem.getRightProximitySensor(), () -> climberSubsystem.getLeftProximitySensor(), gyro::getAngleRotation2d);;
     }
 
     // public Command getCompleteCommand(){
