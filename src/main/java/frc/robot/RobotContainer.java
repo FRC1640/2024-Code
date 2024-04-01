@@ -320,10 +320,10 @@ public class RobotContainer {
 					new InstantCommand(() -> mlVisionWeight.resetMode())));
 		new Trigger(() -> operatorControllerHID.getRightBumper())
 				.whileTrue(
-					extensionSubsystem.setExtensionPercentOutputCommandTrap(TargetingConstants.extensionManualSpeed));
+					extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
 		new Trigger(() -> operatorControllerHID.getLeftBumper())
 				.whileTrue(
-					extensionSubsystem.setExtensionPercentOutputCommandTrap(-TargetingConstants.extensionManualSpeed));
+					extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
