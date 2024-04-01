@@ -27,7 +27,7 @@ public class ClimberAlignWeight implements DriveWeight {
     public ChassisSpeeds getSpeeds(){
         if (!rightSensor.getAsBoolean() && !leftSensor.getAsBoolean()){ // if neither triggered, go backwards
             centerOfRot = new Translation2d();
-            return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(-0.01, 0,0), angleSupplier.get());
+            return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(-0.04, 0,0), angleSupplier.get());
         } else if (!rightSensor.getAsBoolean() && leftSensor.getAsBoolean()){ // if left is triggered and right is not, rotate the right side back by rotating clockwise
             centerOfRot = SwerveDriveDimensions.backLeftLocation;
             return ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(0, 0, -0.05),  angleSupplier.get());
