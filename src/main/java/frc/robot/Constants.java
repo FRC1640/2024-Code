@@ -187,6 +187,9 @@ public final class Constants {
 
         public static double extensionLowerLimit = 5;
         public static double extensionUpperLimit = 100;
+        public static double extensionUpperLimitTrap = 100;
+
+
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;
