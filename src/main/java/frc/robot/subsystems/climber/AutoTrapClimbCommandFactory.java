@@ -74,5 +74,19 @@ public class AutoTrapClimbCommandFactory {
 		return (getNearestStage.get().getTranslation().getDistance(driveSubsystem.getPose().getTranslation())) < 1 && Math.abs((getNearestStage.get().getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees())) < 0.3; // angle error < 0.1
 	}
 
+	// SET Extention lim in extension command
+// set soft lim extenstion HERE
+// targetting ends at 105
+// shooter 30
+// add targetting - 30 and climber arms -5 down 
+
+//COMING FORWAR -shooter to 90 arms 85
+//BRINGING SOWN 
+// shooter 100
+// extenstion new soft lim
+// as climber down extension and up cl dowb to 0
+// final shooter 105
+// final climb -5
+
     
 }
