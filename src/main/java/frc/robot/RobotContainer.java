@@ -201,8 +201,8 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->50));
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
-		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 999999));
+		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 999999));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 		
@@ -241,7 +241,7 @@ public class RobotContainer {
 		// DON'T use trigger methods in CommandXboxController.
 		// Use triggers & HIDs to avoid >] COMMAND OVERRUN [<.
 
-		driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
+		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
 
 		// driveController.y().whileTrue(new RunCommand(()->driveSubsystem.rotatePivots(()->angleRotate))
 		// 	.until(Math.abs(driveSubsystem.getActualSwerveStates()[0].angle.getDegrees() - angleRotate) < 3).andThen(new InstantCommand(()->{angleRotate += 90;})));
@@ -251,8 +251,8 @@ public class RobotContainer {
 				.onTrue(driveSubsystem.resetGyroCommand());
 		new Trigger(() -> driveControllerHID.getBackButton())
 				.onTrue(driveSubsystem.resetOdometryAprilTag());
-		// new Trigger(() -> driveControllerHID.getLeftBumper())
-		// 		.whileTrue(generateIntakeCommand());
+		new Trigger(() -> driveControllerHID.getLeftBumper())
+				.whileTrue(generateIntakeCommand());
 		new Trigger(() -> driveControllerHID.getYButton())
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
 		new Trigger(() -> driveControllerHID.getYButton())
