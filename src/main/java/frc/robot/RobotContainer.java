@@ -233,7 +233,7 @@ public class RobotContainer {
 
 		rotateToStageWeight = new RotateToAngleWeight(() -> (getNearestStage().getRotation().getRadians()), 
 			driveSubsystem::getPose, 
-			(()->0.06), 
+			(()->0.0), 
 			"rotateToStageWeight", 
 			()->false, 
 			driveSubsystem);
