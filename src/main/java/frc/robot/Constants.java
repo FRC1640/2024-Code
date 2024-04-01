@@ -138,8 +138,8 @@ public final class Constants {
         }
 
         // controllers
-        public static PIDController rotPID = new PIDController(0.5, 0.0001, 0.000);
-        public static PIDController rotMovingPID = new PIDController(0.75, 0.0001, 0);
+        public static PIDController rotPID = new PIDController(0.4, 0.0001, 0.000);
+        public static PIDController rotMovingPID = new PIDController(0.5, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         public static PIDController targetingPID = new PIDController(0.25, 0, 0);
@@ -181,12 +181,13 @@ public final class Constants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
         public static double angleLowerLimit = 29;
-        public static double angleUpperLimit = 90;
+        public static double angleUpperLimit = 94;
         public static double angleManualSpeed = 0.05;
         public static double angleError = 1;
 
         public static double extensionLowerLimit = 5;
-        public static double extensionUpperLimit = 100;
+        public static double extensionUpperLimitTrap = 100;
+        public static double extensionUpperLimit = 110;
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;

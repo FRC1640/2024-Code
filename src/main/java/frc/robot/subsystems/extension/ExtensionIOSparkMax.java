@@ -37,7 +37,7 @@ public class ExtensionIOSparkMax implements ExtensionIO{
     @Override
     public void setExtensionPercentOutput(double speed) {
         double speedClamped = speed;
-        speedClamped = clampSpeedsExtension(extensionMotor.getEncoder().getPosition(), speedClamped);
+        speedClamped = clampSpeedsExtensionPercent(extensionMotor.getEncoder().getPosition(), speedClamped);
         extensionMotor.set(speedClamped);
     }
 

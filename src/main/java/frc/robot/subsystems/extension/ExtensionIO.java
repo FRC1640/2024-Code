@@ -47,12 +47,23 @@ public interface ExtensionIO {
      * @param speed the base speed to cap.
      * @return Capped speed.
      */
-    public default double clampSpeedsExtension(double pos, double speed) {
+    public default double clampSpeedsExtensionPercent(double pos, double speed) {
         double speedClamped = speed;
         if (pos < TargetingConstants.extensionLowerLimit) {
             speedClamped = Math.max(speed, 0);
         }
         if (pos > TargetingConstants.extensionUpperLimit) {
+            speedClamped = Math.min(speed, 0);
+        }
+        return speedClamped;
+    }
+    
+    public default double clampSpeedsExtensionVoltage(double pos, double speed) {
+        double speedClamped = speed;
+        if (pos < TargetingConstants.extensionLowerLimit) {
+            speedClamped = Math.max(speed, 0);
+        }
+        if (pos > TargetingConstants.extensionUpperLimitTrap) {
             speedClamped = Math.min(speed, 0);
         }
         return speedClamped;
