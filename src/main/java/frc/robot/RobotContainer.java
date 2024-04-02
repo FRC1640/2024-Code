@@ -340,7 +340,7 @@ public class RobotContainer {
 
 
 		 new Trigger(() -> driveControllerHID.getBButton())
-			.whileTrue(climbCommandFactory.driveToChainWeightCommand());
+			.whileTrue(climbCommandFactory.getCompleteCommand());
 		
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));

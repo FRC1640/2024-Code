@@ -53,7 +53,7 @@ public class ClimberSubsystem extends SubsystemBase{
         Command c = new Command() {
             @Override
             public void execute() {
-                setSpeedVoltage(()->getPIDSpeedLeft(posLeft.getAsDouble()), ()->0);
+                setSpeedVoltage(()->getPIDSpeedLeft(posLeft.getAsDouble()), ()->getPIDSpeedRight(posRight.getAsDouble()));
             }
 
             @Override
@@ -88,6 +88,15 @@ public class ClimberSubsystem extends SubsystemBase{
         };
         c.addRequirements(this);
         return c;
+    }
+
+    public double getLeftAngle(){
+        return inputs.leftClimberPositionDegrees;
+    }
+
+    public double getRightAngle(){
+        return inputs.rightClimberPositionDegrees;
+
     }
 
     public Command setSpeedCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed){
