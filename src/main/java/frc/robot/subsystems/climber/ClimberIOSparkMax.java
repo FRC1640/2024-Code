@@ -44,14 +44,14 @@ public class ClimberIOSparkMax implements ClimberIO {
     @Override
     public void setLeftSpeedVoltage(double lVoltage){
         double speedClamped = lVoltage;
-        speedClamped = clampSpeeds(leftMotor.getEncoder().getPosition(), speedClamped);
+        speedClamped = clampSpeeds(leftEncoder.getD(), speedClamped);
         leftMotor.setVoltage(speedClamped);
     }
 
     @Override
     public void setRightSpeedVoltage(double rVoltage){
         double speedClamped = rVoltage;
-        speedClamped = clampSpeeds(rightMotor.getEncoder().getPosition(), speedClamped);
+        speedClamped = clampSpeeds(rightEncoder.getD(), speedClamped);
         rightMotor.setVoltage(speedClamped);
     }
 
