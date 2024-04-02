@@ -28,11 +28,11 @@ public interface ClimberIO {
 
     }
 
-    public default void setLeftVoltage(double lVoltage) {
+    public default void setLeftSpeedVoltage(double lVoltage) {
 
     }
 
-    public default void setRightVoltage(double rVoltage) {
+    public default void setRightSpeedVoltage(double rVoltage) {
 
     }
 

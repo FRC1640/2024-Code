@@ -234,7 +234,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
-		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem);
+		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem);
 
 		rotateToStageWeight = new RotateToAngleWeight(
 			() -> (getNearestStage().getRotation().getRadians()), 
@@ -364,8 +364,10 @@ public class RobotContainer {
 	}
 
 	public void pidTriggers(){
-		targetingSubsystem.setDefaultCommand(
-			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+		climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() -> PIDUpdate.getSetpoint(), () -> 0.0));
+		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(()->PIDUpdate.getSetpoint()));
+		// targetingSubsystem.setDefaultCommand(
+		// 	targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
 		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))

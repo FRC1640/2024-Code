@@ -29,6 +29,7 @@ public interface ExtensionIO {
      */
     public default void setExtensionVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -12, 12);
+        
         setExtensionPercentOutput(voltage / 12);
     }
 
