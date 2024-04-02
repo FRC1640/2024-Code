@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.exc.InputCoercionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -49,7 +50,19 @@ public class ClimberSubsystem extends SubsystemBase{
     // }
 
     public Command climberPIDCommandVoltage(DoubleSupplier posLeft, DoubleSupplier posRight) {
-        return setSpeedCommandVoltage(()->getPIDSpeedLeft(()->posLeft.getAsDouble()),()->getPIDSpeedRight(()->posRight.getAsDouble()));
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSpeedVoltage(()->getPIDSpeedLeft(posLeft.getAsDouble()), ()->0);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSpeedVoltage(()->0,()->0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     private void setSpeedPercent(double leftSpeed, double rightSpeed){
@@ -57,9 +70,9 @@ public class ClimberSubsystem extends SubsystemBase{
         io.setRightSpeedPercent(rightSpeed);
     }
 
-    public void setSpeedVoltage(double leftSpeed, double rightSpeed) {
-        io.setLeftSpeedVoltage(leftSpeed);
-        io.setRightSpeedVoltage(rightSpeed);
+    public void setSpeedVoltage(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) {
+        io.setLeftSpeedVoltage(leftSpeed.getAsDouble());
+        io.setRightSpeedVoltage(rightSpeed.getAsDouble());
     }
 
     public Command setSpeedCommand(double leftSpeed, double rightSpeed) {
@@ -99,8 +112,8 @@ public class ClimberSubsystem extends SubsystemBase{
             @Override
             public void execute(){
                 setSpeedVoltage(
-                    leftSpeed.getAsDouble(), 
-                    rightSpeed.getAsDouble());
+                    leftSpeed, 
+                    rightSpeed);
             }
             @Override
             public void end(boolean interrupted){
@@ -122,27 +135,20 @@ public class ClimberSubsystem extends SubsystemBase{
     }
 
 
-    private double getPIDSpeedLeft(DoubleSupplier position) {
-        double speed = pidLeft.calculate(getLeftPos(), position.getAsDouble());
+    private double getPIDSpeedLeft(double position) {
+        double speed = pidLeft.calculate(inputs.leftClimberPositionDegrees, position);
         speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.001) {
             speed = 0;
         }
         return speed;
     }
-    private double getPIDSpeedRight(DoubleSupplier position) {
-        double speed = pidRight.calculate(getRightPos(), position.getAsDouble());
+    private double getPIDSpeedRight(double position) {
+        double speed = pidRight.calculate(inputs.rightClimberPositionDegrees, position);
         speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.001) {
             speed = 0;
         }
         return speed;
-    }
-
-    public double getLeftPos(){
-        return inputs.leftClimberPositionDegrees;
-    }
-    public double getRightPos(){
-        return inputs.rightClimberPositionDegrees;
     }
 }
