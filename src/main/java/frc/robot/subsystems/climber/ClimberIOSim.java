@@ -16,6 +16,9 @@ public class ClimberIOSim implements ClimberIO{
     private double leftMotorPosition = 0.0;
     private double rightMotorPosition = 0.0;
 
+    private boolean rightProximitySensor = false;
+    private boolean leftProximitySensor = false;
+
     @Override
     public void updateInputs(ClimberIOInputs inputs) {
         leftClimbingMotorSimulated.update(0.02);
@@ -35,14 +38,14 @@ public class ClimberIOSim implements ClimberIO{
     }
 
     @Override
-    public void setLeftVoltage(double voltage){
+    public void setLeftSpeedVoltage(double voltage){
         voltage = MathUtil.clamp(voltage, -12, 12);
         leftClimbingMotorSimulated.setInputVoltage(voltage);
         leftMotorVoltage = voltage;
     }
 
     @Override
-    public void setRightVoltage(double voltage){
+    public void setRightSpeedVoltage(double voltage){
         voltage = MathUtil.clamp(voltage, -12, 12);
         rightClimbingMotorSimulated.setInputVoltage(voltage);
         rightMotorVoltage = voltage;

@@ -9,10 +9,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.TargetingConstants;
 public class ExtensionSubsystem extends SubsystemBase{
     ExtensionIOInputsAutoLogged inputs = new ExtensionIOInputsAutoLogged();
     ExtensionIO io;
     public double extensionSetpoint = 0.0;
+    // PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID, "angle");
+
     PIDController extensionPID = PIDConstants.constructPID(PIDConstants.extensionPID, "extension");
     public ExtensionSubsystem(ExtensionIO io){
         this.io = io;
@@ -35,8 +38,8 @@ public class ExtensionSubsystem extends SubsystemBase{
      */
     private double getExtensionPIDSpeed(double position) {
         double speed = extensionPID.calculate(inputs.extensionPosition, position);
-        speed = MathUtil.clamp(speed, -1, 1);
-        if (Math.abs(speed) < 0.01) {
+        speed = MathUtil.clamp(speed, -12, 12);
+        if (Math.abs(speed) < 0.001) {
             speed = 0;
         }
         return speed;
@@ -55,7 +58,7 @@ public class ExtensionSubsystem extends SubsystemBase{
         Command c = new Command() {
             @Override
             public void execute() {
-                setExtensionPercentOutput(getExtensionPIDSpeed(position));
+                setExtensionVoltage(getExtensionPIDSpeed(position));
             }
 
             @Override
@@ -77,7 +80,7 @@ public class ExtensionSubsystem extends SubsystemBase{
         Command c = new Command() {
             @Override
             public void execute() {
-                setExtensionPercentOutput(getExtensionPIDSpeed(position.getAsDouble()));
+                setExtensionVoltage(()->getExtensionPIDSpeed(position.getAsDouble()));
             }
 
             @Override
@@ -177,6 +180,12 @@ public class ExtensionSubsystem extends SubsystemBase{
         io.setExtensionVoltage(voltage);
     }
 
+    private void setExtensionVoltage(DoubleSupplier voltage) {
+        io.setExtensionVoltage(voltage.getAsDouble());
+    }
+
+    
+
     /**
      * Gets the position of the extension.
      * 
@@ -185,4 +194,6 @@ public class ExtensionSubsystem extends SubsystemBase{
     public double getExtensionPosition() {
         return inputs.extensionPosition;
     }
+
+
 }

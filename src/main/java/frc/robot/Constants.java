@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -40,8 +42,8 @@ public final class Constants {
 
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
-        private static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
-        private static final Translation2d backRightLocation = new Translation2d(-wheelXPos, -wheelYPos);
+        public static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
+        public static final Translation2d backRightLocation = new Translation2d(-wheelXPos, -wheelYPos);
 
         public static final Translation2d[] positions = new Translation2d[] { frontLeftLocation, frontRightLocation,
                 backLeftLocation, backRightLocation };
@@ -114,10 +116,12 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int leftCanID = 18;
         public static final int rightCanID = 17;
-        public static final double lowerLimit = -15;
+        public static final double lowerLimit = -10;
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 5;
+        public static final int leftProximityChannel = 8;
+        public static final int rightProximityChannel = 7;
     }
 
     public static class ShooterConstants {
@@ -146,8 +150,10 @@ public final class Constants {
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
-        public static PIDController extensionPID = new PIDController(0.03, 0.00, 0.00); // values from sim: 3, 1, 0
-        public static PIDController climberPID = new PIDController(0.01, 0, 0);
+        
+        public static PIDController extensionPID = new PIDController(0.5, 0.00, 0.00); // values from sim: 3, 1, 0
+        public static PIDController climberPID = new PIDController(1.6, 0, 0);
+        
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
 
         public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);
@@ -167,6 +173,8 @@ public final class Constants {
         public static Translation2d ampPositionBlue = new Translation2d(2.1, 7.84);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
+        public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
+        public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(3.14159265))};
         
         public static Translation2d stashPositionBlue = new Translation2d(1.43, 5.5);
         public static Translation2d stashPositionRed = new Translation2d(14.643, 5.5);
@@ -185,6 +193,9 @@ public final class Constants {
 
         public static double extensionLowerLimit = 5;
         public static double extensionUpperLimit = 100;
+        public static double extensionUpperLimitTrap = 150;
+
+
 
         public static double angleMinVoltage = 0.05;
         public static double angleMaxVoltage = 4.95;

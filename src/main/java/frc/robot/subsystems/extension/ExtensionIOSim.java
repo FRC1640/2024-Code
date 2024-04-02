@@ -30,7 +30,7 @@ public class ExtensionIOSim implements ExtensionIO{
     @Override
     public void setExtensionPercentOutput(double speed) {
         double speedClamped = speed;
-        speedClamped = clampSpeedsExtension(extensionPosition, speedClamped);
+        speedClamped = clampSpeedsExtensionPercent(extensionPosition, speedClamped);
         setExtensionVoltage(speedClamped * 12);
         cappedExtensionSpeed = speedClamped;
     }
