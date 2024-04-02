@@ -118,8 +118,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.5, 0.5, 0.00001),
-                VecBuilder.fill(3, 3, 9999999));
+                VecBuilder.fill(0.1, 0.1, 0.00001),
+                VecBuilder.fill(4, 4, 9999999));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -196,20 +196,25 @@ public class DriveSubsystem extends SubsystemBase {
 
                 double xy = AprilTagVisionConstants.xyStdDev;
                 double theta = Double.MAX_VALUE;
-                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).min().getAsDouble() < 4){
+                boolean useEstimate = true;
+                if (vision.getDistance() > 4) {
+                    useEstimate = false;
+                }
+                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 4){
                     xy = 0.25;
-                    if (speed == 0){
+                    if (speed == 0 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 3){
                         theta = 8;
                     }
                 }
                 else{
-                    if (speed < 0.3 && vision.getDistance() < 2){
+                    if (speed < 0.3 && vision.getDistance() < 2.75){
                         xy = 0.5;
                     }
-                    else if (speed < 0.1 && vision.getDistance() < 5){
-                        xy = 1;
+                    else if (speed < 0.1 && vision.getDistance() < 4){
+                        xy = 1.5;
                     }
                 }
+                
                 for (int i = 0; i < vision.getTagPoses().length; i++) {
                     Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
                     Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
@@ -217,10 +222,12 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                if (useEstimate){
+                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                             VecBuilder.fill(xy * distConst,
                                     xy * distConst,
                                     Math.toRadians(theta) * distConst));
+                }
             }
         }
         // update odometry

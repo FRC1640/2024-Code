@@ -23,7 +23,7 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 2.5;
+        public static final double xyStdDev = 6;
         public static final double thetaStdDev = 99999999;
 
         public static final double xyStdDevAuto = 2;
@@ -138,11 +138,11 @@ public final class Constants {
         }
 
         // controllers
-        public static PIDController rotPID = new PIDController(0.5, 0.0001, 0.000);
-        public static PIDController rotMovingPID = new PIDController(0.75, 0.0001, 0);
+        public static PIDController rotPID = new PIDController(0.4, 0.0001, 0.000);
+        public static PIDController rotMovingPID = new PIDController(0.5, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
-        public static PIDController targetingPID = new PIDController(0.25, 0, 0);
+        public static PIDController targetingPID = new PIDController(0.3, 0, 0);
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
@@ -163,8 +163,8 @@ public final class Constants {
     public static class FieldConstants {
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.9, 7.840);
-        public static Translation2d ampPositionBlue = new Translation2d(1.860, 7.840);
+        public static Translation2d ampPositionRed = new Translation2d(14.7, 7.84);
+        public static Translation2d ampPositionBlue = new Translation2d(2.1, 7.84);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
         public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
         
