@@ -55,26 +55,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "back to speaker from mid"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpeakerShot"
+                  "name": "MidShotQuad"
                 }
               }
             ]
@@ -93,7 +74,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "MidShotQuad"
                 }
               }
             ]
@@ -106,13 +87,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "stage from speaker"
+                  "pathName": "center to stage"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShot"
                 }
               }
             ]
@@ -132,6 +119,12 @@
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShot"
                 }
               }
             ]
