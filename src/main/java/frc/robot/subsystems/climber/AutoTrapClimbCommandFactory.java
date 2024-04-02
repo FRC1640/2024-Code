@@ -20,6 +20,7 @@ import frc.robot.subsystems.drive.DriveWeights.DriveForwardRobotRelativeWeight;
 import frc.robot.subsystems.drive.DriveWeights.DriveForwardRobotRelativeWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.extension.ExtensionSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 
 public class AutoTrapClimbCommandFactory {
@@ -33,9 +34,10 @@ public class AutoTrapClimbCommandFactory {
 	private DriveSubsystem driveSubsystem;
 	private ExtensionSubsystem extensionSubsystem;
 	private TargetingSubsystem targetingSubsystem;
+	private ShooterSubsystem shooterSubsystem;
 
 
-    public AutoTrapClimbCommandFactory (ClimberSubsystem climberSubsystem, Supplier<Pose2d> currentLocation, Supplier<Pose2d> getNearestStage, Gyro gyro, DriveSubsystem driveSubsystem, ExtensionSubsystem extensionSubsystem, TargetingSubsystem targetingSubsystem){
+    public AutoTrapClimbCommandFactory (ClimberSubsystem climberSubsystem, Supplier<Pose2d> currentLocation, Supplier<Pose2d> getNearestStage, Gyro gyro, DriveSubsystem driveSubsystem, ExtensionSubsystem extensionSubsystem, TargetingSubsystem targetingSubsystem, ShooterSubsystem shooterSubsystem){
 		this.climberSubsystem = climberSubsystem;
 		this.currentLocation = currentLocation;
 		this.getNearestStage = getNearestStage;
@@ -43,6 +45,7 @@ public class AutoTrapClimbCommandFactory {
 		this.driveSubsystem = driveSubsystem;
 		this.extensionSubsystem = extensionSubsystem;
 		this.targetingSubsystem = targetingSubsystem;
+		this.shooterSubsystem = shooterSubsystem;
 
 
 		rotateToStageWeight = new RotateToAngleWeight(
@@ -55,17 +58,24 @@ public class AutoTrapClimbCommandFactory {
 		
 		climberAlignWeight = new ClimberAlignWeight(() -> climberSubsystem.getRightProximitySensor(), () -> climberSubsystem.getLeftProximitySensor(), gyro::getAngleRotation2d);
 
-		driveForwardRobotRelativeWeight = new DriveForwardRobotRelativeWeight(0.5,0.1 ,gyro::getAngleRotation2d);
+		driveForwardRobotRelativeWeight = new DriveForwardRobotRelativeWeight(0.2,0.1 ,gyro::getAngleRotation2d);
 		
     }
 
     public Command getCompleteCommand(){
-	 	Command c = new SequentialCommandGroup(
-			new ParallelCommandGroup(getRotateToStageCommand(), lowerExtensionAndTargettingForUnderChainCommand()), 
+	 	// Command c = new SequentialCommandGroup(
+		// 	new ParallelCommandGroup(getRotateToStageCommand(), lowerExtensionAndTargettingForUnderChainCommand()), 
+		// 	getBackupToStageCommand(), 
+		// 	raiseClimbersAndTargettingToClimbCommand(), 
+		// 	driveToChainWeightCommand(),
+		// 	setExtensionTargettingClimbersCommand(110,105,-5));
+
+		Command c = new SequentialCommandGroup(
+			new ParallelCommandGroup(getRotateToStageCommand(), setExtensionTargetingClimbersCommand(0,10,0)), 
 			getBackupToStageCommand(), 
-			raiseClimbersAndTargettingToClimbCommand(), 
+			setExtensionTargetingClimbersCommand(0,90,90), 
 			driveToChainWeightCommand(),
-			setExtensionTargettingClimbersCommand(110,105,-5));
+			setExtensionTargetingClimbersCommand(100,110,-5));
 	 	return c;
 	}
 
@@ -76,13 +86,13 @@ public class AutoTrapClimbCommandFactory {
 	}
 
 	
-	public Command setExtensionTargettingClimbersCommand(double extensionPos, double targettingAngle, double climberAngles){
-		return new ParallelCommandGroup(targetingSubsystem.anglePIDCommand(targettingAngle), climberSubsystem.climberPIDCommandVoltage(() -> climberAngles,() -> climberAngles), extensionSubsystem.extensionPIDCommand(extensionPos));
+	public Command setExtensionTargetingClimbersCommand(double extensionPos, double targetingAngle, double climberAngles){
+		return new ParallelCommandGroup(targetingSubsystem.anglePIDCommand(()->targetingAngle, 1000, ()->true), climberSubsystem.climberPIDCommandVoltage(() -> climberAngles,() -> climberAngles), extensionSubsystem.extensionPIDCommand(()->extensionPos));
 	}
 	
 	public Command lowerExtensionAndTargettingForUnderChainCommand(){
 		//return new ParallelCommandGroup(targetingSubsystem.anglePIDCommand(30), climberSubsystem.climberPIDCommandVoltage(() ->0,() ->0), extensionSubsystem.extensionPIDCommand(0));
-		return setExtensionTargettingClimbersCommand(0, 30, 0);
+		return setExtensionTargetingClimbersCommand(0, 30, 0);
 	}
 
 	public Command getBackupToStageCommand(){
