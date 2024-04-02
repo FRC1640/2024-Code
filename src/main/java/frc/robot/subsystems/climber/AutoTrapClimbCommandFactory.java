@@ -66,6 +66,16 @@ public class AutoTrapClimbCommandFactory {
 
 	}
 
+	public Command getAlignCommand(){
+		return new SequentialCommandGroup(
+				new ParallelCommandGroup(getRotateToStageCommand(),
+						setExtensionTargetingClimbersCommand(0, 30, 0)),
+				getBackupToStageCommand(),
+				new WaitCommand(1),
+				setExtensionTargetingClimbersCommand(0, 85, 50),
+				new WaitCommand(1));
+	}
+
 	public Command getCompleteCommand() {
 		// Command c = new SequentialCommandGroup(
 		// new ParallelCommandGroup(getRotateToStageCommand(),
@@ -76,17 +86,11 @@ public class AutoTrapClimbCommandFactory {
 		// setExtensionTargettingClimbersCommand(110,105,-5));
 
 		Command c = new SequentialCommandGroup(
-				new ParallelRaceGroup(getRotateToStageCommand(),
-						setExtensionTargetingClimbersCommand(0, 30, 0)),
-				getBackupToStageCommand()
-				// new WaitCommand(1),
-				// setExtensionTargetingClimbersCommand(0, 70, 70),
-				// new WaitCommand(1),
-				// driveToChainWeightCommand(),
-				// new WaitCommand(1),
-				// setExtensionTargetingClimbersCommand(0, 70, 30),
-				// new WaitCommand(1),
-				// setExtensionTargetingClimbersCommand(100, 100, -5)
+				setExtensionTargetingClimbersCommand(90, 85, 65),
+				new WaitCommand(1),
+				setExtensionTargetingClimbersCommand(90, 85, 15),
+				new WaitCommand(1),
+				setExtensionTargetingClimbersCommand(100, 150, -10)
 				);
 		// .andThen(shooterSubsystem.setSpeedPercentPID(()->0, ()->0, ()->0, ()->0,
 		// ()->true)));
@@ -105,7 +109,7 @@ public class AutoTrapClimbCommandFactory {
 				climberSubsystem.climberPIDCommandVoltage(() -> climberAngles, () -> climberAngles),
 				extensionSubsystem.extensionPIDCommand(() -> extensionPos))
 				.until(() -> targetingSubsystem.isAnglePositionAccurate(2) 
-						&& Math.abs(extensionPos - extensionSubsystem.getExtensionPosition()) < 2
+						&& Math.abs(extensionPos - extensionSubsystem.getExtensionPosition()) < 8
 						&& Math.abs(climberAngles - climberSubsystem.getLeftAngle()) < 2
 						&& Math.abs(climberAngles - climberSubsystem.getRightAngle()) < 2
 				);

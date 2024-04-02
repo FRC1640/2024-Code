@@ -99,13 +99,20 @@ public class ClimberSubsystem extends SubsystemBase{
 
     }
 
-    public Command setSpeedCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed){
+    public Command setSpeedCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed, BooleanSupplier switchClimbers){
             Command c = new Command() {
             @Override
             public void execute(){
-                setSpeedPercent(
-                    Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0, 
-                    Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0);
+                if (!switchClimbers.getAsBoolean()){
+                    setSpeedPercent(
+                        Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0, 
+                        Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0);
+                }
+                else{
+                    setSpeedPercent(
+                    Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0,
+                    Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0);
+                }
             }
             @Override
             public void end(boolean interrupted){

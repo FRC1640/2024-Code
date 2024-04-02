@@ -209,9 +209,11 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->get3dDistance(()->getSpeakerPos()) < 999999));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->autoTargetBool));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
+
+
 		
 		
 		generateNamedCommands();
@@ -270,13 +272,21 @@ public class RobotContainer {
 				.onTrue(driveSubsystem.resetOdometryAprilTag());
 		new Trigger(() -> driveControllerHID.getLeftBumper())
 				.whileTrue(generateIntakeCommand());
+
+
+		new Trigger(()->climberSubsystem.getLeftAngle() > 5 || climberSubsystem.getRightAngle() > 5)
+			.onTrue(new InstantCommand(()->{autoTargetBool = false;}));
 		
 		
 		
-		new Trigger(() -> driveControllerHID.getYButton())
-				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
-		new Trigger(() -> driveControllerHID.getYButton())
-				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
+		// new Trigger(() -> driveControllerHID.getYButton())
+		// 		.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
+		// new Trigger(() -> driveControllerHID.getYButton())
+		// 		.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
+
+		new Trigger(()->operatorControllerHID.getAButton())
+			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
+				.alongWith(intakeSubsystem.intakeCommand(0, 0.8)));
 
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
@@ -308,7 +318,8 @@ public class RobotContainer {
 		new Trigger(() -> Math.abs(operatorControllerHID.getLeftY()) > 0.1 ||
 				Math.abs(operatorControllerHID.getRightY()) > 0.1)
 				.whileTrue(climberSubsystem.setSpeedCommand(
-						() -> -operatorControllerHID.getLeftY(), () -> -operatorControllerHID.getRightY()));
+						() -> -operatorControllerHID.getLeftY(), () -> -operatorControllerHID.getRightY(), 
+						()->SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), 180) < Math.PI / 2));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onTrue(new InstantCommand(
 						() -> driveControllerHID.setRumble(RumbleType.kBothRumble, 1)));
@@ -339,8 +350,12 @@ public class RobotContainer {
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
 
-		 new Trigger(() -> driveControllerHID.getBButton())
-			.whileTrue(climbCommandFactory.getCompleteCommand());
+		//  new Trigger(() -> driveControllerHID.getBButton())
+		// 	.whileTrue(climbCommandFactory.getCompleteCommand());
+
+		new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
+
+		new Trigger(()->operatorControllerHID.getYButton()).whileTrue(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 105, 55));
 		
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
@@ -351,16 +366,16 @@ public class RobotContainer {
 			// new Trigger(() -> driveControllerHID.getBButton())
 		
 		
-			// new Trigger(() -> driveControllerHID.getBButton())
-		// 		.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+			new Trigger(() -> driveControllerHID.getBButton())
+				.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
 
 
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		new Trigger (() -> operatorControllerHID.getAButton())
-				.whileTrue(manualShotNoAngle(41.8, () -> !operatorControllerHID.getAButton()));
+		// new Trigger (() -> operatorControllerHID.getAButton())
+		// 		.whileTrue(manualShotNoAngle(41.8, () -> !operatorControllerHID.getAButton()));
 
 		// driveController.y().whileTrue(() -> );
 	}
