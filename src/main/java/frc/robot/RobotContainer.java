@@ -619,8 +619,8 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("4NoteAmp", manualShotAuto(35));
 
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(34.5));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(31));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(34));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(36));
 		
 		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
