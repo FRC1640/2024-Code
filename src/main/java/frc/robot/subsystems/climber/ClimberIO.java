@@ -13,6 +13,7 @@ public interface ClimberIO {
         public double leftTempCelcius = 0.0;
         public double leftClimberPositionDegrees = 0.0;
         public double leftClimberVoltage = 0.0;
+        public boolean leftProximitySensor = false;
 
         public double rightSpeedPercent = 0.0;
         public double rightAppliedVoltage = 0.0;
@@ -20,17 +21,18 @@ public interface ClimberIO {
         public double rightTempCelcius = 0.0;
         public double rightClimberPositionDegrees = 0.0;
         public double rightClimberVoltage = 0.0;
+        public boolean rightProximitySensor = false;
     }
 
     public default void updateInputs(ClimberIOInputs inputs) {
 
     }
 
-    public default void setLeftVoltage(double lVoltage) {
+    public default void setLeftSpeedVoltage(double lVoltage) {
 
     }
 
-    public default void setRightVoltage(double rVoltage) {
+    public default void setRightSpeedVoltage(double rVoltage) {
 
     }
 

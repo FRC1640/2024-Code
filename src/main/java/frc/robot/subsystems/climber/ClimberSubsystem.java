@@ -1,11 +1,16 @@
 package frc.robot.subsystems.climber;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.fasterxml.jackson.core.exc.InputCoercionException;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -16,7 +21,8 @@ import frc.robot.Constants.PIDConstants;
 public class ClimberSubsystem extends SubsystemBase{
     ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
     ClimberIO io;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.climberPID, "climber");
+    PIDController pidLeft = PIDConstants.constructPID(PIDConstants.climberPID, "climberLeft");
+    PIDController pidRight = PIDConstants.constructPID(PIDConstants.climberPID, "climberRight");
     double setpoint = 0;
     private Mechanism2d climberVisualization = new Mechanism2d(5.75, 3);
     private MechanismLigament2d climberLeft = new MechanismLigament2d("leftClimber", 2.5, 0);
@@ -38,14 +44,35 @@ public class ClimberSubsystem extends SubsystemBase{
         Logger.recordOutput("Climber/ClimberMechanism", climberVisualization);
     }
 
-    public Command climberPIDCommand(double posLeft, double posRight) {
-        return setSpeedCommand(()->getPIDSpeed(posLeft, ()->inputs.leftClimberPositionDegrees), 
-            ()->getPIDSpeed(posRight, ()->inputs.rightClimberPositionDegrees));
+    // public Command climberPIDCommand(double posLeft, double posRight) {
+    //     return setSpeedCommand(()->getPIDSpeed(posLeft, ()->inputs.leftClimberPositionDegrees), 
+    //         ()->getPIDSpeed(posRight, ()->inputs.rightClimberPositionDegrees));
+    // }
+
+    public Command climberPIDCommandVoltage(DoubleSupplier posLeft, DoubleSupplier posRight) {
+        Command c = new Command() {
+            @Override
+            public void execute() {
+                setSpeedVoltage(()->getPIDSpeedLeft(posLeft.getAsDouble()), ()->getPIDSpeedRight(posRight.getAsDouble()));
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setSpeedVoltage(()->0,()->0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
     }
 
     private void setSpeedPercent(double leftSpeed, double rightSpeed){
         io.setLeftSpeedPercent(leftSpeed);
         io.setRightSpeedPercent(rightSpeed);
+    }
+
+    public void setSpeedVoltage(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) {
+        io.setLeftSpeedVoltage(leftSpeed.getAsDouble());
+        io.setRightSpeedVoltage(rightSpeed.getAsDouble());
     }
 
     public Command setSpeedCommand(double leftSpeed, double rightSpeed) {
@@ -63,13 +90,29 @@ public class ClimberSubsystem extends SubsystemBase{
         return c;
     }
 
-    public Command setSpeedCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed){
+    public double getLeftAngle(){
+        return inputs.leftClimberPositionDegrees;
+    }
+
+    public double getRightAngle(){
+        return inputs.rightClimberPositionDegrees;
+
+    }
+
+    public Command setSpeedCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed, BooleanSupplier switchClimbers){
             Command c = new Command() {
             @Override
             public void execute(){
-                setSpeedPercent(
-                    Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0, 
-                    Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0);
+                if (!switchClimbers.getAsBoolean()){
+                    setSpeedPercent(
+                        Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0, 
+                        Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0);
+                }
+                else{
+                    setSpeedPercent(
+                    Math.abs(rightSpeed.getAsDouble()) > 0.1?rightSpeed.getAsDouble():0,
+                    Math.abs(leftSpeed.getAsDouble()) > 0.1?leftSpeed.getAsDouble():0);
+                }
             }
             @Override
             public void end(boolean interrupted){
@@ -80,13 +123,48 @@ public class ClimberSubsystem extends SubsystemBase{
         return c;
     }
 
-    private double getPIDSpeed(double position, DoubleSupplier getPos) {
-        double speed = pid.calculate(getPos.getAsDouble(), position);
-        speed = MathUtil.clamp(speed, -1, 1);
-        if (Math.abs(speed) < 0.01) {
+    public Command setSpeedCommandVoltage(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed){
+            Command c = new Command() {
+            @Override
+            public void execute(){
+                setSpeedVoltage(
+                    leftSpeed, 
+                    rightSpeed);
+            }
+            @Override
+            public void end(boolean interrupted){
+                setSpeedPercent(0, 0);
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+
+    
+
+    public boolean getRightProximitySensor(){
+        return inputs.rightProximitySensor;
+    }
+
+    public boolean getLeftProximitySensor(){
+        return inputs.leftProximitySensor;
+    }
+
+
+    private double getPIDSpeedLeft(double position) {
+        double speed = pidLeft.calculate(inputs.leftClimberPositionDegrees, position);
+        speed = MathUtil.clamp(speed, -12, 12);
+        if (Math.abs(speed) < 0.001) {
             speed = 0;
         }
-        setpoint = position;
+        return speed;
+    }
+    private double getPIDSpeedRight(double position) {
+        double speed = pidRight.calculate(inputs.rightClimberPositionDegrees, position);
+        speed = MathUtil.clamp(speed, -12, 12);
+        if (Math.abs(speed) < 0.001) {
+            speed = 0;
+        }
         return speed;
     }
 }

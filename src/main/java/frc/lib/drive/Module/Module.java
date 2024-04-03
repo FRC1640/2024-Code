@@ -67,9 +67,9 @@ public class Module {
 
         //calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
-        // if (!Robot.inTeleop){
-        //     pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
-        // }
+        if (!Robot.inTeleop){
+            pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
+        }
 
         //pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
@@ -88,5 +88,9 @@ public class Module {
 
     public double getDriveVoltage() {
         return inputs.driveAppliedVoltage;
+    }
+
+    public void setBrakeMode(boolean brake){
+        io.setBrakeMode(brake);
     }
 }

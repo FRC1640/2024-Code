@@ -19,10 +19,13 @@ public interface ModuleIO extends AutoCloseable{
         public double steerTempCelsius;
         public boolean steerIdleModeIsBrake;
         public double steerAngleRadians;
+        public double steerAngleVoltage;
     }
 
     
     public default void updateInputs(ModuleIOInputs inputs) {}
+
+    public default void setBrakeMode(boolean brake){};
 
     public default void setDriveVoltage(double voltage) {}
 

@@ -2,6 +2,7 @@ package frc.lib.drive.Module;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -49,8 +50,8 @@ public class ModuleIOSim implements ModuleIO{
         driveSim.update(LOOP_PERIOD_SECS);
         steerSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePositionMeters -= ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius * LOOP_PERIOD_SECS;
-        inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * SwerveDriveDimensions.wheelRadius;
+        inputs.drivePositionMeters -= ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * Units.inchesToMeters(3.7432661290322 / 2) * LOOP_PERIOD_SECS;
+        inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * Units.inchesToMeters(3.7432661290322 / 2);
         inputs.driveAppliedVoltage = -driveAppliedVolts;
         inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
         inputs.driveTempCelsius = SimulationConstants.roomTempCelsius;

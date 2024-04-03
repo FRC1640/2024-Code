@@ -106,6 +106,7 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance().run();
 
         Logger.recordOutput("Memory", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+        Logger.recordOutput("inTeleop", inTeleop);
 
         m_robotContainer.get3dDistance(()->m_robotContainer.getSpeakerPos());
     }

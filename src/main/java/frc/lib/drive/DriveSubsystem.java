@@ -21,6 +21,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -117,8 +118,8 @@ public class DriveSubsystem extends SubsystemBase {
                 gyro.getAngleRotation2d(),
                 getModulePositionsArray(),
                 new Pose2d(),
-                VecBuilder.fill(0.5, 0.5, 0.00001),
-                VecBuilder.fill(3, 3, 9999999));
+                VecBuilder.fill(0.1, 0.1, 0.00001),
+                VecBuilder.fill(4, 4, 9999999));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -127,9 +128,9 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(3, 0, 0),
+                        new PIDConstants(1.5, 0, 0),
                         new PIDConstants(3.5, 0, 0),
-                        SwerveDriveDimensions.maxSpeed,
+                        3,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
                 () -> DriverStation.getAlliance().isPresent()
@@ -178,7 +179,8 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop && vision.getNumVisibleTags() != 0) {
+                    && Robot.inTeleop 
+                    && vision.getNumVisibleTags() != 0) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -194,20 +196,25 @@ public class DriveSubsystem extends SubsystemBase {
 
                 double xy = AprilTagVisionConstants.xyStdDev;
                 double theta = Double.MAX_VALUE;
-                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).min().getAsDouble() < 4){
+                boolean useEstimate = true;
+                if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 && vision.getName() == "-back") || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1) || (vision.getDistance() > 6)) {
+                    useEstimate = false;
+                }
+                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 4){
                     xy = 0.25;
-                    if (speed == 0){
+                    if (speed == 0 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 3){
                         theta = 8;
                     }
                 }
                 else{
-                    if (speed < 0.3 && vision.getDistance() < 2){
+                    if (speed < 1 && vision.getDistance() < 2.75){
                         xy = 0.5;
                     }
-                    else if (speed < 0.1 && vision.getDistance() < 5){
-                        xy = 1;
+                    else if (speed < 0.5 && vision.getDistance() < 4){
+                        xy = 1.5;
                     }
                 }
+                
                 for (int i = 0; i < vision.getTagPoses().length; i++) {
                     Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
                     Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
@@ -215,10 +222,12 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                if (useEstimate){
+                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                             VecBuilder.fill(xy * distConst,
                                     xy * distConst,
                                     Math.toRadians(theta) * distConst));
+                }
             }
         }
         // update odometry
@@ -232,6 +241,12 @@ public class DriveSubsystem extends SubsystemBase {
         odometryPose = newPose;
     }
 
+    public void setBrakeMode(boolean brake){
+        frontLeft.setBrakeMode(brake);
+        frontRight.setBrakeMode(brake);
+        backLeft.setBrakeMode(brake);
+        backRight.setBrakeMode(brake);
+    }
     private void resetOdometryAuton(Pose2d pose) {
         // if (pose.getTranslation().getDistance(getPose().getTranslation()) < 1.5){
         // resetOdometry(getPose());
@@ -454,5 +469,12 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getRotAccuracy() {
         return Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
                 DriveWeightCommand.getAngle(), getPose().getRotation().getRadians()))) < 3;
+    }
+
+    public void rotatePivots(DoubleSupplier angle){
+        frontLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        backLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
     }
 }
