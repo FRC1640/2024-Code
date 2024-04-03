@@ -197,7 +197,7 @@ public class DriveSubsystem extends SubsystemBase {
                 double xy = AprilTagVisionConstants.xyStdDev;
                 double theta = Double.MAX_VALUE;
                 boolean useEstimate = true;
-                if (vision.getDistance() > 4) {
+                if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 && vision.getName() == "-back") || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1) || (vision.getDistance() > 6)) {
                     useEstimate = false;
                 }
                 if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 4){
@@ -207,10 +207,10 @@ public class DriveSubsystem extends SubsystemBase {
                     }
                 }
                 else{
-                    if (speed < 0.3 && vision.getDistance() < 2.75){
+                    if (speed < 1 && vision.getDistance() < 2.75){
                         xy = 0.5;
                     }
-                    else if (speed < 0.1 && vision.getDistance() < 4){
+                    else if (speed < 0.5 && vision.getDistance() < 4){
                         xy = 1.5;
                     }
                 }

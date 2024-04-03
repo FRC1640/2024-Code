@@ -72,7 +72,7 @@ public class AutoTrapClimbCommandFactory {
 						setExtensionTargetingClimbersCommand(0, 30, 0)),
 				getBackupToStageCommand(),
 				new WaitCommand(1),
-				setExtensionTargetingClimbersCommand(0, 85, 50),
+				setExtensionTargetingClimbersCommand(0, 85, 55),
 				new WaitCommand(1));
 	}
 

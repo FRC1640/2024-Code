@@ -25,7 +25,7 @@ public final class Constants {
     }
 
     public static class AprilTagVisionConstants {
-        public static final double xyStdDev = 6;
+        public static final double xyStdDev = 1.5;
         public static final double thetaStdDev = 99999999;
 
         public static final double xyStdDevAuto = 2;
@@ -116,7 +116,7 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int leftCanID = 18;
         public static final int rightCanID = 17;
-        public static final double lowerLimit = -10;
+        public static final double lowerLimit = -15;
         public static final double upperLimit = 80;
         public static final int leftClimberResolver = 6;
         public static final int rightClimberResolver = 5;
@@ -171,8 +171,8 @@ public final class Constants {
         public static double width = 16.54;
         public static Translation2d ampPositionRed = new Translation2d(14.7, 7.84);
         public static Translation2d ampPositionBlue = new Translation2d(2.1, 7.84);
-        public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.5);
-        public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.5);
+        public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.4);
+        public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.4);
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
         public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(3.14159265))};
         
@@ -193,7 +193,7 @@ public final class Constants {
 
         public static double extensionLowerLimit = 5;
         public static double extensionUpperLimit = 100;
-        public static double extensionUpperLimitTrap = 150;
+        public static double extensionUpperLimitTrap = 155;
 
 
 

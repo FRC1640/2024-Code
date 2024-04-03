@@ -286,7 +286,7 @@ public class RobotContainer {
 
 		new Trigger(()->operatorControllerHID.getAButton())
 			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
-				.alongWith(intakeSubsystem.intakeCommand(0, 0.8)));
+				.alongWith(generateIntakeCommandTrap()));
 
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
@@ -319,7 +319,7 @@ public class RobotContainer {
 				Math.abs(operatorControllerHID.getRightY()) > 0.1)
 				.whileTrue(climberSubsystem.setSpeedCommand(
 						() -> -operatorControllerHID.getLeftY(), () -> -operatorControllerHID.getRightY(), 
-						()->SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), 180) < Math.PI / 2));
+						()->SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), Math.PI) < Math.PI / 2));
 		new Trigger(() -> intakeSubsystem.hasNote())
 				.onTrue(new InstantCommand(
 						() -> driveControllerHID.setRumble(RumbleType.kBothRumble, 1)));
@@ -355,7 +355,11 @@ public class RobotContainer {
 
 		new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
 
-		new Trigger(()->operatorControllerHID.getYButton()).whileTrue(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 105, 55));
+		new Trigger(()->operatorControllerHID.getYButton()).whileTrue(
+			climbCommandFactory.setExtensionTargetingClimbersCommand(5, 90, 55)
+			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 90, 55))
+			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 100, 55))
+			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 100, 55)));
 		
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
@@ -459,6 +463,11 @@ public class RobotContainer {
 								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 2.5: 8)) && canShoot);
 	}
 
+	private Command generateIntakeCommandTrap() {
+		return intakeSubsystem.intakeCommand(0, 0.8,
+				() -> (shooterSubsystem.isSpeedAccurate(0.05)));
+	}
+
     private Command generateIntakeCommandAuto() {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.1))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
@@ -552,12 +561,12 @@ public class RobotContainer {
 		if(intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius){
 			canShoot = true;
 			return movingWhileShooting.getAngleFromDistance();
-		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorController.getHID().getYButton()){
+		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorControllerHID.getBButton()){
 			canShoot = true;
 			return 40;
 		} else {
 			canShoot = false;
-			return 30;
+			return 35;
 		}
 
 		// return (get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius //10.249
