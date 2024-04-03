@@ -58,6 +58,7 @@ import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
+import frc.robot.subsystems.drive.DriveWeights.MLVisionRevisedWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.extension.ExtensionIO;
@@ -105,7 +106,8 @@ public class RobotContainer {
 
 	AutoDriveWeight autoDriveWeight;
 
-	MLVisionAngularAndHorizDriveWeight mlVisionWeight;
+	//MLVisionAngularAndHorizDriveWeight mlVisionWeight;
+	MLVisionRevisedWeight mlVisionWeight;
 
 	JoystickDriveWeight joystickDriveWeight;
 
@@ -236,7 +238,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
 				driveSubsystem::getPose, gyro);
 
-		mlVisionWeight = new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
+		mlVisionWeight = new MLVisionRevisedWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
 		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
 
