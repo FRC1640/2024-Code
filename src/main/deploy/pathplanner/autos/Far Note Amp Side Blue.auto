@@ -75,6 +75,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "back to subwoofer from amp"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -91,12 +97,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "back to subwoofer from amp"
           }
         },
         {
@@ -118,7 +118,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "MidShot"
+                  "name": "MidShotBlue"
                 }
               }
             ]
@@ -137,7 +137,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "MidShot"
+                  "name": "MidShotBlue"
                 }
               }
             ]
@@ -156,7 +156,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "MidShot"
+                  "name": "MidShotBlue"
                 }
               }
             ]

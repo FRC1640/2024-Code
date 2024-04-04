@@ -612,6 +612,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(28.5+ offset));
+		NamedCommands.registerCommand("MidShotBlue", manualShotAuto(30.5+ offset));
 		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(40.5));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(35+ offset));
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(35));
