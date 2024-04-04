@@ -355,13 +355,13 @@ public class RobotContainer {
 		//  new Trigger(() -> driveControllerHID.getBButton())
 		// 	.whileTrue(climbCommandFactory.getCompleteCommand());
 
-		new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
+		// new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
 
-		new Trigger(()->operatorControllerHID.getYButton()).whileTrue(
-			climbCommandFactory.setExtensionTargetingClimbersCommand(5, 90, 55)
-			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 90, 55))
-			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 100, 55))
-			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 100, 55)));
+		// new Trigger(()->operatorControllerHID.getYButton()).whileTrue(
+		// 	climbCommandFactory.setExtensionTargetingClimbersCommand(5, 90, 55)
+		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 90, 55))
+		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 100, 55))
+		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 100, 55)));
 		
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
