@@ -613,7 +613,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(28.5+ offset));
 		NamedCommands.registerCommand("MidShotBlue", manualShotAuto(30.5+ offset));
-		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(40.5));
+		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(38.5));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(35+ offset));
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(35));
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
@@ -632,7 +632,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("4NoteAmp", manualShotAuto(35));
 
 		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(36));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(36));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(34.5));
 		
 		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
