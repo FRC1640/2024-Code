@@ -19,13 +19,16 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final DigitalInput rightProximitySensor;
     private final ResolverPointSlope leftEncoder;
     private final ResolverPointSlope rightEncoder;
+    private final CANSparkMax trapBlowerMotor;
+
 
     public ClimberIOSparkMax() {
         leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
         rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
-
+        trapBlowerMotor = new CANSparkMax(ClimberConstants.trapBlowerCANID, MotorType.kBrushless); // TODO update
+        
         leftMotor.setInverted(false);
         rightMotor.setInverted(false);
 
@@ -39,6 +42,10 @@ public class ClimberIOSparkMax implements ClimberIO {
         Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);
         rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 3.637, 2.585, 11, 84); //note: to create resolver constants class for min/max
+    
+        trapBlowerMotor.setInverted(false);
+        trapBlowerMotor.setIdleMode(IdleMode.kBrake);
+        trapBlowerMotor.setSmartCurrentLimit(80);
     }
 
     @Override
