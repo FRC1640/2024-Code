@@ -355,13 +355,13 @@ public class RobotContainer {
 		//  new Trigger(() -> driveControllerHID.getBButton())
 		// 	.whileTrue(climbCommandFactory.getCompleteCommand());
 
-		new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
+		// new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
 
-		new Trigger(()->operatorControllerHID.getYButton()).whileTrue(
-			climbCommandFactory.setExtensionTargetingClimbersCommand(5, 90, 55)
-			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 90, 55))
-			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 100, 55))
-			.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 100, 55)));
+		// new Trigger(()->operatorControllerHID.getYButton()).whileTrue(
+		// 	climbCommandFactory.setExtensionTargetingClimbersCommand(5, 90, 55)
+		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 90, 55))
+		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 100, 55))
+		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 100, 55)));
 		
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
@@ -607,12 +607,13 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(35));
+		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(37.5));
 		NamedCommands.registerCommand("AmpNoteShotQuad", manualShotAuto(35.5));
 		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(26 + offset));
-		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(40.5));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(27+ offset));
+		NamedCommands.registerCommand("MidShotBlue", manualShotAuto(30.5+ offset));
+		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(38.5));
 		NamedCommands.registerCommand("StageShot", manualShotAuto(35+ offset));
 		NamedCommands.registerCommand("CenterShot", manualShotAuto(35));
 		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
@@ -630,8 +631,8 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("4NoteAmp", manualShotAuto(35));
 
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(34));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(36));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(36));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(32));
 		
 		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
 		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
