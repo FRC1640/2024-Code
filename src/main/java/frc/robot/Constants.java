@@ -122,6 +122,8 @@ public final class Constants {
         public static final int rightClimberResolver = 5;
         public static final int leftProximityChannel = 8;
         public static final int rightProximityChannel = 7;
+        public static final int trapBlowerCANID = 17; // TODO update
+
     }
 
     public static class ShooterConstants {

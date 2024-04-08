@@ -22,6 +22,8 @@ public interface ClimberIO {
         public double rightClimberPositionDegrees = 0.0;
         public double rightClimberVoltage = 0.0;
         public boolean rightProximitySensor = false;
+
+        public double trapBlowerVoltage = 0.0;
     }
 
     public default void updateInputs(ClimberIOInputs inputs) {
@@ -41,6 +43,10 @@ public interface ClimberIO {
     }
 
     public default void setRightSpeedPercent(double rSpeed) {
+
+    }
+
+    public default void setTrapBlowerVoltage(double rVoltage) {
 
     }
 
