@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Resolvers.Resolver;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
 import frc.robot.sensors.Resolvers.ResolverSlope;
@@ -34,13 +35,13 @@ public class ModuleIOSparkMax implements ModuleIO{
         driveMotor = new CANSparkMax(id.driveChannel, MotorType.kBrushless);
         steeringMotor = new CANSparkMax(id.steerChannel, MotorType.kBrushless);
         driveMotor.setSmartCurrentLimit(60);
-        driveMotor.getEncoder().setMeasurementPeriod(8);
+        driveMotor.getEncoder().setMeasurementPeriod(4);
         driveMotor.getEncoder().setAverageDepth(2);
 		steeringMotor.setIdleMode(IdleMode.kCoast);
 		steeringMotor.setSmartCurrentLimit(40);
 		driveMotor.setIdleMode(IdleMode.kCoast);
 
-        Constants.updateStatusFrames(driveMotor, 100, 20, 20, 500, 500, 500, 500);
+        Constants.updateStatusFrames(driveMotor, 100, 20, (int)(1000/SwerveDriveDimensions.odometryFrequency), 500, 500, 500, 500);
         Constants.updateStatusFrames(steeringMotor, 100, 20, 20, 500, 500, 500, 500);
         driveEncoder = driveMotor.getEncoder();
 		steeringEncoder = new ResolverSlope(id.resolverChannel, 3.177, 4.43,

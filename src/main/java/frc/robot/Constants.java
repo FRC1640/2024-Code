@@ -40,6 +40,8 @@ public final class Constants {
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
         public static final double maxSpeed = 4.267;
 
+        public static final double odometryFrequency = 250.0;
+
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
         public static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
