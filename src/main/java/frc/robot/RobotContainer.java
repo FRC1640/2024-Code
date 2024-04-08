@@ -372,9 +372,9 @@ public class RobotContainer {
 			// new Trigger(() -> driveControllerHID.getBButton())
 		
 		
-			new Trigger(() -> driveControllerHID.getBButton())
-				.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
-
+			// new Trigger(() -> driveControllerHID.getBButton())
+			// 	.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+			new Trigger(() -> driveControllerHID.getBButton()).whileTrue(trapShotCommand());
 
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
@@ -490,8 +490,8 @@ public class RobotContainer {
 	}
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
-				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
-				&& targetingSubsystem.isAnglePositionAccurate(6)), time);
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
+				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
@@ -585,6 +585,14 @@ public class RobotContainer {
 			()->0.03, ()->0.15, ()->true)
 			.alongWith(generateIntakeNoRobotAmp(500, 0.6))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
+	}
+
+	public Command trapShotCommand(){
+		return shooterSubsystem.setSpeedPercentPID(()->1, ()->1,
+			()->1, ()->1, ()->true)
+			.alongWith(targetingSubsystem.anglePIDCommand(()->55))
+			.alongWith(generateIntakeCommand())
+			.alongWith(generateIntakeNoRobot(0, 0.8));
 	}
 
 	public Command ampCommandNoShoot(){
