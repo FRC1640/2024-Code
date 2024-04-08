@@ -47,11 +47,16 @@ public class JoystickDriveWeight implements DriveWeight {
 
     private boolean firstRun = true;
     private CommandXboxController driverController;
+    private Trigger leftTrigger;
+
     Gyro gyro;
     public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro){
         this.driverController = driverController;
         this.gyro = gyro;
         lastAngle = gyro.getRawAngleRadians();
+        leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
+        new Trigger(() -> driverController.getHID().getBackButton()).onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
+        // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
     }
     @Override
     public ChassisSpeeds getSpeeds() {
@@ -59,11 +64,7 @@ public class JoystickDriveWeight implements DriveWeight {
             lastAngle = gyro.getRawAngleRadians();
             firstRun = false;
         }
-        new Trigger(() -> driverController.getHID().getBackButton()).onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
 
-        Trigger leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
-
-        // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
         if (driverController.getHID().getRightBumper()) {
             xSpeed = -driverController.getLeftY() * 0.3;
             ySpeed = -driverController.getLeftX() * 0.3;
