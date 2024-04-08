@@ -286,9 +286,10 @@ public class RobotContainer {
 		// new Trigger(() -> driveControllerHID.getYButton())
 		// 		.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
 
-		new Trigger(()->operatorControllerHID.getAButton())
-			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
-				.alongWith(generateIntakeCommandTrap()));
+		
+		//new Trigger(()->operatorControllerHID.getAButton()).onTrue(manualShot(autoSetAngle, angleRotate, angleOffset, null)//targetingSubsystem.anglePIDCommand(() -> 60, 1000, () -> true));
+			// .whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
+			// 	.alongWith(generateIntakeCommandTrap()));
 
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
@@ -380,8 +381,17 @@ public class RobotContainer {
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
 
-		// new Trigger (() -> operatorControllerHID.getAButton())
+		new Trigger (() -> operatorControllerHID.getAButton()).whileTrue(manualShotNoAngle(60, () -> false)
+				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.20, ()->0.25, ()->0.2, ()->0.25, ()->true)).alongWith(generateIntakeCommand()));
+				//.alongWith(intakeNote()));
+				//.alongWith(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote())));
+				
+				//.alongWith(intakeSubsystem.intakeCommand(0.8, 0.5))));
 		// 		.whileTrue(manualShotNoAngle(41.8, () -> !operatorControllerHID.getAButton()));
+
+		//new Trigger(()->operatorControllerHID.getAButton()).onTrue(manualShot(autoSetAngle, angleRotate, angleOffset, null)//targetingSubsystem.anglePIDCommand(() -> 60, 1000, () -> true));
+			// .whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
+			// 	.alongWith(generateIntakeCommandTrap()));
 
 		// driveController.y().whileTrue(() -> );
 	}
