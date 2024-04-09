@@ -3,6 +3,8 @@ package frc.lib.drive;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -64,6 +66,8 @@ public class DriveSubsystem extends SubsystemBase {
     private Module backLeft;
     private Module backRight;
     boolean usedAprilTag;
+
+    static final Lock odometryLock = new ReentrantLock();
 
     PIDController pidr = frc.robot.Constants.PIDConstants.constructPID(frc.robot.Constants.PIDConstants.rotPID,
             "RotateToAngle1");
@@ -233,6 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
         // update odometry
         odometryPose = swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyro.getRawAngleRotation2d(),
                 getModulePositionsArray());
+        swervePoseEstimator.getEstimatedPosition();
 
     }
 
