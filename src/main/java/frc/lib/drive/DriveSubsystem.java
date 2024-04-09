@@ -42,6 +42,7 @@ import frc.lib.drive.Module.ModuleIOSparkMax;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
+import frc.lib.vision.LimelightHelpers;
 import frc.lib.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.Constants;
 import frc.robot.DashboardInit;
@@ -120,6 +121,9 @@ public class DriveSubsystem extends SubsystemBase {
                 new Pose2d(),
                 VecBuilder.fill(0.1, 0.1, 0.00001),
                 VecBuilder.fill(4, 4, 9999999));
+
+        LimelightHelpers.SetRobotOrientation("limelight-front", swervePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation("limelight-back", swervePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
