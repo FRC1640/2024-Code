@@ -42,6 +42,10 @@ public class AprilTagVision extends PeriodicBase {
         return inputs.aprilTagDistances;
     }
 
+    public Pose2d getAprilTagPose2dRot(){
+        return inputs.aprilTagPoseRot;
+    }
+
     public double getTa(){
         return inputs.ta;
     }

@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.vision.LimelightHelpers;
 import frc.robot.Constants.FieldConstants;
+import pabeles.concurrency.IntObjectConsumer;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     String key;
@@ -32,8 +33,18 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         double[] emptyArraySix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         double[] botPose = networkTable.getEntry("botpose_orb_wpiblue").getDoubleArray(emptyArray);
+
+        double[] botPoseRot = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
+
+        inputs.aprilTagPoseRot = new Pose2d()
+        
+
+        Rotation2d aprilTagBotRotation2d1 = Rotation2d.fromDegrees(botPoseRot[5]);
+
         inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
+
+        
         Rotation2d aprilTagBotRotation2d = Rotation2d.fromDegrees(botPose[5]);
         inputs.aprilTagPose = new Pose2d(aprilTagBotTran2d, aprilTagBotRotation2d);
         inputs.isTarget = networkTable.getEntry("tv").getDouble(0) > 0;

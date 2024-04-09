@@ -233,7 +233,7 @@ public class DriveSubsystem extends SubsystemBase {
                     getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
                     && Robot.inTeleop
-                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720 && false) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -514,7 +514,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getAprilTagPose() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget()) {
-                return vision.getAprilTagPose2d();
+                return vision.getAprilTagPose2dRot();
             }
         }
         return getPose();
