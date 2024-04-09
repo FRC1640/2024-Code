@@ -247,7 +247,8 @@ public class DriveSubsystem extends SubsystemBase {
                 }
             }
         }
-        // update odometry
+        // update odometry, thanks to:
+        // https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
 
         double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
         int sampleCount = sampleTimestamps.length;
