@@ -17,63 +17,62 @@ import frc.robot.Constants.FieldConstants;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     String key;
-    
-    LimelightHelpers.LimelightResults  llresults;
+
+    LimelightHelpers.LimelightResults llresults;
     LimelightHelpers.LimelightTarget_Fiducial[] resultsArray; // FIDUCIAL IS APRIL TAGS
 
-    public AprilTagVisionIOLimelight(String key){
+    public AprilTagVisionIOLimelight(String key) {
         this.key = key;
     }
 
     @Override
     public void updateInputs(AprilTagVisionIOInputs inputs) {
         NetworkTable networkTable = NetworkTableInstance.getDefault().getTable(key);
-        double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0 };
-        double[] emptyArraySix = { 0, 0, 0, 0, 0, 0 };
+        double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        double[] emptyArraySix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        double[] botPose = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
+        double[] botPose = networkTable.getEntry("botpose_orb_wpiblue").getDoubleArray(emptyArray);
         inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
         Rotation2d aprilTagBotRotation2d = Rotation2d.fromDegrees(botPose[5]);
         inputs.aprilTagPose = new Pose2d(aprilTagBotTran2d, aprilTagBotRotation2d);
         inputs.isTarget = networkTable.getEntry("tv").getDouble(0) > 0;
-       
+
         double[] robotPoseArray = networkTable.getEntry("targetpose_robotspace").getDoubleArray(emptyArraySix);
-        // System.out.println(robotPoseArray + "robotPoseArray len "+ robotPoseArray.length);
+        // System.out.println(robotPoseArray + "robotPoseArray len "+
+        // robotPoseArray.length);
         Translation3d robotPoseTranslation = new Translation3d(robotPoseArray[0], robotPoseArray[1], robotPoseArray[2]);
-        
 
         llresults = LimelightHelpers.getLatestResults(key);
 
         inputs.aprilTagDistances = Arrays.stream(llresults.targetingResults.targets_Fiducials)
-            .mapToDouble((v)->v.getRobotPose_TargetSpace2D().getTranslation().getNorm()).toArray();
+                .mapToDouble((v) -> v.getRobotPose_TargetSpace2D().getTranslation().getNorm()).toArray();
 
-        inputs.aprilTagDistance = robotPoseTranslation.getNorm();
+        // inputs.aprilTagDistance = robotPoseTranslation.getNorm();
+        inputs.aprilTagDistance = botPose[9];
 
         inputs.tagPoses = Arrays.stream(llresults.targetingResults.targets_Fiducials)
-            .map((v)->new Pose2d(v.getRobotPose_FieldSpace2D().getX() + FieldConstants.width / 2, 
-            v.getRobotPose_FieldSpace2D().getY() + FieldConstants.height / 2,v.getRobotPose_FieldSpace2D().getRotation()))
-            .toArray(Pose2d[]::new);
+                .map((v) -> new Pose2d(v.getRobotPose_FieldSpace2D().getX() + FieldConstants.width / 2,
+                        v.getRobotPose_FieldSpace2D().getY() + FieldConstants.height / 2,
+                        v.getRobotPose_FieldSpace2D().getRotation()))
+                .toArray(Pose2d[]::new);
 
-        // inputs.latency = 
-        //     Timer.getFPGATimestamp() - (llresults.targetingResults.latency_capture 
-        //     + llresults.targetingResults.latency_jsonParse
-        //     + llresults.targetingResults.latency_pipeline);
-        
+        // inputs.latency =
+        // Timer.getFPGATimestamp() - (llresults.targetingResults.latency_capture
+        // + llresults.targetingResults.latency_jsonParse
+        // + llresults.targetingResults.latency_pipeline);
+
         inputs.tl = llresults.targetingResults.latency_pipeline;
         inputs.cl = llresults.targetingResults.latency_capture;
         inputs.jl = llresults.targetingResults.latency_jsonParse;
 
-        
-
         resultsArray = llresults.targetingResults.targets_Fiducials;
-        
+
         inputs.numVisibleTags = (inputs.isTarget) ? resultsArray.length : 0;
 
         inputs.tx = networkTable.getEntry("tx").getDouble(0);
 
         inputs.ta = networkTable.getEntry("ta").getDouble(0);
-
 
     }
 }
