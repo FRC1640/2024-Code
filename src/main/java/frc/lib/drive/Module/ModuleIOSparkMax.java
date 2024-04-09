@@ -35,7 +35,7 @@ public class ModuleIOSparkMax implements ModuleIO{
         driveMotor = new CANSparkMax(id.driveChannel, MotorType.kBrushless);
         steeringMotor = new CANSparkMax(id.steerChannel, MotorType.kBrushless);
         driveMotor.setSmartCurrentLimit(60);
-        driveMotor.getEncoder().setMeasurementPeriod(4);
+        driveMotor.getEncoder().setMeasurementPeriod(8);
         driveMotor.getEncoder().setAverageDepth(2);
 		steeringMotor.setIdleMode(IdleMode.kCoast);
 		steeringMotor.setSmartCurrentLimit(40);
