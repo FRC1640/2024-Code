@@ -25,6 +25,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -83,6 +84,16 @@ public class DriveSubsystem extends SubsystemBase {
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
+    private Rotation2d rawGyroRotation = new Rotation2d();
+
+    private SwerveModulePosition[] lastModulePositions = // For delta tracking
+            new SwerveModulePosition[] {
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition()
+            };
+
     public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
         this.visions = visions;
@@ -119,7 +130,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Create Pose Estimator
         swervePoseEstimator = new SwerveDrivePoseEstimator(
                 SwerveDriveDimensions.kinematics,
-                gyro.getAngleRotation2d(),
+                rawGyroRotation,
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.1, 0.1, 0.00001),
@@ -156,10 +167,12 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Update modules
+        odometryLock.lock();
         frontLeft.periodic();
         frontRight.periodic();
         backLeft.periodic();
         backRight.periodic();
+        odometryLock.unlock();
         // Update odometry
         updateOdometry();
         // Log odometry
@@ -183,7 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         for (AprilTagVision vision : visions) {
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop 
+                    && Robot.inTeleop
                     && vision.getNumVisibleTags() != 0) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
@@ -194,31 +207,31 @@ public class DriveSubsystem extends SubsystemBase {
                 double posDifY = vision.getAprilTagPose2d().getTranslation().getY() - getPose().getY();
 
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                            getActualSwerveStates()).vxMetersPerSecond,
-                            SwerveDriveDimensions.kinematics
-                                    .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
+                        getActualSwerveStates()).vxMetersPerSecond,
+                        SwerveDriveDimensions.kinematics
+                                .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 double xy = AprilTagVisionConstants.xyStdDev;
                 double theta = Double.MAX_VALUE;
                 boolean useEstimate = true;
-                if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 && vision.getName() == "-back") || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1) || (vision.getDistance() > 6)) {
+                if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 && vision.getName() == "-back")
+                        || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1)
+                        || (vision.getDistance() > 6)) {
                     useEstimate = false;
                 }
-                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 4){
+                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 4) {
                     xy = 0.25;
-                    if (speed == 0 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 3){
+                    if (speed == 0 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 3) {
                         theta = 8;
                     }
-                }
-                else{
-                    if (speed < 1 && vision.getDistance() < 2.75){
+                } else {
+                    if (speed < 1 && vision.getDistance() < 2.75) {
                         xy = 0.5;
-                    }
-                    else if (speed < 0.5 && vision.getDistance() < 4){
+                    } else if (speed < 0.5 && vision.getDistance() < 4) {
                         xy = 1.5;
                     }
                 }
-                
+
                 for (int i = 0; i < vision.getTagPoses().length; i++) {
                     Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
                     Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
@@ -226,7 +239,7 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                if (useEstimate){
+                if (useEstimate) {
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
                             VecBuilder.fill(xy * distConst,
                                     xy * distConst,
@@ -235,10 +248,37 @@ public class DriveSubsystem extends SubsystemBase {
             }
         }
         // update odometry
-        odometryPose = swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyro.getRawAngleRotation2d(),
-                getModulePositionsArray());
-        swervePoseEstimator.getEstimatedPosition();
 
+        double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
+        int sampleCount = sampleTimestamps.length;
+
+        Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
+
+        for (int i = 0; i < sampleCount; i++) {
+            // Read wheel positions and deltas from each module
+            SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+            SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+            for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+                modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+                moduleDeltas[moduleIndex] = new SwerveModulePosition(
+                        modulePositions[moduleIndex].distanceMeters
+                                - lastModulePositions[moduleIndex].distanceMeters,
+                        modulePositions[moduleIndex].angle);
+                lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+            }
+            // Update gyro angle
+            if (gyro.isTrustworthy()) {
+                // Use the real gyro angle
+                rawGyroRotation = gyro.getOdometryPositions()[i];
+            } else {
+                // Use the angle delta from the kinematics and module deltas
+                Twist2d twist = SwerveDriveDimensions.kinematics.toTwist2d(moduleDeltas);
+                rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+            }
+
+            // Apply update
+            odometryPose = swervePoseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+        }
     }
 
     private void resetOdometry(Pose2d newPose) {
@@ -246,12 +286,13 @@ public class DriveSubsystem extends SubsystemBase {
         odometryPose = newPose;
     }
 
-    public void setBrakeMode(boolean brake){
+    public void setBrakeMode(boolean brake) {
         frontLeft.setBrakeMode(brake);
         frontRight.setBrakeMode(brake);
         backLeft.setBrakeMode(brake);
         backRight.setBrakeMode(brake);
     }
+
     private void resetOdometryAuton(Pose2d pose) {
         // if (pose.getTranslation().getDistance(getPose().getTranslation()) < 1.5){
         // resetOdometry(getPose());
@@ -476,10 +517,12 @@ public class DriveSubsystem extends SubsystemBase {
                 DriveWeightCommand.getAngle(), getPose().getRotation().getRadians()))) < 3;
     }
 
-    public void rotatePivots(DoubleSupplier angle){
+    public void rotatePivots(DoubleSupplier angle) {
         frontLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
-        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        frontRight
+                .setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
         backLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
-        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        frontRight
+                .setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
     }
 }

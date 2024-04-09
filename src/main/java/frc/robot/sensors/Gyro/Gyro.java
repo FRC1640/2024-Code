@@ -59,4 +59,12 @@ public class Gyro extends PeriodicBase {
     public void addOffset(double offset){
         io.setOffset(offset + io.getOffset());
     }
+
+    public Rotation2d[] getOdometryPositions(){
+        return inputs.odometryYawPositions;
+    }
+
+    public double[] getOdometryTimestamps(){
+        return inputs.odometryYawTimestamps;
+    }
 }

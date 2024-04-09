@@ -17,10 +17,12 @@ public class Module {
     ModuleIO io;
     PivotId id;
     ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-    
-    public final PIDController drivePIDController = PIDConstants.constructPID(PIDConstants.drivePIDController, "module drive");
 
-    public final PIDController turningPIDController = PIDConstants.constructPID(PIDConstants.turningPIDController, "module turning");
+    public final PIDController drivePIDController = PIDConstants.constructPID(PIDConstants.drivePIDController,
+            "module drive");
+
+    public final PIDController turningPIDController = PIDConstants.constructPID(PIDConstants.turningPIDController,
+            "module turning");
 
     // public final PIDController turningPIDController = new PIDController(1,0,0);
     // //sim PID
@@ -52,10 +54,12 @@ public class Module {
     }
 
     public void setDesiredStateMetersPerSecond(SwerveModuleState state) {
-        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians()); //gets angle delta
+        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians()); // gets
+                                                                                                            // angle
+                                                                                                            // delta
 
         // determines if drive should be flipped so max delta angle is 90 degrees
-        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2); 
+        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
 
         // pid calculation
         double sin = Math.sin(dAngle);
@@ -65,13 +69,13 @@ public class Module {
         // flips drive
         final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
 
-        //calculates drive speed with feedforward
+        // calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
-        if (!Robot.inTeleop){
+        if (!Robot.inTeleop) {
             pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
         }
 
-        //pid clamping and deadband
+        // pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
 
         if (Math.abs(pidSpeed) < 0.05) {
@@ -90,7 +94,24 @@ public class Module {
         return inputs.driveAppliedVoltage;
     }
 
-    public void setBrakeMode(boolean brake){
+    public void setBrakeMode(boolean brake) {
         io.setBrakeMode(brake);
+    }
+
+    public SwerveModulePosition[] getOdometryPositions() {
+        int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
+        SwerveModulePosition[] odometryPositions = new SwerveModulePosition[sampleCount];
+        for (int i = 0; i < sampleCount; i++) {
+          double positionMeters = inputs.odometryDrivePositionsMeters[i];
+          Rotation2d angle =
+              inputs.odometryTurnPositions[i];
+          odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
+        }
+        return odometryPositions;
+    }
+
+    /** Returns the timestamps of the samples received this cycle. */
+    public double[] getOdometryTimestamps() {
+        return inputs.odometryTimestamps;
     }
 }
