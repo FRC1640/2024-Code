@@ -36,10 +36,14 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
         double[] botPoseRot = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
 
-        inputs.aprilTagPoseRot = new Pose2d()
+        Rotation2d aprilTagBotRotation2d1 = Rotation2d.fromDegrees(botPoseRot[5]);
+
+        Translation2d aprilTagBotTran2dRot = new Translation2d(botPoseRot[0], botPoseRot[1]);
+
+        inputs.aprilTagPoseRot = new Pose2d(aprilTagBotTran2dRot,aprilTagBotRotation2d1);
         
 
-        Rotation2d aprilTagBotRotation2d1 = Rotation2d.fromDegrees(botPoseRot[5]);
+        
 
         inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
@@ -79,7 +83,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
         resultsArray = llresults.targetingResults.targets_Fiducials;
 
-        inputs.numVisibleTags = (inputs.isTarget) ? resultsArray.length : 0;
+        inputs.numVisibleTags = (int)botPose[7];
 
         inputs.tx = networkTable.getEntry("tx").getDouble(0);
 

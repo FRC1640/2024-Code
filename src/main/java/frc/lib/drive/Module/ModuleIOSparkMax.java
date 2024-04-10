@@ -40,6 +40,9 @@ public class ModuleIOSparkMax implements ModuleIO {
     private ModuleInfo id;
 
     public ModuleIOSparkMax(ModuleInfo id) {
+
+        
+
         this.id = id;
         driveMotor = new CANSparkMax(id.driveChannel, MotorType.kBrushless);
         steeringMotor = new CANSparkMax(id.steerChannel, MotorType.kBrushless);
@@ -49,6 +52,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         steeringMotor.setIdleMode(IdleMode.kCoast);
         steeringMotor.setSmartCurrentLimit(40);
         driveMotor.setIdleMode(IdleMode.kCoast);
+
+        
 
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
@@ -67,10 +72,12 @@ public class ModuleIOSparkMax implements ModuleIO {
 
         Constants.updateStatusFrames(driveMotor, 100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency), 500,
                 500, 500, 500);
-        Constants.updateStatusFrames(steeringMotor, 100, 200, 20, 500, 500, 500, 500);
+        Constants.updateStatusFrames(steeringMotor, 100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency), 500, 500, 500, 500);
         driveEncoder = driveMotor.getEncoder();
         steeringEncoder = new ResolverSlope(id.resolverChannel, 3.177, 4.43,
                 180.0, 90.0, id.angleOffset);
+
+        steeringMotor.getEncoder().setPosition((360-steeringEncoder.getD()) / 360 * SwerveDriveDimensions.steerGearRatio);
 
         driveMotor.setInverted(id.reverseDrive);
         steeringMotor.setInverted(id.reverseSteer);
@@ -128,7 +135,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         // inputs.driveIdleModeIsBrake =
         // driveMotor.getIdleMode().equals(IdleMode.kBrake);
 
-        inputs.steerAngleDegrees = steeringEncoder.getD();
+        // inputs.steerAngleDegrees = steeringEncoder.getD();
+        inputs.steerAngleDegrees = 360 - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
         inputs.steerAppliedVoltage = steeringMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.steerCurrentAmps = steeringMotor.getOutputCurrent();
         inputs.steerTempCelsius = steeringMotor.getMotorTemperature();
@@ -137,6 +145,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
         inputs.steerAngleVoltage = steeringEncoder.getV();
 
+        inputs.steerAngleRelative = 360 - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
+
         inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
 
         inputs.odometryDrivePositionsMeters = drivePositionQueue.stream()
@@ -144,7 +154,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                 .toArray();
 
         inputs.odometryTurnPositions = turnPositionQueue.stream()
-                .map((Double value) -> Math.toRadians(steeringEncoder.getD()))
+                .map((Double value) -> new Rotation2d(inputs.steerAngleRadians))
                 .toArray(Rotation2d[]::new);
 
         timestampQueue.clear();

@@ -98,6 +98,8 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
         this.visions = visions;
+
+        
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -163,6 +165,8 @@ public class DriveSubsystem extends SubsystemBase {
                 (targetPose) -> {
                     Logger.recordOutput("Drive/Odometry/TrajectorySetpoint", targetPose);
                 });
+
+        SparkMaxOdometryThread.getInstance().start();
     }
 
     @Override
@@ -173,6 +177,7 @@ public class DriveSubsystem extends SubsystemBase {
         frontRight.periodic();
         backLeft.periodic();
         backRight.periodic();
+        gyro.periodic();
         odometryLock.unlock();
         // Update odometry
         updateOdometry();
@@ -199,7 +204,7 @@ public class DriveSubsystem extends SubsystemBase {
         // https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
 
         double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
-        int sampleCount = sampleTimestamps.length;
+        int sampleCount = sampleTimestamps.length ;
 
         Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
 
@@ -233,7 +238,7 @@ public class DriveSubsystem extends SubsystemBase {
                     getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
                     && Robot.inTeleop
-                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720 && false) {
+                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -249,9 +254,9 @@ public class DriveSubsystem extends SubsystemBase {
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 double xy = 0.6;
-                if (vision.getNumVisibleTags() > 2){
-                    xy = 0.25;
-                }
+                // if (vision.getNumVisibleTags() > 2){
+                //     xy = 0.25;
+                // }
                 double theta = Double.MAX_VALUE;
                 boolean useEstimate = true;
 
