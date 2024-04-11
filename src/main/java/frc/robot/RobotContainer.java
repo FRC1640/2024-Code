@@ -211,7 +211,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->autoTargetBool));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.7, ()->0.7, ()->0.6, ()->0.6, ()->autoTargetBool));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 
@@ -289,6 +289,10 @@ public class RobotContainer {
 		new Trigger(()->operatorControllerHID.getAButton())
 			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
 				.alongWith(generateIntakeCommandTrap()));
+		
+
+		new Trigger(()->get3dDistance(()->getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && Robot.inTeleop)
+			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->autoTargetBool));
 
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
@@ -389,8 +393,8 @@ public class RobotContainer {
 	public void pidTriggers(){
 		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() -> PIDUpdate.getSetpoint(), () -> 0.0));
 		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(()->PIDUpdate.getSetpoint()));
-		// targetingSubsystem.setDefaultCommand(
-		// 	targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+		targetingSubsystem.setDefaultCommand(
+			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
 		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
@@ -413,7 +417,8 @@ public class RobotContainer {
 				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()))
 				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
-				.alongWith(new InstantCommand(()->{startAuto = true;}));
+				.alongWith(new InstantCommand(()->{startAuto = true;}))
+				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->true));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -602,64 +607,11 @@ public class RobotContainer {
 	}
 
 	public void generateNamedCommands(){
-		// NamedCommands.registerCommand("", )
-		double offset = 5.5;//5.5
-
-		RotateToAngleWeight rotateToAngleWeightAuto = 
-			new RotateToAngleWeight(()->autoSetAngle, ()->new Pose2d(0,0,new Rotation2d(gyro.getAngleRotation2d().getRadians())), ()->0.0,
-			"AutoRotate", ()->false, driveSubsystem);
-
-		RotateToAngleWeight movingWhileShootingWeightAuto = new RotateToAngleWeight(()->movingWhileShooting.getNewRobotAngle(),
-			driveSubsystem::getPose, ()->0.0,
-			"MovingWhileShootingAuto", ()->false, driveSubsystem);
-
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("AmpNoteShot", manualShotAuto(37.5));
-		NamedCommands.registerCommand("AmpNoteShotQuad", manualShotAuto(35.5));
-		NamedCommands.registerCommand("CenterFreeThrow", manualShotAuto(40));
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(27+ offset));
-		NamedCommands.registerCommand("MidShotBlue", manualShotAuto(30.5+ offset));
 		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(38.5));
-		NamedCommands.registerCommand("StageShot", manualShotAuto(35+ offset));
-		NamedCommands.registerCommand("CenterShot", manualShotAuto(35));
-		NamedCommands.registerCommand("MidFarShot", manualShotAuto(35 + offset));
-
-		NamedCommands.registerCommand("UnderStage", manualShotAuto(29));
-
-		NamedCommands.registerCommand("CenterSourceSide", manualShotAuto(33));
-
-		// NamedCommands.registerCommand("RunIndexerLowAccuracy", generateIntakeCommand());
-
-		NamedCommands.registerCommand("AutoTargetAngle", targetingSubsystem.anglePIDCommand(() -> 
-			movingWhileShooting.getAngleFromDistance(), 60, ()->autoTargetBool && extensionSubsystem.getExtensionPosition() < 20));
-
-		NamedCommands.registerCommand("CloseShot", manualShotAuto(45));
-
-		NamedCommands.registerCommand("4NoteAmp", manualShotAuto(35));
-
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(36));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(32));
-		
-		NamedCommands.registerCommand("MLVisionAutonCommand", (new MLVisionAutoCommand2(() -> intakeSubsystem.hasNote(), mlVision, driveSubsystem, ()->gyro.getAngleRotation2d())).getCommand());
-		NamedCommands.registerCommand("MLVisionAutonConstraintsCommand", mlVision.waitUntilMLCommand(4, 0));
-		// NamedCommands.registerCommand("SetAngleFreeThrow", new InstantCommand(()->setAutoTargetAngle(Math.toRadians(-165))));
-
-		NamedCommands.registerCommand("AmpSideRotate", driveSubsystem.rotateToAngleCommand(()->Math.toRadians((-142.31 + (getAlliance() == Alliance.Red?180:0)))));
-		NamedCommands.registerCommand("SetAngleFreeThrow", driveSubsystem.rotateToAngleCommand(()->(Math.toRadians(-180 + (getAlliance() == Alliance.Red?180:0)))));
-
-		NamedCommands.registerCommand("RotateToGoal", movingWhileShootingWeightAuto.getAsCommand());
-
-		NamedCommands.registerCommand("Triplet1stShot", manualShotAuto(30.5));
-
-		// NamedCommands.registerCommand("90", new InstantCommand(()->setAutoTargetAngle(Math.toRadians(90))));
-
-		// NamedCommands.registerCommand("TripletStage", new InstantCommand(()->setAutoTargetAngle(Math.toRadians(152))));
-		
-		//NamedCommands.registerCommand("MLVisionAutonStrafeCommand", (new MLVisionAutonStrafeCommand(mlVision, gyro::getAngleRotation2d, driveSubsystem, ()->intakeSubsystem.hasNote())
-		//	.getCommand()));
-
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(30));
 	}
 	private void setAutoTargetAngle(double angle){
 		autoSetAngle = angle + (getAlliance() == Alliance.Red?90:0);

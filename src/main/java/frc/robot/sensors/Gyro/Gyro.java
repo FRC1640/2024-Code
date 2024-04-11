@@ -17,6 +17,7 @@ public class Gyro {
         io.updateInputs(inputs);
         Logger.processInputs("Gyro", inputs);
         Logger.recordOutput("GyroOffset", io.getOffset());
+        Logger.recordOutput("OffsetGyroAngleDegrees", getAngleRotation2d().getDegrees());
     }
 
     public void reset() {

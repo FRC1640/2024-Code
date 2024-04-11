@@ -137,7 +137,7 @@ public class DriveSubsystem extends SubsystemBase {
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.1, 0.1, 0.00001),
-                VecBuilder.fill(4, 4, 9999999));
+                VecBuilder.fill(2, 2, 9999999));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -237,8 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop
-                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    && Robot.inTeleop                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -253,7 +252,10 @@ public class DriveSubsystem extends SubsystemBase {
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
-                double xy = 0.6;
+                double xy = 0.5;
+                if (speed > 0.5 || (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
+                    xy = 1.5;
+                }
                 // if (vision.getNumVisibleTags() > 2){
                 //     xy = 0.25;
                 // }

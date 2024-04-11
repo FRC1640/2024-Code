@@ -1,0 +1,69 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7392210795817603,
+      "y": 6.700750495518085
+    },
+    "rotation": -121.79891282429445
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp side far"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AmpFarShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp side far return"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

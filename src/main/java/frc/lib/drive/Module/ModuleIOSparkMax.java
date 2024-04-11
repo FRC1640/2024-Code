@@ -49,6 +49,11 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveMotor.setSmartCurrentLimit(60);
         driveMotor.getEncoder().setMeasurementPeriod(8);
         driveMotor.getEncoder().setAverageDepth(2);
+        steeringMotor.getEncoder().setMeasurementPeriod(8);
+        steeringMotor.getEncoder().setAverageDepth(2);
+
+        driveMotor.setCANTimeout(250);
+        steeringMotor.setCANTimeout(250);
         steeringMotor.setIdleMode(IdleMode.kCoast);
         steeringMotor.setSmartCurrentLimit(40);
         driveMotor.setIdleMode(IdleMode.kCoast);
@@ -68,7 +73,15 @@ public class ModuleIOSparkMax implements ModuleIO {
                         });
 
         turnPositionQueue = SparkMaxOdometryThread.getInstance()
-                .registerSignal(() -> OptionalDouble.of(Math.toRadians(steeringEncoder.getD())));
+                        .registerSignal(
+                        () -> {
+                            double value = steeringMotor.getEncoder().getPosition();
+                            if (steeringMotor.getLastError() == REVLibError.kOk) {
+                                return OptionalDouble.of(value);
+                            } else {
+                                return OptionalDouble.empty();
+                            }
+                        });
 
         Constants.updateStatusFrames(driveMotor, 100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency), 500,
                 500, 500, 500);
@@ -150,11 +163,12 @@ public class ModuleIOSparkMax implements ModuleIO {
         inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
 
         inputs.odometryDrivePositionsMeters = drivePositionQueue.stream()
-                .mapToDouble((Double value) -> inputs.drivePositionMeters)
+                .mapToDouble((Double value) ->  -(value / kDriveGearRatio) * id.wheelRadius * 2 * Math.PI)
                 .toArray();
 
         inputs.odometryTurnPositions = turnPositionQueue.stream()
-                .map((Double value) -> new Rotation2d(inputs.steerAngleRadians))
+                .map((Double value) -> Rotation2d.fromDegrees(
+                    360 - (value / SwerveDriveDimensions.steerGearRatio * 360)))
                 .toArray(Rotation2d[]::new);
 
         timestampQueue.clear();

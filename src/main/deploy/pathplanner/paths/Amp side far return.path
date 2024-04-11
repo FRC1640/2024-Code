@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2470057801305405,
-        "y": 5.54069368761967
+        "x": 8.328727312725281,
+        "y": 7.425788070949362
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2237492633625497,
-        "y": 5.866274848697006
+        "x": 7.358112494002765,
+        "y": 7.203599136543003
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.258628641903178,
-        "y": 6.808134636099301
+        "x": 4.153914176774222,
+        "y": 6.420090788899527
       },
       "prevControl": {
-        "x": 6.6132809886016375,
-        "y": 6.866274129148826
+        "x": 5.042669914399658,
+        "y": 6.665668032190766
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Amp Far Side Paths",
   "previewStartingState": {
-    "rotation": -179.49741833327886,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": false
