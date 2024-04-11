@@ -361,7 +361,7 @@ public class RobotContainer {
 				.onTrue(new InstantCommand(() -> {DriveWeightCommand.addWeight(autoStageAlignWeight);}));
 
 		new Trigger(() -> driveControllerHID.getYButton())
-				.onFalse(new InstantCommand(() -> {DriveWeightCommand.removeWeight(autoStageAlignWeight);}).andThen(new ParallelDeadlineGroup(new WaitCommand(3), climberSubsystem.climberPIDCommandVoltage(() -> 55,() -> 55))));
+				.onFalse(new InstantCommand(() -> {DriveWeightCommand.removeWeight(autoStageAlignWeight);}).andThen(new ParallelDeadlineGroup(new WaitCommand(3), climberSubsystem.climberPIDCommandVoltage(() -> 55,() -> 55), trapShotCommand())));
 
 		
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
