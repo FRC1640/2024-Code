@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -105,6 +106,8 @@ public class RobotContainer {
 	// RotateToAngleWeight rotateLockWeight;
 
 	AutoDriveWeight autoDriveWeight;
+
+	AutoDriveWeight autoStageAlignWeight;
 
 	//MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 	MLVisionRevisedWeight mlVisionWeight;
@@ -240,7 +243,9 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionRevisedWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
-		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
+		autoStageAlignWeight = new AutoDriveWeight(() -> getNearestStage(), () -> driveSubsystem.getPose(), gyro);
+
+		//climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
 
 		rotateToStageWeight = new RotateToAngleWeight(
 			() -> (getNearestStage().getRotation().getRadians()), 
@@ -348,6 +353,13 @@ public class RobotContainer {
 				.whileTrue(
 					extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
+		new Trigger(() -> driveControllerHID.getYButton())
+				.onTrue(new InstantCommand(() -> {DriveWeightCommand.addWeight(autoStageAlignWeight);}));
+
+		new Trigger(() -> driveControllerHID.getYButton())
+				.onFalse(new InstantCommand(() -> {DriveWeightCommand.removeWeight(autoStageAlignWeight);}).andThen(new ParallelDeadlineGroup(new WaitCommand(3), climberSubsystem.climberPIDCommandVoltage(() -> 55,() -> 55))));
+
+		
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
