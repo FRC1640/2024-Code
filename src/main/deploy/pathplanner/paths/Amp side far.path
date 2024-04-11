@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.159911049166827,
-        "y": 2.0815594907543087
+        "x": 0.7392210795817603,
+        "y": 6.700750495518085
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.6215914036386465,
-        "y": 0.6165970661855857
+        "x": 1.0666574039700785,
+        "y": 7.074963437676163
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.293644849397962,
-        "y": 1.7892056296933105
+        "x": 2.072354686019913,
+        "y": 7.226987445427883
       },
       "prevControl": {
-        "x": 6.668157381898809,
-        "y": 1.777511475250871
+        "x": 1.0627993588958307,
+        "y": 7.150173453146704
+      },
+      "nextControl": {
+        "x": 3.148216894724387,
+        "y": 7.308846526524962
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.3053390038404,
+        "y": 7.226987445427883
+      },
+      "prevControl": {
+        "x": 7.439971575099844,
+        "y": 7.238681599870323
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 1.5,
       "rotationDegrees": 180.0,
       "rotateFast": false
     }
@@ -38,11 +54,11 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.75,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.1,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 2.0,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
@@ -61,9 +77,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Amp Far Side Paths",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -120.96375653207352,
     "velocity": 0
   },
   "useDefaultConstraints": false

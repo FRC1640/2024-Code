@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Quad Paths",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

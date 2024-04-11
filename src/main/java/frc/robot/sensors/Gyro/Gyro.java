@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.periodic.PeriodicBase;
 
-public class Gyro extends PeriodicBase {
+public class Gyro {
     private GyroIO io;
     private GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
 
@@ -17,6 +17,7 @@ public class Gyro extends PeriodicBase {
         io.updateInputs(inputs);
         Logger.processInputs("Gyro", inputs);
         Logger.recordOutput("GyroOffset", io.getOffset());
+        Logger.recordOutput("OffsetGyroAngleDegrees", getAngleRotation2d().getDegrees());
     }
 
     public void reset() {
@@ -58,5 +59,13 @@ public class Gyro extends PeriodicBase {
     }
     public void addOffset(double offset){
         io.setOffset(offset + io.getOffset());
+    }
+
+    public Rotation2d[] getOdometryPositions(){
+        return inputs.odometryYawPositions;
+    }
+
+    public double[] getOdometryTimestamps(){
+        return inputs.odometryYawTimestamps;
     }
 }

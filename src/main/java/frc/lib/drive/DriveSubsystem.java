@@ -3,6 +3,8 @@ package frc.lib.drive;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -23,6 +25,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -42,6 +45,7 @@ import frc.lib.drive.Module.ModuleIOSparkMax;
 import frc.lib.pathplanning.LocalADStarAK;
 import frc.lib.swerve.SwerveAlgorithms;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
+import frc.lib.vision.LimelightHelpers;
 import frc.lib.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.Constants;
 import frc.robot.DashboardInit;
@@ -65,6 +69,8 @@ public class DriveSubsystem extends SubsystemBase {
     private Module backRight;
     boolean usedAprilTag;
 
+    static final Lock odometryLock = new ReentrantLock();
+
     PIDController pidr = frc.robot.Constants.PIDConstants.constructPID(frc.robot.Constants.PIDConstants.rotPID,
             "RotateToAngle1");
 
@@ -79,9 +85,21 @@ public class DriveSubsystem extends SubsystemBase {
     SysIdRoutine sysIdRoutine;
     Pose2d odometryPose = new Pose2d();
 
+    private Rotation2d rawGyroRotation = new Rotation2d();
+
+    private SwerveModulePosition[] lastModulePositions = // For delta tracking
+            new SwerveModulePosition[] {
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition()
+            };
+
     public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
         this.visions = visions;
+
+        
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -115,11 +133,11 @@ public class DriveSubsystem extends SubsystemBase {
         // Create Pose Estimator
         swervePoseEstimator = new SwerveDrivePoseEstimator(
                 SwerveDriveDimensions.kinematics,
-                gyro.getAngleRotation2d(),
+                rawGyroRotation,
                 getModulePositionsArray(),
                 new Pose2d(),
                 VecBuilder.fill(0.1, 0.1, 0.00001),
-                VecBuilder.fill(4, 4, 9999999));
+                VecBuilder.fill(2, 2, 9999999));
 
         // Configure pathplanner
         AutoBuilder.configureHolonomic(
@@ -147,15 +165,20 @@ public class DriveSubsystem extends SubsystemBase {
                 (targetPose) -> {
                     Logger.recordOutput("Drive/Odometry/TrajectorySetpoint", targetPose);
                 });
+
+        SparkMaxOdometryThread.getInstance().start();
     }
 
     @Override
     public void periodic() {
         // Update modules
+        odometryLock.lock();
         frontLeft.periodic();
         frontRight.periodic();
         backLeft.periodic();
         backRight.periodic();
+        gyro.periodic();
+        odometryLock.unlock();
         // Update odometry
         updateOdometry();
         // Log odometry
@@ -177,10 +200,44 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateOdometry() {
+        // update odometry, thanks to:
+        // https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
+
+        double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
+        int sampleCount = sampleTimestamps.length ;
+
+        Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
+
+        for (int i = 0; i < sampleCount; i++) {
+            // Read wheel positions and deltas from each module
+            SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+            SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+            for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+                modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+                moduleDeltas[moduleIndex] = new SwerveModulePosition(
+                        modulePositions[moduleIndex].distanceMeters
+                                - lastModulePositions[moduleIndex].distanceMeters,
+                        modulePositions[moduleIndex].angle);
+                lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+            }
+            // Update gyro angle
+            if (gyro.isTrustworthy()) {
+                // Use the real gyro angle
+                rawGyroRotation = gyro.getOdometryPositions()[i];
+            } else {
+                // Use the angle delta from the kinematics and module deltas
+                Twist2d twist = SwerveDriveDimensions.kinematics.toTwist2d(moduleDeltas);
+                rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+            }
+
+            // Apply update
+            odometryPose = swervePoseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+        }
         for (AprilTagVision vision : visions) {
+            LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
+                    getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop 
-                    && vision.getNumVisibleTags() != 0) {
+                    && Robot.inTeleop                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -190,31 +247,38 @@ public class DriveSubsystem extends SubsystemBase {
                 double posDifY = vision.getAprilTagPose2d().getTranslation().getY() - getPose().getY();
 
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
-                            getActualSwerveStates()).vxMetersPerSecond,
-                            SwerveDriveDimensions.kinematics
-                                    .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
+                        getActualSwerveStates()).vxMetersPerSecond,
+                        SwerveDriveDimensions.kinematics
+                                .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
-                double xy = AprilTagVisionConstants.xyStdDev;
+                // double xy = AprilTagVisionConstants.xyStdDev;
+                double xy = 0.5;
+                if (speed > 0.5 || (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
+                    xy = 1.5;
+                }
+                // if (vision.getNumVisibleTags() > 2){
+                //     xy = 0.25;
+                // }
                 double theta = Double.MAX_VALUE;
                 boolean useEstimate = true;
-                if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 && vision.getName() == "-back") || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1) || (vision.getDistance() > 6)) {
-                    useEstimate = false;
-                }
-                if (vision.getNumVisibleTags() >= 2 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 4){
-                    xy = 0.25;
-                    if (speed == 0 && Arrays.stream(vision.getDistances()).max().getAsDouble() < 3){
-                        theta = 8;
-                    }
-                }
-                else{
-                    if (speed < 1 && vision.getDistance() < 2.75){
-                        xy = 0.5;
-                    }
-                    else if (speed < 0.5 && vision.getDistance() < 4){
-                        xy = 1.5;
-                    }
-                }
-                
+
+                // if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 &&
+                // vision.getName() == "-back")
+                // || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1)
+                // || (vision.getDistance() > 6)) {
+                // useEstimate = false;
+                // }
+                // if (vision.getNumVisibleTags() >= 2 &&
+                // Arrays.stream(vision.getDistances()).max().getAsDouble() < 4) {
+                // xy = 0.25;
+                // } else {
+                // if (speed < 1 && vision.getDistance() < 2.75) {
+                // xy = 0.5;
+                // } else if (speed < 0.5 && vision.getDistance() < 4) {
+                // xy = 1.5;
+                // }
+                // }
+
                 for (int i = 0; i < vision.getTagPoses().length; i++) {
                     Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
                     Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
@@ -222,18 +286,14 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                if (useEstimate){
+                if (useEstimate) {
                     swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
-                            VecBuilder.fill(xy * distConst,
-                                    xy * distConst,
-                                    Math.toRadians(theta) * distConst));
+                            VecBuilder.fill(xy,
+                                    xy,
+                                    theta));
                 }
             }
         }
-        // update odometry
-        odometryPose = swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyro.getRawAngleRotation2d(),
-                getModulePositionsArray());
-
     }
 
     private void resetOdometry(Pose2d newPose) {
@@ -241,12 +301,13 @@ public class DriveSubsystem extends SubsystemBase {
         odometryPose = newPose;
     }
 
-    public void setBrakeMode(boolean brake){
+    public void setBrakeMode(boolean brake) {
         frontLeft.setBrakeMode(brake);
         frontRight.setBrakeMode(brake);
         backLeft.setBrakeMode(brake);
         backRight.setBrakeMode(brake);
     }
+
     private void resetOdometryAuton(Pose2d pose) {
         // if (pose.getTranslation().getDistance(getPose().getTranslation()) < 1.5){
         // resetOdometry(getPose());
@@ -460,7 +521,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getAprilTagPose() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget()) {
-                return vision.getAprilTagPose2d();
+                return vision.getAprilTagPose2dRot();
             }
         }
         return getPose();
@@ -471,10 +532,12 @@ public class DriveSubsystem extends SubsystemBase {
                 DriveWeightCommand.getAngle(), getPose().getRotation().getRadians()))) < 3;
     }
 
-    public void rotatePivots(DoubleSupplier angle){
+    public void rotatePivots(DoubleSupplier angle) {
         frontLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
-        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        frontRight
+                .setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
         backLeft.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
-        frontRight.setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
+        frontRight
+                .setDesiredStateMetersPerSecond(new SwerveModuleState(0, Rotation2d.fromDegrees(angle.getAsDouble())));
     }
 }
