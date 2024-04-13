@@ -376,9 +376,11 @@ public class RobotContainer {
 			// new Trigger(() -> driveControllerHID.getBButton())
 		
 		
-			new Trigger(() -> driveControllerHID.getBButton())
-				.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
-			// new Trigger(() -> driveControllerHID.getBButton()).whileTrue(trapShotCommand());
+		new Trigger(() -> driveControllerHID.getBButton())
+			.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+		new Trigger(() -> operatorControllerHID.getAButton()).whileTrue(trapShotCommand()
+			.alongWith(targetingSubsystem.runBlowerCommand(1))
+			.alongWith(generateIntakeNoRobot(2, 0.8)));
 
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
@@ -495,7 +497,7 @@ public class RobotContainer {
 	}
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
-				() -> (shooterSubsystem.isSpeedAccurate(0.01) 
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
 				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
@@ -593,11 +595,11 @@ public class RobotContainer {
 	}
 
 	public Command trapShotCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.1, ()->0.32,
-			()->0.1, ()->0.32, ()->true)
-			.alongWith(targetingSubsystem.anglePIDCommand(()->64))
+		return shooterSubsystem.setSpeedPercentPID(()->0.2, ()->0.4,
+			()->0.2, ()->0.4, ()->true)
+			.alongWith(targetingSubsystem.anglePIDCommand(()->70))
 			// .alongWith(generateIntakeCommand())
-			.alongWith(generateIntakeNoRobot(0.001, 0.8));
+			;
 	}
 
 	public Command ampCommandNoShoot(){

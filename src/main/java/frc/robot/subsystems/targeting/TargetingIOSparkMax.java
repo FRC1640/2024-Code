@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.RobotController;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -21,6 +22,8 @@ public class TargetingIOSparkMax implements TargetingIO {
     private final CANSparkMax rightTargetingMotor;
    
     private final ResolverPointSlope targetingEncoder = new ResolverPointSlope(TargetingConstants.resolverID, 1.375,2.0703,28,64);
+
+    PWM blower = new PWM(9);
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
@@ -73,5 +76,9 @@ public class TargetingIOSparkMax implements TargetingIO {
      */
     public double encoderToDegrees(double motorEncoderValue) { // TODO conversion
         return motorEncoderValue;
+    }
+    @Override
+    public void runBlower(double speed){
+        blower.setSpeed(speed);
     }
 }

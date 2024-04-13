@@ -4,6 +4,8 @@ import java.util.InputMismatchException;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -410,6 +412,24 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
+    }
+
+    public void runBlower(double speed){
+        io.runBlower(speed);
+    }
+
+    public Command runBlowerCommand(double speed){
+        Command c = new Command() {
+            @Override
+            public void execute(){
+                runBlower(speed);
+            }
+            @Override
+            public void end(boolean interrupted){
+                runBlower(0);
+            }
+        };
+        return c;
     }
 
 }

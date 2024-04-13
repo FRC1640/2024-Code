@@ -87,4 +87,6 @@ public interface TargetingIO {
 
         return speedClamped;
     }
+
+    public default void runBlower(double speed){};
 }

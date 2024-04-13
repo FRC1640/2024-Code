@@ -237,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    && Robot.inTeleop && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -253,7 +253,7 @@ public class DriveSubsystem extends SubsystemBase {
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 double xy = 0.5;
-                if (speed > 0.5 || (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
+                if ((speed > 0.5 && vision.getDistance() > 3.5)|| (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
                     xy = 1.5;
                 }
                 // if (vision.getNumVisibleTags() > 2){
