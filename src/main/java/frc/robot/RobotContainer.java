@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Foot;
+
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -420,7 +422,7 @@ public class RobotContainer {
 				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
 				.alongWith(new InstantCommand(()->{startAuto = true;}))
-				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->true));
+				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.6, ()->0.6, ()->0.5, ()->0.5, ()->true));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -609,11 +611,14 @@ public class RobotContainer {
 	}
 
 	public void generateNamedCommands(){
+		// double offset = 4;
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(38.5));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(30));
+		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(28));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(28));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29));
 	}
 	private void setAutoTargetAngle(double angle){
 		autoSetAngle = angle + (getAlliance() == Alliance.Red?90:0);

@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.3053390038404,
+        "y": 7.133434209888363
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.7967930807656485,
+        "y": 6.817692039942485
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.57,
+        "y": 6.61
+      },
+      "prevControl": {
+        "x": 6.49274506526221,
+        "y": 6.829386194384925
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 1.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -164.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp Far Side Paths",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
