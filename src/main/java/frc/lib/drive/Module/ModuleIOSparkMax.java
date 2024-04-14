@@ -90,7 +90,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         steeringEncoder = new ResolverSlope(id.resolverChannel, 3.177, 4.43,
                 180.0, 90.0, id.angleOffset);
 
-        steeringMotor.getEncoder().setPosition((360-steeringEncoder.getD()) / 360 * SwerveDriveDimensions.steerGearRatio);
+        
 
         driveMotor.setInverted(id.reverseDrive);
         steeringMotor.setInverted(id.reverseSteer);
@@ -99,6 +99,11 @@ public class ModuleIOSparkMax implements ModuleIO {
     @Override
     public void setDriveIdleMode(boolean brake) {
         driveMotor.setIdleMode(brake ? IdleMode.kBrake : IdleMode.kCoast);
+    }
+
+    @Override 
+    public void resetSteer(){
+        steeringMotor.getEncoder().setPosition((360-steeringEncoder.getD()) / 360 * SwerveDriveDimensions.steerGearRatio);
     }
 
     @Override

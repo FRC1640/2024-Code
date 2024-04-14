@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Foot;
+
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -388,9 +390,11 @@ public class RobotContainer {
 			// new Trigger(() -> driveControllerHID.getBButton())
 		
 		
-			new Trigger(() -> driveControllerHID.getBButton())
-				.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
-			// new Trigger(() -> driveControllerHID.getBButton()).whileTrue(trapShotCommand());
+		new Trigger(() -> driveControllerHID.getBButton())
+			.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+		new Trigger(() -> operatorControllerHID.getAButton()).whileTrue(trapShotCommand()
+			.alongWith(targetingSubsystem.runBlowerCommand(1))
+			.alongWith(generateIntakeNoRobot(2, 0.8)));
 
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
@@ -414,6 +418,10 @@ public class RobotContainer {
 		
 	}
 
+	public void resetDrive(){
+		driveSubsystem.resetPivots();
+	}
+
 	public double getAngleToStash(){
 		return Math.atan2(getStashPos().getY() - driveSubsystem.getPose().getY(),
                 getStashPos().getX() - driveSubsystem.getPose().getX());
@@ -430,7 +438,7 @@ public class RobotContainer {
 				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
 				.alongWith(new InstantCommand(()->{startAuto = true;}))
-				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->true));
+				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.6, ()->0.6, ()->0.5, ()->0.5, ()->true));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -507,8 +515,8 @@ public class RobotContainer {
 	}
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
-				() -> (shooterSubsystem.isSpeedAccurate(0.01) 
-				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
+				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
+				&& targetingSubsystem.isAnglePositionAccurate(5)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
@@ -605,11 +613,12 @@ public class RobotContainer {
 	}
 
 	public Command trapShotCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.1, ()->0.32,
-			()->0.1, ()->0.32, ()->true)
-			.alongWith(targetingSubsystem.anglePIDCommand(()->64))
+		
+		return shooterSubsystem.setSpeedPercentPID(()->0.3, ()->0.5,
+			()->0.3, ()->0.5, ()->true)
+			.alongWith(targetingSubsystem.anglePIDCommand(()->67))
 			// .alongWith(generateIntakeCommand())
-			.alongWith(generateIntakeNoRobot(0.001, 0.8));
+			;
 	}
 
 	public Command ampCommandNoShoot(){
@@ -619,11 +628,17 @@ public class RobotContainer {
 	}
 
 	public void generateNamedCommands(){
+		// double offset = 4;
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(38.5));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(30));
+		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(28));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(28));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29));
+
+		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
+		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));
 	}
 	private void setAutoTargetAngle(double angle){
 		autoSetAngle = angle + (getAlliance() == Alliance.Red?90:0);

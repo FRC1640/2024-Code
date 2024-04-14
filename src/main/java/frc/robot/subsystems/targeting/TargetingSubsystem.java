@@ -4,6 +4,8 @@ import java.util.InputMismatchException;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -29,7 +31,8 @@ import static edu.wpi.first.units.Units.Seconds;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID, "angle");
+    PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
+    PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
     public double setpoint = 0.0;
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
@@ -104,7 +107,7 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public double equation(double v) {
 
-        return -2530.15 * Math.asin(-0.000478453 * (1 / (v-0.0742577))-0.999783) -3910.04 + angleOffset.getAsDouble() - 1;
+        return -2530.15 * Math.asin(-0.000478453 * (1 / (v-0.0742577))-0.999783) -3910.04 + angleOffset.getAsDouble();
     }
 
     public double getAngleVoltage() {
@@ -154,9 +157,15 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     private double getAnglePIDSpeed(double position) {
         if (position <= TargetingConstants.angleLowerLimit) {
-            pid.reset();
+            pidSmall.reset();
         }
-        double speed = pid.calculate(inputs.targetingPositionAverage, position);
+        double speed = 0;
+        if (Math.abs(position - inputs.targetingPositionAverage) < 7){
+            speed = pidSmall.calculate(inputs.targetingPositionAverage, position);
+        }
+        else{
+            speed = pidLarge.calculate(inputs.targetingPositionAverage, position);
+        }
         speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.01) {
             speed = 0;
@@ -410,6 +419,24 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
+    }
+
+    public void runBlower(double speed){
+        io.runBlower(speed);
+    }
+
+    public Command runBlowerCommand(double speed){
+        Command c = new Command() {
+            @Override
+            public void execute(){
+                runBlower(speed);
+            }
+            @Override
+            public void end(boolean interrupted){
+                runBlower(0);
+            }
+        };
+        return c;
     }
 
 }

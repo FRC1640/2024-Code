@@ -122,6 +122,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledExit() {
+        m_robotContainer.resetDrive();
     }
 
     @Override

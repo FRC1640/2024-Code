@@ -110,6 +110,10 @@ public class Module {
         return odometryPositions;
     }
 
+    public void resetSteer(){
+        io.resetSteer();
+    }
+
     /** Returns the timestamps of the samples received this cycle. */
     public double[] getOdometryTimestamps() {
         return inputs.odometryTimestamps;

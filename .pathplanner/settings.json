@@ -4,7 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Amp Far Side Paths",
-    "Quad Paths"
+    "5 Note",
+    "Quad Paths",
+    "Source Start"
   ],
   "autoFolders": [
     "Tests"

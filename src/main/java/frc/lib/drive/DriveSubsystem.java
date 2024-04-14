@@ -68,6 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Module backLeft;
     private Module backRight;
     boolean usedAprilTag;
+    boolean aprilTagInAuto = false;
 
     static final Lock odometryLock = new ReentrantLock();
 
@@ -146,9 +147,9 @@ public class DriveSubsystem extends SubsystemBase {
                 () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
                 this::driveChassisSpeedsDesaturated,
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(1.5, 0, 0),
-                        new PIDConstants(3.5, 0, 0),
-                        3,
+                        new PIDConstants(2.5, 0, 0),
+                        new PIDConstants(2.5, 0, 0),
+                        4,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
                 () -> DriverStation.getAlliance().isPresent()
@@ -235,9 +236,9 @@ public class DriveSubsystem extends SubsystemBase {
         }
         for (AprilTagVision vision : visions) {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
-                    getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
+                    getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    && (Robot.inTeleop || aprilTagInAuto) && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -253,7 +254,7 @@ public class DriveSubsystem extends SubsystemBase {
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 double xy = 0.5;
-                if (speed > 0.5 || (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
+                if ((speed > 0.5 && vision.getDistance() > 3.5)|| (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
                     xy = 1.5;
                 }
                 // if (vision.getNumVisibleTags() > 2){
@@ -324,6 +325,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    public void resetPivots(){
+        frontLeft.resetSteer();
+        frontRight.resetSteer();
+        backLeft.resetSteer();
+        backRight.resetSteer();
+    }
+
     public Command rotateToAngleCommand(DoubleSupplier angleSupplier) {
         Command c = new Command() {
             double angle;
@@ -373,6 +381,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometryPose;
+    }
+
+    public void setAprilTagInAuto(boolean value){
+        aprilTagInAuto = value;
     }
 
     public SwerveModulePosition[] getModulePositionsArray() {
