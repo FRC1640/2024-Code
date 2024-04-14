@@ -500,7 +500,7 @@ public class RobotContainer {
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
+				&& targetingSubsystem.isAnglePositionAccurate(5)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,

@@ -235,7 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
         for (AprilTagVision vision : visions) {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
-                    getPose().getRotation().getDegrees(), gyro.getAngularVelDegreesPerSecond(), 0, 0, 0, 0);
+                    getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
                     && Robot.inTeleop && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();

@@ -31,7 +31,8 @@ import static edu.wpi.first.units.Units.Seconds;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
-    PIDController pid = PIDConstants.constructPID(PIDConstants.targetingPID, "angle");
+    PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
+    PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
     public double setpoint = 0.0;
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
@@ -156,9 +157,15 @@ public class TargetingSubsystem extends SubsystemBase {
      */
     private double getAnglePIDSpeed(double position) {
         if (position <= TargetingConstants.angleLowerLimit) {
-            pid.reset();
+            pidSmall.reset();
         }
-        double speed = pid.calculate(inputs.targetingPositionAverage, position);
+        double speed = 0;
+        if (Math.abs(position - inputs.targetingPositionAverage) < 7){
+            speed = pidSmall.calculate(inputs.targetingPositionAverage, position);
+        }
+        else{
+            speed = pidLarge.calculate(inputs.targetingPositionAverage, position);
+        }
         speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.01) {
             speed = 0;
