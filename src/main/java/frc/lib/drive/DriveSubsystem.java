@@ -68,6 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Module backLeft;
     private Module backRight;
     boolean usedAprilTag;
+    boolean aprilTagInAuto = false;
 
     static final Lock odometryLock = new ReentrantLock();
 
@@ -237,7 +238,7 @@ public class DriveSubsystem extends SubsystemBase {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && Robot.inTeleop && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    && (Robot.inTeleop || aprilTagInAuto) && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -324,6 +325,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    public void resetPivots(){
+        frontLeft.resetSteer();
+        frontRight.resetSteer();
+        backLeft.resetSteer();
+        backRight.resetSteer();
+    }
+
     public Command rotateToAngleCommand(DoubleSupplier angleSupplier) {
         Command c = new Command() {
             double angle;
@@ -373,6 +381,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometryPose;
+    }
+
+    public void setAprilTagInAuto(boolean value){
+        aprilTagInAuto = value;
     }
 
     public SwerveModulePosition[] getModulePositionsArray() {

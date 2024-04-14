@@ -406,6 +406,10 @@ public class RobotContainer {
 		
 	}
 
+	public void resetDrive(){
+		driveSubsystem.resetPivots();
+	}
+
 	public double getAngleToStash(){
 		return Math.atan2(getStashPos().getY() - driveSubsystem.getPose().getY(),
                 getStashPos().getX() - driveSubsystem.getPose().getX());
@@ -597,9 +601,10 @@ public class RobotContainer {
 	}
 
 	public Command trapShotCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.2, ()->0.4,
-			()->0.2, ()->0.4, ()->true)
-			.alongWith(targetingSubsystem.anglePIDCommand(()->70))
+		
+		return shooterSubsystem.setSpeedPercentPID(()->0.3, ()->0.5,
+			()->0.3, ()->0.5, ()->true)
+			.alongWith(targetingSubsystem.anglePIDCommand(()->67))
 			// .alongWith(generateIntakeCommand())
 			;
 	}
@@ -619,6 +624,9 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(28));
 		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(28));
 		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29));
+
+		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
+		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));
 	}
 	private void setAutoTargetAngle(double angle){
 		autoSetAngle = angle + (getAlliance() == Alliance.Red?90:0);

@@ -56,4 +56,6 @@ public interface ModuleIO extends AutoCloseable {
     @Override
     public default void close() {
     }
+
+    public default void resetSteer(){}
 }
