@@ -109,7 +109,7 @@ public class RobotContainer {
 
 	AutoDriveWeight autoDriveWeight;
 
-	AutoDriveWeight autoStageAlignWeight;
+	RotateLockWeight autoStageAlignWeight;
 
 	//MLVisionAngularAndHorizDriveWeight mlVisionWeight;
 	MLVisionRevisedWeight mlVisionWeight;
@@ -245,7 +245,7 @@ public class RobotContainer {
 
 		mlVisionWeight = new MLVisionRevisedWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
-		autoStageAlignWeight = new AutoDriveWeight(() -> getNearestStage(), () -> driveSubsystem.getPose(), gyro);
+		autoStageAlignWeight = new RotateLockWeight(() -> getNearestStage(), () -> driveSubsystem.getPose(), gyro, () -> Math.sqrt(Math.pow(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveSubsystem.getChassisSpeeds().vyMetersPerSecond, 2)));
 
 		//climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
 
