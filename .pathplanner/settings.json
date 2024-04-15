@@ -3,8 +3,9 @@
   "robotLength": 0.921,
   "holonomicMode": true,
   "pathFolders": [
-    "Amp Far Side Paths",
     "5 Note",
+    "Amp Far Side Paths",
+    "Fast Quad",
     "Quad Paths",
     "Source Start"
   ],

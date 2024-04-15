@@ -29,6 +29,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.proto.Kinematics.ProtobufSwerveDriveKinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -238,7 +239,8 @@ public class DriveSubsystem extends SubsystemBase {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && (Robot.inTeleop || aprilTagInAuto) && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    && (Robot.inTeleop) 
+                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -254,7 +256,13 @@ public class DriveSubsystem extends SubsystemBase {
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 double xy = 0.5;
-                if ((speed > 0.5 && vision.getDistance() > 3.5)|| (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
+                // if (!Robot.inTeleop){
+                //     xy = 2.5;
+                //     if (poseDifference > 0.3){
+                //         xy = 0.5;
+                //     }
+                // }
+                if ((speed > 0.35 && vision.getDistance() > 3.5)|| (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
                     xy = 1.5;
                 }
                 // if (vision.getNumVisibleTags() > 2){

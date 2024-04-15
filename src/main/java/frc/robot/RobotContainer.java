@@ -48,6 +48,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionAutoCommand2;
+import frc.robot.sensors.Vision.MLVision.MLVisionAutonCommand;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
@@ -129,6 +130,8 @@ public class RobotContainer {
 
 	boolean canShoot = true;
 	double angleRotate = 0;
+
+	public double autoSpeeds = 0.6;
 
 	public RobotContainer() {
 		switch (Robot.getMode()) {
@@ -384,6 +387,10 @@ public class RobotContainer {
 			.alongWith(targetingSubsystem.runBlowerCommand(1))
 			.alongWith(generateIntakeNoRobot(2, 0.8)));
 
+
+		new Trigger(()->operatorControllerHID.getYButton())
+			.whileTrue(climberSubsystem.climberPIDCommandVoltage(()->55, ()->55));
+
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
@@ -426,7 +433,7 @@ public class RobotContainer {
 				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
 				.alongWith(new InstantCommand(()->{startAuto = true;}))
-				.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.6, ()->0.6, ()->0.5, ()->0.5, ()->true));
+				.alongWith(shooterSubsystem.setSpeedPercentPID(()->autoSpeeds, ()->autoSpeeds, ()->autoSpeeds-0.1, ()->autoSpeeds-0.1, ()->true));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -503,8 +510,8 @@ public class RobotContainer {
 	}
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-				&& targetingSubsystem.isAnglePositionAccurate(5)), time);
+				() -> (shooterSubsystem.isSpeedAccurate(0.01) 
+				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
@@ -602,9 +609,9 @@ public class RobotContainer {
 
 	public Command trapShotCommand(){
 		
-		return shooterSubsystem.setSpeedPercentPID(()->0.3, ()->0.5,
-			()->0.3, ()->0.5, ()->true)
-			.alongWith(targetingSubsystem.anglePIDCommand(()->67))
+		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.4,
+			()->0.08, ()->0.4, ()->true)
+			.alongWith(targetingSubsystem.anglePIDCommand(()->70))
 			// .alongWith(generateIntakeCommand())
 			;
 	}
@@ -621,9 +628,16 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Run Intake", intakeNote());
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
 		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(28));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(39));
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(27));
 		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(28));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(28));
+		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(36));
+		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(31));
+		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
+		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(()->{autoSpeeds = 0.3;}));
+
+		NamedCommands.registerCommand("MLCommand", new MLVisionAutonCommand(mlVision, driveSubsystem, ()->intakeSubsystem.hasNote(), gyro::getAngleRotation2d).getCommand());
 
 		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
 		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));
