@@ -2,32 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6924444618120005,
-      "y": 6.700750495518085
+      "x": 0.7392210795817603,
+      "y": 6.689056341075646
     },
-    "rotation": -120.65066795705286
+    "rotation": -119.05460409907714
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "wait",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.3
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpeakerShot"
-                }
-              }
-            ]
+            "waitTime": 0.2
           }
         },
         {

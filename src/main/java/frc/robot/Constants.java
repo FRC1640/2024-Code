@@ -40,6 +40,8 @@ public final class Constants {
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
         public static final double maxSpeed = 4.267;
 
+        public static final double odometryFrequency = 250.0;
+
         private static final Translation2d frontLeftLocation = new Translation2d(wheelXPos, wheelYPos);
         private static final Translation2d frontRightLocation = new Translation2d(wheelXPos, -wheelYPos);
         public static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
@@ -146,7 +148,10 @@ public final class Constants {
         public static PIDController rotMovingPID = new PIDController(0.5, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
-        public static PIDController targetingPID = new PIDController(0.3, 0, 0);
+        // public static PIDController targetingPID = new PIDController(0.25, 0.025, 0.0007);
+        public static PIDController targetingPIDSmall = new PIDController(0.2,0.004,0.003);
+        public static PIDController targetingPIDSuperSmall = new PIDController(0.3,0.009,0.005);
+        public static PIDController targetingPIDLarge = new PIDController(0.17,0.003,0.002);
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
@@ -171,8 +176,8 @@ public final class Constants {
         public static double width = 16.54;
         public static Translation2d ampPositionRed = new Translation2d(14.7, 7.84);
         public static Translation2d ampPositionBlue = new Translation2d(2.1, 7.84);
-        public static Translation2d speakerPositionRed = new Translation2d(width - 0.4, 5.4);
-        public static Translation2d speakerPositionBlue = new Translation2d(0.4, 5.4);
+        public static Translation2d speakerPositionRed = new Translation2d(width - 0.3, 5.2);
+        public static Translation2d speakerPositionBlue = new Translation2d(0.3, 5.2);
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
         public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(3.14159265))};
         
@@ -186,8 +191,8 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
-        public static double angleLowerLimit = 29;
-        public static double angleUpperLimit = 110;
+        public static double angleLowerLimit = 27;
+        public static double angleUpperLimit = 75;
         public static double angleManualSpeed = 0.05;
         public static double angleError = 0.5;
 

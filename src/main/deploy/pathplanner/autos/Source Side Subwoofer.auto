@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5287262996178413,
-      "y": 2.104947799639189
+      "x": 0.7392210795817603,
+      "y": 4.397002070357417
     },
-    "rotation": 90.0
+    "rotation": 121.21840276434635
   },
   "command": {
     "type": "sequential",
@@ -16,15 +16,59 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Source start to shot"
+                  "name": "Run Indexer"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "SpeakerShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source side subwoofer start"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "back to shot 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotSource"
                 }
               }
             ]
@@ -43,7 +87,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "LowShotSource"
                 }
               }
             ]
@@ -56,7 +100,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "source shot to pickup"
+                  "pathName": "note 2"
                 }
               },
               {
@@ -68,7 +112,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "LowShotSource1"
                 }
               }
             ]
@@ -81,19 +125,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "source return"
+                  "pathName": "note 2 shot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake"
+                  "name": "LowShotSource1"
                 }
               }
             ]
@@ -112,16 +150,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot2"
+                  "name": "LowShotSource1"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "source go back"
           }
         }
       ]

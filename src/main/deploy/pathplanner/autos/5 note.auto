@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5287262996178413,
-      "y": 2.104947799639189
+      "x": 1.4356300410714025,
+      "y": 5.522567875736844
     },
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -16,15 +16,40 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Source start to shot"
+                  "name": "Run Indexer"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "SpeakerShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5 note center backup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MidShotQuad"
                 }
               }
             ]
@@ -43,7 +68,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "MidShotQuad"
                 }
               }
             ]
@@ -56,7 +81,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "source shot to pickup"
+                  "pathName": "5 note middle note"
                 }
               },
               {
@@ -68,7 +93,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "MidShotQuad"
                 }
               }
             ]
@@ -81,19 +106,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "source return"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SourceStartShot2"
+                  "pathName": "5 note middle return"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MidShotQuad"
                 }
               }
             ]
@@ -112,16 +137,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot2"
+                  "name": "MidShotQuad"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "source go back"
           }
         }
       ]

@@ -10,6 +10,7 @@ public interface AprilTagVisionIO {
     public static class AprilTagVisionIOInputs {
         public double latency;
         public Pose2d aprilTagPose = new Pose2d();
+        public Pose2d aprilTagPoseRot = new Pose2d();
         public boolean isTarget;
         public double[] aprilTagDistances;
         public double aprilTagDistance;

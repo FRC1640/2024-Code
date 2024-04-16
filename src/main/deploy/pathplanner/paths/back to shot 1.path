@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8865394841271272,
-        "y": 7.017436811077589
+        "x": 8.328727312725281,
+        "y": 4.0110949737569
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5144467286101717,
-        "y": 6.517437170851679
+        "x": 6.5629099919168485,
+        "y": 3.8006001937929805
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5435171946831148,
-        "y": 5.575577383449384
+        "x": 4.153914176774222,
+        "y": 4.747826703630615
       },
       "prevControl": {
-        "x": 2.194679516837788,
-        "y": 6.093018871590151
+        "x": 5.5255044430404405,
+        "y": 4.092738815264662
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,20 +32,20 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 168.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Quad Paths",
+  "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 120.96375653207349,
     "velocity": 0
   },
   "useDefaultConstraints": false

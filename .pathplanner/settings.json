@@ -2,8 +2,17 @@
   "robotWidth": 0.921,
   "robotLength": 0.921,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
+  "pathFolders": [
+    "5 Note",
+    "Amp Far Side Paths",
+    "Fast Quad",
+    "Source Side Subwoofer",
+    "Quad Paths",
+    "Source Start"
+  ],
+  "autoFolders": [
+    "Tests"
+  ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,

@@ -3,41 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.159911049166827,
-        "y": 5.531335051274091
+        "x": 0.7392210795817603,
+        "y": 4.397002070357417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.247767002656512,
-        "y": 5.507946742389212
+        "x": 1.3473171105886368,
+        "y": 3.449775560519782
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.943718987153074,
-        "y": 4.7829091669579356
+        "x": 2.809086415893629,
+        "y": 2.7247379850885065
       },
       "prevControl": {
-        "x": 1.9271380179286326,
-        "y": 5.180852428344528
+        "x": 1.873554060498434,
+        "y": 2.8416795295129065
       },
       "nextControl": {
-        "x": 1.955413141595514,
-        "y": 4.502249460339376
+        "x": 3.744618771288824,
+        "y": 2.6077964406641065
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7389214892389893,
-        "y": 4.092954054853979
+        "x": 4.914034215532818,
+        "y": 4.0110949737569
       },
       "prevControl": {
-        "x": 1.896942369383314,
+        "x": 4.107137559004462,
+        "y": 3.6953528038110206
+      },
+      "nextControl": {
+        "x": 5.656240458196269,
+        "y": 4.3015235034947725
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.46905716603456,
         "y": 4.0110949737569
+      },
+      "prevControl": {
+        "x": 7.001440783508348,
+        "y": 3.9994008193144595
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,8 +64,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -59,9 +75,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Quad Paths",
+  "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 120.96375653207349,
     "velocity": 0
   },
   "useDefaultConstraints": false

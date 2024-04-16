@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8865394841271272,
-        "y": 7.017436811077589
+        "x": 2.832474724778509,
+        "y": 6.981410202136645
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5144467286101717,
-        "y": 6.517437170851679
+        "x": 3.873254470155664,
+        "y": 6.735832958845405
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5435171946831148,
-        "y": 5.575577383449384
+        "x": 8.52752793824676,
+        "y": 6.981410202136645
       },
       "prevControl": {
-        "x": 2.194679516837788,
-        "y": 6.093018871590151
+        "x": 6.11853212310413,
+        "y": 6.700750495518086
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -43,9 +49,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Quad Paths",
+  "folder": "Fast Quad",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

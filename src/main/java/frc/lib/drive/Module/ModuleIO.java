@@ -2,7 +2,9 @@ package frc.lib.drive.Module;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ModuleIO extends AutoCloseable{
+import edu.wpi.first.math.geometry.Rotation2d;
+
+public interface ModuleIO extends AutoCloseable {
     @AutoLog
     public static class ModuleIOInputs {
         public double drivePositionMeters;
@@ -20,26 +22,40 @@ public interface ModuleIO extends AutoCloseable{
         public boolean steerIdleModeIsBrake;
         public double steerAngleRadians;
         public double steerAngleVoltage;
+        public double steerAngleRelative;
+
+        public double[] odometryTimestamps = new double[] {};
+        public double[] odometryDrivePositionsMeters = new double[] {};
+        public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
     }
 
-    
-    public default void updateInputs(ModuleIOInputs inputs) {}
+    public default void updateInputs(ModuleIOInputs inputs) {
+    }
 
-    public default void setBrakeMode(boolean brake){};
+    public default void setBrakeMode(boolean brake) {
+    };
 
-    public default void setDriveVoltage(double voltage) {}
+    public default void setDriveVoltage(double voltage) {
+    }
 
-    public default void setDrivePercentage(double percentage) {}
+    public default void setDrivePercentage(double percentage) {
+    }
 
-    public default void setDriveIdleMode(boolean brake) {}
+    public default void setDriveIdleMode(boolean brake) {
+    }
 
-    public default void setSteerVoltage(double voltage) {}
+    public default void setSteerVoltage(double voltage) {
+    }
 
-    public default void setSteerPercentage(double percentage) {}
+    public default void setSteerPercentage(double percentage) {
+    }
 
-    public default void setSteerIdleMode(boolean brake) {}
-    
+    public default void setSteerIdleMode(boolean brake) {
+    }
 
     @Override
-    public default void close() {}
+    public default void close() {
+    }
+
+    public default void resetSteer(){}
 }

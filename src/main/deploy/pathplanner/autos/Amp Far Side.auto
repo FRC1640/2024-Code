@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5287262996178413,
-      "y": 2.104947799639189
+      "x": 1.4525645005705963,
+      "y": 7.71814193201036
     },
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -18,13 +18,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Source start to shot"
+                  "pathName": "Amp side far shot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AmpFarShot"
                 }
               }
             ]
@@ -43,7 +49,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "AmpFarShot"
                 }
               }
             ]
@@ -56,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "source shot to pickup"
+                  "pathName": "amp side shot to pickup"
                 }
               },
               {
@@ -68,7 +74,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot"
+                  "name": "AmpFarShot"
                 }
               }
             ]
@@ -81,19 +87,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "source return"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SourceStartShot2"
+                  "pathName": "amp side pickup to shot"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AmpFarShot2"
                 }
               }
             ]
@@ -112,16 +118,66 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SourceStartShot2"
+                  "name": "AmpFarShot2"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "source go back"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "amp backout"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FarShot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowerSpeeds"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowerSpeeds"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FarShot"
+                }
+              }
+            ]
           }
         }
       ]
