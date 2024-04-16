@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.574903736702232,
-        "y": 6.607197259983303
+        "x": 4.153914176774222,
+        "y": 4.747826703630615
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.299941312133336,
-        "y": 7.168516673215683
+        "x": 6.095143814219252,
+        "y": 4.853074093612575
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.4222805482648,
-        "y": 6.852774503269805
+        "x": 8.38719808493748,
+        "y": 2.4440782784699477
       },
       "prevControl": {
-        "x": 6.621380764129047,
-        "y": 7.051575128791284
+        "x": 6.586298300801731,
+        "y": 2.4791607417972688
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 1.1,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -43,9 +49,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Amp Far Side Paths",
+  "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 120.96375653207349,
     "velocity": 0
   },
   "useDefaultConstraints": false

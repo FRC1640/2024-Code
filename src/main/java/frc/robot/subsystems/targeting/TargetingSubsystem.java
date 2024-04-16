@@ -32,6 +32,7 @@ public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
     PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
+    PIDController pidSuperSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSuperSmall, "targetingPIDSuperSmall");
     PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
     public double setpoint = 0.0;
 
@@ -160,7 +161,10 @@ public class TargetingSubsystem extends SubsystemBase {
             pidSmall.reset();
         }
         double speed = 0;
-        if (Math.abs(position - inputs.targetingPositionAverage) < 7){
+        if (Math.abs(position - inputs.targetingPositionAverage) < 1){
+            speed = pidSuperSmall.calculate(inputs.targetingPositionAverage, position);
+        }
+        else if (Math.abs(position - inputs.targetingPositionAverage) < 6){
             speed = pidSmall.calculate(inputs.targetingPositionAverage, position);
         }
         else{

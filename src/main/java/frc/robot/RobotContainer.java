@@ -630,12 +630,17 @@ public class RobotContainer {
 		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(39));
 		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(27));
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(28));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(28));
+		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(28));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(28.5));
 		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(36));
 		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(31));
 		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
-		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(()->{autoSpeeds = 0.3;}));
+		NamedCommands.registerCommand("LowShotSource", manualShotAuto(29));
+		NamedCommands.registerCommand("LowShotSource1", manualShotAuto(32.5));
+
+		NamedCommands.registerCommand("FarShot", manualShotAuto(40));
+		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(()->{autoSpeeds = 0.4;}));
 
 		NamedCommands.registerCommand("MLCommand", new MLVisionAutonCommand(mlVision, driveSubsystem, ()->intakeSubsystem.hasNote(), gyro::getAngleRotation2d).getCommand());
 

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4525645005705963,
-      "y": 7.71814193201036
+      "x": 0.7392210795817603,
+      "y": 4.397002070357417
     },
-    "rotation": 180.0
+    "rotation": 121.21840276434635
   },
   "command": {
     "type": "sequential",
@@ -16,9 +16,28 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
                 "type": "path",
                 "data": {
-                  "pathName": "Amp side far shot"
+                  "pathName": "Source side subwoofer start"
                 }
               },
               {
@@ -30,7 +49,26 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpFarShot"
+                  "name": "LowShotSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "back to shot 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotSource"
                 }
               }
             ]
@@ -49,7 +87,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpFarShot"
+                  "name": "LowShotSource"
                 }
               }
             ]
@@ -62,7 +100,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "amp side shot to pickup"
+                  "pathName": "note 2"
                 }
               },
               {
@@ -74,7 +112,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpFarShot"
+                  "name": "LowShotSource1"
                 }
               }
             ]
@@ -87,19 +125,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "amp side pickup to shot"
+                  "pathName": "note 2 shot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AmpFarShot2"
+                  "name": "LowShotSource1"
                 }
               }
             ]
@@ -118,63 +150,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AmpFarShot2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "amp backout"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "FarShot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "LowerSpeeds"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Indexer"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "LowerSpeeds"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "FarShot"
+                  "name": "LowShotSource1"
                 }
               }
             ]
