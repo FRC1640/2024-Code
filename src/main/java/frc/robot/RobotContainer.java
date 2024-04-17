@@ -291,9 +291,9 @@ public class RobotContainer {
 		// new Trigger(() -> driveControllerHID.getYButton())
 		// 		.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
 
-		new Trigger(()->operatorControllerHID.getAButton())
-			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
-				.alongWith(generateIntakeCommandTrap()));
+		// new Trigger(()->operatorControllerHID.getAButton())
+		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
+		// 		.alongWith(generateIntakeCommandTrap()));
 		
 
 		new Trigger(()->get3dDistance(()->getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && Robot.inTeleop)
@@ -385,11 +385,12 @@ public class RobotContainer {
 			.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
 		new Trigger(() -> operatorControllerHID.getAButton()).whileTrue(trapShotCommand()
 			.alongWith(targetingSubsystem.runBlowerCommand(1))
-			.alongWith(generateIntakeNoRobot(2, 0.8)));
+			.alongWith(generateIntakeNoRobot(2, 0.8)))
+			.onFalse(targetingSubsystem.anglePIDCommand(()->30).repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(5)));
 
 
 		new Trigger(()->operatorControllerHID.getYButton())
-			.whileTrue(climberSubsystem.climberPIDCommandVoltage(()->55, ()->55));
+			.whileTrue(climberSubsystem.climberPIDCommandVoltage(()->80, ()->80).alongWith(targetingSubsystem.anglePIDCommand(()->70, 70, ()->true).repeatedly()));
 
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
@@ -510,7 +511,7 @@ public class RobotContainer {
 	}
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
-				() -> (shooterSubsystem.isSpeedAccurate(0.01) 
+				() -> (shooterSubsystem.isSpeedAccurate(0.03) 
 				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
@@ -629,10 +630,10 @@ public class RobotContainer {
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
 		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(39));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(27));
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(29));
 		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(28));
 		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(28.5));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29.5));
 		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(36));
 		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(31));
 		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
