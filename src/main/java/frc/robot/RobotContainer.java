@@ -630,8 +630,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
 		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
 		NamedCommands.registerCommand("MidShot", manualShotAuto(39));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(29));
-		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(28));
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(29.5));
+		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(29.5));
 		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
 		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29.5));
 		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(36));
