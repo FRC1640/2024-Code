@@ -197,7 +197,7 @@ public class RobotContainer {
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
 		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
 
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote()));
+		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> (intakeSubsystem.hasNote() || extensionSubsystem.getExtensionPosition() > 6)));
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 
 
@@ -639,8 +639,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(29.5));
 		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
 		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29.5));
-		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(37.5));
-		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(31));
+		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(38.5));
+		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(33.5));
 		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
 		NamedCommands.registerCommand("LowShotSource", manualShotAuto(29));
 		NamedCommands.registerCommand("LowShotSource1", manualShotAuto(32.5));
