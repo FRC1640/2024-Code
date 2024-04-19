@@ -181,8 +181,8 @@ public final class Constants {
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
         public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(3.14159265))};
         
-        public static Translation2d stashPositionBlue = new Translation2d(0.843, 7.4);
-        public static Translation2d stashPositionRed = new Translation2d(15.584, 7.4);
+        public static Translation2d stashPositionBlue = new Translation2d(0.843, 6.6);
+        public static Translation2d stashPositionRed = new Translation2d(15.584, 6.6);
         
         public static double fullCourtShootingRadius = 6.3; // 6.5 = x blue line, 10.7 = x red line 10.24
  

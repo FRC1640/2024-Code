@@ -317,6 +317,20 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.setBrakeMode(brake);
     }
 
+    public Command pidPivotsCommand(){
+        return new RunCommand(()->{
+            frontLeft.pidModule(0);
+            frontRight.pidModule(0);
+            backLeft.pidModule(0);
+            backRight.pidModule(0);
+        }, this).until(()->
+            ((frontLeft.getError())
+            && (frontRight.getError())
+            && (backLeft.getError())
+            && (backRight.getError())
+            ));
+    }
+
     private void resetOdometryAuton(Pose2d pose) {
         // if (pose.getTranslation().getDistance(getPose().getTranslation()) < 1.5){
         // resetOdometry(getPose());

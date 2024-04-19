@@ -29,6 +29,8 @@ public class Module {
 
     public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.26124, 3.2144, 0.68367);
 
+    private double pidModuleTarget;
+
     public Module(ModuleIO io, PivotId id) {
         this.io = io;
         this.id = id;
@@ -53,11 +55,30 @@ public class Module {
         return inputs.driveVelocityMetersPerSecond;
     }
 
-    public void setDesiredStateMetersPerSecond(SwerveModuleState state) {
-        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians()); // gets
-                                                                                                            // angle
-                                                                                                            // delta
+    public boolean getError(){
+        Logger.recordOutput("angle delta", SwerveAlgorithms.angleDistance(pidModuleTarget,inputs.steerAngleAbsolute));
+        return Math.abs(SwerveAlgorithms.angleDistance(pidModuleTarget,inputs.steerAngleAbsolute)) < Math.toRadians(5)
+        || Math.abs(SwerveAlgorithms.angleDistance(pidModuleTarget + Math.PI,inputs.steerAngleAbsolute)) < Math.toRadians(5);
+    }
 
+    public void pidModule(double angle) {
+        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleAbsolute, angle);
+
+        // determines if drive should be flipped so max delta angle is 90 degrees
+        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
+
+        // pid calculation
+        double sin = Math.sin(dAngle);
+        sin = (flipDriveTeleop) ? -sin : sin;
+        double turnOutput = turningPIDController.calculate(sin, 0);
+        io.setSteerPercentage(turnOutput);
+
+        pidModuleTarget = angle;
+
+    }
+
+    public void setDesiredStateMetersPerSecond(SwerveModuleState state) {
+        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians());
         // determines if drive should be flipped so max delta angle is 90 degrees
         boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
 
@@ -102,15 +123,14 @@ public class Module {
         int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
         SwerveModulePosition[] odometryPositions = new SwerveModulePosition[sampleCount];
         for (int i = 0; i < sampleCount; i++) {
-          double positionMeters = inputs.odometryDrivePositionsMeters[i];
-          Rotation2d angle =
-              inputs.odometryTurnPositions[i];
-          odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
+            double positionMeters = inputs.odometryDrivePositionsMeters[i];
+            Rotation2d angle = inputs.odometryTurnPositions[i];
+            odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
         }
         return odometryPositions;
     }
 
-    public void resetSteer(){
+    public void resetSteer() {
         io.resetSteer();
     }
 

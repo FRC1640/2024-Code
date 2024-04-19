@@ -357,6 +357,8 @@ public class RobotContainer {
 				.whileTrue(
 					extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
+		new Trigger(()->driveControllerHID.getPOV() == 0).whileTrue(resetDriveCommand());
+
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 
@@ -416,6 +418,9 @@ public class RobotContainer {
 
 	public void resetDrive(){
 		driveSubsystem.resetPivots();
+	}
+	public Command resetDriveCommand(){
+		return driveSubsystem.pidPivotsCommand().andThen(new InstantCommand(()->driveSubsystem.resetPivots()));
 	}
 
 	public double getAngleToStash(){
@@ -511,7 +516,7 @@ public class RobotContainer {
 	}
 	public Command generateIntakeNoRobot(double time, double indexSpeed){
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
-				() -> (shooterSubsystem.isSpeedAccurate(0.03) 
+				() -> (shooterSubsystem.isSpeedAccurate(0.02) 
 				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
 	}
 	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){

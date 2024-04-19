@@ -162,6 +162,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         // steeringMotor.getIdleMode().equals(IdleMode.kBrake);
         inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
         inputs.steerAngleVoltage = steeringEncoder.getV();
+        inputs.steerAngleAbsolute = Math.toRadians(steeringEncoder.getD());
 
         inputs.steerAngleRelative = 360 - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
 
