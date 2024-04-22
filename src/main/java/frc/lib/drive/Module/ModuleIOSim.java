@@ -1,24 +1,51 @@
 package frc.lib.drive.Module;
 
+import java.util.OptionalDouble;
+import java.util.Queue;
+import java.util.function.IntPredicate;
+
+import com.revrobotics.REVLibError;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
+import lombok.val;
 
-public class ModuleIOSim implements ModuleIO{
+public class ModuleIOSim implements ModuleIO {
 
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), 
-    SwerveDriveDimensions.driveGearRatio, 0.00019125); //Drive motor sim using moi
+    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1),
+            SwerveDriveDimensions.driveGearRatio, 0.00019125); // Drive motor sim using moi
 
-    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNeo550(1), 
-    SwerveDriveDimensions.steerGearRatio, 0.002174375); //Steer motor sim using moi
-    
+    private DCMotorSim steerSim = new DCMotorSim(DCMotor.getNeo550(1),
+            SwerveDriveDimensions.steerGearRatio, 0.002174375); // Steer motor sim using moi
+
     private double driveAppliedVolts = 0.0;
     private double steerAppliedVolts = 0.0;
+
+    private final Queue<Double> timestampQueue;
+    private final Queue<Double> drivePositionQueue;
+    private final Queue<Double> turnPositionQueue;
+
+    double drivePos = 0;
+    double steerPos = 0;
+
+    public ModuleIOSim() {
+        timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
+        drivePositionQueue = SparkMaxOdometryThread.getInstance()
+                .registerSignal(
+                        () -> OptionalDouble.of(drivePos));
+
+        turnPositionQueue = SparkMaxOdometryThread.getInstance()
+                .registerSignal(
+                        () -> OptionalDouble.of(steerPos));
+    }
 
     @Override
     public void setDrivePercentage(double percentage) {
@@ -50,8 +77,19 @@ public class ModuleIOSim implements ModuleIO{
         driveSim.update(LOOP_PERIOD_SECS);
         steerSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePositionMeters -= ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * Units.inchesToMeters(3.7432661290322 / 2) * LOOP_PERIOD_SECS;
-        inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI * Units.inchesToMeters(3.7432661290322 / 2);
+        inputs.drivePositionMeters -= ((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI
+                * Units.inchesToMeters(3.7432661290322 / 2) * LOOP_PERIOD_SECS;
+
+        drivePos = inputs.drivePositionMeters;
+
+        steerPos = inputs.steerAngleDegrees;
+
+        
+
+
+        
+        inputs.driveVelocityMetersPerSecond = -((driveSim.getAngularVelocityRPM()) / 60) * 2 * Math.PI
+                * Units.inchesToMeters(3.7432661290322 / 2);
         inputs.driveAppliedVoltage = -driveAppliedVolts;
         inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
         inputs.driveTempCelsius = SimulationConstants.roomTempCelsius;
@@ -63,6 +101,21 @@ public class ModuleIOSim implements ModuleIO{
         inputs.steerTempCelsius = SimulationConstants.roomTempCelsius;
         inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
 
+        inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+
+        inputs.odometryDrivePositionsMeters = drivePositionQueue.stream()
+                .mapToDouble((Double value) ->  value)
+                .toArray();
+
+        inputs.odometryTurnPositions = turnPositionQueue.stream()
+                .map((Double value) -> Rotation2d.fromDegrees(
+                    value))
+                .toArray(Rotation2d[]::new);
+
+        timestampQueue.clear();
+        drivePositionQueue.clear();
+        turnPositionQueue.clear();
+
     }
-    
+
 }

@@ -149,7 +149,7 @@ public final class Constants {
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         // public static PIDController targetingPID = new PIDController(0.25, 0.025, 0.0007);
-        public static PIDController targetingPIDSmall = new PIDController(0.2,0.004,0.003);
+        public static PIDController targetingPIDSmall = new PIDController(0.25,0.004,0.003);
         public static PIDController targetingPIDSuperSmall = new PIDController(0.3,0.009,0.005);
         public static PIDController targetingPIDLarge = new PIDController(0.17,0.003,0.002);
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
@@ -181,17 +181,17 @@ public final class Constants {
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
         public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(3.14159265))};
         
-        public static Translation2d stashPositionBlue = new Translation2d(1.43, 5.5);
-        public static Translation2d stashPositionRed = new Translation2d(14.643, 5.5);
+        public static Translation2d stashPositionBlue = new Translation2d(0.843, 6.6);
+        public static Translation2d stashPositionRed = new Translation2d(15.584, 6.6);
         
-        public static double fullCourtShootingRadius = 7; // 6.5 = x blue line, 10.7 = x red line 10.24
+        public static double fullCourtShootingRadius = 6.3; // 6.5 = x blue line, 10.7 = x red line 10.24
  
     }
 
     public static class TargetingConstants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
-        public static double angleLowerLimit = 27;
+        public static double angleLowerLimit = 28;
         public static double angleUpperLimit = 75;
         public static double angleManualSpeed = 0.05;
         public static double angleError = 0.5;

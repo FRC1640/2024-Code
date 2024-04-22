@@ -61,11 +61,11 @@ public class TargetingIOSparkMax implements TargetingIO {
         inputs.rightTargetingAppliedVoltage = rightTargetingMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.rightTargetingCurrentAmps = rightTargetingMotor.getOutputCurrent();
         inputs.rightTargetingTempCelsius = rightTargetingMotor.getMotorTemperature();
-        inputs.rightTargetingPositionDegrees = targetingEncoder.getD() - 3;
+        inputs.rightTargetingPositionDegrees = targetingEncoder.getD();
         // inputs.rightRadiansPerSecond = rightTargetingMotor.getEncoder().getVelocity() / 60 * 2 * Math.PI / 100;
         inputs.rightRadiansPerSecond = targetingEncoder.getVelocityRadians();
 
-        inputs.targetingPositionAverage = targetingEncoder.getD() - 3;
+        inputs.targetingPositionAverage = targetingEncoder.getD();
     }
 
     /**
