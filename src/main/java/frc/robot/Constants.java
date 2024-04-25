@@ -18,12 +18,6 @@ public final class Constants {
         FL, FR, BL, BR;
     }
 
-    public static class MLVisionLimelightConstants { // TODO: set these
-        public static final double limelightAngle = -10.0;
-        public static final double limelightLensHeight = 11.0;
-        public static final double noteHeightInches = 2.0;
-    }
-
     public static class AprilTagVisionConstants {
         public static final double xyStdDev = 1.5;
         public static final double thetaStdDev = 99999999;

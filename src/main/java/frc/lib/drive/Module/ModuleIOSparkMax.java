@@ -6,20 +6,13 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.sensors.Resolvers.Resolver;
-import frc.robot.sensors.Resolvers.ResolverPointSlope;
 import frc.robot.sensors.Resolvers.ResolverSlope;
-
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;

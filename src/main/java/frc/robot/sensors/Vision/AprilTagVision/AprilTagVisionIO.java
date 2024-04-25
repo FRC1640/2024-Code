@@ -3,7 +3,6 @@ package frc.robot.sensors.Vision.AprilTagVision;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.lib.vision.LimelightHelpers.LimelightTarget_Fiducial;
 
 public interface AprilTagVisionIO {
     @AutoLog

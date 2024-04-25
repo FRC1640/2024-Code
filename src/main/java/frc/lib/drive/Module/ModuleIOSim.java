@@ -2,9 +2,6 @@ package frc.lib.drive.Module;
 
 import java.util.OptionalDouble;
 import java.util.Queue;
-import java.util.function.IntPredicate;
-
-import com.revrobotics.REVLibError;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,7 +11,6 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
-import lombok.val;
 
 public class ModuleIOSim implements ModuleIO {
 

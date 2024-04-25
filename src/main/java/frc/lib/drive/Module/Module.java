@@ -96,7 +96,7 @@ public class Module {
         double turnOutput = turningPIDController.calculate(sin, 0);
 
         // flips drive
-        final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
+        final double targetSpeed = (flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond) * Math.cos(delta.getRadians());
 
         // calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));

@@ -2,7 +2,6 @@ package frc.lib.drive;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

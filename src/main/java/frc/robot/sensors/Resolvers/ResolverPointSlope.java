@@ -1,8 +1,6 @@
 package frc.robot.sensors.Resolvers;
 
 import java.util.ArrayList;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AnalogInput;
 import lombok.Getter;
 

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import java.io.Console;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;

@@ -1,10 +1,6 @@
 package frc.robot.sensors.Vision.MLVision;
 
-import java.util.ArrayList;
-
 import org.littletonrobotics.junction.AutoLog;
-
-import frc.lib.vision.LimelightHelpers;
 
 public interface MLVisionIO {
     

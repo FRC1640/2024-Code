@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.drive.DriveWeight;
-import frc.lib.drive.DriveWeightCommand;
 import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
 

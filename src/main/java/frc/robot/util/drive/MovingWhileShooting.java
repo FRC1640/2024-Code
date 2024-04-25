@@ -65,7 +65,6 @@ public class MovingWhileShooting {
         double V = getSpeedFromDistance();
         double phiv = Math.toRadians(getAngleFromDistance());
         double phih = getAngleToGoal();
-        double vy = speeds.get().vyMetersPerSecond;
         double vx = speeds.get().vxMetersPerSecond;
         double thetah = getNewRobotAngle();
         if (vx == 0 && phih == Math.PI / 2){
@@ -77,9 +76,6 @@ public class MovingWhileShooting {
     public double getNewShotSpeed() {
         double V = getSpeedFromDistance();
         double phiv = Math.toRadians(getAngleFromDistance());
-        double phih = getAngleToGoal();
-        double vy = speeds.get().vyMetersPerSecond;
-        double vx = speeds.get().vxMetersPerSecond;
         double thetah = getNewRobotAngle();
         return V * Math.sin(phiv) / Math.sin(thetah);
     }

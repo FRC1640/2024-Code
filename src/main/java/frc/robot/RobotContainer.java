@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Foot;
-
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -26,7 +24,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -48,8 +45,6 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
 import frc.robot.sensors.Vision.MLVision.MLVision;
-import frc.robot.sensors.Vision.MLVision.MLVisionAutoCommand2;
-import frc.robot.sensors.Vision.MLVision.MLVisionAutonCommand;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
@@ -60,8 +55,7 @@ import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
-import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
-import frc.robot.subsystems.drive.DriveWeights.MLVisionRevisedWeight;
+import frc.robot.subsystems.drive.DriveWeights.MLVisionWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateLockWeight;
 import frc.robot.subsystems.drive.DriveWeights.RotateToAngleWeight;
 import frc.robot.subsystems.extension.ExtensionIO;
@@ -110,7 +104,7 @@ public class RobotContainer {
 	AutoDriveWeight autoDriveWeight;
 
 	//MLVisionAngularAndHorizDriveWeight mlVisionWeight;
-	MLVisionRevisedWeight mlVisionWeight;
+	MLVisionWeight mlVisionWeight;
 
 	JoystickDriveWeight joystickDriveWeight;
 
@@ -243,7 +237,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
 				driveSubsystem::getPose, gyro);
 
-		mlVisionWeight = new MLVisionRevisedWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
+		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
 		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
 
@@ -491,23 +485,11 @@ public class RobotContainer {
 								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 2.5: 8)) && canShoot);
 	}
 
-	private Command generateIntakeCommandTrap() {
-		return intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05)));
-	}
-
     private Command generateIntakeCommandAuto() {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.1))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.3) 
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
-	}
-
-	private Command generateIntakeCommandAutoLowAccuracy() {
-			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.2)
-				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
-				() -> (shooterSubsystem.isSpeedAccurate(0.05) 
-					&& targetingSubsystem.isAnglePositionAccurate(10)))).repeatedly());
 	}
 
 	public Command intakeNote(){
@@ -648,15 +630,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("FarShot", manualShotAuto(40));
 		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(()->{autoSpeeds = 0.4;}));
 
-		NamedCommands.registerCommand("MLCommand", new MLVisionAutonCommand(mlVision, driveSubsystem, ()->intakeSubsystem.hasNote(), gyro::getAngleRotation2d).getCommand());
-
 		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
 		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));
-	}
-	private void setAutoTargetAngle(double angle){
-		autoSetAngle = angle + (getAlliance() == Alliance.Red?90:0);
-	}
-	private void setAutoTargetAngleNoAlliance(double angle){
-		autoSetAngle = angle + (getAlliance() == Alliance.Red?90:0);
 	}
 }
