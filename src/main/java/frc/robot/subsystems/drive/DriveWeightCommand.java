@@ -86,6 +86,7 @@ public class DriveWeightCommand {
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
             setAngle += driveWeight.angle();
         }
+        centerOfRot.times(1/(weights.size() + persistentWeights.size()));
         speeds = decreaseSpeeds(speeds);
     }
 
