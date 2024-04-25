@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.lib.drive;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,8 +9,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.lib.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.DriveWeights.DriveWeight;
 
 public class DriveWeightCommand {
     static ArrayList<DriveWeight> persistentWeights = new ArrayList<>();

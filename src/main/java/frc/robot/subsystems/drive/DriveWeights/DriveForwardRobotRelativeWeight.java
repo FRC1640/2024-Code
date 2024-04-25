@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.lib.drive.DriveWeight;
 
 public class DriveForwardRobotRelativeWeight implements DriveWeight {
     double time;

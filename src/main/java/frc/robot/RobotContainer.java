@@ -33,7 +33,8 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
-import frc.lib.swerve.SwerveAlgorithms;
+import frc.lib.drive.DriveWeightCommand;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
@@ -57,7 +58,6 @@ import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.subsystems.drive.DriveWeights.AutoDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.JoystickDriveWeight;
 import frc.robot.subsystems.drive.DriveWeights.MLVisionAngularAndHorizDriveWeight;
@@ -229,12 +229,12 @@ public class RobotContainer {
 				() -> (getAlliance() == Alliance.Blue
 						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-				driveSubsystem::getPose, gyro, () -> joystickDriveWeight.getTranslationalSpeed());//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
+				driveSubsystem::getPose, gyro, ()->Math.hypot(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, driveSubsystem.getChassisSpeeds().vyMetersPerSecond));//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
 		movingWhileShootingWeight = new RotateToAngleWeight(()->(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius) 
 			? (movingWhileShooting.getNewRobotAngle()) 
 			: (getAngleToStash()),
-		driveSubsystem::getPose, ()->joystickDriveWeight.getTranslationalSpeed(),
+		driveSubsystem::getPose, ()->Math.hypot(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, driveSubsystem.getChassisSpeeds().vyMetersPerSecond),
 			"MovingWhileShooting", ()->false, driveSubsystem);
 
 		autoDriveWeight = new AutoDriveWeight(

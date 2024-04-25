@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive.DriveWeights;
+package frc.lib.drive;
 
 import java.util.function.BooleanSupplier;
 

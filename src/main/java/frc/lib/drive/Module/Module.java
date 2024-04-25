@@ -8,7 +8,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.lib.swerve.SwerveAlgorithms;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Robot;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.PivotId;

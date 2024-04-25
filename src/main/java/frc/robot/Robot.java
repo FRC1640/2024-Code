@@ -17,8 +17,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.drive.DriveWeightCommand;
 import frc.lib.periodic.PeriodicScheduler;
-import frc.robot.subsystems.drive.DriveWeightCommand;
 import frc.robot.util.dashboard.PIDUpdate;
 
 public class Robot extends LoggedRobot {

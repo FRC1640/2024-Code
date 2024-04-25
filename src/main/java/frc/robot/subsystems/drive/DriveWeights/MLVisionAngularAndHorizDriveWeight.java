@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import frc.lib.drive.DriveWeight;
 import frc.robot.Constants.PIDConstants;
 
 import edu.wpi.first.math.MathUtil;

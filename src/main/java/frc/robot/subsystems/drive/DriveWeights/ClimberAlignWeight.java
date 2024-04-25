@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive.DriveWeights;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import frc.lib.drive.DriveWeight;
 import frc.robot.Constants.SwerveDriveDimensions;
 
 

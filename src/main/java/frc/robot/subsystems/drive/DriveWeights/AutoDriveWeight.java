@@ -9,7 +9,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import frc.lib.swerve.SwerveAlgorithms;
+import frc.lib.drive.DriveWeight;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.sensors.Gyro.Gyro;
 

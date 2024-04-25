@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive.DriveWeights;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.lib.drive.DriveWeight;
 
 public class DriveForwardWeight implements DriveWeight {
     double time;
