@@ -67,6 +67,8 @@ public class Module {
         // determines if drive should be flipped so max delta angle is 90 degrees
         boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
 
+        
+
         // pid calculation
         double sin = Math.sin(dAngle);
         sin = (flipDriveTeleop) ? -sin : sin;
@@ -78,12 +80,18 @@ public class Module {
     }
 
     public void setDesiredStateMetersPerSecond(SwerveModuleState state) {
-        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians());
+        Rotation2d delta = state.angle.minus(new Rotation2d(inputs.steerAngleRadians));
+
+        // double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians());
+        boolean flipDriveTeleop = false;
+        if (Math.abs(delta.getDegrees()) > 90.0) {
+            flipDriveTeleop = true;
+        }
         // determines if drive should be flipped so max delta angle is 90 degrees
-        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
+        
 
         // pid calculation
-        double sin = Math.sin(dAngle);
+        double sin = Math.sin(delta.getRadians());
         sin = (flipDriveTeleop) ? -sin : sin;
         double turnOutput = turningPIDController.calculate(sin, 0);
 
