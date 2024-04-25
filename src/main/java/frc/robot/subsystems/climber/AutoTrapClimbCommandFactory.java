@@ -27,7 +27,7 @@ public class AutoTrapClimbCommandFactory {
 	private Supplier<Pose2d> getNearestStage;
 	private Gyro gyro;
 	private ClimberAlignWeight climberAlignWeight;
-	DriveForwardRobotRelativeWeight driveForwardRobotRelativeWeight;
+	private DriveForwardRobotRelativeWeight driveForwardRobotRelativeWeight;
 	private RotateToAngleWeight rotateToStageWeight;
 	private DriveSubsystem driveSubsystem;
 	private ExtensionSubsystem extensionSubsystem;
