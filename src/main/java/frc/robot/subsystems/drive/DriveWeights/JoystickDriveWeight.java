@@ -166,7 +166,4 @@ public class JoystickDriveWeight implements DriveWeight {
     public double getWeight(){
         return weight;
     }
-    public double getTranslationalSpeed(){
-        return Math.hypot(xSpeed,ySpeed);
-    }
 }
