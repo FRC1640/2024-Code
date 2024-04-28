@@ -538,7 +538,8 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
 					() -> (getAlliance()==Alliance.Blue?robotAngleBlueRadians:robotAngleRedRadians), 
-					driveSubsystem::getPose, () -> joystickDriveWeight.getTranslationalSpeed(), "manualShot",
+					driveSubsystem::getPose, ()->(
+						Math.hypot(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, driveSubsystem.getChassisSpeeds().vyMetersPerSecond)), "manualShot",
 					cancelCondition, driveSubsystem);
 			DriveWeightCommand.addWeight(weight);
 		}).alongWith(generateIntakeCommand()));
