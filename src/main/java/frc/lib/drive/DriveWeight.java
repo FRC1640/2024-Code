@@ -12,4 +12,5 @@ public interface DriveWeight {
     public default double angle(){return 0;};
     public default boolean cancelCondition(){return false;};
     public default Command getAsCommand(){return new Command() {};};
+    public default boolean lockRotation(){return false;};
 }

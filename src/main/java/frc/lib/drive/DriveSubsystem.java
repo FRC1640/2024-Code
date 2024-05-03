@@ -3,6 +3,7 @@ package frc.lib.drive;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -357,7 +358,7 @@ public class DriveSubsystem extends SubsystemBase {
             @Override
             public void end(boolean interrupted) {
                 System.out.println("end");
-                driveDoubleConePercent(0, 0, 0, false, new Translation2d());
+                driveDoubleConePercent(0, 0, 0, false, new Translation2d(), false);
             }
 
             @Override
@@ -372,7 +373,7 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 o = MathUtil.clamp(o, -1, 1);
 
-                driveDoubleConePercent(0, 0, o, false, new Translation2d());
+                driveDoubleConePercent(0, 0, o, false, new Translation2d(), false);
 
             }
 
@@ -453,7 +454,7 @@ public class DriveSubsystem extends SubsystemBase {
         rot = rot
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
-                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation, false);
         frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
         frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
         backLeft.setDesiredStateMetersPerSecond(swerveModuleStates[2]);
@@ -462,13 +463,13 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void driveDoubleConePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
-            Translation2d centerOfRotation) {
+            Translation2d centerOfRotation, boolean lockRotation) {
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
         rot = rot * maxSpeed
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
         SwerveModuleState[] swerveModuleStates = SwerveAlgorithms.doubleCone(xSpeed, ySpeed, rot,
-                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation);
+                gyro.getAngleRotation2d().getRadians(), fieldRelative, centerOfRotation, lockRotation);
 
         frontRight.setDesiredStateMetersPerSecond(swerveModuleStates[1]);
         frontLeft.setDesiredStateMetersPerSecond(swerveModuleStates[0]);
@@ -522,9 +523,9 @@ public class DriveSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot) {
+    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot, BooleanSupplier lockRotation) {
         return new RunCommand(() -> driveDoubleConePercent(speeds.get().vxMetersPerSecond,
-                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get()),
+                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get(), lockRotation.getAsBoolean()),
                 new Subsystem[] {})
                 .andThen(new InstantCommand(
                         () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));

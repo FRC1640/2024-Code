@@ -223,12 +223,12 @@ public class RobotContainer {
 				() -> (getAlliance() == Alliance.Blue
 						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-				driveSubsystem::getPose, gyro, ()->Math.hypot(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, driveSubsystem.getChassisSpeeds().vyMetersPerSecond));//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
+				driveSubsystem::getPose, gyro, ()->0.0);//()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
 
 		movingWhileShootingWeight = new RotateToAngleWeight(()->(get3dDistance(() -> getSpeakerPos())< FieldConstants.fullCourtShootingRadius) 
 			? (movingWhileShooting.getNewRobotAngle()) 
 			: (getAngleToStash()),
-		driveSubsystem::getPose, ()->Math.hypot(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, driveSubsystem.getChassisSpeeds().vyMetersPerSecond),
+		driveSubsystem::getPose, ()->0.0,
 			"MovingWhileShooting", ()->false, driveSubsystem);
 
 		autoDriveWeight = new AutoDriveWeight(
@@ -429,7 +429,7 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
-				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d()))
+				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d(), ()->false))
 				.andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
 				.alongWith(new InstantCommand(()->{startAuto = true;}))
@@ -539,7 +539,7 @@ public class RobotContainer {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
 					() -> (getAlliance()==Alliance.Blue?robotAngleBlueRadians:robotAngleRedRadians), 
 					driveSubsystem::getPose, ()->(
-						Math.hypot(driveSubsystem.getChassisSpeeds().vxMetersPerSecond, driveSubsystem.getChassisSpeeds().vyMetersPerSecond)), "manualShot",
+						0.0), "manualShot",
 					cancelCondition, driveSubsystem);
 			DriveWeightCommand.addWeight(weight);
 		}).alongWith(generateIntakeCommand()));

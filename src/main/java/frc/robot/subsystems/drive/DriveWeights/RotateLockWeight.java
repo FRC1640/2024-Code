@@ -63,4 +63,8 @@ public class RotateLockWeight implements DriveWeight {
     public double angle(){
         return setAngle;
     }
+    @Override
+    public boolean lockRotation(){
+        return true;
+    }
 }

@@ -73,10 +73,14 @@ public class RotateToAngleWeight implements DriveWeight {
     public boolean cancelCondition() {
         return cancelCondition.getAsBoolean();
     }
+    // @Override
+    // public Command getAsCommand(){
+    //     return driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).repeatedly()
+    //         .until(()->Math.abs(SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
+    //                 angle.getAsDouble())) < 3);
+    // }
     @Override
-    public Command getAsCommand(){
-        return driveSubsystem.driveDoubleConeCommand(()->getSpeeds(), ()->new Translation2d()).repeatedly()
-            .until(()->Math.abs(SwerveAlgorithms.angleDistance(getPose.get().getRotation().getRadians(),
-                    angle.getAsDouble())) < 3);
+    public boolean lockRotation(){
+        return true;
     }
 }

@@ -2,6 +2,9 @@ package frc.lib.drive;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -58,9 +61,10 @@ public class SwerveAlgorithms {
     }
 
     public static SwerveModuleState[] doubleCone(double xSpeed, double ySpeed, double rot, 
-    double currentAngleRadians, boolean fieldRelative, Translation2d centerOfRotation){
+    double currentAngleRadians, boolean fieldRelative, Translation2d centerOfRotation, boolean lockRotation){
         
         double translationalSpeed = Math.hypot(xSpeed, ySpeed);
+        
         double linearRotSpeed = Math.abs(rot * computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation));
         double k;
         if (linearRotSpeed == 0 || translationalSpeed == 0){
@@ -69,13 +73,26 @@ public class SwerveAlgorithms {
         else{
             k = Math.min(translationalSpeed / linearRotSpeed, linearRotSpeed / translationalSpeed);
         }
-        double scale = 1 / (1 + k);
-        var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
-            fieldRelative 
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, scale * rot, 
-                new Rotation2d(currentAngleRadians)) 
-                : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot * scale), centerOfRotation);
-        return swerveModuleStates;
+        if (lockRotation){
+            double scale = Math.abs((1 - Math.abs(linearRotSpeed) / (SwerveDriveDimensions.maxSpeed)));
+            Logger.recordOutput("ScaleDriveWeight", scale);
+            var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
+                fieldRelative 
+                    ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, rot, 
+                    new Rotation2d(currentAngleRadians)) 
+                    : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot), centerOfRotation);
+            return swerveModuleStates;
+        }
+        else{
+            double scale = 1 / (1 + k);
+            var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
+                fieldRelative 
+                    ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, scale * rot, 
+                    new Rotation2d(currentAngleRadians)) 
+                    : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot * scale), centerOfRotation);
+            return swerveModuleStates;
+        }
+        
     }
     
     public static double computeMaxNorm(Translation2d[] translations, Translation2d centerOfRotation) {
