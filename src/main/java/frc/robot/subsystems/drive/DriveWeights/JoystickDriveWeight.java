@@ -20,8 +20,8 @@ public class JoystickDriveWeight implements DriveWeight {
     private final double SLOW_LINEAR_SPEED = 0.5;
     private final double SLOW_ROTATIONAL_SPEED = 0.3;
 
-    private final double LOWER_DB = 0.05;
-    private final double UPPER_DB = 0.05;
+    private final double LOWER_DB = 0.1; //TODO: change back for gamesir
+    private final double UPPER_DB = 0.1;
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
