@@ -231,8 +231,8 @@ public class DriveSubsystem extends SubsystemBase {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && (Robot.inTeleop) 
-                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 720) {
+                    // && (Robot.inTeleop) 
+                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 300) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = vision.getAprilTagPose2d().getTranslation()
@@ -254,8 +254,8 @@ public class DriveSubsystem extends SubsystemBase {
                 //         xy = 0.5;
                 //     }
                 // }
-                if ((speed > 0.35 && vision.getDistance() > 3.5)|| (vision.getDistance() > 5 && vision.getNumVisibleTags() == 1)){
-                    xy = 1.5;
+                if ((speed > 1 && vision.getDistance() > 3.5)|| ((vision.getDistance() > 5 || speed > 1) && vision.getNumVisibleTags() == 1)){
+                    xy = 0.8;
                 }
                 // if (vision.getNumVisibleTags() > 2){
                 //     xy = 0.25;
@@ -366,7 +366,7 @@ public class DriveSubsystem extends SubsystemBase {
                 System.out.println(Math.toDegrees(angle));
 
                 double o;
-                o = pidr.calculate(-SwerveAlgorithms.angleDistance(gyro.getAngleRotation2d().getRadians(),
+                o = pidr.calculate(-SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
                         angle), 0);
                 if (Math.abs(o) < 0.005) {
                     o = 0;
@@ -379,8 +379,9 @@ public class DriveSubsystem extends SubsystemBase {
 
             @Override
             public boolean isFinished() {
-                return (Math.abs(SwerveAlgorithms.angleDistance(gyro.getAngleRotation2d().getRadians(),
-                        angle)) < 3);
+                return (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
+                        angle)) < Math.toRadians(0.5));
+                // return false;
             }
         };
         c.addRequirements(this);

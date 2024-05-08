@@ -3,6 +3,8 @@ package frc.robot.subsystems.drive.DriveWeights;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import frc.lib.drive.DriveWeight;
 import frc.robot.Constants.PIDConstants;
 
@@ -10,6 +12,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 
 public class MLVisionWeight implements DriveWeight {
@@ -31,6 +35,7 @@ public class MLVisionWeight implements DriveWeight {
     // private Supplier<Rotation2d> correctedAngleSupplier;
 
     private double deadband = 0; // 0.1;
+    private double distanceLim = 3; // angular tx disparity deadband idk if thats what i should call it
 
     private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
 
