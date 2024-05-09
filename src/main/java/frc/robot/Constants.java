@@ -168,8 +168,8 @@ public final class Constants {
     public static class FieldConstants {
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.7, 7.84);
-        public static Translation2d ampPositionBlue = new Translation2d(2.1, 7.84);
+        public static Translation2d ampPositionRed = new Translation2d(14.665, 7.751);
+        public static Translation2d ampPositionBlue = new Translation2d(1.794, 7.751);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.3, 5.2);
         public static Translation2d speakerPositionBlue = new Translation2d(0.3, 5.2);
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)

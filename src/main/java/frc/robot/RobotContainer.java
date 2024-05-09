@@ -281,17 +281,17 @@ public class RobotContainer {
 		
 		
 		
-		// new Trigger(() -> driveControllerHID.getYButton())
-		// 		.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
-		// new Trigger(() -> driveControllerHID.getYButton())
-		// 		.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
+		new Trigger(() -> driveControllerHID.getYButton())
+				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
+		new Trigger(() -> driveControllerHID.getYButton())
+				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
 
 		// new Trigger(()->operatorControllerHID.getAButton())
 		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
 		// 		.alongWith(generateIntakeCommandTrap()));
 		
-		new Trigger(()->driveControllerHID.getYButton())
-			.whileTrue(driveSubsystem.rotateToAngleCommand(()->Math.PI/2));
+		// new Trigger(()->driveControllerHID.getYButton())
+		// 	.whileTrue(driveSubsystem.rotateToAngleCommand(()->Math.PI/2));
 
 		new Trigger(()->get3dDistance(()->getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && Robot.inTeleop)
 			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->autoTargetBool));
