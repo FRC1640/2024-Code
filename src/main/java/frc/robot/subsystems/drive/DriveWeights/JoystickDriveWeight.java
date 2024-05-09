@@ -5,8 +5,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveWeight;
 import frc.lib.drive.JoystickCleaner;
@@ -47,16 +47,16 @@ public class JoystickDriveWeight implements DriveWeight {
     private double lastAngle;
 
     private boolean firstRun = true;
-    private CommandXboxController driverController;
+    private XboxController driverController;
     private Trigger leftTrigger;
 
     Gyro gyro;
-    public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro){
+    public JoystickDriveWeight(XboxController driverController, Gyro gyro){
         this.driverController = driverController;
         this.gyro = gyro;
         lastAngle = gyro.getRawAngleRadians();
         leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
-        new Trigger(() -> driverController.getHID().getBackButton()).onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
+        new Trigger(() -> driverController.getBackButton()).onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
         // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
     }
     @Override
@@ -66,7 +66,7 @@ public class JoystickDriveWeight implements DriveWeight {
             firstRun = false;
         }
 
-        if (driverController.getHID().getRightBumper()) {
+        if (driverController.getRightBumper()) {
             xSpeed = -driverController.getLeftY() * 0.3;
             ySpeed = -driverController.getLeftX() * 0.3;
             rot = -driverController.getRightX() * 0.2;

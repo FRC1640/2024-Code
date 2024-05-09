@@ -10,13 +10,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.sysid.CreateSysidCommand;
 import frc.robot.Constants.PIDConstants;
@@ -38,7 +38,7 @@ public class DashboardInit {
     private static SendableChooser<PIDController> pidChooser = new SendableChooser<PIDController>(); // what put here ??
 
     private static DriveSubsystem driveSubsystem;
-    private static CommandXboxController controller;
+    private static XboxController controller;
     private static ShooterSubsystem shooterSubsystem;
     private static TargetingSubsystem targetingSubsystem;
     private static MLVision mlVision;
@@ -58,7 +58,7 @@ public class DashboardInit {
     }
 
     // inits all of shuffleboard
-    public static void init(DriveSubsystem driveSubsystem, CommandXboxController controller, ArrayList<AprilTagVision> vision, TargetingSubsystem targetingSubsystem, ShooterSubsystem shooterSubsystem, MLVision mlVision) {
+    public static void init(DriveSubsystem driveSubsystem, XboxController controller, ArrayList<AprilTagVision> vision, TargetingSubsystem targetingSubsystem, ShooterSubsystem shooterSubsystem, MLVision mlVision) {
         DashboardInit.mlVision = mlVision;
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
@@ -188,16 +188,16 @@ public class DashboardInit {
         ShuffleboardTab sysidTab = Shuffleboard.getTab("Sysid");
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
         sysidChooser.addOption("AnglerSysID", CreateSysidCommand.createCommand(targetingSubsystem::sysIdQuasistatic, 
-        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
+        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.getAButton(), () -> controller.getBButton()));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
-                        "SwerveSysId", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
+                        "SwerveSysId", () -> controller.getAButton(), () -> controller.getBButton()));
 
         sysidChooser.addOption("ShooterSysID",
             CreateSysidCommand.createCommand(
                 shooterSubsystem::sysIdQuasistatic, 
                 shooterSubsystem::sysIdDynamic, 
-                "ShooterSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
+                "ShooterSysID", () -> controller.getAButton(), () -> controller.getBButton()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
         sysIdInit = true;
     }
