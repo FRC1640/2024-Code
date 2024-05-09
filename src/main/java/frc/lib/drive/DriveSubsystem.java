@@ -231,7 +231,7 @@ public class DriveSubsystem extends SubsystemBase {
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
             if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    // && (Robot.inTeleop) 
+                    && (Robot.inTeleop || aprilTagInAuto) 
                     && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 300) {
                 double distanceToTag = vision.getDistance();
                 double distConst = 1 + (distanceToTag * distanceToTag);
@@ -247,15 +247,15 @@ public class DriveSubsystem extends SubsystemBase {
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
-                double xy = 0.5;
+                double xy = 0.65;
                 // if (!Robot.inTeleop){
                 //     xy = 2.5;
                 //     if (poseDifference > 0.3){
                 //         xy = 0.5;
                 //     }
                 // }
-                if ((speed > 1 && vision.getDistance() > 3.5)|| ((vision.getDistance() > 5 || speed > 1) && vision.getNumVisibleTags() == 1)){
-                    xy = 0.8;
+                if ((speed > 0.5 && vision.getDistance() > 3.5)|| ((vision.getDistance() > 5 || speed > 0.5) && vision.getNumVisibleTags() == 1)){
+                    xy = 1;
                 }
                 // if (vision.getNumVisibleTags() > 2){
                 //     xy = 0.25;
@@ -363,6 +363,7 @@ public class DriveSubsystem extends SubsystemBase {
 
             @Override
             public void execute() {
+                angle = angleSupplier.getAsDouble();
                 System.out.println(Math.toDegrees(angle));
 
                 double o;

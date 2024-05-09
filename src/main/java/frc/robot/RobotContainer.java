@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -635,5 +636,9 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
 		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));
+
+		NamedCommands.registerCommand("RotateToSpeaker", driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()));
+
+		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
 	}
 }
