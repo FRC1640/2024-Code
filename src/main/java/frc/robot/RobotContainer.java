@@ -191,52 +191,59 @@ public class RobotContainer {
 			break;
 		}
 		
-
-		// private boolean startAuto = false;
-		// boolean autoTargetBool = false;
-		// boolean canShoot = true;
-
-		// public double autoSpeeds = 0.6;
-		// double angleOffset = 0;
-		// double autoSetAngle;
-		// double angleRotate = 0;
-
-		// private Gyro gyro;
-
-		// private AprilTagVision aprilTagVision1;
-		// private AprilTagVision aprilTagVision2;
-		// private MLVision mlVision;
-
-		// RotateLockWeight rotateLockWeight;
-		// RotateToAngleWeight rotateToStageWeight;
-		// RotateToAngleWeight movingWhileShootingWeight;
-		// JoystickDriveWeight joystickDriveWeight;
-		// AutoDriveWeight autoDriveWeight;
-		// MLVisionWeight mlVisionWeight;
-		// //MLVisionAngularAndHorizDriveWeight mlVisionWeight;
-		// // RotateToAngleWeight rotateLockWeight;
-
-		// MovingWhileShooting movingWhileShooting;
-
-		// AutoTrapClimbCommandFactory climbCommandFactory;
-		
-		// private DriveSubsystem driveSubsystem;
-		// private ShooterSubsystem shooterSubsystem;
-		// private TargetingSubsystem targetingSubsystem;
-		// private ExtensionSubsystem extensionSubsystem;
-		// private ClimberSubsystem climberSubsystem;
-		// private IntakeSubsystem intakeSubsystem;
-
-
+		// configure weights
+		rotateLockWeight = new RotateLockWeight(
+			() -> (getAlliance() == Alliance.Blue
+						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
+						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
+			driveSubsystem::getPose, gyro, () -> 0.0);                                                              //()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
+		rotateToStageWeight = new RotateToAngleWeight(
+			() -> (getNearestStage().getRotation().getRadians()), driveSubsystem::getPose,
+			() -> 0.0, "rotateToStageWeight", () -> false,	driveSubsystem);
+		movingWhileShootingWeight = new RotateToAngleWeight(
+			() -> (get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius)
+					? (movingWhileShooting.getNewRobotAngle())
+					: (getAngleToStash()),
+			driveSubsystem::getPose, () -> 0.0, "MovingWhileShooting", () -> false, driveSubsystem);
+		joystickDriveWeight = new JoystickDriveWeight(driverController, gyro);
+		autoDriveWeight = new AutoDriveWeight(
+			() -> (getAlliance() == Alliance.Blue
+					? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
+					: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
+			driveSubsystem::getPose, gyro);
+		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, () -> intakeSubsystem.hasNote());   // new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
+		movingWhileShooting = new MovingWhileShooting(gyro,
+			() -> getSpeakerPos(),
+			driveSubsystem::getPose,
+			driveSubsystem::getChassisSpeeds,
+			targetingSubsystem);
+		climbCommandFactory = new AutoTrapClimbCommandFactory(
+			climberSubsystem,
+			() -> driveSubsystem.getPose(),
+			() -> getNearestStage(),
+			gyro,
+			driveSubsystem,
+			extensionSubsystem,
+			targetingSubsystem,
+			shooterSubsystem);
 		AprilTagVision[] visions = {aprilTagVision1, aprilTagVision2};
 		driveSubsystem = new DriveSubsystem(gyro, new ArrayList<AprilTagVision>(Arrays.asList(visions)));
-
 		
-		joystickDriveWeight = new JoystickDriveWeight(driverController, gyro);
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(
+				() -> 0.7, () -> 0.7, () -> 0.6, () -> 0.6, () -> autoTargetBool));
+		targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
+		generateNamedCommands();
+		DashboardInit.init(
+			driveSubsystem,
+			driverController,
+			new ArrayList<AprilTagVision>
+			(Arrays.asList(visions)),
+			targetingSubsystem,
+			shooterSubsystem,
+			mlVision);
 		DriveWeightCommand.addPersistentWeight(joystickDriveWeight);
-		driveSubsystem.setDefaultCommand(new DriveWeightCommand().create(driveSubsystem));
+		configureBindings();
 
-		intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> (intakeSubsystem.hasNote() || extensionSubsystem.getExtensionPosition() > 6)));
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
@@ -248,56 +255,7 @@ public class RobotContainer {
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
-		
-		// configure weights
-		rotateLockWeight = new RotateLockWeight(
-			() -> (getAlliance() == Alliance.Blue
-						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
-						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-			driveSubsystem::getPose, gyro, () -> 0.0);                                                              //()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
-
-		rotateToStageWeight = new RotateToAngleWeight(
-			() -> (getNearestStage().getRotation().getRadians()), driveSubsystem::getPose,
-			() -> 0.0, "rotateToStageWeight", () -> false,	driveSubsystem);
-
-		movingWhileShootingWeight = new RotateToAngleWeight(
-			() -> (get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius)
-					? (movingWhileShooting.getNewRobotAngle())
-					: (getAngleToStash()),
-			driveSubsystem::getPose, () -> 0.0, "MovingWhileShooting", () -> false, driveSubsystem);
-
-		autoDriveWeight = new AutoDriveWeight(
-			() -> (getAlliance() == Alliance.Blue
-					? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
-					: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
-			driveSubsystem::getPose, gyro);
-
-		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, () -> intakeSubsystem.hasNote());   // new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
-
-		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
-		driveSubsystem::getChassisSpeeds, targetingSubsystem);
-		
-		targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
-
-		
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.7, ()->0.7, ()->0.6, ()->0.6, ()->autoTargetBool));
-		
-
-
-		
-		
-		generateNamedCommands();
-
-		
-
-
-		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
-
-		DashboardInit.init(driveSubsystem, driverController, new ArrayList<AprilTagVision>(Arrays.asList(visions)), targetingSubsystem, shooterSubsystem, mlVision);
-		configureBindings();
-
-
-	}
+	}	
 
 	private void configureBindings() {
 
