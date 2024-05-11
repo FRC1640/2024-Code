@@ -369,7 +369,41 @@ public class RobotContainer {
 		// driveController.y().whileTrue(() -> );
 	}
 
-	public void pidTriggers(){
+	public void generateNamedCommands() {
+		// double offset = 4;
+		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
+		NamedCommands.registerCommand("Run Intake", intakeNote());
+		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
+		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
+		NamedCommands.registerCommand("MidShot", manualShotAuto(39.5));
+		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(29.5));
+		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(29.5));
+		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
+		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29.5));
+		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(38.5));
+		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(33.5));
+		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
+		NamedCommands.registerCommand("LowShotSource", manualShotAuto(29));
+		NamedCommands.registerCommand("LowShotSource1", manualShotAuto(32.5));
+		NamedCommands.registerCommand("FarShot", manualShotAuto(40));
+		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(() -> { autoSpeeds = 0.4; }));
+		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(
+			() -> driveSubsystem.setAprilTagInAuto(true)));
+		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(
+			() -> driveSubsystem.setAprilTagInAuto(false)));
+	}
+
+
+
+
+
+
+
+
+
+
+
+	public void pidTriggers() {
 		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() -> PIDUpdate.getSetpoint(), () -> 0.0));
 		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(() ->PIDUpdate.getSetpoint()));
 		targetingSubsystem.setDefaultCommand(
@@ -378,22 +412,21 @@ public class RobotContainer {
 		// 	shooterSubsystem.setSpeedPercentPID(() ->0, () ->PIDUpdate.getSetpoint(), () ->0, () ->0, 
 		// 	() ->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
 		// );
-		
 	}
 
-	public void resetDrive(){
+	public void resetDrive() {
 		driveSubsystem.resetPivots();
 	}
-	public Command resetDriveCommand(){
+	public Command resetDriveCommand() {
 		return driveSubsystem.pidPivotsCommand().andThen(new InstantCommand(() ->driveSubsystem.resetPivots()));
 	}
 
-	public double getAngleToStash(){
+	public double getAngleToStash() {
 		return Math.atan2(getStashPos().getY() - driveSubsystem.getPose().getY(),
                 getStashPos().getX() - driveSubsystem.getPose().getX());
 	}
 
-	public void toggleAutoTarget(boolean toggled){
+	public void toggleAutoTarget(boolean toggled) {
 		Logger.recordOutput("ToggledAutoTarget", autoTargetBool);
 		autoTargetBool = toggled;
 	}
@@ -422,14 +455,14 @@ public class RobotContainer {
 		return Alliance.Blue;
 	}
 
-	public Pose2d getNearestStage(){ 
+	public Pose2d getNearestStage() { 
 		Pose2d[] allianceStagePoses = getAlliance() == Alliance.Blue?FieldConstants.blueStages:FieldConstants.redStages;
 		double shortestDistance = allianceStagePoses[0].getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
 		Pose2d closestPose = allianceStagePoses[0];
 		int index = 0;
 
-		for (int i = 1; i < allianceStagePoses.length ; i++ ){
-			if (allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < shortestDistance){
+		for (int i = 1; i < allianceStagePoses.length ; i++ ) {
+			if (allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation()) < shortestDistance) {
 		 		shortestDistance = allianceStagePoses[i].getTranslation().getDistance(driveSubsystem.getPose().getTranslation());
 				closestPose = allianceStagePoses[i];
 				index = i;
@@ -463,16 +496,16 @@ public class RobotContainer {
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
 	}
 
-	public Command intakeNote(){
+	public Command intakeNote() {
 		return intakeSubsystem.intakeNoteCommand(0.8, 0.5, () -> intakeSubsystem.hasNote())
 			.repeatedly().until(() -> intakeSubsystem.hasNote());
 	}
-	public Command generateIntakeNoRobot(double time, double indexSpeed){
+	public Command generateIntakeNoRobot(double time, double indexSpeed) {
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
 				() -> (shooterSubsystem.isSpeedAccurate(0.02) 
 				&& targetingSubsystem.isAnglePositionAccurate(1)), time);
 	}
-	public Command generateIntakeNoRobotAmp(double time, double indexSpeed){
+	public Command generateIntakeNoRobotAmp(double time, double indexSpeed) {
 		return intakeSubsystem.intakeCommand(0, indexSpeed,
 				() -> (shooterSubsystem.isSpeedAccurate(0.1) 
 				&& targetingSubsystem.isAnglePositionAccurate(6) 
@@ -533,76 +566,50 @@ public class RobotContainer {
 	// 	goalPose.get().getX() - getPose.get().getX()) - gyro.getOffset();
 	// }
 
-	public Command autoTarget(){
+	public Command autoTarget() {
 		return targetingSubsystem.anglePIDCommand(() -> 
 			targetingSubsystem.distToAngle(() ->get3dDistance(() -> getSpeakerPos())), 60, () ->autoTargetBool);
 
 	}
 
-	public double determineTargetingAngle(){
-		if(intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius){
+	public double determineTargetingAngle() {
+		if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius) {
 			canShoot = true;
 			return movingWhileShooting.getAngleFromDistance();
-		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorController.getBButton()){
+		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius
+				&& operatorController.getBButton()) {
 			canShoot = true;
 			return 40;
 		} else {
 			canShoot = false;
 			return 35;
 		}
-
 		// return (get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius //10.249
 		// 	? movingWhileShooting.getAngleFromDistance() : 40);
 	}
-	public Command autoTargetMovingWhileShooting(){
-		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60, () ->autoTargetBool
-			&& extensionSubsystem.getExtensionPosition() < 20);
-	}
-	
 
-	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(() ->0.03, () ->0.15,
-			() ->0.03, () ->0.15, () ->true)
+	public Command autoTargetMovingWhileShooting() {
+		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60,
+			() -> autoTargetBool && extensionSubsystem.getExtensionPosition() < 20);
+	}
+
+	public Command ampCommand() {
+		return shooterSubsystem.setSpeedPercentPID(
+			() -> 0.03, () -> 0.15, () -> 0.03, () -> 0.15, () -> true)
 			.alongWith(generateIntakeNoRobotAmp(500, 0.6))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
-	public Command trapShotCommand(){
-		
-		return shooterSubsystem.setSpeedPercentPID(() ->0.08, () ->0.4,
-			() ->0.08, () ->0.4, () ->true)
-			.alongWith(targetingSubsystem.anglePIDCommand(() ->70))
+	public Command trapShotCommand() {
+		return shooterSubsystem.setSpeedPercentPID(
+			() -> 0.08, () -> 0.4, () -> 0.08, () -> 0.4, () -> true)
+			.alongWith(targetingSubsystem.anglePIDCommand(() -> 70));
 			// .alongWith(generateIntakeCommand())
-			;
 	}
 
-	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSpeedPercentPID(() ->0.03, () ->0.27,
-			() ->0.03, () ->0.27, () ->true)
+	public Command ampCommandNoShoot() {
+		return shooterSubsystem.setSpeedPercentPID(
+			() -> 0.03, () -> 0.27, () -> 0.03, () -> 0.27, () -> true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
-	}
-
-	public void generateNamedCommands(){
-		// double offset = 4;
-		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
-		NamedCommands.registerCommand("Run Intake", intakeNote());
-		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(39.5));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(29.5));
-		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(29.5));
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29.5));
-		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(38.5));
-		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(33.5));
-		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
-		NamedCommands.registerCommand("LowShotSource", manualShotAuto(29));
-		NamedCommands.registerCommand("LowShotSource1", manualShotAuto(32.5));
-
-		NamedCommands.registerCommand("FarShot", manualShotAuto(40));
-		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(() ->{autoSpeeds = 0.4;}));
-
-		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(() ->driveSubsystem.setAprilTagInAuto(true)));
-		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(() ->driveSubsystem.setAprilTagInAuto(false)));
 	}
 }
