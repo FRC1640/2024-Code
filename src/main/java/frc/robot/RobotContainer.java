@@ -196,7 +196,7 @@ public class RobotContainer {
 			() -> (getAlliance() == Alliance.Blue
 						? new Pose2d(FieldConstants.speakerPositionBlue, new Rotation2d())
 						: new Pose2d(FieldConstants.speakerPositionRed, new Rotation2d())),
-			driveSubsystem::getPose, gyro, () -> 0.0);                                                              //()->aprilTagVision1.getTx(), ()->aprilTagVision1.isTarget()
+			driveSubsystem::getPose, gyro, () -> 0.0);                                                              //() ->aprilTagVision1.getTx(), () ->aprilTagVision1.isTarget()
 		rotateToStageWeight = new RotateToAngleWeight(
 			() -> (getNearestStage().getRotation().getRadians()), driveSubsystem::getPose,
 			() -> 0.0, "rotateToStageWeight", () -> false,	driveSubsystem);
@@ -211,7 +211,7 @@ public class RobotContainer {
 					? new Pose2d(FieldConstants.ampPositionBlue, new Rotation2d(Math.PI / 2))
 					: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
 			driveSubsystem::getPose, gyro);
-		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, () -> intakeSubsystem.hasNote());   // new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
+		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, () -> intakeSubsystem.hasNote());   // new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, () ->intakeSubsystem.hasNote());
 		movingWhileShooting = new MovingWhileShooting(gyro,
 			() -> getSpeakerPos(),
 			driveSubsystem::getPose,
@@ -247,54 +247,96 @@ public class RobotContainer {
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
 		// intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeCommand(0, 0));
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.extendAndAngleSpeed(0, 0));
-		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(()->60, ()->20));
-		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->50));
+		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() ->60, () ->20));
+		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(() ->50));
 		// targetingSubsystem.setDefaultCommand(
-			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
-		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
+			// targetingSubsystem.anglePIDCommand(() ->movingWhileShooting.getNewTargetingAngle()));
+		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(() ->0.05, () ->0.1, () ->0.05, () ->0.1, () ->get3dDistance(() ->getSpeakerPos()) < 999999));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
-		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
+		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(() ->60));
 	}	
 
 	private void configureBindings() {
+		new Trigger(() -> driverController.getLeftBumper())
+			.whileTrue(generateIntakeCommand());
+		new Trigger(() -> driverController.getPOV() == 180)
+			.onTrue(new InstantCommand(() -> toggleAutoTarget(true)));
+		new Trigger(() -> driverController.getPOV() == 0).whileTrue(resetDriveCommand());
+		new Trigger(() -> driverController.getBackButton())
+			.onTrue(driveSubsystem.resetOdometryAprilTag());
+		new Trigger(() -> driverController.getStartButton())
+			.onTrue(driveSubsystem.resetGyroCommand());
+		new Trigger(() -> driverController.getXButton())
+			.whileTrue(manualShotNoAngle(
+					50,	() -> !driverController.getXButton(), true));
+		new Trigger(() -> driverController.getAButton())
+			.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
+			.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5)))); // .alongWith(autoTarget()));
+		new Trigger(() -> driverController.getAButton())
+			.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
+			.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
+		new Trigger(() -> driverController.getBButton())
+			.whileTrue(manualShotNoAngle(55, () -> !driverController.getBButton()));
+		new Trigger(() -> driverController.getRightTriggerAxis() > 0.1)
+			.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
+		new Trigger(() -> driverController.getRightTriggerAxis() > 0.1)
+		 	.onFalse(Commands.parallel(
+				new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)),
+				new InstantCommand(() -> mlVisionWeight.resetMode())));
 
-		// NOTE: if uncommenting commented out lines here,
-		// DON'T use trigger methods in CommandXboxController.
-		// Use triggers & HIDs to avoid >] COMMAND OVERRUN [<.
+		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
+				Math.abs(operatorController.getRightY()) > 0.1)
+			.whileTrue(climberSubsystem.setSpeedCommand(
+				() -> -operatorController.getLeftY(), () -> -operatorController.getRightY(), 
+				() -> SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), Math.PI) < Math.PI / 2));
+		new Trigger(() -> operatorController.getLeftBumper())
+			.whileTrue(
+				extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
+		new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.1)
+			.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
+		new Trigger(() -> operatorController.getPOV() == 180)
+			.onTrue(new InstantCommand(() -> { angleOffset -= 0.5; }));
+		new Trigger(() -> operatorController.getPOV() == 0)
+			.onTrue(new InstantCommand(() -> { angleOffset += 0.5; }));
+		new Trigger(() -> operatorController.getRightBumper())
+			.whileTrue(
+				extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
+		new Trigger(() -> operatorController.getRightTriggerAxis() > 0.1)
+			.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(0.1));
+		new Trigger(() -> operatorController.getXButton())
+			.whileTrue(ampCommand()); // amp shot
+		new Trigger(() -> operatorController.getAButton()).whileTrue(trapShotCommand()
+			.alongWith(targetingSubsystem.runBlowerCommand(1))
+			.alongWith(generateIntakeNoRobot(2, 0.8)))
+			.onFalse(targetingSubsystem.anglePIDCommand(() -> 30).repeatedly()
+			.until(() -> targetingSubsystem.isAnglePositionAccurate(5)));
+		new Trigger(() -> operatorController.getYButton())
+			.whileTrue(climberSubsystem.climberPIDCommandVoltage(() -> 80, () -> 80)
+			.alongWith(targetingSubsystem.anglePIDCommand(() -> 70, 70, () -> true).repeatedly()));
+
+		new Trigger(() -> climberSubsystem.getLeftAngle() > 5 || climberSubsystem.getRightAngle() > 5)
+			.onTrue(new InstantCommand(() -> { autoTargetBool = false; }));
+		new Trigger(() -> get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && Robot.inTeleop)
+			.whileTrue(shooterSubsystem.setSpeedPercentPID(() -> 0.5, () -> 0.5, () -> 0.4, () -> 0.4, () -> autoTargetBool));
+		new Trigger(() -> intakeSubsystem.hasNote())
+				.onTrue(new InstantCommand(
+						() -> driverController.setRumble(RumbleType.kBothRumble, 1)));
+		new Trigger(() -> intakeSubsystem.hasNote())
+				.onFalse(new InstantCommand(
+						() -> driverController.setRumble(RumbleType.kBothRumble, 0.0)));
 
 		// driveController.leftBumper().whileTrue(intakeSubsystem.intakeCommand(0, 0.8));//.alongWith(autoTarget())
-
-		// driveController.y().whileTrue(new RunCommand(()->driveSubsystem.rotatePivots(()->angleRotate))
-		// 	.until(Math.abs(driveSubsystem.getActualSwerveStates()[0].angle.getDegrees() - angleRotate) < 3).andThen(new InstantCommand(()->{angleRotate += 90;})));
-		new Trigger(() -> operatorController.getXButton())
-				.whileTrue(ampCommand()); // amp shot
-		new Trigger(() -> driverController.getStartButton())
-				.onTrue(driveSubsystem.resetGyroCommand());
-		new Trigger(() -> driverController.getBackButton())
-				.onTrue(driveSubsystem.resetOdometryAprilTag());
-		new Trigger(() -> driverController.getLeftBumper())
-				.whileTrue(generateIntakeCommand());
-
-
-		new Trigger(()->climberSubsystem.getLeftAngle() > 5 || climberSubsystem.getRightAngle() > 5)
-			.onTrue(new InstantCommand(()->{autoTargetBool = false;}));
-		
-		
-		
+		// driveController.y().whileTrue(new RunCommand(() ->driveSubsystem.rotatePivots(() ->angleRotate))
+		// 	.until(Math.abs(driveSubsystem.getActualSwerveStates()[0].angle.getDegrees() - angleRotate) < 3).andThen(new InstantCommand(() ->{angleRotate += 90;})));
 		// new Trigger(() -> driveControllerHID.getYButton())
 		// 		.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
 		// new Trigger(() -> driveControllerHID.getYButton())
 		// 		.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
 
-		// new Trigger(()->operatorControllerHID.getAButton())
-		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
+		// new Trigger(() ->operatorControllerHID.getAButton())
+		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(() ->0.05, () ->0.1, () ->0.05, () ->0.1, () ->true)
 		// 		.alongWith(generateIntakeCommandTrap()));
-		
-
-		new Trigger(()->get3dDistance(()->getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && Robot.inTeleop)
-			.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.5, ()->0.5, ()->0.4, ()->0.4, ()->autoTargetBool));
-
 		// static robot rotation
 		// driveController.a().onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateLockWeight))
 		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5))));
@@ -303,111 +345,38 @@ public class RobotContainer {
 		// driveController.a().onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateLockWeight))
 		// 		.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
 		// 		// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
-
 		// moving while shooting robot rotation
-
-		new Trigger(() -> driverController.getAButton())
-				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5)))); // .alongWith(autoTarget()));
-		new Trigger(() -> driverController.getAButton())
-				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
-		new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.1)
-				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
-		new Trigger(() -> operatorController.getRightTriggerAxis() > 0.1)
-				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(0.1));
-		new Trigger(() -> driverController.getPOV() == 180)
-				.onTrue(new InstantCommand(() -> toggleAutoTarget(true)));
-		new Trigger(() -> operatorController.getPOV() == 180)
-				.onTrue(new InstantCommand(() -> { angleOffset -= 0.5; }));
-		new Trigger(() -> operatorController.getPOV() == 0)
-				.onTrue(new InstantCommand(() -> { angleOffset += 0.5; }));
-		new Trigger(() -> Math.abs(operatorController.getLeftY()) > 0.1 ||
-				Math.abs(operatorController.getRightY()) > 0.1)
-				.whileTrue(climberSubsystem.setSpeedCommand(
-						() -> -operatorController.getLeftY(), () -> -operatorController.getRightY(), 
-						()->SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(), Math.PI) < Math.PI / 2));
-		new Trigger(() -> intakeSubsystem.hasNote())
-				.onTrue(new InstantCommand(
-						() -> driverController.setRumble(RumbleType.kBothRumble, 1)));
-		new Trigger(() -> intakeSubsystem.hasNote())
-				.onFalse(new InstantCommand(
-						() -> driverController.setRumble(RumbleType.kBothRumble, 0.0)));
-
-		
-		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand())
-
-		new Trigger(() -> driverController.getXButton())
-				.whileTrue(manualShotNoAngle(
-					50,	() -> !driverController.getXButton(), true));
-		new Trigger(() -> driverController.getRightTriggerAxis() > 0.1)
-				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
-		new Trigger(() -> driverController.getRightTriggerAxis() > 0.1)
-		 		.onFalse(Commands.parallel(
-					new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)),
-					new InstantCommand(() -> mlVisionWeight.resetMode())));
-		new Trigger(() -> operatorController.getRightBumper())
-				.whileTrue(
-					extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
-		new Trigger(() -> operatorController.getLeftBumper())
-				.whileTrue(
-					extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
-
-		new Trigger(()->driverController.getPOV() == 0).whileTrue(resetDriveCommand());
-
+		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(() ->intakeSubsystem.hasNote(), mlVision, driveSubsystem,() ->gyro.getAngleRotation2d()).getCommand())
 		// operatorController.rightBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
 		// operatorController.leftBumper().whileTrue(targetingSubsystem.anglePIDCommand(30));
-
-
 		//  new Trigger(() -> driveControllerHID.getBButton())
 		// 	.whileTrue(climbCommandFactory.getCompleteCommand());
-
 		// new Trigger (() -> driveControllerHID.getYButton()).whileTrue(climbCommandFactory.getAlignCommand());
-
-		// new Trigger(()->operatorControllerHID.getYButton()).whileTrue(
+		// new Trigger(() ->operatorControllerHID.getYButton()).whileTrue(
 		// 	climbCommandFactory.setExtensionTargetingClimbersCommand(5, 90, 55)
 		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 90, 55))
 		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(100, 100, 55))
 		// 	.andThen(climbCommandFactory.setExtensionTargetingClimbersCommand(150, 100, 55)));
-		
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(rotateToStageWeight)));
-
 		// new Trigger(() -> driveControllerHID.getBButton())
 		// 	.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(rotateToStageWeight)));
-
-			// new Trigger(() -> driveControllerHID.getBButton())
-		
-		
-		new Trigger(() -> driverController.getBButton())
-			.whileTrue(manualShotNoAngle(55, () -> !driverController.getBButton()));
-		new Trigger(() -> operatorController.getAButton()).whileTrue(trapShotCommand()
-			.alongWith(targetingSubsystem.runBlowerCommand(1))
-			.alongWith(generateIntakeNoRobot(2, 0.8)))
-			.onFalse(targetingSubsystem.anglePIDCommand(()->30).repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(5)));
-
-
-		new Trigger(()->operatorController.getYButton())
-			.whileTrue(climberSubsystem.climberPIDCommandVoltage(()->80, ()->80).alongWith(targetingSubsystem.anglePIDCommand(()->70, 70, ()->true).repeatedly()));
-
+		// new Trigger(() -> driveControllerHID.getBButton())
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
-
 		// driveController.y().onTrue(driveSubsystem.resetOdometryAprilTag());
-
 		// new Trigger (() -> operatorControllerHID.getAButton())
 		// 		.whileTrue(manualShotNoAngle(41.8, () -> !operatorControllerHID.getAButton()));
-
 		// driveController.y().whileTrue(() -> );
 	}
 
 	public void pidTriggers(){
 		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() -> PIDUpdate.getSetpoint(), () -> 0.0));
-		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(()->PIDUpdate.getSetpoint()));
+		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(() ->PIDUpdate.getSetpoint()));
 		targetingSubsystem.setDefaultCommand(
-			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+			targetingSubsystem.anglePIDCommand(() ->PIDUpdate.getSetpoint(),() ->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
 		// shooterSubsystem.setDefaultCommand(
-		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
-		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
+		// 	shooterSubsystem.setSpeedPercentPID(() ->0, () ->PIDUpdate.getSetpoint(), () ->0, () ->0, 
+		// 	() ->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
 		// );
 		
 	}
@@ -416,7 +385,7 @@ public class RobotContainer {
 		driveSubsystem.resetPivots();
 	}
 	public Command resetDriveCommand(){
-		return driveSubsystem.pidPivotsCommand().andThen(new InstantCommand(()->driveSubsystem.resetPivots()));
+		return driveSubsystem.pidPivotsCommand().andThen(new InstantCommand(() ->driveSubsystem.resetPivots()));
 	}
 
 	public double getAngleToStash(){
@@ -430,12 +399,12 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(()->toggleAutoTarget(true)))
-				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d(), ()->false))
+		return DashboardInit.getAutoChooserCommand().alongWith(new InstantCommand(() ->toggleAutoTarget(true)))
+				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d(), () ->false))
 				.andThen(driveSubsystem.resetGyroCommand())
-				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
-				.alongWith(new InstantCommand(()->{startAuto = true;}))
-				.alongWith(shooterSubsystem.setSpeedPercentPID(()->autoSpeeds, ()->autoSpeeds, ()->autoSpeeds-0.1, ()->autoSpeeds-0.1, ()->true));
+				.alongWith(new InstantCommand(() ->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
+				.alongWith(new InstantCommand(() ->{startAuto = true;}))
+				.alongWith(shooterSubsystem.setSpeedPercentPID(() ->autoSpeeds, () ->autoSpeeds, () ->autoSpeeds-0.1, () ->autoSpeeds-0.1, () ->true));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -527,8 +496,8 @@ public class RobotContainer {
 	}
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition, boolean shotSpeeds) {
 		return targetingSubsystem.anglePIDCommand(targetAngle)
-		.alongWith(shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
-			()->0.03, ()->0.27, ()->true))
+		.alongWith(shooterSubsystem.setSpeedPercentPID(() ->0.03, () ->0.27,
+			() ->0.03, () ->0.27, () ->true))
 		.alongWith(generateIntakeNoRobot(0, 0.8));
 	}
 
@@ -540,7 +509,7 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
 					() -> (getAlliance()==Alliance.Blue?robotAngleBlueRadians:robotAngleRedRadians), 
-					driveSubsystem::getPose, ()->(
+					driveSubsystem::getPose, () ->(
 						0.0), "manualShot",
 					cancelCondition, driveSubsystem);
 			DriveWeightCommand.addWeight(weight);
@@ -566,7 +535,7 @@ public class RobotContainer {
 
 	public Command autoTarget(){
 		return targetingSubsystem.anglePIDCommand(() -> 
-			targetingSubsystem.distToAngle(()->get3dDistance(() -> getSpeakerPos())), 60, ()->autoTargetBool);
+			targetingSubsystem.distToAngle(() ->get3dDistance(() -> getSpeakerPos())), 60, () ->autoTargetBool);
 
 	}
 
@@ -586,30 +555,30 @@ public class RobotContainer {
 		// 	? movingWhileShooting.getAngleFromDistance() : 40);
 	}
 	public Command autoTargetMovingWhileShooting(){
-		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60, ()->autoTargetBool
+		return targetingSubsystem.anglePIDCommand(() -> determineTargetingAngle(), 60, () ->autoTargetBool
 			&& extensionSubsystem.getExtensionPosition() < 20);
 	}
 	
 
 	public Command ampCommand(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.15,
-			()->0.03, ()->0.15, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(() ->0.03, () ->0.15,
+			() ->0.03, () ->0.15, () ->true)
 			.alongWith(generateIntakeNoRobotAmp(500, 0.6))
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
 	public Command trapShotCommand(){
 		
-		return shooterSubsystem.setSpeedPercentPID(()->0.08, ()->0.4,
-			()->0.08, ()->0.4, ()->true)
-			.alongWith(targetingSubsystem.anglePIDCommand(()->70))
+		return shooterSubsystem.setSpeedPercentPID(() ->0.08, () ->0.4,
+			() ->0.08, () ->0.4, () ->true)
+			.alongWith(targetingSubsystem.anglePIDCommand(() ->70))
 			// .alongWith(generateIntakeCommand())
 			;
 	}
 
 	public Command ampCommandNoShoot(){
-		return shooterSubsystem.setSpeedPercentPID(()->0.03, ()->0.27,
-			()->0.03, ()->0.27, ()->true)
+		return shooterSubsystem.setSpeedPercentPID(() ->0.03, () ->0.27,
+			() ->0.03, () ->0.27, () ->true)
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
@@ -631,9 +600,9 @@ public class RobotContainer {
 		NamedCommands.registerCommand("LowShotSource1", manualShotAuto(32.5));
 
 		NamedCommands.registerCommand("FarShot", manualShotAuto(40));
-		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(()->{autoSpeeds = 0.4;}));
+		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(() ->{autoSpeeds = 0.4;}));
 
-		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
-		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));
+		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(() ->driveSubsystem.setAprilTagInAuto(true)));
+		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(() ->driveSubsystem.setAprilTagInAuto(false)));
 	}
 }
