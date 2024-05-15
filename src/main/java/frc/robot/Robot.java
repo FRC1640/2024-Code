@@ -32,6 +32,8 @@ public class Robot extends LoggedRobot {
 
     public static boolean inTeleop;
 
+    public static boolean isDisabled = true;
+
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
@@ -122,6 +124,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledExit() {
+        isDisabled = false;
         m_robotContainer.resetDrive();
     }
 

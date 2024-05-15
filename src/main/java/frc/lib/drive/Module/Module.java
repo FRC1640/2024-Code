@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -30,6 +31,7 @@ public class Module {
     public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.26124, 3.2144, 0.68367);
 
     private double pidModuleTarget;
+    SlewRateLimiter voltageLimiter = new SlewRateLimiter(120);
 
     public Module(ModuleIO io, PivotId id) {
         this.io = io;
@@ -100,23 +102,26 @@ public class Module {
 
         // calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
-        if (!Robot.inTeleop) {
-            pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
-        }
+        // if (!Robot.inTeleop) {
+        //     pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
+        // }
+        pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
 
         // pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
 
-        if (Math.abs(pidSpeed) < 0.05) {
+        
+
+        if (Math.abs(pidSpeed) < 0.1) {
             turnOutput = 0;
         }
 
-        io.setDriveVoltage(pidSpeed);
+        io.setDriveVoltage(voltageLimiter.calculate(pidSpeed));
         io.setSteerPercentage(turnOutput);
     }
 
     public void setDriveVoltage(double volts) {
-        io.setDriveVoltage(volts);
+        io.setDriveVoltage(voltageLimiter.calculate(volts));
     }
 
     public double getDriveVoltage() {

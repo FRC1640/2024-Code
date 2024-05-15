@@ -7,6 +7,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import javax.swing.plaf.basic.BasicIconFactory;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -16,6 +18,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -93,7 +96,6 @@ public class DriveSubsystem extends SubsystemBase {
         this.gyro = gyro;
         this.visions = visions;
 
-        
         switch (Robot.getMode()) { // create modules
             case REAL:
                 frontLeft = new Module(new ModuleIOSparkMax(ModuleConstants.FL), PivotId.FL);
@@ -198,7 +200,7 @@ public class DriveSubsystem extends SubsystemBase {
         // https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
 
         double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
-        int sampleCount = sampleTimestamps.length ;
+        int sampleCount = sampleTimestamps.length;
 
         Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
 
@@ -228,37 +230,56 @@ public class DriveSubsystem extends SubsystemBase {
             odometryPose = swervePoseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
         }
         for (AprilTagVision vision : visions) {
+            Pose2d pose = new Pose2d();
+            if (Robot.isDisabled){
+                pose = vision.getAprilTagPose2dRot();
+            }
+            else{
+                pose = vision.getAprilTagPose2d();
+            }
+            // pose = vision.getAprilTagPose2dRot();
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-            if (vision.isPoseValid(vision.getAprilTagPose2d())
-                    && (Robot.inTeleop || aprilTagInAuto) 
-                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 300) {
+            if (vision.isPoseValid(pose)
+                    && (Robot.inTeleop || aprilTagInAuto || Robot.isDisabled)
+                    && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 100
+                    && vision.getDistance() < 7.3
+                    && !(Robot.isDisabled && vision.getName() == "-back")) {
                 double distanceToTag = vision.getDistance();
+               
                 double distConst = 1 + (distanceToTag * distanceToTag);
-                double poseDifference = vision.getAprilTagPose2d().getTranslation()
+                double poseDifference = pose.getTranslation()
                         .getDistance(getPose().getTranslation());
 
-                double posDifX = vision.getAprilTagPose2d().getTranslation().getX() - getPose().getX();
-                double posDifY = vision.getAprilTagPose2d().getTranslation().getY() - getPose().getY();
+                double posDifX = pose.getTranslation().getX() - getPose().getX();
+                double posDifY = pose.getTranslation().getY() - getPose().getY();
 
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
+                boolean mt1 = false;
+
+                 if (vision.getDistance() < 4 && speed < 0.75 && vision.getNumVisibleTags() > 1){
+                    pose = vision.getAprilTagPose2dRot();
+                    mt1 = true;
+                 }
+
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 double xy = 0.65;
                 // if (!Robot.inTeleop){
-                //     xy = 2.5;
-                //     if (poseDifference > 0.3){
-                //         xy = 0.5;
-                //     }
+                // xy = 2.5;
+                // if (poseDifference > 0.3){
+                // xy = 0.5;
                 // }
-                if ((speed > 0.5 && vision.getDistance() > 3.5)|| ((vision.getDistance() > 5 || speed > 0.5) && vision.getNumVisibleTags() == 1)){
-                    xy = 1;
-                }
+                // }
+                // if ((speed > 1 && vision.getDistance() > 3.5)
+                //         || ((vision.getDistance() > 5 || speed > 1) && vision.getNumVisibleTags() == 1)) {
+                //     xy = 0.9;
+                // }
                 // if (vision.getNumVisibleTags() > 2){
-                //     xy = 0.25;
+                // xy = 0.25;
                 // }
                 double theta = Double.MAX_VALUE;
                 boolean useEstimate = true;
@@ -288,10 +309,11 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
                 if (useEstimate) {
-                    swervePoseEstimator.addVisionMeasurement(vision.getAprilTagPose2d(), vision.getLatency(),
+                    swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    theta));
+                                    Robot.isDisabled || mt1 ? 0.000000001:Double.MAX_VALUE));
+
                 }
             }
         }
@@ -309,18 +331,16 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.setBrakeMode(brake);
     }
 
-    public Command pidPivotsCommand(){
-        return new RunCommand(()->{
+    public Command pidPivotsCommand() {
+        return new RunCommand(() -> {
             frontLeft.pidModule(0);
             frontRight.pidModule(0);
             backLeft.pidModule(0);
             backRight.pidModule(0);
-        }, this).until(()->
-            ((frontLeft.getError())
-            && (frontRight.getError())
-            && (backLeft.getError())
-            && (backRight.getError())
-            ));
+        }, this).until(() -> ((frontLeft.getError())
+                && (frontRight.getError())
+                && (backLeft.getError())
+                && (backRight.getError())));
     }
 
     private void resetOdometryAuton(Pose2d pose) {
@@ -334,12 +354,14 @@ public class DriveSubsystem extends SubsystemBase {
         gyro.setOffset(gyro.getRawAngleRadians() - pose.getRotation().getRadians() +
                 (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? Math.PI
                         : 0));
-        resetOdometry(pose);
+        if (pose.getTranslation().getDistance(getPose().getTranslation()) > 100) {
+            resetOdometry(pose);
+        }
         // gyro.setOffset(gyro.getRawAngleRadians() - pose.getRotation().getRadians());
 
     }
 
-    public void resetPivots(){
+    public void resetPivots() {
         frontLeft.resetSteer();
         frontRight.resetSteer();
         backLeft.resetSteer();
@@ -399,7 +421,7 @@ public class DriveSubsystem extends SubsystemBase {
         return odometryPose;
     }
 
-    public void setAprilTagInAuto(boolean value){
+    public void setAprilTagInAuto(boolean value) {
         aprilTagInAuto = value;
     }
 
@@ -525,9 +547,11 @@ public class DriveSubsystem extends SubsystemBase {
         return c;
     }
 
-    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot, BooleanSupplier lockRotation) {
+    public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot,
+            BooleanSupplier lockRotation) {
         return new RunCommand(() -> driveDoubleConePercent(speeds.get().vxMetersPerSecond,
-                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get(), lockRotation.getAsBoolean()),
+                speeds.get().vyMetersPerSecond, speeds.get().omegaRadiansPerSecond, true, centerOfRot.get(),
+                lockRotation.getAsBoolean()),
                 new Subsystem[] {})
                 .andThen(new InstantCommand(
                         () -> driveDesaturatedCommand(() -> new ChassisSpeeds(), () -> new Translation2d())));
