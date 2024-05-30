@@ -80,7 +80,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                 500, 500, 500);
         Constants.updateStatusFrames(steeringMotor, 100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency), 500, 500, 500, 500);
         driveEncoder = driveMotor.getEncoder();
-        steeringEncoder = new ResolverSlope(id.resolverChannel, 3.177, 4.43,
+        steeringEncoder = new ResolverSlope(id.resolverChannel, 3.125, 4.375,
                 180.0, 90.0, id.angleOffset);
 
         
@@ -137,6 +137,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
+        double lastV = inputs.driveVelocityMetersPerSecond;
         inputs.drivePositionMeters = -(driveEncoder.getPosition() / kDriveGearRatio) * id.wheelRadius * 2 * Math.PI;
         inputs.driveVelocityMetersPerSecond = -((driveEncoder.getVelocity() / kDriveGearRatio) / 60) * 2 * Math.PI
                 * id.wheelRadius;
@@ -155,7 +156,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         // steeringMotor.getIdleMode().equals(IdleMode.kBrake);
         inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
         inputs.steerAngleVoltage = steeringEncoder.getV();
-        inputs.steerAngleAbsolute = Math.toRadians(steeringEncoder.getD());
+        inputs.steerAngleAbsolute = (steeringEncoder.getD());
 
         inputs.steerAngleRelative = 360 - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
 
@@ -169,6 +170,8 @@ public class ModuleIOSparkMax implements ModuleIO {
                 .map((Double value) -> Rotation2d.fromDegrees(
                     360 - (value / SwerveDriveDimensions.steerGearRatio * 360)))
                 .toArray(Rotation2d[]::new);
+
+        // inputs.accel = inputs.driveVelocityMetersPerSecond - lastV)
 
         timestampQueue.clear();
         drivePositionQueue.clear();

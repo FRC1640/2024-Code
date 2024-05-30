@@ -399,13 +399,16 @@ public class RobotContainer {
 		// 		.whileTrue(manualShotNoAngle(41.8, () -> !operatorControllerHID.getAButton()));
 
 		// driveController.y().whileTrue(() -> );
+
+		new Trigger(()->(driveControllerHID.getPOV() == 90))
+		.onTrue(new InstantCommand(()->driveSubsystem.resetPivots(), driveSubsystem));
 	}
 
 	public void pidTriggers(){
 		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() -> PIDUpdate.getSetpoint(), () -> 0.0));
 		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(()->PIDUpdate.getSetpoint()));
 		targetingSubsystem.setDefaultCommand(
-			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("angle")));
+			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("targetingPIDSmall")));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
 		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))
