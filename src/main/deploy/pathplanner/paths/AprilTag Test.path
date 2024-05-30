@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7029193205305838,
+        "y": 6.701664967310976
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.702919320530584,
+        "y": 6.701664967310976
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.270256540513081,
+        "y": 7.42143740211651
+      },
+      "prevControl": {
+        "x": 7.270256540513081,
+        "y": 7.42143740211651
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "April Tag Test",
+  "previewStartingState": {
+    "rotation": -119.57783868126134,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
