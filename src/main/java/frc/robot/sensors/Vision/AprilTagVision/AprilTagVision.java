@@ -4,7 +4,6 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.lib.periodic.PeriodicBase;
-import frc.lib.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.Constants.FieldConstants;
 
 public class AprilTagVision extends PeriodicBase {

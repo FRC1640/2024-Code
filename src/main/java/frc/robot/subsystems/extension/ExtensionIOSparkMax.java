@@ -3,8 +3,6 @@ package frc.robot.subsystems.extension;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import javax.naming.ldap.ExtendedRequest;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 

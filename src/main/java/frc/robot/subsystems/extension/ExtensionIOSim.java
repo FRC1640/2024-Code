@@ -3,12 +3,10 @@ package frc.robot.subsystems.extension;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.targeting.TargetingIO.TargetingIOInputs;
 
 public class ExtensionIOSim implements ExtensionIO{
 
     private double extensionMotorVoltage = 0.0;
-    private double cappedExtensionSpeed;
     private DCMotorSim extensionMotorSimulated = new DCMotorSim(DCMotor.getNEO(1),
         50, 0.00019125);
 
@@ -32,7 +30,6 @@ public class ExtensionIOSim implements ExtensionIO{
         double speedClamped = speed;
         speedClamped = clampSpeedsExtensionPercent(extensionPosition, speedClamped);
         setExtensionVoltage(speedClamped * 12);
-        cappedExtensionSpeed = speedClamped;
     }
 
     @Override

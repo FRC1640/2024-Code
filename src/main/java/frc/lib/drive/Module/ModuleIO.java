@@ -24,6 +24,7 @@ public interface ModuleIO extends AutoCloseable {
         public double steerAngleVoltage;
         public double steerAngleRelative;
         public double steerAngleAbsolute;
+        public double accel;
 
         public double[] odometryTimestamps = new double[] {};
         public double[] odometryDrivePositionsMeters = new double[] {};

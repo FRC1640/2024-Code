@@ -1,6 +1,4 @@
-package frc.robot.subsystems.drive.DriveWeights;
-
-import java.util.function.BooleanSupplier;
+package frc.lib.drive;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -14,4 +12,5 @@ public interface DriveWeight {
     public default double angle(){return 0;};
     public default boolean cancelCondition(){return false;};
     public default Command getAsCommand(){return new Command() {};};
+    public default boolean lockRotation(){return false;};
 }

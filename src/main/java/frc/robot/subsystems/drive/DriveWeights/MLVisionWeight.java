@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import frc.lib.drive.DriveWeight;
 import frc.robot.Constants.PIDConstants;
 
 import edu.wpi.first.math.MathUtil;
@@ -15,7 +16,7 @@ import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 
-public class MLVisionRevisedWeight implements DriveWeight {
+public class MLVisionWeight implements DriveWeight {
 
     // private PIDController angularController = new PIDController(0.006, 0, 0); //
     // Constants.PIDConstants.rotPID;
@@ -49,7 +50,7 @@ public class MLVisionRevisedWeight implements DriveWeight {
     private boolean intakeMode;
     private BooleanSupplier hasNote;
 
-    public MLVisionRevisedWeight(MLVision vision, Supplier<Rotation2d> angleSupplier,
+    public MLVisionWeight(MLVision vision, Supplier<Rotation2d> angleSupplier,
             BooleanSupplier hasNote) {
         this.vision = vision;
         this.angleSupplier = angleSupplier;

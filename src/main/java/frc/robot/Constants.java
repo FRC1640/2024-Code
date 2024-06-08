@@ -18,12 +18,6 @@ public final class Constants {
         FL, FR, BL, BR;
     }
 
-    public static class MLVisionLimelightConstants { // TODO: set these
-        public static final double limelightAngle = -10.0;
-        public static final double limelightLensHeight = 11.0;
-        public static final double noteHeightInches = 2.0;
-    }
-
     public static class AprilTagVisionConstants {
         public static final double xyStdDev = 1.5;
         public static final double thetaStdDev = 99999999;
@@ -72,7 +66,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.7432661290322 / 2));
+                Units.inchesToMeters(3.873 / 2));
 
         public static final ModuleInfo FR = new ModuleInfo(
                 PivotId.FR,
@@ -83,7 +77,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.7432661290322 / 2));
+                Units.inchesToMeters(3.873 / 2));
 
         public static final ModuleInfo BL = new ModuleInfo(
                 PivotId.BL,
@@ -94,7 +88,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.7432661290322 / 2));
+                Units.inchesToMeters(3.873 / 2));
 
         public static final ModuleInfo BR = new ModuleInfo(
                 PivotId.BR,
@@ -105,7 +99,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.7432661290322 / 2));
+                Units.inchesToMeters(3.873 / 2));
     }
 
     public static class IntakeConstants {
@@ -144,7 +138,7 @@ public final class Constants {
         }
 
         // controllers
-        public static PIDController rotPID = new PIDController(0.4, 0.0001, 0.000);
+        public static PIDController rotPID = new PIDController(0.3, 0.001, 0.0001);
         public static PIDController rotMovingPID = new PIDController(0.5, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
@@ -174,8 +168,8 @@ public final class Constants {
     public static class FieldConstants {
         public static double height = 8.21;
         public static double width = 16.54;
-        public static Translation2d ampPositionRed = new Translation2d(14.7, 7.84);
-        public static Translation2d ampPositionBlue = new Translation2d(2.1, 7.84);
+        public static Translation2d ampPositionRed = new Translation2d(14.665, 7.751);
+        public static Translation2d ampPositionBlue = new Translation2d(1.794, 7.751);
         public static Translation2d speakerPositionRed = new Translation2d(width - 0.3, 5.2);
         public static Translation2d speakerPositionBlue = new Translation2d(0.3, 5.2);
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)

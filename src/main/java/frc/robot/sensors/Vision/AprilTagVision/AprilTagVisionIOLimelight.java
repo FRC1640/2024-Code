@@ -2,19 +2,15 @@ package frc.robot.sensors.Vision.AprilTagVision;
 
 import java.util.Arrays;
 
-import com.fasterxml.jackson.core.format.InputAccessor;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.vision.LimelightHelpers;
+import frc.robot.Robot;
 import frc.robot.Constants.FieldConstants;
-import pabeles.concurrency.IntObjectConsumer;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     String key;
@@ -30,7 +26,6 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     public void updateInputs(AprilTagVisionIOInputs inputs) {
         NetworkTable networkTable = NetworkTableInstance.getDefault().getTable(key);
         double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        double[] emptyArraySix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         double[] botPose = networkTable.getEntry("botpose_orb_wpiblue").getDoubleArray(emptyArray);
 
@@ -40,23 +35,23 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
         Translation2d aprilTagBotTran2dRot = new Translation2d(botPoseRot[0], botPoseRot[1]);
 
-        inputs.aprilTagPoseRot = new Pose2d(aprilTagBotTran2dRot,aprilTagBotRotation2d1);
+        
         
 
-        
+        LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(key);
 
-        inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
+        LimelightHelpers.PoseEstimate poseRot = LimelightHelpers.getBotPoseEstimate_wpiBlue(key);
+
+        inputs.latency = Robot.isDisabled ? poseRot.timestampSeconds: limelightMeasurement.timestampSeconds;
+        inputs.aprilTagPoseRot = poseRot.pose;
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
 
         
         Rotation2d aprilTagBotRotation2d = Rotation2d.fromDegrees(botPose[5]);
-        inputs.aprilTagPose = new Pose2d(aprilTagBotTran2d, aprilTagBotRotation2d);
+        
+        inputs.aprilTagPose = limelightMeasurement.pose;
+        
         inputs.isTarget = networkTable.getEntry("tv").getDouble(0) > 0;
-
-        double[] robotPoseArray = networkTable.getEntry("targetpose_robotspace").getDoubleArray(emptyArraySix);
-        // System.out.println(robotPoseArray + "robotPoseArray len "+
-        // robotPoseArray.length);
-        Translation3d robotPoseTranslation = new Translation3d(robotPoseArray[0], robotPoseArray[1], robotPoseArray[2]);
 
         llresults = LimelightHelpers.getLatestResults(key);
 
@@ -64,7 +59,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
                 .mapToDouble((v) -> v.getRobotPose_TargetSpace2D().getTranslation().getNorm()).toArray();
 
         // inputs.aprilTagDistance = robotPoseTranslation.getNorm();
-        inputs.aprilTagDistance = botPose[9];
+        inputs.aprilTagDistance = limelightMeasurement.avgTagDist;
 
         inputs.tagPoses = Arrays.stream(llresults.targetingResults.targets_Fiducials)
                 .map((v) -> new Pose2d(v.getRobotPose_FieldSpace2D().getX() + FieldConstants.width / 2,
@@ -83,7 +78,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
         resultsArray = llresults.targetingResults.targets_Fiducials;
 
-        inputs.numVisibleTags = (int)botPose[7];
+        inputs.numVisibleTags = limelightMeasurement.tagCount;
 
         inputs.tx = networkTable.getEntry("tx").getDouble(0);
 

@@ -4,14 +4,12 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import frc.lib.swerve.SwerveAlgorithms;
+import frc.lib.drive.DriveWeight;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.sensors.Gyro.Gyro;
 
@@ -81,5 +79,9 @@ public class RotateLockWeightTrack implements DriveWeight {
     @Override
     public double angle() {
         return setAngle;
+    }
+    @Override
+    public boolean lockRotation(){
+        return true;
     }
 }

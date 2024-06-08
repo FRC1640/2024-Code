@@ -1,16 +1,15 @@
-package frc.robot.subsystems.drive;
+package frc.lib.drive;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.function.BooleanSupplier;
+
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.lib.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.DriveWeights.DriveWeight;
 
 public class DriveWeightCommand {
     static ArrayList<DriveWeight> persistentWeights = new ArrayList<>();
@@ -18,11 +17,12 @@ public class DriveWeightCommand {
     static ArrayList<DriveWeight> weights = new ArrayList<>();
     Translation2d centerOfRot = new Translation2d();
     static ChassisSpeeds speeds = new ChassisSpeeds();
+    boolean lockRotation;
     static double setAngle = 0;
 
     public Command create(DriveSubsystem driveSubsystem) {
-        Command c = Commands.race(new RunCommand(() ->getAllSpeeds()),
-                driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot));
+        Command c = Commands.race(new RunCommand(() -> getAllSpeeds()),
+                driveSubsystem.driveDoubleConeCommand(() -> speeds, () -> centerOfRot, ()->lockRotation));
         c.addRequirements(driveSubsystem);
         return c;
     }
@@ -39,11 +39,11 @@ public class DriveWeightCommand {
         }
     }
 
-    public static double getAngle(){
+    public static double getAngle() {
         return setAngle;
     }
 
-    public static void addPersistentWeight(DriveWeight weight){
+    public static void addPersistentWeight(DriveWeight weight) {
         if (!persistentWeights.contains(weight)) {
             persistentWeights.add(weight);
         }
@@ -55,11 +55,11 @@ public class DriveWeightCommand {
         }
     }
 
-    public static void removeAllWeights(){
+    public static void removeAllWeights() {
         weights.clear();
     }
 
-    public static ChassisSpeeds getSpeeds(){
+    public static ChassisSpeeds getSpeeds() {
         return speeds;
     }
 
@@ -71,35 +71,46 @@ public class DriveWeightCommand {
         Iterator<DriveWeight> iterator = weights.iterator();
         while (iterator.hasNext()) {
             DriveWeight weight = iterator.next();
-            if (weight.cancelCondition()){
+            if (weight.cancelCondition()) {
                 iterator.remove();
             }
         }
         // iterate over remaining weights and add speeds
+        lockRotation = false;
         for (DriveWeight driveWeight : weights) {
             speeds = speeds.plus(driveWeight.getSpeeds().times(driveWeight.getWeight()));
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
             setAngle += driveWeight.angle();
+            if (driveWeight.lockRotation()) {
+                lockRotation = true;
+            }
         }
         for (DriveWeight driveWeight : persistentWeights) {
             speeds = speeds.plus(driveWeight.getSpeeds().times(driveWeight.getWeight()));
             centerOfRot = centerOfRot.plus(driveWeight.getCenterOfRot());
             setAngle += driveWeight.angle();
+            if (driveWeight.lockRotation()) {
+                lockRotation = true;
+            }
         }
+        centerOfRot.times(1 / (weights.size() + persistentWeights.size()));
         speeds = decreaseSpeeds(speeds);
+        Logger.recordOutput("LockRotation", lockRotation);
+
     }
 
-    public static int getWeightsSize(){
+    public static int getWeightsSize() {
         return weights.size() + persistentWeights.size();
     }
-    
-    public ChassisSpeeds decreaseSpeeds(ChassisSpeeds speeds){
-        double max = Math.max(Math.hypot(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond),speeds.omegaRadiansPerSecond);
-        if (max > 1){
-            speeds = speeds.times(1/max);
+
+    public ChassisSpeeds decreaseSpeeds(ChassisSpeeds speeds) {
+        double max = Math.max(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond),
+                speeds.omegaRadiansPerSecond);
+        if (max > 1) {
+            speeds = speeds.times(1 / max);
             // System.out.println(speeds);
         }
-        
+
         return speeds;
     }
 }

@@ -3,7 +3,6 @@ package frc.robot.sensors.Gyro;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.lib.periodic.PeriodicBase;
 
 public class Gyro {
     private GyroIO io;

@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.drive.DriveWeight;
 import frc.lib.drive.JoystickCleaner;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.sensors.Gyro.Gyro;
@@ -19,8 +20,8 @@ public class JoystickDriveWeight implements DriveWeight {
     private final double SLOW_LINEAR_SPEED = 0.5;
     private final double SLOW_ROTATIONAL_SPEED = 0.3;
 
-    private final double LOWER_DB = 0.05;
-    private final double UPPER_DB = 0.05;
+    private final double LOWER_DB = 0.03; //TODO: change back for gamesir
+    private final double UPPER_DB = 0.03;
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -76,9 +77,9 @@ public class JoystickDriveWeight implements DriveWeight {
             rot = -driverController.getRightX() * SLOW_ROTATIONAL_SPEED;
         } 
         else {
-            xSpeed = -m_xspeedLimiter.calculate(driverController.getLeftY());
-            ySpeed = -m_yspeedLimiter.calculate(driverController.getLeftX());
-            rot = -m_rotLimiter.calculate(driverController.getRightX()) * 0.8;
+            xSpeed = -driverController.getLeftY();
+            ySpeed = -driverController.getLeftX();
+            rot = -driverController.getRightX() * 0.8;
         }
 
 
@@ -164,8 +165,5 @@ public class JoystickDriveWeight implements DriveWeight {
     @Override 
     public double getWeight(){
         return weight;
-    }
-    public double getTranslationalSpeed(){
-        return Math.hypot(xSpeed,ySpeed);
     }
 }

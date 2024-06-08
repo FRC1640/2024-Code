@@ -49,8 +49,7 @@ public class MLVisionIOLimelight implements MLVisionIO {
         
         ArrayList<LimelightHelpers.LimelightTarget_Detector> notesArray = new ArrayList<LimelightHelpers.LimelightTarget_Detector>() ;
 
-        double maxTa = -1;        
-        int indexWithLargestTa = -1;
+        double maxTa = -1;
 
         double threshold = 1;
 
@@ -75,7 +74,6 @@ public class MLVisionIOLimelight implements MLVisionIO {
             if (ta > maxTa) { 
                 //update the max with the note currently being read
                 maxTa = ta;
-                indexWithLargestTa = i;
             }  
         }
         

@@ -5,10 +5,11 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.lib.swerve.SwerveAlgorithms;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Robot;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.PivotId;
@@ -30,6 +31,7 @@ public class Module {
     public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.26124, 3.2144, 0.68367);
 
     private double pidModuleTarget;
+    SlewRateLimiter voltageLimiter = new SlewRateLimiter(120);
 
     public Module(ModuleIO io, PivotId id) {
         this.io = io;
@@ -67,6 +69,8 @@ public class Module {
         // determines if drive should be flipped so max delta angle is 90 degrees
         boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
 
+        
+
         // pid calculation
         double sin = Math.sin(dAngle);
         sin = (flipDriveTeleop) ? -sin : sin;
@@ -78,37 +82,46 @@ public class Module {
     }
 
     public void setDesiredStateMetersPerSecond(SwerveModuleState state) {
-        double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians());
+        Rotation2d delta = state.angle.minus(new Rotation2d(inputs.steerAngleRadians));
+
+        // double dAngle = SwerveAlgorithms.angleDistance(inputs.steerAngleRadians, state.angle.getRadians());
+        boolean flipDriveTeleop = false;
+        if (Math.abs(delta.getDegrees()) > 90.0) {
+            flipDriveTeleop = true;
+        }
         // determines if drive should be flipped so max delta angle is 90 degrees
-        boolean flipDriveTeleop = (Math.PI / 2 <= Math.abs(dAngle)) && (Math.abs(dAngle) <= 3 * Math.PI / 2);
+        
 
         // pid calculation
-        double sin = Math.sin(dAngle);
+        double sin = Math.sin(delta.getRadians());
         sin = (flipDriveTeleop) ? -sin : sin;
         double turnOutput = turningPIDController.calculate(sin, 0);
 
         // flips drive
-        final double targetSpeed = flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond;
+        final double targetSpeed = (flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond) * Math.abs(Math.cos(delta.getRadians()));
 
         // calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
-        if (!Robot.inTeleop) {
-            pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
-        }
+        // if (!Robot.inTeleop) {
+        //     pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
+        // }
+        pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
 
         // pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
 
-        if (Math.abs(pidSpeed) < 0.05) {
+        
+
+        if (Math.abs(pidSpeed) < 0.1) {
             turnOutput = 0;
         }
 
-        io.setDriveVoltage(pidSpeed);
+        io.setDriveVoltage(voltageLimiter.calculate(pidSpeed));
         io.setSteerPercentage(turnOutput);
     }
 
     public void setDriveVoltage(double volts) {
-        io.setDriveVoltage(volts);
+        io.setDriveVoltage(voltageLimiter.calculate(volts));
     }
 
     public double getDriveVoltage() {
