@@ -244,7 +244,8 @@ public class DriveSubsystem extends SubsystemBase {
                     && (Robot.inTeleop || aprilTagInAuto || Robot.isDisabled)
                     && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 100
                     && vision.getDistance() < 7.3
-                    && !(Robot.isDisabled && vision.getName() == "-back")) {
+                    // && !(Robot.isDisabled && vision.getName() == "-back")
+                    ) {
                 double distanceToTag = vision.getDistance();
                
                 double distConst = 1 + (distanceToTag * distanceToTag);
@@ -355,7 +356,7 @@ public class DriveSubsystem extends SubsystemBase {
         gyro.setOffset(gyro.getRawAngleRadians() - pose.getRotation().getRadians() +
                 (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? Math.PI
                         : 0));
-        if (pose.getTranslation().getDistance(getPose().getTranslation()) > 0.5) {
+        if (pose.getTranslation().getDistance(getPose().getTranslation()) > -1) {
             resetOdometry(pose);
         }
         // gyro.setOffset(gyro.getRawAngleRadians() - pose.getRotation().getRadians());

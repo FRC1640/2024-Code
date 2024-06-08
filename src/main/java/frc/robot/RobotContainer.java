@@ -438,8 +438,9 @@ public class RobotContainer {
 				.andThen(driveSubsystem.driveDoubleConeCommand(() -> new ChassisSpeeds(), () -> new Translation2d(), ()->false))
 				// .andThen(driveSubsystem.resetGyroCommand())
 				.alongWith(new InstantCommand(()->Logger.recordOutput("AutoRun", DashboardInit.getAutoChooserCommand().getName())))
-				.alongWith(new InstantCommand(()->{startAuto = true;}))
-				.alongWith(shooterSubsystem.setSpeedPercentPID(()->autoSpeeds, ()->autoSpeeds, ()->autoSpeeds-0.1, ()->autoSpeeds-0.1, ()->true));
+				.alongWith(new InstantCommand(()->{startAuto = true;}));
+				// .alongWith(new InstantCommand(()->{autoTargetBool = true;}));
+				// .alongWith(shooterSub\[]system.setSpeedPercentPID(()->autoSpeeds, ()->autoSpeeds, ()->autoSpeeds-0.1, ()->autoSpeeds-0.1, ()->true));
 	}
 
 	public void removeAllDefaultCommands() {
@@ -575,7 +576,7 @@ public class RobotContainer {
 	}
 
 	public double determineTargetingAngle(){
-		if(intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius){
+		if((intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius) || !Robot.inTeleop){
 			canShoot = true;
 			return movingWhileShooting.getAngleFromDistance();
 		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorControllerHID.getBButton()){
