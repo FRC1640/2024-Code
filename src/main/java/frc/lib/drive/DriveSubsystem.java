@@ -255,6 +255,9 @@ public class DriveSubsystem extends SubsystemBase {
                 double posDifX = pose.getTranslation().getX() - getPose().getX();
                 double posDifY = pose.getTranslation().getY() - getPose().getY();
 
+                double posDifTheta = Math.toDegrees(SwerveAlgorithms.angleDistance(
+                    vision.getAprilTagPose2dRot().getRotation().getRadians(), getPose().getRotation().getRadians()));
+
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
                         SwerveDriveDimensions.kinematics
@@ -262,7 +265,7 @@ public class DriveSubsystem extends SubsystemBase {
 
                 boolean mt1 = false;
 
-                 if (vision.getDistance() < 4 && speed < 0.75 && vision.getNumVisibleTags() > 1){
+                 if ((vision.getDistance() < 5 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
                     pose = vision.getAprilTagPose2dRot();
                     mt1 = true;
                  }
@@ -314,7 +317,7 @@ public class DriveSubsystem extends SubsystemBase {
                     swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    Robot.isDisabled || mt1 ? 0.000000001:Double.MAX_VALUE));
+                                    Robot.isDisabled || mt1 ? 0.00001:Double.MAX_VALUE));
 
                 }
             }
