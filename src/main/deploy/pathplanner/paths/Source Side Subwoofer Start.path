@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.196959251058447,
-        "y": 2.4041510940171213
+        "x": 0.6619978954243629,
+        "y": 4.295221161870895
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.8514459886062635,
-        "y": 1.0994593417758272
+        "x": 0.9873564191572831,
+        "y": 4.061891457116247
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5677274211691286,
-        "y": 2.7559780833847385
+        "x": 2.327067987469309,
+        "y": 3.221008664239551
       },
       "prevControl": {
-        "x": 4.605392067926994,
-        "y": 1.4659457890344358
+        "x": 1.2011401800581385,
+        "y": 4.076143707842972
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -57,14 +57,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 138.81407483429035,
+    "rotation": 137.12109639666144,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Very Source",
-  "previewStartingState": {
-    "rotation": -154.65382405771282,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "folder": "Source Side Subwoofer",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

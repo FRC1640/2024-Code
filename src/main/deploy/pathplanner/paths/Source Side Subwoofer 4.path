@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.284915998403426,
-        "y": 5.746507493014986
+        "x": 8.18474303615274,
+        "y": 5.672395789236023
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.511121593671759,
-        "y": 4.969556224826736
+        "x": 7.358112494002767,
+        "y": 4.860017497812773
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.007511157879459,
-        "y": 2.2722159730033753
+        "x": 3.096689526712387,
+        "y": 2.608161882990432
       },
       "prevControl": {
-        "x": 5.059835262527669,
-        "y": 4.031350919844697
+        "x": 3.7380408094149526,
+        "y": 3.2352609149662745
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "DisableAprilTags"
+                "name": "EnableAprilTags"
               }
             }
           ]
@@ -57,14 +57,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 142.73359809902286,
+    "rotation": 148.39249775375106,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": {
-    "rotation": 174.80557109226524,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "folder": "Source Side Subwoofer",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

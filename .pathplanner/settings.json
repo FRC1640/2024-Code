@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Amp Side",
-    "Very Source",
-    "Quad"
+    "Source Side Subwoofer",
+    "Quad",
+    "Very Source"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.3,

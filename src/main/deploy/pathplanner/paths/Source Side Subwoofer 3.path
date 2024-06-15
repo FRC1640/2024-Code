@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3777493147403352,
-        "y": 2.655376685160952
+        "x": 3.182203031072729,
+        "y": 2.565405130810262
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.268224536449074,
-        "y": 3.708842846257122
+        "x": 3.9945813224959785,
+        "y": 3.4347924251404054
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.284915998403426,
-        "y": 4.133967125077108
+        "x": 8.18474303615274,
+        "y": 5.672395789236023
       },
       "prevControl": {
-        "x": 6.525781051562102,
-        "y": 4.500453572335717
+        "x": 6.916292721474333,
+        "y": 4.453828352101149
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": -147.75383748645112,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "EnableAprilTags"
+                "name": "DisableAprilTags"
               }
             }
           ]
@@ -57,14 +63,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 173.2901631922431,
+    "rotation": -130.31410016049728,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": {
-    "rotation": 90.0,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "folder": "Source Side Subwoofer",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }
