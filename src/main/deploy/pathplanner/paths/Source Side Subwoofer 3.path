@@ -67,7 +67,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Source Side Subwoofer",
-  "previewStartingState": null,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 136.98798846831508,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

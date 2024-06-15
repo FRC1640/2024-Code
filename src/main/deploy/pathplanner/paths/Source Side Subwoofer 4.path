@@ -20,8 +20,8 @@
         "y": 2.608161882990432
       },
       "prevControl": {
-        "x": 3.7380408094149526,
-        "y": 3.2352609149662745
+        "x": 3.9286013311205314,
+        "y": 3.1316768515889977
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,10 +58,13 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 148.39249775375106,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "Source Side Subwoofer",
-  "previewStartingState": null,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -141.93545865272887,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
