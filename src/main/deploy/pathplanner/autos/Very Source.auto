@@ -168,19 +168,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Very Source 5 (end)"
-                }
-              }
-            ]
-          }
         }
       ]
     }

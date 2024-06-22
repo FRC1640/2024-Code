@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6619978954243629,
-        "y": 4.295221161870895
+        "x": 0.7223726295793819,
+        "y": 4.3964478450283915
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9873564191572831,
-        "y": 4.061891457116247
+        "x": 1.0477311533123022,
+        "y": 4.163118140273744
       },
       "isLocked": false,
       "linkedName": null
@@ -62,6 +62,9 @@
   },
   "reversed": false,
   "folder": "Source Side Subwoofer",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 119.72324020417477,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
