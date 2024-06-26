@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.327067987469309,
-        "y": 3.221008664239551
+        "x": 0.7646141006567733,
+        "y": 4.41249682499365
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.029570056920359,
-        "y": 1.947589067209211
+        "x": 3.365747617211637,
+        "y": -0.024575801645645434
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.14198628397257,
-        "y": 4.090395958569695
+        "x": 8.182299793171016,
+        "y": 4.119307667186764
       },
       "prevControl": {
-        "x": 5.576581153162307,
-        "y": 5.287585019614483
+        "x": 4.557748829783374,
+        "y": 5.746100285851367
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,13 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 175.55793802860126,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 118.30422832189511,
+      "waypointRelativePos": 0.65,
+      "rotationDegrees": 172.52434548654614,
       "rotateFast": false
     }
   ],
@@ -74,7 +69,7 @@
   "reversed": false,
   "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 133.36908535356255,
+    "rotation": 120.47664170949525,
     "velocity": 0
   },
   "useDefaultConstraints": false

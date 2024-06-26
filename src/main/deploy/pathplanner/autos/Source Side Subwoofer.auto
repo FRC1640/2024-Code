@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7223726295793819,
-      "y": 4.3964478450283915
+      "x": 0.76,
+      "y": 4.41
     },
-    "rotation": 120.71910623588342
+    "rotation": -59.620000000000005
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source Side Subwoofer Start"
-          }
-        },
         {
           "type": "deadline",
           "data": {
@@ -34,7 +28,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.1
                       }
                     },
                     {
@@ -97,7 +91,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.1
                       }
                     },
                     {
