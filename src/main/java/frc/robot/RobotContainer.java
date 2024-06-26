@@ -388,8 +388,8 @@ public class RobotContainer {
 			.onFalse(targetingSubsystem.anglePIDCommand(()->30).repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(5)));
 
 
-		new Trigger(()->operatorControllerHID.getYButton())
-			.whileTrue(climberSubsystem.climberPIDCommandVoltage(()->80, ()->80).alongWith(targetingSubsystem.anglePIDCommand(()->70, 70, ()->true).repeatedly()));
+		// new Trigger(()->operatorControllerHID.getYButton())
+		// 	.whileTrue(climberSubsystem.climberPIDCommandVoltage(()->80, ()->80).alongWith(targetingSubsystem.anglePIDCommand(()->70, 70, ()->true).repeatedly()));
 
 		// driveController.y().whileTrue(intakeSubsystem.intakeCommand(-0.5, 0));
 
@@ -623,20 +623,6 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
 		NamedCommands.registerCommand("SpeakerShot", manualShotAuto(55));
-		NamedCommands.registerCommand("MidShotQuad", manualShotAuto(36));
-		NamedCommands.registerCommand("MidShot", manualShotAuto(39.5));
-		NamedCommands.registerCommand("AmpFarShot", manualShotAuto(29.5));
-		NamedCommands.registerCommand("AmpFarShot2", manualShotAuto(29.5));
-		NamedCommands.registerCommand("SourceStartShot", manualShotAuto(29));
-		NamedCommands.registerCommand("SourceStartShot2", manualShotAuto(29.5));
-		NamedCommands.registerCommand("FastQuadShot", manualShotAuto(38.5));
-		NamedCommands.registerCommand("AmpSideShot", manualShotAuto(33.5));
-		NamedCommands.registerCommand("LowShot", manualShotAuto(27));
-		NamedCommands.registerCommand("LowShotSource", manualShotAuto(29));
-		NamedCommands.registerCommand("LowShotSource1", manualShotAuto(32.5));
-
-		NamedCommands.registerCommand("FarShot", manualShotAuto(40));
-		NamedCommands.registerCommand("LowerSpeeds", new InstantCommand(()->{autoSpeeds = 0.4;}));
 
 		NamedCommands.registerCommand("EnableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(true)));
 		NamedCommands.registerCommand("DisableAprilTags", new InstantCommand(()->driveSubsystem.setAprilTagInAuto(false)));

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4356300410714025,
-      "y": 5.522567875736844
+      "x": 1.3643318281945855,
+      "y": 5.534466424378222
     },
     "rotation": 180.0
   },
@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -43,7 +37,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "center backup"
+                  "pathName": "Quad 1"
                 }
               },
               {
@@ -55,7 +49,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "MidShotQuad"
+                  "name": "AutoTarget"
                 }
               }
             ]
@@ -66,15 +60,34 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Run Indexer"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "RotateToSpeaker"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.35
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Run Indexer"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "MidShotQuad"
+                  "name": "AutoTarget"
                 }
               }
             ]
@@ -87,7 +100,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "center to stage"
+                  "pathName": "Quad 2"
                 }
               },
               {
@@ -99,7 +112,39 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "AutoTarget"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "RotateToSpeaker"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Run Indexer"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
                 }
               }
             ]
@@ -112,7 +157,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "back to speaker from stage"
+                  "pathName": "Quad 3"
                 }
               },
               {
@@ -124,7 +169,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "AutoTarget"
                 }
               }
             ]
@@ -135,15 +180,28 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Run Indexer"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "RotateToSpeaker"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Run Indexer"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "AutoTarget"
                 }
               }
             ]
@@ -156,7 +214,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "final quad note"
+                  "pathName": "Quad 4"
                 }
               },
               {
@@ -164,20 +222,8 @@
                 "data": {
                   "name": "Run Intake"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpeakerShot"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "back to subwoofer from amp"
           }
         },
         {
@@ -185,15 +231,47 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Run Indexer"
+                  "pathName": "Quad 5"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShot"
+                  "name": "AutoTarget"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "RotateToSpeaker"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Run Indexer"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
                 }
               }
             ]

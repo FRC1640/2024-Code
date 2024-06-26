@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.182203031072729,
+        "y": 2.565405130810262
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.9945813224959785,
+        "y": 3.4347924251404054
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.18474303615274,
+        "y": 5.672395789236023
+      },
+      "prevControl": {
+        "x": 6.916292721474333,
+        "y": 4.453828352101149
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": -147.75383748645112,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableAprilTags"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.3,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -130.31410016049728,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source Side Subwoofer",
+  "previewStartingState": {
+    "rotation": 136.98798846831508,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

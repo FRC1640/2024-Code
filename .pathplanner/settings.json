@@ -3,22 +3,14 @@
   "robotLength": 0.914,
   "holonomicMode": true,
   "pathFolders": [
-    "5 Note",
-    "Amp Far Side Paths",
-    "April Tag Test",
-    "Apriltag Test",
-    "Fast Quad",
-    "Middle to far",
-    "Quad Paths",
+    "Amp Side",
     "Source Side Subwoofer",
-    "Source Start",
-    "Test"
+    "Quad",
+    "Very Source"
   ],
-  "autoFolders": [
-    "Tests"
-  ],
-  "defaultMaxVel": 2.0,
-  "defaultMaxAccel": 2.0,
+  "autoFolders": [],
+  "defaultMaxVel": 3.3,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.0
