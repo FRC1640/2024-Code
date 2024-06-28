@@ -4,9 +4,11 @@ package frc.robot.sensors.Vision.MLVision;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.lib.periodic.PeriodicBase;
+import frc.robot.Constants.MLConstants;
 
 
 public class MLVision extends PeriodicBase {
@@ -21,6 +23,8 @@ public class MLVision extends PeriodicBase {
         io.updateInputs(inputs);
 
         Logger.processInputs("ML Vision", inputs);
+
+        
 
     }
     
@@ -67,5 +71,13 @@ public class MLVision extends PeriodicBase {
         //return new WaitUntilCommand
         return new WaitUntilCommand(()->isTarget() && getTA() > taMin); 
 
+    }
+
+    public Translation2d getCameraRelativeNotePos(){
+        double y = (MLConstants.noteHeight / 2 - MLConstants.cameraHeight);
+        double x = (1 / Math.tan(Math.toRadians(inputs.ty + MLConstants.angle))) * y;
+        double x1 = Math.cos(Math.toRadians(inputs.tx)) * x;
+        double y1 = Math.sin(Math.toRadians(inputs.tx)) * x;
+        return new Translation2d(x1, y1);
     }
 }

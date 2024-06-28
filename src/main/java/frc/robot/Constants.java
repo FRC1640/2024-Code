@@ -18,6 +18,12 @@ public final class Constants {
         FL, FR, BL, BR;
     }
 
+    public static class MLConstants{
+        public static final double cameraHeight = 0;
+        public static final double noteHeight = Units.inchesToMeters(2);
+        public static final double angle = -18;
+    }
+
     public static class AprilTagVisionConstants {
         public static final double xyStdDev = 1.5;
         public static final double thetaStdDev = 99999999;

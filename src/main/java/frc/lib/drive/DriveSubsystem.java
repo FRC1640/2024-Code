@@ -52,6 +52,7 @@ import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
+import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.util.pathplanning.LocalADStarAK;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -91,10 +92,14 @@ public class DriveSubsystem extends SubsystemBase {
                     new SwerveModulePosition(),
                     new SwerveModulePosition()
             };
+    private MLVision ml;
 
-    public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
+    
+
+    public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions, MLVision ml) {
         this.gyro = gyro;
         this.visions = visions;
+        this.ml = ml;
 
         switch (Robot.getMode()) { // create modules
             case REAL:
@@ -182,6 +187,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
+        Logger.recordOutput("MLVision/NotePos", new Pose2d(ml.getCameraRelativeNotePos().plus(getPose().getTranslation()), new Rotation2d()));
 
         DashboardInit.setFieldPos(getPose());
     }
