@@ -636,7 +636,7 @@ public class RobotContainer {
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
-	public void generateNamedCommands(){ // HERE THIS IS THE THING WHERE THE THING GOES
+	public void generateNamedCommands(){
 		// double offset = 4;
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
