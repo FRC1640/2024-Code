@@ -544,20 +544,19 @@ public class RobotContainer {
 
 	public Command fullSpeakerShot(){
 		Command c = manualShotAuto(55);
-		return new ParallelDeadlineGroup(c, generateIntakeCommandAuto(), c);
+		return new ParallelDeadlineGroup(c, generateIntakeCommandAuto());
 	}
 
 	public Command rotCommand(){
 		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), generateIntakeCommandAuto());
 		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
-		return new ParallelDeadlineGroup(s, c ,s);
+		return new ParallelDeadlineGroup(s, c);
 	}
 
 	public Command rotCommand(double wait){
-		Command a = new WaitCommand(wait);
-		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), a, generateIntakeCommandAuto());
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), new WaitCommand(wait), generateIntakeCommandAuto());
 		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
-		return new ParallelDeadlineGroup(s, c ,s);
+		return new ParallelDeadlineGroup(s, c);
 	}
 
 	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
