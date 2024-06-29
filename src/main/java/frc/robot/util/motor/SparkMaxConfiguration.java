@@ -76,7 +76,7 @@ public class SparkMaxConfiguration {
         spark.burnFlash();
     }
 
-    public void config(CANSparkMax spark, Type limSwitchType) {
+    public void config(CANSparkMax spark) {
         configIdleMode(spark);
         configInverted(spark);
         configLimitSwitch(spark);

@@ -3,7 +3,10 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkLimitSwitch;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
+import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +19,17 @@ import frc.lib.drive.Module.ModuleInfo;
 public final class Constants {
     public static enum PivotId {
         FL, FR, BL, BR;
+    }
+
+    public static class SparkMaxDefaults {
+        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final boolean inverted = false;
+        public static final boolean limitSwitch = false;
+        public static final Type limSwitchType = SparkLimitSwitch.Type.kNormallyOpen;
+        public static final int smartCurrentLimit = 60;
+        public static final int encoderMeasurementPeriod = 8;
+        public static final int encoderAverageDepth = 2;
+        public static final int canTimeout = ;
     }
 
     public static class AprilTagVisionConstants {
