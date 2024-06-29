@@ -654,5 +654,6 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Field Shot (wait .1s)", rotCommand(.1));
 		NamedCommands.registerCommand("Field Shot (wait .2s)", rotCommand(.2));
 		NamedCommands.registerCommand("Field Shot (wait .3s)", rotCommand(.3));
+		NamedCommands.registerCommand("Field Shot (wait .35s)", rotCommand(.35));
 	}
 }
