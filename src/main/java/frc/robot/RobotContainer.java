@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -541,6 +542,24 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(targetAngle).repeatedly();
 	}
 
+	public Command fullSpeakerShot(){
+		Command c = manualShotAuto(55);
+		return new ParallelDeadlineGroup(c, generateIntakeCommandAuto(), c);
+	}
+
+	public Command rotCommand(){
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), generateIntakeCommandAuto());
+		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
+		return new ParallelDeadlineGroup(s, c ,s);
+	}
+
+	public Command rotCommand(double wait){
+		Command a = new WaitCommand(wait);
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), a, generateIntakeCommandAuto());
+		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
+		return new ParallelDeadlineGroup(s, c ,s);
+	}
+
 	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
@@ -618,7 +637,7 @@ public class RobotContainer {
 			.alongWith(targetingSubsystem.anglePIDCommand(50));
 	}
 
-	public void generateNamedCommands(){
+	public void generateNamedCommands(){ // HERE THIS IS THE THING WHERE THE THING GOES
 		// double offset = 4;
 		NamedCommands.registerCommand("Run Indexer", generateIntakeCommandAuto());
 		NamedCommands.registerCommand("Run Intake", intakeNote());
@@ -630,5 +649,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotateToSpeaker", driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()));
 
 		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
+
+		NamedCommands.registerCommand("Full Speaker Shot", fullSpeakerShot());
+		NamedCommands.registerCommand("Field Shot (no wait)", rotCommand());
+		NamedCommands.registerCommand("Field Shot (wait .1s)", rotCommand(.1));
+		NamedCommands.registerCommand("Field Shot (wait .2s)", rotCommand(.2));
+		NamedCommands.registerCommand("Field Shot (wait .3s)", rotCommand(.3));
 	}
 }
