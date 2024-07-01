@@ -1,23 +1,32 @@
 package frc.robot.subsystems.extension;
 
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
+import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.Constants.TargetingConstants;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ExtensionIOSparkMax implements ExtensionIO{
     private final CANSparkMax extensionMotor;
     public ExtensionIOSparkMax(){
-        extensionMotor = new CANSparkMax(TargetingConstants.extensionMotorId, MotorType.kBrushless);
-        extensionMotor.setInverted(true);
-        extensionMotor.setIdleMode(IdleMode.kBrake);
+        extensionMotor = SparkMaxConfigurer.configSpark(
+                TargetingConstants.extensionMotorId,
+                new SparkMaxConfiguration(
+                    IdleMode.kBrake,
+                    true,
+                    true,
+                    SparkMaxDefaults.limSwitchType,
+                    SparkMaxDefaults.smartCurrentLimit,
+                    SparkMaxDefaults.encoderMeasurementPeriod,
+                    SparkMaxDefaults.encoderAverageDepth,
+                    SparkMaxDefaults.canTimeout));
         Constants.updateStatusFrames(extensionMotor, 100, 20, 20, 500, 500, 500, 500);
-        extensionMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
     }
 
     @Override

@@ -1,14 +1,13 @@
 package frc.robot.subsystems.climber;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
 import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.SparkMaxConfigurer;
@@ -22,19 +21,28 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
-        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID, new SparkMaxConfiguration(IdleMode.kBreak, false, false, SparkLimitSwitch.Type.kNormallyOpen, 80, 0, 0, 0));
-        rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
+        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID,
+                new SparkMaxConfiguration(
+                    IdleMode.kBrake, 
+                    false,
+                    SparkMaxDefaults.limitSwitch,
+                    SparkMaxDefaults.limSwitchType,
+                    80,
+                    SparkMaxDefaults.encoderMeasurementPeriod,
+                    SparkMaxDefaults.encoderAverageDepth,
+                    SparkMaxDefaults.canTimeout));
+        rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID,
+                new SparkMaxConfiguration(
+                    IdleMode.kBrake, 
+                    false,
+                    SparkMaxDefaults.limitSwitch,
+                    SparkMaxDefaults.limSwitchType,
+                    80,
+                    SparkMaxDefaults.encoderMeasurementPeriod,
+                    SparkMaxDefaults.encoderAverageDepth,
+                    SparkMaxDefaults.canTimeout));
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
-
-        leftMotor.setInverted(false);
-        rightMotor.setInverted(false);
-
-        leftMotor.setIdleMode(IdleMode.kBrake);
-        rightMotor.setIdleMode(IdleMode.kBrake);
-
-        leftMotor.setSmartCurrentLimit(80);
-        rightMotor.setSmartCurrentLimit(80);
 
         Constants.updateStatusFrames(leftMotor, 100, 20, 20, 500, 500, 500, 500);
         Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);

@@ -27,9 +27,9 @@ public final class Constants {
         public static final boolean limitSwitch = false;
         public static final Type limSwitchType = SparkLimitSwitch.Type.kNormallyOpen;
         public static final int smartCurrentLimit = 60;
-        public static final int encoderMeasurementPeriod = 8;
-        public static final int encoderAverageDepth = 2;
-        public static final int canTimeout = ;
+        public static final int encoderMeasurementPeriod = 20; // TODO val
+        public static final int encoderAverageDepth = 8; // TODO val
+        public static final int canTimeout = 0; // TODO val
     }
 
     public static class AprilTagVisionConstants {
