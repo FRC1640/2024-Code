@@ -86,9 +86,11 @@ public class MLVision extends PeriodicBase {
             double y1 = Math.sin(Math.toRadians(inputs.allTx[n])) * x;
 
             Translation2d pos = new Translation2d(x1, -y1);
-            posArray.add(pos);
+            if (MLConstants.FOV - Math.abs(inputs.allTx[n]) > MLConstants.FOVPadding + 2){
+                posArray.add(pos);
+            }
         }
-        return (Translation2d[])posArray.toArray();
+        return posArray.toArray(Translation2d[]::new);
         // return sum.times(1/averageLength);
     }
     public Translation2d[] getFieldRelativeNotePos(Pose2d robotPos){

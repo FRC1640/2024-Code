@@ -13,6 +13,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -585,6 +586,13 @@ public class DriveSubsystem extends SubsystemBase {
             }
         }
         return getPose();
+    }
+
+    public Command pathWithMovableEndpoint(String pathName, Supplier<Translation2d> endpoint){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+        path.preventFlipping = true;
+        path.getAllPathPoints().set(path.getAllPathPoints().size() - 1, new PathPoint(endpoint.get()));
+        return AutoBuilder.followPath(path);
     }
 
     public boolean getRotAccuracy() {

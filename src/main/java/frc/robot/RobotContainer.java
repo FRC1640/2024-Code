@@ -385,10 +385,6 @@ public class RobotContainer {
 		
 		new Trigger(() -> driveControllerHID.getBButton())
 			.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
-		new Trigger(() -> operatorControllerHID.getAButton()).whileTrue(trapShotCommand()
-			.alongWith(targetingSubsystem.runBlowerCommand(1))
-			.alongWith(generateIntakeNoRobot(2, 0.8)))
-			.onFalse(targetingSubsystem.anglePIDCommand(()->30).repeatedly().until(()->targetingSubsystem.isAnglePositionAccurate(5)));
 
 
 		// new Trigger(()->operatorControllerHID.getYButton())
