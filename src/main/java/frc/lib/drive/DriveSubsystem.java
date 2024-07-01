@@ -93,14 +93,12 @@ public class DriveSubsystem extends SubsystemBase {
                     new SwerveModulePosition(),
                     new SwerveModulePosition()
             };
-    private MLVision ml;
 
     
 
     public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
         this.visions = visions;
-        this.ml = ml;
 
         switch (Robot.getMode()) { // create modules
             case REAL:
@@ -188,8 +186,6 @@ public class DriveSubsystem extends SubsystemBase {
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
-        // Logger.recordOutput("MLVision/NotePos", new Pose2d(ml.getCameraRelativeNotePos().rotateBy(new Rotation2d(getPose().getRotation().getRadians() + Math.PI)).plus(getPose().getTranslation()), new Rotation2d()));
-
         DashboardInit.setFieldPos(getPose());
     }
 

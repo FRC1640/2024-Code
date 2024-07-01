@@ -129,13 +129,17 @@ public class RobotContainer {
 	public double autoSpeeds = 0.6;
 
 	public RobotContainer() {
+		ArrayList<AprilTagVision> visions = new ArrayList<>();
 		switch (Robot.getMode()) {
 			case REAL:
 				extensionSubsystem = new ExtensionSubsystem(new ExtensionIOSparkMax());
 				gyro = new Gyro(new GyroIONavX());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-front"), "-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOLimelight("limelight-back"), "-back");
-			 	mlVision = new MLVision(new MLVisionIOLimelight());
+				visions.add(aprilTagVision1);
+				visions.add(aprilTagVision2);
+				driveSubsystem = new DriveSubsystem(gyro, visions);
+			 	mlVision = new MLVision(new MLVisionIOLimelight(),()->driveSubsystem.getPose());
 
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSparkMax());
 				// shooterSubsystem = new ShooterSubsystem(new ShooterIO(){});
@@ -154,7 +158,10 @@ public class RobotContainer {
 				shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
 				aprilTagVision1 = new AprilTagVision(new AprilTagVisionIOSim("limelight-front"),"-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIOSim("limelight-back"),"-back");
-				mlVision = new MLVision(new MLVisionIOSim());
+				visions.add(aprilTagVision1);
+				visions.add(aprilTagVision2);
+				driveSubsystem = new DriveSubsystem(gyro, visions);
+				mlVision = new MLVision(new MLVisionIOSim(),()->driveSubsystem.getPose());
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveControllerHID.getPOV() == 0));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
@@ -171,6 +178,9 @@ public class RobotContainer {
 				},"-front");
 				aprilTagVision2 = new AprilTagVision(new AprilTagVisionIO() {
 				},"-back");
+				visions.add(aprilTagVision1);
+				visions.add(aprilTagVision2);
+				driveSubsystem = new DriveSubsystem(gyro, visions);
 				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
 				});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
@@ -178,13 +188,11 @@ public class RobotContainer {
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
 				mlVision = new MLVision(new MLVisionIO() {
-				});
+				}, ()->driveSubsystem.getPose());
 				break;
 		}
-		ArrayList<AprilTagVision> visions = new ArrayList<>();
-		visions.add(aprilTagVision1);
-		visions.add(aprilTagVision2);
-		driveSubsystem = new DriveSubsystem(gyro, visions);
+		
+		
 
 		
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedCommand(0, 0, 0, 0));
