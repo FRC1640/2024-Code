@@ -49,7 +49,6 @@ import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOSim;
-import frc.robot.subsystems.climber.AutoTrapClimbCommandFactory;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
@@ -114,8 +113,6 @@ public class RobotContainer {
 	RotateToAngleWeight movingWhileShootingWeight;
 	
 	RotateToAngleWeight rotateToStageWeight;
-
-	AutoTrapClimbCommandFactory climbCommandFactory;
 
 	boolean autoTargetBool = false;
 
@@ -247,8 +244,6 @@ public class RobotContainer {
 				driveSubsystem::getPose, gyro);
 
 		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
-
-		climbCommandFactory = new AutoTrapClimbCommandFactory(climberSubsystem, () -> driveSubsystem.getPose(), () -> getNearestStage(), gyro, driveSubsystem, extensionSubsystem, targetingSubsystem, shooterSubsystem);
 
 		rotateToStageWeight = new RotateToAngleWeight(
 			() -> (getNearestStage().getRotation().getRadians()), 
