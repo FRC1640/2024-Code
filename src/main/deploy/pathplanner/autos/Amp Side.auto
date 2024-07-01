@@ -27,7 +27,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Field Shot (wait .1s)"
+            "name": "RotCommand(.1)"
           }
         },
         {
@@ -58,7 +58,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Field Shot (wait .1s)"
+            "name": "RotCommand(.1)"
           }
         },
         {
@@ -89,7 +89,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Field Shot (wait .1s)"
+            "name": "RotCommand(.1)"
           }
         }
       ]

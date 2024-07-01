@@ -650,10 +650,10 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
 
 		NamedCommands.registerCommand("Full Speaker Shot", fullSpeakerShot());
-		NamedCommands.registerCommand("Field Shot (no wait)", rotCommand());
-		NamedCommands.registerCommand("Field Shot (wait .1s)", rotCommand(.1));
-		NamedCommands.registerCommand("Field Shot (wait .2s)", rotCommand(.2));
-		NamedCommands.registerCommand("Field Shot (wait .3s)", rotCommand(.3));
-		NamedCommands.registerCommand("Field Shot (wait .35s)", rotCommand(.35));
+		NamedCommands.registerCommand("RotCommand(0)", rotCommand());
+		NamedCommands.registerCommand("RotCommand(.1)", rotCommand(.1));
+		NamedCommands.registerCommand("RotCommand(.2)", rotCommand(.2));
+		NamedCommands.registerCommand("RotCommand(.3)", rotCommand(.3));
+		NamedCommands.registerCommand("RotCommand(.35)", rotCommand(.35));
 	}
 }
