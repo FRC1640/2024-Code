@@ -104,35 +104,24 @@ public class MLVision extends PeriodicBase {
         ArrayList<Translation2d> validNotes = new ArrayList<>();
         for (Translation2d note : noteMemory) {
             double angle = Math.atan2(robotPos.getX() - note.getX(), robotPos.getY() - note.getY());
-            if (angle >= -Math.toRadians(62.5/2 - 10) + robotPos.getRotation().getRadians() && 
-                    angle <= Math.toRadians(62.5/2 - 10) + robotPos.getRotation().getRadians() && 
-                    robotPos.getTranslation().getDistance(note) <= 2){
+            if (angle >= -Math.toRadians(MLConstants.FOV/2 - MLConstants.FOVPadding) + robotPos.getRotation().getRadians() && 
+                    angle <= Math.toRadians(MLConstants.FOV/2 - MLConstants.FOVPadding) + robotPos.getRotation().getRadians() && 
+                    robotPos.getTranslation().getDistance(note) <= MLConstants.usableDistance){
                 validNotes.add(note);
             }
         }
         Logger.recordOutput("MLVision/ValidNotes", validNotes.toArray(Translation2d[]::new));
 
-        // if a seen note is within 0.4 meters of a note in memory, keep it in memory and update pos. if not, delete it
-        ArrayList<Translation2d> boundNotes = new ArrayList<>();
+        // clear notes which should be seen from memory, so actual seen notes can be readded.
+        
         for (Translation2d note : validNotes) {
-            boolean toDelete = true;
-            for (Translation2d seenNote : canSee) {
-                if (note.getDistance(seenNote) < 0.4 && !boundNotes.contains(seenNote)){
-                    toDelete = false;
-                    noteMemory.set(noteMemory.indexOf(note), seenNote);
-                    boundNotes.add(seenNote);
-                    break;
-                }
-            }
-            if (toDelete){
-                noteMemory.remove(note);
-            }
+            noteMemory.remove(note);
         }
 
-        // if any seen notes haven't been bound to one in memory, add them to memory. 
+        // readd seen notes to memory
 
         for (Translation2d note : canSee) {
-            if (!boundNotes.contains(note)){
+            if (note.getDistance(robotPos.getTranslation()) < MLConstants.usableDistance){
                 noteMemory.add(note);
             }
         }

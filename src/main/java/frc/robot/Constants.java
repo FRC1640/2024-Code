@@ -22,6 +22,9 @@ public final class Constants {
         public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
         public static final double noteHeight = Units.inchesToMeters(2);
         public static final double angle = -18;
+        public static final double FOV = 62.5;
+        public static final double FOVPadding = 10;
+        public static final double usableDistance = 2.5;
     }
 
     public static class AprilTagVisionConstants {
