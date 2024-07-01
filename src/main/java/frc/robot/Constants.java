@@ -19,7 +19,7 @@ public final class Constants {
     }
 
     public static class MLConstants{
-        public static final double cameraHeight = 0;
+        public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
         public static final double noteHeight = Units.inchesToMeters(2);
         public static final double angle = -18;
     }

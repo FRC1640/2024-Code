@@ -12,6 +12,7 @@ import javax.swing.plaf.basic.BasicIconFactory;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -96,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     
 
-    public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions, MLVision ml) {
+    public DriveSubsystem(Gyro gyro, ArrayList<AprilTagVision> visions) {
         this.gyro = gyro;
         this.visions = visions;
         this.ml = ml;
@@ -187,7 +188,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Log swerve states
         Logger.recordOutput("Drive/SwerveStates", getActualSwerveStates());
         Logger.recordOutput("Drive/DesiredSwerveStates", getDesiredSwerveStates());
-        Logger.recordOutput("MLVision/NotePos", new Pose2d(ml.getCameraRelativeNotePos().plus(getPose().getTranslation()), new Rotation2d()));
+        // Logger.recordOutput("MLVision/NotePos", new Pose2d(ml.getCameraRelativeNotePos().rotateBy(new Rotation2d(getPose().getRotation().getRadians() + Math.PI)).plus(getPose().getTranslation()), new Rotation2d()));
 
         DashboardInit.setFieldPos(getPose());
     }

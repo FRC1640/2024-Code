@@ -26,6 +26,10 @@ public interface MLVisionIO {
         public double calculatedTy;
         public double calculatedTa;
 
+
+        public double[] allTx;
+        public double[] allTy;
+
         
     }
     public default void updateInputs(MLVisionIOInputs inputs) {
