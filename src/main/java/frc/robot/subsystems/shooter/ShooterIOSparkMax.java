@@ -1,32 +1,70 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.SparkMaxDefaults;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.SparkMaxConfigurer;
+import frc.robot.util.motor.StatusFrames;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topLeftShooter = new CANSparkMax(ShooterConstants.topLeftCanID, MotorType.kBrushless); 
-        bottomLeftShooter = new CANSparkMax(ShooterConstants.bottomLeftCanID, MotorType.kBrushless);
-        topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); 
-        bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
-
-
-        Constants.updateStatusFrames(topLeftShooter, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(topRightShooter, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(bottomLeftShooter, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(bottomRightShooter, 100, 200, 200, 500, 500, 500, 500);
-
-        topLeftShooter.setInverted(true);
-        bottomRightShooter.setInverted(true);
-        topRightShooter.setInverted(false);
-        bottomLeftShooter.setInverted(false);
+        topLeftShooter = SparkMaxConfigurer.configSpark(
+            ShooterConstants.topLeftCanID,
+            new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                true,
+                SparkMaxDefaults.limitSwitch,
+                SparkMaxDefaults.limSwitchType,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                    new StatusFrames(100, 200, 200,
+                        500, 500, 500, 500)));
+        bottomLeftShooter = SparkMaxConfigurer.configSpark(
+            ShooterConstants.bottomLeftCanID,
+            new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                SparkMaxDefaults.inverted,
+                SparkMaxDefaults.limitSwitch,
+                SparkMaxDefaults.limSwitchType,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 200, 200,
+                    500, 500, 500, 500)));
+        topRightShooter = SparkMaxConfigurer.configSpark(
+            ShooterConstants.topRightCanID,
+            new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                SparkMaxDefaults.inverted,
+                SparkMaxDefaults.limitSwitch,
+                SparkMaxDefaults.limSwitchType,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 200, 200,
+                    500, 500, 500, 500)));
+        bottomRightShooter = SparkMaxConfigurer.configSpark(
+            ShooterConstants.bottomRightCanID,
+            new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                true,
+                SparkMaxDefaults.limitSwitch,
+                SparkMaxDefaults.limSwitchType,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 200, 200,
+                    500, 500, 500, 500)));
     }
 
     @Override

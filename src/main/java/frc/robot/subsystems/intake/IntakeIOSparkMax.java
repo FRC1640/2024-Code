@@ -3,11 +3,13 @@ import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.SparkMaxDefaults;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.SparkMaxConfigurer;
+import frc.robot.util.motor.StatusFrames;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
@@ -26,13 +28,32 @@ public class IntakeIOSparkMax implements IntakeIO {
     public IntakeIOSparkMax(BooleanSupplier hasNote, BooleanSupplier clearCondition, BooleanSupplier startAuto) {
         this.clearCondition = clearCondition;
         this.startAuto = startAuto;
-        intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
-        indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
-        indexerMotor.setInverted(true);
-        indexerMotor.setIdleMode(IdleMode.kBrake);
-
-        Constants.updateStatusFrames(intakeMotor, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(indexerMotor, 100, 200, 200, 500, 500, 500, 500);
+        intakeMotor = SparkMaxConfigurer.configSpark(
+                IntakeConstants.intakeCanID,
+                new SparkMaxConfiguration(
+                    IdleMode.kBrake,
+                    true,
+                    SparkMaxDefaults.limitSwitch,
+                    SparkMaxDefaults.limSwitchType,
+                    SparkMaxDefaults.smartCurrentLimit,
+                    SparkMaxDefaults.encoderMeasurementPeriod,
+                    SparkMaxDefaults.encoderAverageDepth,
+                    SparkMaxDefaults.canTimeout,
+                    new StatusFrames(100, 200, 200,
+                        500, 500, 500, 500)));
+        indexerMotor = SparkMaxConfigurer.configSpark(
+                IntakeConstants.indexerCanID,
+                new SparkMaxConfiguration(
+                    IdleMode.kBrake,
+                    true,
+                    SparkMaxDefaults.limitSwitch,
+                    SparkMaxDefaults.limSwitchType,
+                    SparkMaxDefaults.smartCurrentLimit,
+                    SparkMaxDefaults.encoderMeasurementPeriod,
+                    SparkMaxDefaults.encoderAverageDepth,
+                    SparkMaxDefaults.canTimeout,
+                    new StatusFrames(100, 200, 200,
+                        500, 500, 500, 500)));
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }

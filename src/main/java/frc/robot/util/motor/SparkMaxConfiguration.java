@@ -14,11 +14,12 @@ public class SparkMaxConfiguration {
     private int encoderMeasurementPeriod;
     private int encoderAverageDepth;
     private int canTimeout;
+    private StatusFrames statusFrames;
     private boolean burn = false;
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted,
             boolean limitSwitch, Type limSwitchType, int smartCurrentLimit, int encoderMeasurementPeriod,
-            int encoderAverageDepth, int canTimeout) {
+            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
         this.idleMode = idleMode;
         this.inverted = inverted;
         this.limitSwitch = limitSwitch;
@@ -27,6 +28,7 @@ public class SparkMaxConfiguration {
         this.encoderMeasurementPeriod = encoderMeasurementPeriod;
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
+        this.statusFrames = statusFrames;
     }
 
     public void configIdleMode(CANSparkMax spark) {
@@ -72,8 +74,16 @@ public class SparkMaxConfiguration {
         spark.setCANTimeout(canTimeout);
     }
 
+    public void updateStatusFrames(CANSparkMax spark) {
+        statusFrames.updateStatusFrames(spark);
+    }
+
     public void burnFlash(CANSparkMax spark) {
         spark.burnFlash();
+    }
+
+    public boolean getFlashed() {
+        return burn;
     }
 
     public void config(CANSparkMax spark) {
@@ -84,6 +94,7 @@ public class SparkMaxConfiguration {
         configEncoderMeasurementPeriod(spark);
         configEncoderAverageDepth(spark);
         configCANTimeout(spark);
+        updateStatusFrames(spark);
         if (burn) { burnFlash(spark); }
     }
 }

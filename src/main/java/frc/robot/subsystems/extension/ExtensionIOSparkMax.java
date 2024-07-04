@@ -6,11 +6,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.SparkMaxConfigurer;
+import frc.robot.util.motor.StatusFrames;
 
 public class ExtensionIOSparkMax implements ExtensionIO{
     private final CANSparkMax extensionMotor;
@@ -25,8 +25,9 @@ public class ExtensionIOSparkMax implements ExtensionIO{
                     SparkMaxDefaults.smartCurrentLimit,
                     SparkMaxDefaults.encoderMeasurementPeriod,
                     SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout));
-        Constants.updateStatusFrames(extensionMotor, 100, 20, 20, 500, 500, 500, 500);
+                    SparkMaxDefaults.canTimeout,
+                    new StatusFrames(100, 20, 20,
+                        500, 500, 500, 500)));
     }
 
     @Override

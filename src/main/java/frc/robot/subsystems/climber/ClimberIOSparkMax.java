@@ -11,6 +11,7 @@ import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
 import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.SparkMaxConfigurer;
+import frc.robot.util.motor.StatusFrames;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax leftMotor;
@@ -30,7 +31,9 @@ public class ClimberIOSparkMax implements ClimberIO {
                     80,
                     SparkMaxDefaults.encoderMeasurementPeriod,
                     SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout));
+                    SparkMaxDefaults.canTimeout,
+                    new StatusFrames(100, 20, 20,
+                        500, 500, 500, 500)));
         rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID,
                 new SparkMaxConfiguration(
                     IdleMode.kBrake, 
@@ -40,12 +43,11 @@ public class ClimberIOSparkMax implements ClimberIO {
                     80,
                     SparkMaxDefaults.encoderMeasurementPeriod,
                     SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout));
+                    SparkMaxDefaults.canTimeout,
+                    new StatusFrames(100, 20, 20,
+                        500, 500, 500, 500)));
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
-
-        Constants.updateStatusFrames(leftMotor, 100, 20, 20, 500, 500, 500, 500);
-        Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);
         rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 3.637, 2.585, 11, 84); //note: to create resolver constants class for min/max
     }
