@@ -32,7 +32,7 @@ public class IntakeIOSparkMax implements IntakeIO {
                 IntakeConstants.intakeCanID,
                 new SparkMaxConfiguration(
                     IdleMode.kBrake,
-                    true,
+                    false,
                     SparkMaxDefaults.limitSwitch,
                     SparkMaxDefaults.limSwitchType,
                     SparkMaxDefaults.smartCurrentLimit,
