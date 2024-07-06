@@ -35,6 +35,7 @@ public class ModuleIOSparkMax implements ModuleIO {
     // Constants.SwerveDriveDimensions.wheelRadius;
     private final double kDriveGearRatio = Constants.SwerveDriveDimensions.driveGearRatio;
     private ModuleInfo id;
+    private String name;
 
     public ModuleIOSparkMax(ModuleInfo id) {
 
