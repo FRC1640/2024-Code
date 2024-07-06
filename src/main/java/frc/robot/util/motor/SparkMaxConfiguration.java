@@ -16,10 +16,11 @@ public class SparkMaxConfiguration {
     private int canTimeout;
     private StatusFrames statusFrames;
     private boolean burn = false;
+    private String motorName;
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted,
             boolean limitSwitch, Type limSwitchType, int smartCurrentLimit, int encoderMeasurementPeriod,
-            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
+            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames, String motorName) {
         this.idleMode = idleMode;
         this.inverted = inverted;
         this.limitSwitch = limitSwitch;
@@ -29,6 +30,7 @@ public class SparkMaxConfiguration {
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.statusFrames = statusFrames;
+        this.motorName = motorName;
     }
 
     public void configIdleMode(CANSparkMax spark) {
@@ -84,6 +86,10 @@ public class SparkMaxConfiguration {
 
     public boolean getFlashed() {
         return burn;
+    }
+
+    public String getMotorName() {
+        return motorName;
     }
 
     public void config(CANSparkMax spark) {

@@ -35,7 +35,8 @@ public class TargetingIOSparkMax implements TargetingIO {
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 20, 20,
-                        500, 500, 500, 500)));
+                        500, 500, 500, 500),
+                "Angler"));
     }
 
     @Override
