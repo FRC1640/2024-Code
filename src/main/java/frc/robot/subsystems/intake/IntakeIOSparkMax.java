@@ -31,7 +31,7 @@ public class IntakeIOSparkMax implements IntakeIO {
         intakeMotor = SparkMaxConfigurer.configSpark(
                 IntakeConstants.intakeCanID,
                 new SparkMaxConfiguration(
-                    IdleMode.kBrake,
+                    SparkMaxDefaults.idleMode,
                     false,
                     SparkMaxDefaults.limitSwitch,
                     SparkMaxDefaults.limSwitchType,
