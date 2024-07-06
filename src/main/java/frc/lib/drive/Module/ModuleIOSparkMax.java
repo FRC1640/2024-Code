@@ -35,7 +35,6 @@ public class ModuleIOSparkMax implements ModuleIO {
     // Constants.SwerveDriveDimensions.wheelRadius;
     private final double kDriveGearRatio = Constants.SwerveDriveDimensions.driveGearRatio;
     private ModuleInfo id;
-    private String name;
 
     public ModuleIOSparkMax(ModuleInfo id) {
 
@@ -54,7 +53,8 @@ public class ModuleIOSparkMax implements ModuleIO {
                 2,
                 250,
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500)));
+                    500, 500, 500, 500),
+                id.logFlashKey));
         steeringMotor = SparkMaxConfigurer.configSpark(
             id.steerChannel,
             new SparkMaxConfiguration(
@@ -67,7 +67,8 @@ public class ModuleIOSparkMax implements ModuleIO {
                 2,
                 250,
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500)));
+                    500, 500, 500, 500),
+                id.logFlashKey));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(

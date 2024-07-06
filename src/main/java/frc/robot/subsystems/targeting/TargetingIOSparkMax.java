@@ -36,7 +36,7 @@ public class TargetingIOSparkMax implements TargetingIO {
                 SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 20, 20,
                         500, 500, 500, 500),
-                "Angler"));
+                "Targeting/Angler flashed?"));
     }
 
     @Override

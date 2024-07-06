@@ -41,7 +41,7 @@ public class IntakeIOSparkMax implements IntakeIO {
                     SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 200, 200,
                         500, 500, 500, 500),
-                        "Intake"));
+                        "Intake/Intake flashed?"));
         indexerMotor = SparkMaxConfigurer.configSpark(
                 IntakeConstants.indexerCanID,
                 new SparkMaxConfiguration(
@@ -55,7 +55,7 @@ public class IntakeIOSparkMax implements IntakeIO {
                     SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 200, 200,
                         500, 500, 500, 500),
-                    "Indexer"));
+                    "Intake/Indexer flashed?"));
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }

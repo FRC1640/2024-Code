@@ -26,7 +26,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 200, 200,
                         500, 500, 500, 500),
-                "Shooter TL"));
+                "Shooter/TL flashed?"));
         bottomLeftShooter = SparkMaxConfigurer.configSpark(
             ShooterConstants.bottomLeftCanID,
             new SparkMaxConfiguration(
@@ -40,7 +40,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500),
-                "Shooter BL"));
+                "Shooter/BL flashed?"));
         topRightShooter = SparkMaxConfigurer.configSpark(
             ShooterConstants.topRightCanID,
             new SparkMaxConfiguration(
@@ -54,7 +54,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500),
-                "Shooter TR"));
+                "Shooter/TR flashed?"));
         bottomRightShooter = SparkMaxConfigurer.configSpark(
             ShooterConstants.bottomRightCanID,
             new SparkMaxConfiguration(
@@ -68,7 +68,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500),
-                "Shooter BR"));
+                "Shooter/BR flashed?"));
     }
 
     @Override

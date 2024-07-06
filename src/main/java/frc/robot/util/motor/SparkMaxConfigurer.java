@@ -7,6 +7,7 @@ public class SparkMaxConfigurer {
     public static CANSparkMax configSpark(int id, SparkMaxConfiguration config) {
         CANSparkMax spark = new CANSparkMax(id, MotorType.kBrushless);
         config.config(spark);
+        FlashLogger.getInstance().addFlash(config);
         return spark;
     }
 }
