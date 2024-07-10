@@ -80,8 +80,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2),
-                "Drive/SparkFlash/FL flashed?");
+                Units.inchesToMeters(3.873 / 2));
 
         public static final ModuleInfo FR = new ModuleInfo(
                 PivotId.FR,
@@ -92,8 +91,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2),
-                "Drive/SparkFlash/FR flashed?");
+                Units.inchesToMeters(3.873 / 2));
 
         public static final ModuleInfo BL = new ModuleInfo(
                 PivotId.BL,
@@ -104,8 +102,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2),
-                "Drive/SparkFlash/BL flashed?");
+                Units.inchesToMeters(3.873 / 2));
 
         public static final ModuleInfo BR = new ModuleInfo(
                 PivotId.BR,
@@ -116,8 +113,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2),
-                "Drive/SparkFlash/BR flashed?");
+                Units.inchesToMeters(3.873 / 2));
     }
 
     public static class IntakeConstants {

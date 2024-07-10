@@ -13,7 +13,6 @@ public class ModuleInfo{
     boolean reverseSteer;
     boolean reverseAngle;
     double wheelRadius;
-    String logFlashKey;
     
     public ModuleInfo(PivotId id,
         int driveChannel,
@@ -23,8 +22,7 @@ public class ModuleInfo{
         boolean reverseDrive,
         boolean reverseSteer,
         boolean reverseAngle,
-        double wheelRadius,
-        String logFlashKey){
+        double wheelRadius){
             this.driveChannel = driveChannel;
             this.steerChannel = steerChannel;
             this.resolverChannel = resolverChannel;
@@ -33,6 +31,5 @@ public class ModuleInfo{
             this.reverseSteer = reverseSteer;
             this.reverseAngle = reverseAngle;
             this.wheelRadius = wheelRadius;
-            this.logFlashKey = logFlashKey;
         }
 }

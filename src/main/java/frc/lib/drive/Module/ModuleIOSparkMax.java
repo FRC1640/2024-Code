@@ -53,8 +53,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                 2,
                 250,
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500),
-                id.logFlashKey));
+                    500, 500, 500, 500)));
         steeringMotor = SparkMaxConfigurer.configSpark(
             id.steerChannel,
             new SparkMaxConfiguration(
@@ -67,8 +66,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                 2,
                 250,
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500),
-                id.logFlashKey));
+                    500, 500, 500, 500)));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
