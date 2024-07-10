@@ -2,6 +2,7 @@ package frc.lib.drive;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
@@ -13,6 +14,7 @@ import javax.swing.plaf.basic.BasicIconFactory;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -615,6 +617,14 @@ public class DriveSubsystem extends SubsystemBase {
 
         return AutoBuilder.followPath(path);
     }
+
+    public void setRotationTargetAuto(Supplier<Rotation2d> rotation){
+        PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.of(rotation.get()));
+    }
+    public void setRotationTargetAuto(){
+        PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.empty());
+    }
+
     public boolean getRotAccuracy() {
         return Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
                 DriveWeightCommand.getAngle(), getPose().getRotation().getRadians()))) < 3;
