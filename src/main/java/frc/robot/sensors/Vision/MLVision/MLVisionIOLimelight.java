@@ -6,6 +6,7 @@ import java.util.Arrays;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.lib.vision.LimelightHelpers;
+import frc.lib.vision.LimelightHelpers.LimelightResults;
 
 public class MLVisionIOLimelight implements MLVisionIO {
 
@@ -14,6 +15,7 @@ public class MLVisionIOLimelight implements MLVisionIO {
 
     @Override
     public void updateInputs(MLVisionIOInputs inputs) {
+        
         NetworkTable MLNetworkTable = NetworkTableInstance.getDefault().getTable("limelight-ml"); // network table for
                                                                                                   // object detection
         inputs.isTarget = MLNetworkTable.getEntry("tv").getDouble(0) > 0;
@@ -26,13 +28,19 @@ public class MLVisionIOLimelight implements MLVisionIO {
         inputs.ta = MLNetworkTable.getEntry("ta").getDouble(0); // Target Area (0% of image to 100% of image)
 
         llresults = LimelightHelpers.getLatestResults("limelight-ml");
+
+        
         resultsArray = llresults.targetingResults.targets_Detector;
+        
+        // inputs.pts = resultsArray[0].pts;
 
         inputs.isTargetNote = (resultsArray.length == 0) ? false : true;
         inputs.numVisibleNotes = resultsArray.length;
 
         inputs.allTx = Arrays.stream(resultsArray).mapToDouble((x) -> x.tx).toArray();
         inputs.allTy = Arrays.stream(resultsArray).mapToDouble((x) -> x.ty).toArray();
+
+        // inputs.width = Arrays.stream(resultsArray).mapToDouble((x) -> x.).toArray();
 
         // prioretized values
         inputs.calculatedTx = (inputs.isTarget) ? calculateTargetNote().tx : 0;

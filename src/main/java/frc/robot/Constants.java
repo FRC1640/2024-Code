@@ -25,6 +25,7 @@ public final class Constants {
         public static final double FOV = 62.5;
         public static final double FOVPadding = 10;
         public static final double usableDistance = 2.5;
+        public static final double width = Units.inchesToMeters(14);
     }
 
     public static class AprilTagVisionConstants {

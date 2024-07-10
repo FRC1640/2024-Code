@@ -85,4 +85,16 @@ public class ResolverSlope {
         }
         return v * 1000;
     }
+
+    public int getRawValue(){
+        return resolver.getValue();
+    }
+
+    public int getOffset(){
+        return resolver.getOffset();
+    }
+
+    public long getLSBWeight(){
+        return resolver.getLSBWeight();
+    }
 }

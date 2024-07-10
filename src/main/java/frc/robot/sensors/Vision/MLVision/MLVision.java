@@ -2,6 +2,7 @@ package frc.robot.sensors.Vision.MLVision;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -18,7 +19,7 @@ public class MLVision extends PeriodicBase {
     private MLVisionIO io;
     private MLVisionIOInputsAutoLogged inputs = new MLVisionIOInputsAutoLogged();
 
-    ArrayList<Translation2d> noteMemory = new ArrayList<>();
+    // ArrayList<Translation2d> noteMemory = new ArrayList<>();
     private Supplier<Pose2d> robotPos;
     
 
@@ -31,16 +32,12 @@ public class MLVision extends PeriodicBase {
         io.updateInputs(inputs);
         Logger.processInputs("ML Vision", inputs);
 
-        updateNoteMemory(robotPos.get());
-        Logger.recordOutput("MLVision/NoteMemory", noteMemory.toArray(Translation2d[]::new));
+        Logger.recordOutput("MLVision/closest note", getClosestNote().isPresent() ? getClosestNote().get() : new Translation2d(-999, -999));
+
+        // Logger.recordOutput("MLVision/Notes", );
+        Logger.recordOutput("MLVision/NoteMemory", Arrays.stream(getFieldRelativeNotePos(robotPos.get()))
+            .map((x) -> new Pose2d(x, new Rotation2d())).toArray(Pose2d[]::new));
     }
-
-    // Getters
-
-    public double getLatency() {
-        return inputs.latency;
-    }
-
     public boolean isTarget() {
         return inputs.isTarget;
     }
@@ -99,34 +96,54 @@ public class MLVision extends PeriodicBase {
         .toArray(Translation2d[]::new);
     }
 
-    public void updateNoteMemory(Pose2d robotPos){
-        // find notes which can be seen
-        Translation2d[] canSee = getFieldRelativeNotePos(robotPos);
-        Logger.recordOutput("MLVision/CanSee", canSee);
-        ArrayList<Translation2d> validNotes = new ArrayList<>();
-        for (Translation2d note : noteMemory) {
-            double angle = Math.atan2(robotPos.getX() - note.getX(), robotPos.getY() - note.getY());
-            if (angle >= -Math.toRadians(MLConstants.FOV/2 - MLConstants.FOVPadding) + robotPos.getRotation().getRadians() && 
-                    angle <= Math.toRadians(MLConstants.FOV/2 - MLConstants.FOVPadding) + robotPos.getRotation().getRadians() && 
-                    robotPos.getTranslation().getDistance(note) <= MLConstants.usableDistance){
-                validNotes.add(note);
+    public Optional<Translation2d> getClosestNote(Translation2d pose){
+
+        Translation2d[] notes = getFieldRelativeNotePos(robotPos.get());
+        if (notes.length == 0){
+            return Optional.empty();
+        }
+        Translation2d best = pose;
+        double bestDist = Double.POSITIVE_INFINITY;
+        for (Translation2d note : notes) {
+            if (note.getDistance(pose) < bestDist){
+                best = note;
+                bestDist = note.getDistance(pose);
             }
         }
-        Logger.recordOutput("MLVision/ValidNotes", validNotes.toArray(Translation2d[]::new));
-
-        // clear notes which should be seen from memory, so actual seen notes can be readded.
-        
-        for (Translation2d note : validNotes) {
-            noteMemory.remove(note);
-        }
-
-        // readd seen notes to memory
-
-        for (Translation2d note : canSee) {
-            if (note.getDistance(robotPos.getTranslation()) < MLConstants.usableDistance){
-                noteMemory.add(note);
-            }
-        }
-        
+        return Optional.of(best);
     }
+    public Optional<Translation2d> getClosestNote(){
+        return getClosestNote(robotPos.get().getTranslation());
+    }
+
+    // public void updateNoteMemory(Pose2d robotPos){
+    //     // find notes which can be seen
+    //     Translation2d[] canSee = getFieldRelativeNotePos(robotPos);
+    //     Logger.recordOutput("MLVision/CanSee", canSee);
+    //     ArrayList<Translation2d> validNotes = new ArrayList<>();
+    //     for (Translation2d note : noteMemory) {
+    //         double angle = Math.atan2(robotPos.getX() - note.getX(), robotPos.getY() - note.getY());
+    //         if (angle >= -Math.toRadians(MLConstants.FOV/2 - MLConstants.FOVPadding) + robotPos.getRotation().getRadians() && 
+    //                 angle <= Math.toRadians(MLConstants.FOV/2 - MLConstants.FOVPadding) + robotPos.getRotation().getRadians() && 
+    //                 robotPos.getTranslation().getDistance(note) <= MLConstants.usableDistance){
+    //             validNotes.add(note);
+    //         }
+    //     }
+    //     Logger.recordOutput("MLVision/ValidNotes", validNotes.toArray(Translation2d[]::new));
+
+    //     // clear notes which should be seen from memory, so actual seen notes can be readded.
+        
+    //     for (Translation2d note : validNotes) {
+    //         noteMemory.remove(note);
+    //     }
+
+    //     // readd seen notes to memory
+
+    //     for (Translation2d note : canSee) {
+    //         if (note.getDistance(robotPos.getTranslation()) < MLConstants.usableDistance){
+    //             noteMemory.add(note);
+    //         }
+    //     }
+        
+    // }
 }

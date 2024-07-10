@@ -30,7 +30,10 @@ public interface MLVisionIO {
         public double[] allTx;
         public double[] allTy;
 
-        
+        public double[] width;
+        public double[] height;
+
+        public double[] pts;
     }
     public default void updateInputs(MLVisionIOInputs inputs) {
     }
