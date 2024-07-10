@@ -27,8 +27,7 @@ public class ExtensionIOSparkMax implements ExtensionIO{
                     SparkMaxDefaults.encoderAverageDepth,
                     SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 20, 20,
-                        500, 500, 500, 500),
-                    "Extension/Flashed?"));
+                        500, 500, 500, 500)));
     }
 
     @Override

@@ -25,8 +25,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                     new StatusFrames(100, 200, 200,
-                        500, 500, 500, 500),
-                "Shooter/TL flashed?"));
+                        500, 500, 500, 500)));
         bottomLeftShooter = SparkMaxConfigurer.configSpark(
             ShooterConstants.bottomLeftCanID,
             new SparkMaxConfiguration(
@@ -39,8 +38,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500),
-                "Shooter/BL flashed?"));
+                    500, 500, 500, 500)));
         topRightShooter = SparkMaxConfigurer.configSpark(
             ShooterConstants.topRightCanID,
             new SparkMaxConfiguration(
@@ -53,8 +51,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500),
-                "Shooter/TR flashed?"));
+                    500, 500, 500, 500)));
         bottomRightShooter = SparkMaxConfigurer.configSpark(
             ShooterConstants.bottomRightCanID,
             new SparkMaxConfiguration(
@@ -67,8 +64,7 @@ public class ShooterIOSparkMax implements ShooterIO {
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500),
-                "Shooter/BR flashed?"));
+                    500, 500, 500, 500)));
     }
 
     @Override

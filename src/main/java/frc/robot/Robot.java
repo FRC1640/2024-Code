@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.drive.DriveWeightCommand;
 import frc.lib.periodic.PeriodicScheduler;
 import frc.robot.util.dashboard.PIDUpdate;
-import frc.robot.util.motor.FlashLogger;
 
 public class Robot extends LoggedRobot {
     public static enum Mode {
@@ -112,8 +111,6 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("inTeleop", inTeleop);
 
         m_robotContainer.get3dDistance(()->m_robotContainer.getSpeakerPos());
-
-        FlashLogger.getInstance().periodic();
     }
 
     @Override

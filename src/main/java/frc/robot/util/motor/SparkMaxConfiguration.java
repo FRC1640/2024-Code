@@ -16,12 +16,10 @@ public class SparkMaxConfiguration {
     private int canTimeout;
     private StatusFrames statusFrames;
     private boolean burn = false;
-    private String burnString = "false";
-    private String logFlashKey;
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted,
             boolean limitSwitch, Type limSwitchType, int smartCurrentLimit, int encoderMeasurementPeriod,
-            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames, String logFlashKey) {
+            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
         this.idleMode = idleMode;
         this.inverted = inverted;
         this.limitSwitch = limitSwitch;
@@ -31,7 +29,6 @@ public class SparkMaxConfiguration {
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.statusFrames = statusFrames;
-        this.logFlashKey = logFlashKey;
     }
 
     public void configIdleMode(CANSparkMax spark) {
@@ -44,14 +41,14 @@ public class SparkMaxConfiguration {
     public void configInverted(CANSparkMax spark) {
         if (spark.getInverted() != inverted) {
             spark.setInverted(inverted);
-            setFlashed(true);
+            burn = true;
         }
     }
 
     public void configLimitSwitch(CANSparkMax spark) {
         if (spark.getReverseLimitSwitch(limSwitchType).isLimitSwitchEnabled() != limitSwitch) {
             spark.getReverseLimitSwitch(limSwitchType).enableLimitSwitch(limitSwitch);
-            setFlashed(true);
+            burn = true;
         }
     }
 
@@ -62,14 +59,14 @@ public class SparkMaxConfiguration {
     public void configEncoderMeasurementPeriod(CANSparkMax spark) {
         if (spark.getEncoder().getMeasurementPeriod() != encoderMeasurementPeriod) {
             spark.getEncoder().setMeasurementPeriod(encoderMeasurementPeriod);
-            setFlashed(true);
+            burn = true;
         }
     }
 
     public void configEncoderAverageDepth(CANSparkMax spark) {
         if (spark.getEncoder().getAverageDepth() != encoderAverageDepth) {
             spark.getEncoder().setAverageDepth(encoderAverageDepth);
-            setFlashed(true);
+            burn = true;
         }
     }
 
@@ -85,25 +82,8 @@ public class SparkMaxConfiguration {
         spark.burnFlash();
     }
 
-    public void setFlashed(boolean flashed) {
-        burn = flashed;
-        if (flashed) {
-            burnString = "true";
-        } else {
-            burnString = "false";
-        }
-    }
-
     public boolean getFlashed() {
         return burn;
-    }
-
-    public String getFlashedString() {
-        return burnString;
-    }
-
-    public String getLogFlashKey() {
-        return logFlashKey;
     }
 
     public void config(CANSparkMax spark) {
