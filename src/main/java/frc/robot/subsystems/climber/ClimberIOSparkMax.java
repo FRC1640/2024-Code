@@ -22,30 +22,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
-        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID,
-                new SparkMaxConfiguration(
-                    IdleMode.kBrake, 
-                    false,
-                    SparkMaxDefaults.limitSwitch,
-                    SparkMaxDefaults.limSwitchType,
-                    80,
-                    SparkMaxDefaults.encoderMeasurementPeriod,
-                    SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout,
-                    new StatusFrames(100, 20, 20,
-                        500, 500, 500, 500)));
-        rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID,
-                new SparkMaxConfiguration(
-                    IdleMode.kBrake, 
-                    false,
-                    SparkMaxDefaults.limitSwitch,
-                    SparkMaxDefaults.limSwitchType,
-                    80,
-                    SparkMaxDefaults.encoderMeasurementPeriod,
-                    SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout,
-                    new StatusFrames(100, 20, 20,
-                        500, 500, 500, 500)));
+        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID, ClimberConstants.sparkDefaultsClimber);
+        rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID, ClimberConstants.sparkDefaultsClimber);
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);

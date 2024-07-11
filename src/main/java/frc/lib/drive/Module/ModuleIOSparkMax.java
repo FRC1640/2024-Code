@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Resolvers.ResolverSlope;
@@ -41,32 +42,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         
 
         this.id = id;
-        driveMotor = SparkMaxConfigurer.configSpark(
-            id.driveChannel,
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                id.reverseDrive,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                80,
-                8,
-                2,
-                250,
-                new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500)));
-        steeringMotor = SparkMaxConfigurer.configSpark(
-            id.steerChannel,
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                id.reverseSteer,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                40,
-                8,
-                2,
-                250,
-                new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500)));
+        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive));
+        steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel, ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(

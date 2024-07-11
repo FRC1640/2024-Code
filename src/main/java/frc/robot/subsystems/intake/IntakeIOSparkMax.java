@@ -2,14 +2,10 @@ package frc.robot.subsystems.intake;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.SparkMaxDefaults;
-import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.SparkMaxConfigurer;
-import frc.robot.util.motor.StatusFrames;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
@@ -29,31 +25,9 @@ public class IntakeIOSparkMax implements IntakeIO {
         this.clearCondition = clearCondition;
         this.startAuto = startAuto;
         intakeMotor = SparkMaxConfigurer.configSpark(
-                IntakeConstants.intakeCanID,
-                new SparkMaxConfiguration(
-                    SparkMaxDefaults.idleMode,
-                    false,
-                    SparkMaxDefaults.limitSwitch,
-                    SparkMaxDefaults.limSwitchType,
-                    SparkMaxDefaults.smartCurrentLimit,
-                    SparkMaxDefaults.encoderMeasurementPeriod,
-                    SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout,
-                    new StatusFrames(100, 200, 200,
-                        500, 500, 500, 500)));
+                IntakeConstants.intakeCanID, IntakeConstants.sparkDefaultsIntake);
         indexerMotor = SparkMaxConfigurer.configSpark(
-                IntakeConstants.indexerCanID,
-                new SparkMaxConfiguration(
-                    IdleMode.kBrake,
-                    true,
-                    SparkMaxDefaults.limitSwitch,
-                    SparkMaxDefaults.limSwitchType,
-                    SparkMaxDefaults.smartCurrentLimit,
-                    SparkMaxDefaults.encoderMeasurementPeriod,
-                    SparkMaxDefaults.encoderAverageDepth,
-                    SparkMaxDefaults.canTimeout,
-                    new StatusFrames(100, 200, 200,
-                        500, 500, 500, 500)));
+                IntakeConstants.indexerCanID, IntakeConstants.sparkDefaultsIndexer);
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }

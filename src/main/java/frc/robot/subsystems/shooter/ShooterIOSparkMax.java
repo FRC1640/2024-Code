@@ -4,67 +4,16 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.SparkMaxDefaults;
-import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.SparkMaxConfigurer;
-import frc.robot.util.motor.StatusFrames;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topLeftShooter = SparkMaxConfigurer.configSpark(
-            ShooterConstants.topLeftCanID,
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                true,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                    new StatusFrames(100, 200, 200,
-                        500, 500, 500, 500)));
-        bottomLeftShooter = SparkMaxConfigurer.configSpark(
-            ShooterConstants.bottomLeftCanID,
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                SparkMaxDefaults.inverted,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500)));
-        topRightShooter = SparkMaxConfigurer.configSpark(
-            ShooterConstants.topRightCanID,
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                SparkMaxDefaults.inverted,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500)));
-        bottomRightShooter = SparkMaxConfigurer.configSpark(
-            ShooterConstants.bottomRightCanID,
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                true,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500)));
+        topLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topLeftCanID, ShooterConstants.sparkDefaultsShooterInverted);
+        bottomLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomLeftCanID, ShooterConstants.sparkDefaultsShooter);
+        topRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topRightCanID, ShooterConstants.sparkDefaultsShooter);
+        bottomRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomRightCanID, ShooterConstants.sparkDefaultsShooterInverted);
     }
 
     @Override

@@ -24,18 +24,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
         rightTargetingMotor = SparkMaxConfigurer.configSpark(
-            TargetingConstants.rightAngleMotorId,
-            new SparkMaxConfiguration(
-                IdleMode.kBrake,
-                true,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limSwitchType,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                    new StatusFrames(100, 20, 20,
-                        500, 500, 500, 500)));
+            TargetingConstants.rightAngleMotorId, TargetingConstants.sparkDefaultsAngler);
     }
 
     @Override

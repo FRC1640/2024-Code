@@ -4,12 +4,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkLimitSwitch.Type;
 
+import frc.robot.Constants.SparkMaxDefaults;
+
 public class SparkMaxConfiguration {
 
     private IdleMode idleMode;
     private boolean inverted;
     private boolean limitSwitch;
-    private Type limSwitchType;
+    private Type limitSwitchType;
     private int smartCurrentLimit;
     private int encoderMeasurementPeriod;
     private int encoderAverageDepth;
@@ -17,13 +19,25 @@ public class SparkMaxConfiguration {
     private StatusFrames statusFrames;
     private boolean burn = false;
 
-    public SparkMaxConfiguration(IdleMode idleMode, boolean inverted,
-            boolean limitSwitch, Type limSwitchType, int smartCurrentLimit, int encoderMeasurementPeriod,
-            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
+    public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit,
+            int encoderMeasurementPeriod, int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
+        this.idleMode = idleMode;
+        this.inverted = inverted;
+        this.limitSwitch = SparkMaxDefaults.limitSwitch;
+        this.limitSwitchType = SparkMaxDefaults.limitSwitchType;
+        this.smartCurrentLimit = smartCurrentLimit;
+        this.encoderMeasurementPeriod = encoderMeasurementPeriod;
+        this.encoderAverageDepth = encoderAverageDepth;
+        this.canTimeout = canTimeout;
+        this.statusFrames = statusFrames;
+    }
+
+    public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit, int encoderMeasurementPeriod,
+            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames, ) {
         this.idleMode = idleMode;
         this.inverted = inverted;
         this.limitSwitch = limitSwitch;
-        this.limSwitchType = limSwitchType;
+        this.limitSwitchType = limitSwitchType;
         this.smartCurrentLimit = smartCurrentLimit;
         this.encoderMeasurementPeriod = encoderMeasurementPeriod;
         this.encoderAverageDepth = encoderAverageDepth;
@@ -46,8 +60,8 @@ public class SparkMaxConfiguration {
     }
 
     public void configLimitSwitch(CANSparkMax spark) {
-        if (spark.getReverseLimitSwitch(limSwitchType).isLimitSwitchEnabled() != limitSwitch) {
-            spark.getReverseLimitSwitch(limSwitchType).enableLimitSwitch(limitSwitch);
+        if (spark.getReverseLimitSwitch(limitSwitchType).isLimitSwitchEnabled() != limitSwitch) {
+            spark.getReverseLimitSwitch(limitSwitchType).enableLimitSwitch(limitSwitch);
             burn = true;
         }
     }

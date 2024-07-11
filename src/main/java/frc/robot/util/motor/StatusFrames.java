@@ -1,6 +1,5 @@
 package frc.robot.util.motor;
 
-import frc.robot.Constants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
