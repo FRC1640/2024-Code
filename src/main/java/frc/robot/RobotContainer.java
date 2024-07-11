@@ -637,6 +637,6 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
 		NamedCommands.registerCommand("AutoShootRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto(() -> (Rotation2d.fromRadians(movingWhileShooting.getNewRobotAngle())))));
-		NamedCommands.registerCommand("AutoShootRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto()));
+		NamedCommands.registerCommand("StandardRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto()));
 	}
 }
