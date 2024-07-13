@@ -1,6 +1,10 @@
 package frc.robot.util.motor;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkLimitSwitch.Type;
 
@@ -18,6 +22,7 @@ public class SparkMaxConfiguration {
     private int canTimeout;
     private StatusFrames statusFrames;
     private boolean burn = false;
+    private Function<CANSparkMax, SparkLimitSwitch> getLimitSwitch = { (a) -> a.getLimitSwitch, (a) -> a.getReverseLimitSwitch };
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit,
             int encoderMeasurementPeriod, int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
@@ -59,7 +64,7 @@ public class SparkMaxConfiguration {
         }
     }
 
-    public void configLimitSwitch(CANSparkMax spark) {
+    public void configLimitSwitches(CANSparkMax spark) {
         if (spark.getReverseLimitSwitch(limitSwitchType).isLimitSwitchEnabled() != limitSwitch) {
             spark.getReverseLimitSwitch(limitSwitchType).enableLimitSwitch(limitSwitch);
             burn = true;
@@ -103,7 +108,7 @@ public class SparkMaxConfiguration {
     public void config(CANSparkMax spark) {
         configIdleMode(spark);
         configInverted(spark);
-        configLimitSwitch(spark);
+        configLimitSwitches(spark);
         configSmartCurrentLimit(spark);
         configEncoderMeasurementPeriod(spark);
         configEncoderAverageDepth(spark);
