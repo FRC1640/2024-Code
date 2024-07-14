@@ -37,7 +37,7 @@ public class SparkMaxConfiguration {
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.statusFrames = statusFrames;
-        this.limitSwitches = Map.of();
+        this.limitSwitches = Map.of(1.0, SparkLimitSwitch.Type.kNormallyOpen);
         getLimitSwitch.add((CANSparkMax a, Type b) -> a.getForwardLimitSwitch(b));
         getLimitSwitch.add((CANSparkMax c, Type d) -> c.getReverseLimitSwitch(d));
         
@@ -72,6 +72,9 @@ public class SparkMaxConfiguration {
     }
 
     public void configLimitSwitches(CANSparkMax spark) {
+        for (int i = 0; i < limitSwitches.)
+
+
         if (spark.getReverseLimitSwitch(limitSwitchType).isLimitSwitchEnabled() != limitSwitch) {
             spark.getReverseLimitSwitch(limitSwitchType).enableLimitSwitch(limitSwitch);
             burn = true;
