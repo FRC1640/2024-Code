@@ -1,5 +1,9 @@
 package frc.robot.util.motor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -14,40 +18,43 @@ public class SparkMaxConfiguration {
 
     private IdleMode idleMode;
     private boolean inverted;
-    private boolean limitSwitch;
-    private Type limitSwitchType;
     private int smartCurrentLimit;
     private int encoderMeasurementPeriod;
     private int encoderAverageDepth;
     private int canTimeout;
     private StatusFrames statusFrames;
     private boolean burn = false;
-    private Function<CANSparkMax, SparkLimitSwitch> getLimitSwitch = { (a) -> a.getLimitSwitch, (a) -> a.getReverseLimitSwitch };
+    private Map<Double, Type> limitSwitches;
+    private List<BiFunction<CANSparkMax, Type, SparkLimitSwitch>> getLimitSwitch = new ArrayList<>();
+
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit,
             int encoderMeasurementPeriod, int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
         this.idleMode = idleMode;
         this.inverted = inverted;
-        this.limitSwitch = SparkMaxDefaults.limitSwitch;
-        this.limitSwitchType = SparkMaxDefaults.limitSwitchType;
         this.smartCurrentLimit = smartCurrentLimit;
         this.encoderMeasurementPeriod = encoderMeasurementPeriod;
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.statusFrames = statusFrames;
+        this.limitSwitches = new Map<Double, Type>();
+        getLimitSwitch.add((CANSparkMax a, Type b) -> a.getForwardLimitSwitch(b));
+        getLimitSwitch.add((CANSparkMax c, Type d) -> c.getReverseLimitSwitch(d));
+        
     }
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit, int encoderMeasurementPeriod,
-            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames, ) {
+            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames, Map<Double, Type> limitSwitches) {
         this.idleMode = idleMode;
         this.inverted = inverted;
-        this.limitSwitch = limitSwitch;
-        this.limitSwitchType = limitSwitchType;
         this.smartCurrentLimit = smartCurrentLimit;
         this.encoderMeasurementPeriod = encoderMeasurementPeriod;
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.statusFrames = statusFrames;
+        this.limitSwitches = limitSwitches;
+        getLimitSwitch.add((CANSparkMax a, Type b) -> a.getForwardLimitSwitch(b));
+        getLimitSwitch.add((CANSparkMax c, Type d) -> c.getReverseLimitSwitch(d));
     }
 
     public void configIdleMode(CANSparkMax spark) {
