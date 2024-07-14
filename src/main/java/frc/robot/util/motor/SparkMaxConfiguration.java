@@ -37,7 +37,7 @@ public class SparkMaxConfiguration {
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.statusFrames = statusFrames;
-        this.limitSwitches = new Map<Double, Type>();
+        this.limitSwitches = Map.of();
         getLimitSwitch.add((CANSparkMax a, Type b) -> a.getForwardLimitSwitch(b));
         getLimitSwitch.add((CANSparkMax c, Type d) -> c.getReverseLimitSwitch(d));
         
