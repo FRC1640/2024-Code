@@ -72,7 +72,9 @@ public class SparkMaxConfiguration {
     }
 
     public void configLimitSwitches(CANSparkMax spark) {
-        for (int i = 0; i < limitSwitches.)
+        for (int i = 0; i < limitSwitches.size(); i++) {
+            
+        }
 
 
         if (spark.getReverseLimitSwitch(limitSwitchType).isLimitSwitchEnabled() != limitSwitch) {
