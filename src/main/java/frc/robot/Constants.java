@@ -1,11 +1,12 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -17,6 +18,8 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
 import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.StatusFrames;
+import frc.robot.util.motor.LimitSwitchConfiguration;
+import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchReverse;
 
 public final class Constants {
     public static enum PivotId {
@@ -26,12 +29,16 @@ public final class Constants {
     public static class SparkMaxDefaults {
         public static final IdleMode idleMode = IdleMode.kCoast;
         public static final boolean inverted = false;
-        public static final boolean limitSwitch = false;
-        public static final Type limitSwitchType = SparkLimitSwitch.Type.kNormallyOpen;
+        public static final LimitSwitchConfiguration limitSwitch =
+            new LimitSwitchConfiguration(LimitSwitchReverse.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false);
         public static final int smartCurrentLimit = 60;
         public static final int encoderMeasurementPeriod = 20; // TODO val
         public static final int encoderAverageDepth = 8; // TODO val
         public static final int canTimeout = 0; // TODO val
+        
+        public static final Map<LimitSwitchReverse, BiFunction<CANSparkMax, Type, SparkLimitSwitch>> getLimitSwitch =
+            Map.of(LimitSwitchReverse.kForward, (a, b) -> a.getForwardLimitSwitch(b),
+                   LimitSwitchReverse.kReverse, (a, b) -> a.getReverseLimitSwitch(b));
     }
 
     public static class AprilTagVisionConstants {
@@ -121,8 +128,6 @@ public final class Constants {
             return new SparkMaxConfiguration(
                 SparkMaxDefaults.idleMode,
                 inverted,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 80,
                 8,
                 2,
@@ -135,8 +140,6 @@ public final class Constants {
             return new SparkMaxConfiguration(
                 SparkMaxDefaults.idleMode,
                 inverted,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 40,
                 8,
                 2,
@@ -155,8 +158,6 @@ public final class Constants {
             new SparkMaxConfiguration(
                 SparkMaxDefaults.idleMode,
                 false,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
@@ -167,8 +168,6 @@ public final class Constants {
             new SparkMaxConfiguration(
                 IdleMode.kBrake,
                 true,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
@@ -190,8 +189,6 @@ public final class Constants {
             new SparkMaxConfiguration(
                 IdleMode.kBrake, 
                 false,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 80,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
@@ -210,8 +207,6 @@ public final class Constants {
             new SparkMaxConfiguration(
                 SparkMaxDefaults.idleMode,
                 SparkMaxDefaults.inverted,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
@@ -222,8 +217,6 @@ public final class Constants {
             new SparkMaxConfiguration(
                 SparkMaxDefaults.idleMode,
                 true,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
@@ -312,20 +305,17 @@ public final class Constants {
             new SparkMaxConfiguration(
                 IdleMode.kBrake,
                 true,
-                true,
-                SparkMaxDefaults.limitSwitchType,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 20, 20,
-                    500, 500, 500, 500));
+                    500, 500, 500, 500),
+                new LimitSwitchConfiguration(LimitSwitchReverse.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
         public static final SparkMaxConfiguration sparkDefaultsAngler =
             new SparkMaxConfiguration(
                 IdleMode.kBrake,
                 true,
-                SparkMaxDefaults.limitSwitch,
-                SparkMaxDefaults.limitSwitchType,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
