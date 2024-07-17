@@ -2,8 +2,10 @@ package frc.robot.util.motor;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.revrobotics.CANSparkMax;
+
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkMax;
+
 import frc.robot.Constants.SparkMaxDefaults;
 
 public class SparkMaxConfiguration {
