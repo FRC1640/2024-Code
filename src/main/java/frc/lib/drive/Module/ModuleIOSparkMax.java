@@ -1,26 +1,21 @@
 package frc.lib.drive.Module;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
-import com.revrobotics.RelativeEncoder;
-
-import frc.lib.drive.SparkMaxOdometryThread;
-import frc.robot.Constants;
-import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.SparkMaxDefaults;
-import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.sensors.Resolvers.ResolverSlope;
-import frc.robot.util.motor.SparkMaxConfiguration;
-import frc.robot.util.motor.SparkMaxConfigurer;
-import frc.robot.util.motor.StatusFrames;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.lib.drive.SparkMaxOdometryThread;
+import frc.robot.Constants;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.sensors.Resolvers.ResolverSlope;
+import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ModuleIOSparkMax implements ModuleIO {
     private final CANSparkMax driveMotor;
