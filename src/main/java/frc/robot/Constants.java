@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.function.BiFunction;
 
 import com.revrobotics.CANSparkMax;
@@ -32,9 +33,9 @@ public final class Constants {
         public static final LimitSwitchConfiguration limitSwitch =
             new LimitSwitchConfiguration(LimitSwitchReverse.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false);
         public static final int smartCurrentLimit = 60;
-        public static final int encoderMeasurementPeriod = 20; // TODO val
-        public static final int encoderAverageDepth = 8; // TODO val
-        public static final int canTimeout = 0; // TODO val
+        public static final int encoderMeasurementPeriod = 20;
+        public static final int encoderAverageDepth = 8;
+        public static final OptionalInt canTimeout = OptionalInt.empty();
         
         public static final Map<LimitSwitchReverse, BiFunction<CANSparkMax, Type, SparkLimitSwitch>> getLimitSwitch =
             Map.of(LimitSwitchReverse.kForward, (a, b) -> a.getForwardLimitSwitch(b),
@@ -131,7 +132,7 @@ public final class Constants {
                 80,
                 8,
                 2,
-                250,
+                OptionalInt.of(250),
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
                     500, 500, 500, 500));
         }
@@ -143,8 +144,8 @@ public final class Constants {
                 40,
                 8,
                 2,
-                250,
-                new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
+                OptionalInt.of(250),
+                new StatusFrames(100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
                     500, 500, 500, 500));
         }
     }

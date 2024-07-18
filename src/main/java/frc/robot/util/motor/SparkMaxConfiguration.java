@@ -2,6 +2,7 @@ package frc.robot.util.motor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
@@ -15,13 +16,13 @@ public class SparkMaxConfiguration {
     private int smartCurrentLimit;
     private int encoderMeasurementPeriod;
     private int encoderAverageDepth;
-    private int canTimeout;
+    private OptionalInt canTimeout;
     private List<LimitSwitchConfiguration> limitSwitches;
     private StatusFrames statusFrames;
     private boolean burn = false;
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit,
-            int encoderMeasurementPeriod, int encoderAverageDepth, int canTimeout, StatusFrames statusFrames) {
+            int encoderMeasurementPeriod, int encoderAverageDepth, OptionalInt canTimeout, StatusFrames statusFrames) {
         this.idleMode = idleMode;
         this.inverted = inverted;
         this.smartCurrentLimit = smartCurrentLimit;
@@ -29,12 +30,11 @@ public class SparkMaxConfiguration {
         this.encoderAverageDepth = encoderAverageDepth;
         this.canTimeout = canTimeout;
         this.limitSwitches = new ArrayList<>();
-        this.limitSwitches.add(SparkMaxDefaults.limitSwitch);
         this.statusFrames = statusFrames;
     }
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit, int encoderMeasurementPeriod,
-            int encoderAverageDepth, int canTimeout, StatusFrames statusFrames, LimitSwitchConfiguration ... limitSwitches) {
+            int encoderAverageDepth, OptionalInt canTimeout, StatusFrames statusFrames, LimitSwitchConfiguration ... limitSwitches) {
         this.idleMode = idleMode;
         this.inverted = inverted;
         this.smartCurrentLimit = smartCurrentLimit;
@@ -81,7 +81,9 @@ public class SparkMaxConfiguration {
     }
 
     private void configCANTimeout(CANSparkMax spark) {
-        spark.setCANTimeout(canTimeout);
+        if (canTimeout.isPresent()) {
+            spark.setCANTimeout(canTimeout.getAsInt());
+        }
     }
 
     private void configLimitSwitches(CANSparkMax spark) {
