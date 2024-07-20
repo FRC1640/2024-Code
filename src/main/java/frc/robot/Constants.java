@@ -204,26 +204,18 @@ public final class Constants {
         public static final int topRightCanID = 11;
         public static final int bottomRightCanID = 10;
         public static double waitTime = 1;
-        public static final SparkMaxConfiguration sparkDefaultsShooter =
-            new SparkMaxConfiguration(
+        public static SparkMaxConfiguration getSparkDefaultsShooter(boolean inverted) {
+            return new SparkMaxConfiguration(
                 SparkMaxDefaults.idleMode,
-                SparkMaxDefaults.inverted,
+                inverted,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500));
-        public static final SparkMaxConfiguration sparkDefaultsShooterInverted =
-            new SparkMaxConfiguration(
-                SparkMaxDefaults.idleMode,
-                true,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500));
+                    500, 500, 500, 500)
+            );
+        }
     }
 
     public static class PIDConstants {

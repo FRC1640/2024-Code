@@ -10,10 +10,10 @@ public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topLeftCanID, ShooterConstants.sparkDefaultsShooterInverted);
-        bottomLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomLeftCanID, ShooterConstants.sparkDefaultsShooter);
-        topRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topRightCanID, ShooterConstants.sparkDefaultsShooter);
-        bottomRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomRightCanID, ShooterConstants.sparkDefaultsShooterInverted);
+        topLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topLeftCanID, ShooterConstants.getSparkDefaultsShooter(true));
+        bottomLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomLeftCanID, ShooterConstants.getSparkDefaultsShooter(false));
+        topRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topRightCanID, ShooterConstants.getSparkDefaultsShooter(false));
+        bottomRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomRightCanID, ShooterConstants.getSparkDefaultsShooter(true));
     }
 
     @Override
