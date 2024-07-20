@@ -19,8 +19,7 @@
       },
       "ML Vision": {
         "open": true
-      },
-      "open": true
+      }
     },
     "limelight": {
       "double[]##v_/limelight/botpose_wpiblue": {
@@ -29,6 +28,12 @@
       "double[]##v_/limelight/targetpose_robotspace": {
         "open": true
       },
+      "open": true
+    },
+    "limelight-front": {
+      "open": true
+    },
+    "limelight-ml": {
       "open": true
     }
   }

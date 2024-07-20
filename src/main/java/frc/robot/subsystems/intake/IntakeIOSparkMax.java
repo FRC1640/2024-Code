@@ -29,6 +29,7 @@ public class IntakeIOSparkMax implements IntakeIO {
         intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
         indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
         indexerMotor.setInverted(true);
+        intakeMotor.setInverted(false);
         indexerMotor.setIdleMode(IdleMode.kBrake);
 
         Constants.updateStatusFrames(intakeMotor, 100, 200, 200, 500, 500, 500, 500);

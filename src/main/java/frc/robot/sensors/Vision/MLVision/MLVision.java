@@ -32,7 +32,7 @@ public class MLVision extends PeriodicBase {
         io.updateInputs(inputs);
         Logger.processInputs("ML Vision", inputs);
 
-        Logger.recordOutput("MLVision/closest note", getClosestNote().isPresent() ? getClosestNote().get() : new Translation2d(-999, -999));
+        // Logger.recordOutput("MLVision/closest note", getClosestNote().isPresent() ? getClosestNote().get() : new Translation2d(-999, -999));
 
         // Logger.recordOutput("MLVision/Notes", );
         Logger.recordOutput("MLVision/NoteMemory", Arrays.stream(getFieldRelativeNotePos(robotPos.get()))
@@ -81,7 +81,6 @@ public class MLVision extends PeriodicBase {
             double x = (1 / Math.tan(Math.toRadians(inputs.allTy[n] + MLConstants.angle))) * y;
             double x1 = Math.cos(Math.toRadians(inputs.allTx[n])) * x;
             double y1 = Math.sin(Math.toRadians(inputs.allTx[n])) * x;
-
             Translation2d pos = new Translation2d(x1, -y1);
             if (MLConstants.FOV - Math.abs(inputs.allTx[n]) > MLConstants.FOVPadding + 2){
                 posArray.add(pos);
@@ -112,8 +111,11 @@ public class MLVision extends PeriodicBase {
         }
         return Optional.of(best);
     }
-    public Optional<Translation2d> getClosestNote(){
-        return getClosestNote(robotPos.get().getTranslation());
+    public Translation2d getClosestNote(){
+        if (getClosestNote(robotPos.get().getTranslation()).isPresent()){
+            return getClosestNote(robotPos.get().getTranslation()).get();
+        }
+        return new Translation2d();
     }
 
     // public void updateNoteMemory(Pose2d robotPos){
