@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -551,6 +552,23 @@ public class RobotContainer {
 		return targetingSubsystem.anglePIDCommand(targetAngle).repeatedly();
 	}
 
+	public Command fullSpeakerShot(){
+		Command c = manualShotAuto(55);
+		return new ParallelDeadlineGroup(c, generateIntakeCommandAuto());
+	}
+
+	public Command rotCommand(){
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), generateIntakeCommandAuto());
+		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
+		return new ParallelDeadlineGroup(s, c);
+	}
+
+	public Command rotCommand(double wait){
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), new WaitCommand(wait), generateIntakeCommandAuto());
+		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
+		return new ParallelDeadlineGroup(s, c);
+	}
+
 	public Command manualShot(double targetAngle, double robotAngleBlueRadians, double robotAngleRedRadians, BooleanSupplier cancelCondition) {
 		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(new InstantCommand(() -> {
 			RotateToAngleWeight weight = new RotateToAngleWeight(
@@ -640,5 +658,12 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotateToSpeaker", driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()));
 
 		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
+
+		NamedCommands.registerCommand("Full Speaker Shot", fullSpeakerShot());
+		NamedCommands.registerCommand("RotCommand(0)", rotCommand());
+		NamedCommands.registerCommand("RotCommand(.1)", rotCommand(.1));
+		NamedCommands.registerCommand("RotCommand(.2)", rotCommand(.2));
+		NamedCommands.registerCommand("RotCommand(.3)", rotCommand(.3));
+		NamedCommands.registerCommand("RotCommand(.35)", rotCommand(.35));
 	}
 }
