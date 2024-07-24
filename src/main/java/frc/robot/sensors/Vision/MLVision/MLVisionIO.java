@@ -34,6 +34,8 @@ public interface MLVisionIO {
         public double[] height;
 
         public double[] pts;
+
+        public double[] confidence;
     }
     public default void updateInputs(MLVisionIOInputs inputs) {
     }

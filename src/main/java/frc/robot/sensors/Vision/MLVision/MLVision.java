@@ -36,7 +36,7 @@ public class MLVision extends PeriodicBase {
 
         // Logger.recordOutput("MLVision/Notes", );
         Logger.recordOutput("MLVision/NoteMemory", Arrays.stream(getFieldRelativeNotePos(robotPos.get()))
-            .map((x) -> new Pose2d(x, new Rotation2d())).toArray(Pose2d[]::new));
+            .map((x) -> new Pose2d(x.pose, new Rotation2d())).toArray(Pose2d[]::new));
     }
     public boolean isTarget() {
         return inputs.isTarget;
@@ -73,8 +73,8 @@ public class MLVision extends PeriodicBase {
 
     }
 
-    public Translation2d[] getCameraRelativeNotePos() {
-        ArrayList<Translation2d> posArray = new ArrayList<>();
+    public Note[] getCameraRelativeNotePos() {
+        ArrayList<Note> posArray = new ArrayList<>();
 
         for (int n = 0; n < inputs.numVisibleNotes; n++) {
             double y = (MLConstants.noteHeight / 2 - MLConstants.cameraHeight);
@@ -83,39 +83,54 @@ public class MLVision extends PeriodicBase {
             double y1 = Math.sin(Math.toRadians(inputs.allTx[n])) * x;
             Translation2d pos = new Translation2d(x1, -y1);
             if (MLConstants.FOV - Math.abs(inputs.allTx[n]) > MLConstants.FOVPadding + 2){
-                posArray.add(pos);
+                posArray.add(new Note(pos, inputs.confidence[n]));
             }
         }
-        return posArray.toArray(Translation2d[]::new);
+        return posArray.toArray(Note[]::new);
         // return sum.times(1/averageLength);
     }
-    public Translation2d[] getFieldRelativeNotePos(Pose2d robotPos){
-        return Arrays.stream(getCameraRelativeNotePos())
-        .map(x -> x.rotateBy(new Rotation2d(robotPos.getRotation().getRadians() + Math.PI)).plus(robotPos.getTranslation()))
+    public Note[] getFieldRelativeNotePos(Pose2d robotPos){
+        Translation2d[] poses = Arrays.stream(getCameraRelativeNotePos())
+        .map((x) -> x.pose.rotateBy(new Rotation2d(robotPos.getRotation().getRadians() + Math.PI)).plus(robotPos.getTranslation()))
         .toArray(Translation2d[]::new);
+        ArrayList<Note> notes = new ArrayList<>();
+        for (int i = 0; i < getCameraRelativeNotePos().length; i++) {
+            notes.add(new Note(poses[i], inputs.confidence[i]));
+        }
+        return notes.toArray(Note[]::new);
     }
 
-    public Optional<Translation2d> getClosestNote(Translation2d pose){
+    public Optional<Note> getClosestNote(Translation2d pose){
 
-        Translation2d[] notes = getFieldRelativeNotePos(robotPos.get());
+        Note[] notes = getFieldRelativeNotePos(robotPos.get());
         if (notes.length == 0){
             return Optional.empty();
         }
-        Translation2d best = pose;
+        Note best = new Note(new Translation2d(), 0);
         double bestDist = Double.POSITIVE_INFINITY;
-        for (Translation2d note : notes) {
-            if (note.getDistance(pose) < bestDist){
+        for (Note note : notes) {
+            if (note.pose.getDistance(pose) < bestDist){
                 best = note;
-                bestDist = note.getDistance(pose);
+                bestDist = note.pose.getDistance(pose);
             }
         }
         return Optional.of(best);
     }
-    public Translation2d getClosestNote(){
+    public Translation2d getClosestNotePos(){
+        if (getClosestNote(robotPos.get().getTranslation()).isPresent()){
+            return getClosestNote(robotPos.get().getTranslation()).get().pose;
+        }
+        return new Translation2d();
+    }
+    public Note getClosestNote(){
         if (getClosestNote(robotPos.get().getTranslation()).isPresent()){
             return getClosestNote(robotPos.get().getTranslation()).get();
         }
-        return new Translation2d();
+        return new Note(new Translation2d(), 0);
+    }
+
+    public double getConfidence(){
+        return getClosestNote().confidence;
     }
 
     // public void updateNoteMemory(Pose2d robotPos){

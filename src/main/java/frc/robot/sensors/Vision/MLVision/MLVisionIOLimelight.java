@@ -40,12 +40,16 @@ public class MLVisionIOLimelight implements MLVisionIO {
         inputs.allTx = Arrays.stream(resultsArray).mapToDouble((x) -> x.tx).toArray();
         inputs.allTy = Arrays.stream(resultsArray).mapToDouble((x) -> x.ty).toArray();
 
+        
+
         // inputs.width = Arrays.stream(resultsArray).mapToDouble((x) -> x.).toArray();
 
         // prioretized values
         inputs.calculatedTx = (inputs.isTarget) ? calculateTargetNote().tx : 0;
         inputs.calculatedTy = (inputs.isTarget) ? calculateTargetNote().ty : 0;
         inputs.calculatedTa = (inputs.isTarget) ? calculateTargetNote().ta * 100 : 0;
+
+        inputs.confidence = Arrays.stream(resultsArray).mapToDouble((x)->x.confidence).toArray();
 
     }
 
