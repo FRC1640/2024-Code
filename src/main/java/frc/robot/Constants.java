@@ -20,7 +20,7 @@ import frc.lib.drive.Module.ModuleInfo;
 import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.StatusFrames;
 import frc.robot.util.motor.LimitSwitchConfiguration;
-import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchReverse;
+import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchDirection;
 
 public final class Constants {
     public static enum PivotId {
@@ -31,15 +31,11 @@ public final class Constants {
         public static final IdleMode idleMode = IdleMode.kCoast;
         public static final boolean inverted = false;
         public static final LimitSwitchConfiguration limitSwitch =
-            new LimitSwitchConfiguration(LimitSwitchReverse.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false);
+            new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false);
         public static final int smartCurrentLimit = 60;
         public static final int encoderMeasurementPeriod = 20;
         public static final int encoderAverageDepth = 8;
         public static final OptionalInt canTimeout = OptionalInt.empty();
-        
-        public static final Map<LimitSwitchReverse, BiFunction<CANSparkMax, Type, SparkLimitSwitch>> getLimitSwitch =
-            Map.of(LimitSwitchReverse.kForward, (a, b) -> a.getForwardLimitSwitch(b),
-                   LimitSwitchReverse.kReverse, (a, b) -> a.getReverseLimitSwitch(b));
     }
 
     public static class AprilTagVisionConstants {
@@ -304,7 +300,7 @@ public final class Constants {
                 SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 20, 20,
                     500, 500, 500, 500),
-                new LimitSwitchConfiguration(LimitSwitchReverse.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
+                new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
         public static final SparkMaxConfiguration sparkDefaultsAngler =
             new SparkMaxConfiguration(
                 IdleMode.kBrake,

@@ -6,16 +6,23 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkLimitSwitch.Type;
 
-import frc.robot.Constants.SparkMaxDefaults;
-
 public class LimitSwitchConfiguration {
+
+    public enum LimitSwitchDirection {
+        kForward,
+        kReverse
+    }
 
     private BiFunction<CANSparkMax, Type, SparkLimitSwitch> getSwitch;
     private Type switchType;
     private boolean enable;
 
-    public LimitSwitchConfiguration(LimitSwitchReverse direction, Type switchType, boolean enable) {
-        getSwitch = SparkMaxDefaults.getLimitSwitch.get(direction);
+    public LimitSwitchConfiguration(LimitSwitchDirection direction, Type switchType, boolean enable) {
+        if (direction == LimitSwitchDirection.kForward) {
+            getSwitch = (a, b) -> a.getForwardLimitSwitch(switchType);
+        } else if (direction == LimitSwitchDirection.kReverse) {
+            getSwitch = (a, b) -> a.getReverseLimitSwitch(switchType);
+        }
         this.switchType = switchType;
         this.enable = enable;
     }
@@ -26,10 +33,5 @@ public class LimitSwitchConfiguration {
 
     public boolean differentFrom(CANSparkMax spark) {
         return getSwitch.apply(spark, switchType).isLimitSwitchEnabled() != enable;
-    }
-
-    public enum LimitSwitchReverse {
-        kForward,
-        kReverse
     }
 }
