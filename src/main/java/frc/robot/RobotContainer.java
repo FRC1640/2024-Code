@@ -561,7 +561,7 @@ public class RobotContainer {
 
 	public Command fullSpeakerShot(){
 		Command c = manualShotAuto(55);
-		return new ParallelDeadlineGroup(c, generateIntakeCommandAuto());
+		return new ParallelDeadlineGroup(generateIntakeCommandAuto(), c);
 	}
 
 	public Command rotCommand(){
