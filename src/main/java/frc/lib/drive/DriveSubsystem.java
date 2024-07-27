@@ -13,6 +13,7 @@ import javax.swing.plaf.basic.BasicIconFactory;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -493,7 +494,7 @@ public class DriveSubsystem extends SubsystemBase {
      *                      field.
      */
 
-    private void driveDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+    public void driveDoubleCone(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation) {
         rot = rot
                 / SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation);
@@ -506,7 +507,7 @@ public class DriveSubsystem extends SubsystemBase {
         desiredSwerveStates = swerveModuleStates;
     }
 
-    private void driveDoubleConePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
+    public void driveDoubleConePercent(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
             Translation2d centerOfRotation, boolean lockRotation) {
         xSpeed = xSpeed * maxSpeed;
         ySpeed = ySpeed * maxSpeed;
@@ -619,7 +620,18 @@ public class DriveSubsystem extends SubsystemBase {
             new GoalEndState(0, getPose().getRotation()));
 
         path.preventFlipping = true;
-        return AutoBuilder.followPath(path).alongWith(new PrintCommand(condition.getAsBoolean() ? "true" : "false").repeatedly()).until(condition);
+        return new FollowPathHolonomic(path,this::getPose,
+                () -> SwerveDriveDimensions.kinematics.toChassisSpeeds(getActualSwerveStates()),
+                this::driveChassisSpeedsDesaturated,
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(2.5, 0, 0),
+                        new PIDConstants(2.5, 0, 0),
+                        4,
+                        SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
+                        new ReplanningConfig()),
+                () -> DriverStation.getAlliance().isPresent()
+                        && DriverStation.getAlliance().get() == Alliance.Red,
+                this).until(condition);
     }
     public boolean getRotAccuracy() {
         return Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(

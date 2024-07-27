@@ -39,19 +39,13 @@
         {
           "type": "named",
           "data": {
-            "name": "GenerateAutoDrive"
+            "name": "StopRobot"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "DriveToNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Print"
           }
         },
         {
