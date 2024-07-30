@@ -5,24 +5,33 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
+import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.Note;
 
 public class DriveToPosAndRotate extends Command{
 
     private DriveSubsystem driveSubsystem;
     private Gyro gyro;
-    private Supplier<Translation2d> endState;
-    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "rotlock");
-    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "rotlockmoving");
+    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "rotlock1");
+    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "rotlockmoving1");
+    Note lastNote = null;
+    private MLVision mlVision;
+    // private Translation2d pose;
+    PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID, "autodriveforward1");
 
-    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, Supplier<Translation2d> endState, Gyro gyro){
+    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro){
         this.driveSubsystem = driveSubsystem;
-        this.endState = endState;
+        this.mlVision = mlVision;
+        // this.endState = endState;
         this.gyro = gyro;
+        // this.pose = pose;
 
         addRequirements(driveSubsystem);
     }
@@ -34,24 +43,53 @@ public class DriveToPosAndRotate extends Command{
 
     @Override
     public void execute() {
-        double angle = Math.atan2(endState.get().getY() - driveSubsystem.getPose().getY(),
-            endState.get().getX() - driveSubsystem.getPose().getX()) - gyro.getOffset();
+        Note note = null;
+        if (lastNote != null){
+            if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
+                note = mlVision.getClosestNote();
+            }
+            else{   
+                note = lastNote;
+            }
+        }
+        else{
+            note = mlVision.getClosestNote();
+        }
+        
+        double angle = Math.atan2(note.pose.getY() - driveSubsystem.getPose().getY(),
+            note.pose.getX() - driveSubsystem.getPose().getX()) - gyro.getOffset();
         double o;
         
         o = pidr.calculate(-SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(),
-                    (angle + gyro.getOffset())), 0);
+                    (angle + Math.PI)), 0);
 
         if (Math.abs(o) < 0.005) {
             o = 0;
         }
         
-        double k;
-        double linearRotSpeed = Math.abs(o * SwerveAlgorithms.maxNorm);
+        // double k;
+        // double linearRotSpeed = Math.abs(o * SwerveAlgorithms.maxNorm);
         o = MathUtil.clamp(o, -1, 1);
         // setAngle = angle + gyro.getOffset();
         // o = MathUtil.clamp(o, -1, 1);
-        ChassisSpeeds rToAngle = new ChassisSpeeds(0, 0, -o);
-        driveSubsystem.driveDoubleCone(rToAngle.vxMetersPerSecond, rToAngle.vyMetersPerSecond, rToAngle.omegaRadiansPerSecond / 6, true, new Translation2d());
+        ChassisSpeeds rToAngle = new ChassisSpeeds(0, 0, o);
+
+        // double angle1 = new Rotation2d(pose.getX() - driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY() - driveSubsystem.getPose().getY()).getRadians();
+        double dist = driveSubsystem.getPose().getTranslation().getDistance(note.pose);
+        double s = pid.calculate(dist, 0);
+        s = Math.abs(s);
+        s = MathUtil.clamp(s, -1, 1);
+        if (Math.abs(s) < 0.01) {
+            s = 0;
+        }
+
+        double xSpeed = (Math.cos(angle) * s);
+        double ySpeed = (Math.sin(angle) * s);
+        double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
+        ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
+        ChassisSpeeds finalSpeed = cspeeds.plus(rToAngle);
+        driveSubsystem.driveDoubleConePercent(finalSpeed.vxMetersPerSecond, finalSpeed.vyMetersPerSecond, finalSpeed.omegaRadiansPerSecond, true, new Translation2d(), false);
+        lastNote = note;
     }
 
     @Override
