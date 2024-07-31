@@ -33,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -102,7 +102,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.35)"
           }
         },
         {
@@ -171,7 +171,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.35)"
           }
         }
       ]

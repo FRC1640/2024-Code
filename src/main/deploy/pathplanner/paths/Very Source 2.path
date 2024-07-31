@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.319389387593941,
-        "y": 2.655376685160952
+        "x": 2.7941500432763897,
+        "y": 3.141709411380907
       },
       "prevControl": {
-        "x": 6.0205935796487,
-        "y": 0.828823196107932
+        "x": 5.495354235331147,
+        "y": 1.3151559223278873
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.95,
+      "minWaypointRelativePos": 0.85,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,

@@ -107,10 +107,10 @@ public class DriveToPosAndRotate extends Command{
         note = mlVision.getClosestNote();
         initTime = System.currentTimeMillis();
     }
-
     @Override
     public boolean isFinished() {
-        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 2000;
+        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 2000 || note.confidence < 0.65||
+        mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) >= 1;
     }
     
 }

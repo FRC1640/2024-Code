@@ -670,6 +670,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotCommand(.2)", rotCommand(.2));
 		NamedCommands.registerCommand("RotCommand(.3)", rotCommand(.3));
 		NamedCommands.registerCommand("RotCommand(.35)", rotCommand(.35));
+		NamedCommands.registerCommand("RotCommand(.5)", rotCommand(.5));
 		// NamedCommands.registerCommand("IntakeWait", new WaitUntilCommand(()->intakeSubsystem.hasNote()).raceWith(new WaitCommand(2)));
 
 		NamedCommands.registerCommand("StopRobot", driveSubsystem.driveDoubleConeCommand(()->new ChassisSpeeds(), ()->new Translation2d(), ()->false));
