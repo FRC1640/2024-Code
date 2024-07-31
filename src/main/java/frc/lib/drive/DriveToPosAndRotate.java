@@ -2,6 +2,8 @@ package frc.lib.drive;
 
 import java.util.function.Supplier;
 
+import javax.sound.midi.SysexMessage;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,6 +20,7 @@ import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.Note;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class DriveToPosAndRotate extends Command{
 
@@ -31,14 +34,18 @@ public class DriveToPosAndRotate extends Command{
     PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID, "autodriveforward1");
     // TrapezoidProfile profile;
     // Constraints trapezoidConstraints;
+    private IntakeSubsystem intakeSubsystem;
+    Note note = null;
+    long initTime;
 
-    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro){
+    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
         this.driveSubsystem = driveSubsystem;
         this.mlVision = mlVision;
         // this.endState = endState;
         this.gyro = gyro;
         // this.pose = pose;
         // trapezoidConstraints = new Constraints(0.5, 0.5);
+        this.intakeSubsystem = intakeSubsystem;
         
         // profile = new TrapezoidProfile(trapezoidConstraints);
 
@@ -52,7 +59,7 @@ public class DriveToPosAndRotate extends Command{
 
     @Override
     public void execute() {
-        Note note = null;
+        note = null;
         if (lastNote != null){
             if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
                 note = mlVision.getClosestNote();
@@ -105,11 +112,13 @@ public class DriveToPosAndRotate extends Command{
     @Override
     public void initialize() {
         lastNote = null;
+        note = mlVision.getClosestNote();
+        initTime = System.currentTimeMillis();
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 2000;
     }
     
 }

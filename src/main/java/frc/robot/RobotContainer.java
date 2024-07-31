@@ -670,13 +670,13 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotCommand(.2)", rotCommand(.2));
 		NamedCommands.registerCommand("RotCommand(.3)", rotCommand(.3));
 		NamedCommands.registerCommand("RotCommand(.35)", rotCommand(.35));
-		NamedCommands.registerCommand("IntakeWait", new WaitUntilCommand(()->intakeSubsystem.hasNote()).raceWith(new WaitCommand(2)));
+		// NamedCommands.registerCommand("IntakeWait", new WaitUntilCommand(()->intakeSubsystem.hasNote()).raceWith(new WaitCommand(2)));
 
 		NamedCommands.registerCommand("StopRobot", driveSubsystem.driveDoubleConeCommand(()->new ChassisSpeeds(), ()->new Translation2d(), ()->false));
 
 		// NamedCommands.registerCommand("MLTestDrives", driveSubsystem.pathWithMovableEndpoint("ML Test", ()->mlVision.getClosestNotePos()));
 
-		NamedCommands.registerCommand("DriveToNote", new DriveToPosAndRotate(driveSubsystem, mlVision, gyro));
+		NamedCommands.registerCommand("DriveToNote", new DriveToPosAndRotate(driveSubsystem, mlVision, gyro, intakeSubsystem));
 
 		NamedCommands.registerCommand("NoteValid", new WaitUntilCommand(()->
 			mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1 && mlVision.getConfidence() > 0.65));
