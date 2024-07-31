@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.802353117231198,
-        "y": 7.508357062391729
+        "x": 6.918251561621607,
+        "y": 6.6043984220669865
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.002933144240039,
-        "y": 6.382405917450922
+        "x": 4.865927456973398,
+        "y": 6.4682252587254
       },
       "prevControl": {
-        "x": 5.166884855880981,
-        "y": 7.0850561101978125
+        "x": 6.012840166927437,
+        "y": 6.758304345012258
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,6 +54,12 @@
               "type": "named",
               "data": {
                 "name": "AutoShootRotation"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableAprilTags"
               }
             }
           ]

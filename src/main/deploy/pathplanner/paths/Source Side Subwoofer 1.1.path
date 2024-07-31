@@ -8,8 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.813006710178897,
-        "y": 0.3747467694650074
+        "x": 3.698728914045506,
+        "y": 2.1301373408434023
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.914560729595394,
+        "y": 3.8420285371376424
+      },
+      "prevControl": {
+        "x": 4.029435167875076,
+        "y": 3.515387775142094
+      },
+      "nextControl": {
+        "x": 5.612414013204399,
+        "y": 4.099559601855855
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +36,8 @@
         "y": 4.051949444840401
       },
       "prevControl": {
-        "x": 4.862403105690661,
-        "y": 5.328430628330586
+        "x": 6.743171780182424,
+        "y": 4.163008136442813
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +48,8 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.9,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 1.7,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
@@ -42,25 +58,7 @@
       }
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.85,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "EnableAprilTags"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.3,
     "maxAcceleration": 3.0,
