@@ -2,6 +2,7 @@ package frc.lib.drive;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
@@ -633,6 +634,14 @@ public class DriveSubsystem extends SubsystemBase {
                         && DriverStation.getAlliance().get() == Alliance.Red,
                 this).until(condition);
     }
+
+    public void setRotationTargetAuto(Supplier<Rotation2d> rotation){
+        PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.of(rotation.get()));
+    }
+    public void setRotationTargetAuto(){
+        PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.empty());
+    }
+
     public boolean getRotAccuracy() {
         return Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
                 DriveWeightCommand.getAngle(), getPose().getRotation().getRadians()))) < 3;

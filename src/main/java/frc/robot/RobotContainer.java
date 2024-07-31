@@ -682,5 +682,7 @@ public class RobotContainer {
 			mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1 && mlVision.getConfidence() > 0.65));
 
 		NamedCommands.registerCommand("Print", new PrintCommand("print").repeatedly());
+		NamedCommands.registerCommand("AutoShootRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto(() -> (Rotation2d.fromRadians(movingWhileShooting.getNewRobotAngle())))));
+		NamedCommands.registerCommand("StandardRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto()));
 	}
 }
