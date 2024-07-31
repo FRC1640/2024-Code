@@ -1,5 +1,6 @@
 package frc.robot.sensors.Vision.MLVision;
 
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -7,8 +8,17 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class MLVisionIOSim implements MLVisionIO {
     DoublePublisher tv, tx, ty, ta, isTargetNote, calculatedTx, calculatedTy, calculatedTa;
 
+    DoubleArrayPublisher alltx, allty;
+
     public MLVisionIOSim() {
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-ml");
+
+        alltx = table.getDoubleArrayTopic("alltx").publish();
+        alltx.set(new double[]{0});
+
+        allty = table.getDoubleArrayTopic("allty").publish();
+        allty.set(new double[]{0});
+
         tx = table.getDoubleTopic("tx").publish();
         tx.set(0);
 
@@ -50,7 +60,7 @@ public class MLVisionIOSim implements MLVisionIO {
         inputs.calculatedTa = networkTable.getEntry("calculatedTa").getDouble(0);
 
 
-
-
+        inputs.allTx = networkTable.getEntry("alltx").getDoubleArray(new double[]{0});
+        inputs.allTy = networkTable.getEntry("allty").getDoubleArray(new double[]{0});
     }
 }

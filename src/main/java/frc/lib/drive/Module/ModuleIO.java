@@ -29,6 +29,10 @@ public interface ModuleIO extends AutoCloseable {
         public double[] odometryTimestamps = new double[] {};
         public double[] odometryDrivePositionsMeters = new double[] {};
         public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
+
+        public int rawEncoderValue;
+        public int offset;
+        public long LSBWeight;
     }
 
     public default void updateInputs(ModuleIOInputs inputs) {

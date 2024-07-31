@@ -11,6 +11,8 @@ import frc.robot.sensors.Resolvers.ResolverSlope;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
+import org.opencv.calib3d.StereoBM;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -176,6 +178,10 @@ public class ModuleIOSparkMax implements ModuleIO {
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();
+
+        inputs.rawEncoderValue = steeringEncoder.getRawValue();
+        inputs.offset = steeringEncoder.getOffset();
+        inputs.LSBWeight = steeringEncoder.getLSBWeight();
     }
 
 }

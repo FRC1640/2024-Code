@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.610689448867051,
-        "y": 0.7684057074275276
+        "x": 8.14198628397257,
+        "y": 4.090395958569695
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.560210760231948,
-        "y": 1.0310253795863025
+        "x": 6.02177592372303,
+        "y": 4.438407050851191
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.319389387593941,
-        "y": 2.655376685160952
+        "x": 3.4453918836510984,
+        "y": 2.740335751712873
       },
       "prevControl": {
-        "x": 6.0205935796487,
-        "y": 0.828823196107932
+        "x": 4.499367172771434,
+        "y": 3.817732713924771
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.95,
+      "minWaypointRelativePos": 0.75,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -45,7 +45,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -54,23 +54,6 @@
               "type": "named",
               "data": {
                 "name": "EnableAprilTags"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AutoShootRotation"
               }
             }
           ]
@@ -86,14 +69,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 143.13010235415598,
+    "rotation": 136.8476102659946,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Very Source",
+  "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -178.32,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

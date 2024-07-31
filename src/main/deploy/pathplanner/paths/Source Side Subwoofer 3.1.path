@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.610689448867051,
-        "y": 0.7684057074275276
+        "x": 3.45,
+        "y": 2.74
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.560210760231948,
-        "y": 1.0310253795863025
+        "x": 4.487656336225653,
+        "y": 4.005106098657276
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.319389387593941,
-        "y": 2.655376685160952
+        "x": 8.246834867421518,
+        "y": 5.726599070887158
       },
       "prevControl": {
-        "x": 6.0205935796487,
-        "y": 0.828823196107932
+        "x": 7.099172885934929,
+        "y": 4.414985377759629
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.95,
+      "minWaypointRelativePos": 0.8,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -45,7 +45,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -53,24 +53,7 @@
             {
               "type": "named",
               "data": {
-                "name": "EnableAprilTags"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AutoShootRotation"
+                "name": "DisableAprilTags"
               }
             }
           ]
@@ -86,14 +69,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 143.13010235415598,
+    "rotation": -137.6025622024998,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Very Source",
+  "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 136.85,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

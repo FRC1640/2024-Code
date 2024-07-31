@@ -267,6 +267,9 @@ public class LimelightHelpers {
         @JsonProperty("typ")
         public double ty_pixels;
 
+        @JsonProperty("pts")
+        public double[] pts;
+
         public LimelightTarget_Detector() {
         }
     }
