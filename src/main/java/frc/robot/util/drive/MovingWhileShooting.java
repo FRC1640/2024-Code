@@ -44,10 +44,6 @@ public class MovingWhileShooting {
     public double getSpeedFromDistance(){
         return 15;
     }
-
-    public double speedToPercentOutput(){
-        return getNewShotSpeed(); // TODO: conversion
-    }
     
 
     public double getNewRobotAngle() {

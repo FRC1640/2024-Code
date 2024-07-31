@@ -22,7 +22,6 @@ public final class Constants {
     public static enum PivotId {
         FL, FR, BL, BR;
     }
-
     public static class SparkMaxDefaults {
         public static final IdleMode idleMode = IdleMode.kCoast;
         public static final boolean inverted = false;
@@ -32,6 +31,14 @@ public final class Constants {
         public static final int encoderMeasurementPeriod = 20;
         public static final int encoderAverageDepth = 8;
         public static final OptionalInt canTimeout = OptionalInt.empty();
+    public static class MLConstants{
+        public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
+        public static final double noteHeight = Units.inchesToMeters(2);
+        public static final double angle = -18;
+        public static final double FOV = 62.5;
+        public static final double FOVPadding = 10;
+        public static final double usableDistance = 2.5;
+        public static final double width = Units.inchesToMeters(14);
     }
 
     public static class AprilTagVisionConstants {
@@ -256,6 +263,8 @@ public final class Constants {
         public static Translation2d speakerPositionBlue = new Translation2d(0.3, 5.2);
         public static Pose2d[] blueStages = {new Pose2d(new Translation2d(4.2, 5.1), new Rotation2d(2.1)), new Pose2d(new Translation2d(4.3, 3.1), new Rotation2d(-2.2)), new Pose2d(new Translation2d(6, 3.9), new Rotation2d(0))}; // 0: Amp/Speaker Chain (steve), 1: Source Facing Chain (Brenda), 2: the other one (kevin)
         public static Pose2d[] redStages = {new Pose2d(new Translation2d(12.3, 5), new Rotation2d(1)), new Pose2d(new Translation2d(12.3,3.2), new Rotation2d(-1)), new Pose2d(new Translation2d(10.5,4.0), new Rotation2d(3.14159265))};
+        public static Double[] NotePresetRotation = {0.388, 2.733};
+        public static double NotePresetTargetAngle = 39.05;
         
         public static Translation2d stashPositionBlue = new Translation2d(0.843, 6.6);
         public static Translation2d stashPositionRed = new Translation2d(15.584, 6.6);

@@ -3,6 +3,8 @@ package frc.lib.drive.Module;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
+import org.opencv.calib3d.StereoBM;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
@@ -153,6 +155,10 @@ public class ModuleIOSparkMax implements ModuleIO {
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();
+
+        inputs.rawEncoderValue = steeringEncoder.getRawValue();
+        inputs.offset = steeringEncoder.getOffset();
+        inputs.LSBWeight = steeringEncoder.getLSBWeight();
     }
 
 }

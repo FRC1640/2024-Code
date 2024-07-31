@@ -26,7 +26,16 @@ public interface MLVisionIO {
         public double calculatedTy;
         public double calculatedTa;
 
-        
+
+        public double[] allTx;
+        public double[] allTy;
+
+        public double[] width;
+        public double[] height;
+
+        public double[] pts;
+
+        public double[] confidence;
     }
     public default void updateInputs(MLVisionIOInputs inputs) {
     }
