@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "bro",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -42,6 +42,12 @@
               "type": "named",
               "data": {
                 "name": "EnableAprilTags"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShootRotation"
               }
             }
           ]
