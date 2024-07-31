@@ -30,11 +30,6 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": -166.26,
-      "rotateFast": false
-    },
-    {
       "waypointRelativePos": 0.5,
       "rotationDegrees": 180.0,
       "rotateFast": false
@@ -65,6 +60,23 @@
               "type": "named",
               "data": {
                 "name": "DisableAprilTags"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StandardRotation"
               }
             }
           ]

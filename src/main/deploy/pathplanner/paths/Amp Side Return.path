@@ -59,6 +59,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShootRotation"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
