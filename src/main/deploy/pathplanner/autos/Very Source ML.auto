@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Very Source Start"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Very Source Start"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
+                }
+              }
+            ]
           }
         },
         {
@@ -74,9 +87,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Very Source 2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Very Source 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
+                }
+              }
+            ]
           }
         },
         {
@@ -136,9 +162,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Very Source 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Very Source 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
+                }
+              }
+            ]
           }
         },
         {
