@@ -10,6 +10,7 @@ public class SparkMaxConfigurer {
         CANSparkMax spark = new CANSparkMax(id, MotorType.kBrushless);
         config.config(spark);
         Logger.recordOutput("SparkFlashes/" + id, config.getFlashed());
+        Logger.recordOutput("SparkFlashes/" + id + "Measurement period", spark.getEncoder().getMeasurementPeriod());
         return spark;
     }
 }

@@ -7,8 +7,6 @@ import java.util.OptionalInt;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 
-import frc.robot.Constants.SparkMaxDefaults;
-
 public class SparkMaxConfiguration {
 
     private IdleMode idleMode;
@@ -19,7 +17,7 @@ public class SparkMaxConfiguration {
     private OptionalInt canTimeout;
     private List<LimitSwitchConfiguration> limitSwitches;
     private StatusFrames statusFrames;
-    private boolean burn = false;
+    private boolean burn = false;    
 
     public SparkMaxConfiguration(IdleMode idleMode, boolean inverted, int smartCurrentLimit,
             int encoderMeasurementPeriod, int encoderAverageDepth, OptionalInt canTimeout, StatusFrames statusFrames) {
@@ -67,10 +65,7 @@ public class SparkMaxConfiguration {
     }
 
     private void configEncoderMeasurementPeriod(CANSparkMax spark) {
-        if (spark.getEncoder().getMeasurementPeriod() != encoderMeasurementPeriod) {
-            spark.getEncoder().setMeasurementPeriod(encoderMeasurementPeriod);
-            burn = true;
-        }
+        spark.getEncoder().setMeasurementPeriod(encoderMeasurementPeriod);
     }
 
     private void configEncoderAverageDepth(CANSparkMax spark) {

@@ -1,14 +1,10 @@
 package frc.robot;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.OptionalInt;
-import java.util.function.BiFunction;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.SparkLimitSwitch.Type;
+import com.revrobotics.SparkLimitSwitch;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,10 +13,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
-import frc.robot.util.motor.SparkMaxConfiguration;
-import frc.robot.util.motor.StatusFrames;
 import frc.robot.util.motor.LimitSwitchConfiguration;
 import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchDirection;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.StatusFrames;
 
 public final class Constants {
     public static enum PivotId {
