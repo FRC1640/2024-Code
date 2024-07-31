@@ -115,9 +115,34 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "NoteValid"
+                }
+              },
+              {
                 "type": "path",
                 "data": {
                   "pathName": "Quad 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveToNote"
                 }
               },
               {
