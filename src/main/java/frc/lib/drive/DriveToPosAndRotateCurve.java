@@ -2,6 +2,8 @@ package frc.lib.drive;
 
 import java.util.function.Supplier;
 
+import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -19,7 +21,7 @@ import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.Note;
 
-public class DriveToPosAndRotate extends Command{
+public class DriveToPosAndRotateCurve extends Command{
 
     private DriveSubsystem driveSubsystem;
     private Gyro gyro;
@@ -29,18 +31,28 @@ public class DriveToPosAndRotate extends Command{
     private MLVision mlVision;
     // private Translation2d pose;
     PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID, "autodriveforward1");
-    // TrapezoidProfile profile;
-    // Constraints trapezoidConstraints;
+    TrapezoidProfile profileX;
+    Constraints trapezoidConstraintsX;
+    TrapezoidProfile profileY;
+    Constraints trapezoidConstraintsY;
+    double time = 0;
+    TrapezoidProfile.State xSpeed;
+    TrapezoidProfile.State ySpeed;
 
-    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro){
+    double lastTime = 0;
+    public DriveToPosAndRotateCurve(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro){
         this.driveSubsystem = driveSubsystem;
         this.mlVision = mlVision;
         // this.endState = endState;
         this.gyro = gyro;
         // this.pose = pose;
-        // trapezoidConstraints = new Constraints(0.5, 0.5);
+        trapezoidConstraintsX = new Constraints(0.25, 0.25);
         
-        // profile = new TrapezoidProfile(trapezoidConstraints);
+        profileX = new TrapezoidProfile(trapezoidConstraintsX);
+
+        trapezoidConstraintsY = new Constraints(0.25, 0.25);
+        
+        profileY= new TrapezoidProfile(trapezoidConstraintsX);
 
         addRequirements(driveSubsystem);
     }
@@ -53,20 +65,25 @@ public class DriveToPosAndRotate extends Command{
     @Override
     public void execute() {
         Note note = null;
+        
+        time += System.currentTimeMillis() / 1000 - lastTime;
         if (lastNote != null){
             if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
                 note = mlVision.getClosestNote();
+                time = 0;
+                xSpeed = new TrapezoidProfile.State(driveSubsystem.getPose().getX(), driveSubsystem.getChassisSpeeds().vxMetersPerSecond);
+                ySpeed = new TrapezoidProfile.State(driveSubsystem.getPose().getY(), driveSubsystem.getChassisSpeeds().vyMetersPerSecond);
             }
-            else{   
+            else{
                 note = lastNote;
             }
         }
         else{
             note = mlVision.getClosestNote();
         }
-        Logger.recordOutput("NotePosCommand", note.pose);
-        double angle = Math.atan2(note.pose.getY() - driveSubsystem.getPose().getY(),
-            note.pose.getX() - driveSubsystem.getPose().getX());
+        Logger.recordOutput("TrapezoidTime", time);
+        note = new Note(new Translation2d(3, 3), 1);
+        double angle = Math.atan2(driveSubsystem.getChassisSpeeds().vyMetersPerSecond, driveSubsystem.getChassisSpeeds().vxMetersPerSecond);
         double o;
         
         o = pidr.calculate(-SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(),
@@ -85,26 +102,23 @@ public class DriveToPosAndRotate extends Command{
         
 
         // double angle1 = new Rotation2d(pose.getX() - driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY() - driveSubsystem.getPose().getY()).getRadians();
-        double dist = driveSubsystem.getPose().getTranslation().getDistance(note.pose);
-        double s = pid.calculate(dist, 0);
-        s = Math.abs(s);
-        s = MathUtil.clamp(s, -1, 1);
-        if (Math.abs(s) < 0.01) {
-            s = 0;
-        }
-
-        double xSpeed = (Math.cos(angle) * s) * 0.7;
-        double ySpeed = (Math.sin(angle) * s) * 0.7;
-        double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
-        ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
-        ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
-        driveSubsystem.driveDoubleConePercent(finalSpeed.vxMetersPerSecond, finalSpeed.vyMetersPerSecond, finalSpeed.omegaRadiansPerSecond, true, new Translation2d(), false);
+        xSpeed = profileX.calculate(time, new TrapezoidProfile.State(driveSubsystem.getPose().getX(), driveSubsystem.getChassisSpeeds().vxMetersPerSecond), new TrapezoidProfile.State(note.pose.getX(), 0));
+        ySpeed = profileY.calculate(time, new TrapezoidProfile.State(driveSubsystem.getPose().getY(), driveSubsystem.getChassisSpeeds().vyMetersPerSecond), new TrapezoidProfile.State(note.pose.getY(), 0));
+        ChassisSpeeds cspeeds = new ChassisSpeeds(-xSpeed.velocity,-ySpeed.velocity,0);
+        ChassisSpeeds finalSpeed = cspeeds.plus(rToAngle);
+        driveSubsystem.driveDoubleConePercent(finalSpeed.vxMetersPerSecond / SwerveDriveDimensions.maxSpeed, 
+            finalSpeed.vyMetersPerSecond / SwerveDriveDimensions.maxSpeed, 
+            finalSpeed.omegaRadiansPerSecond, true, new Translation2d(), false);
         lastNote = note;
+        lastTime = System.currentTimeMillis();
     }
 
     @Override
     public void initialize() {
-        lastNote = null;
+        time = 0;
+        lastTime = System.currentTimeMillis() / 1000;
+        xSpeed = new TrapezoidProfile.State(driveSubsystem.getPose().getX(), driveSubsystem.getChassisSpeeds().vxMetersPerSecond);
+        ySpeed = new TrapezoidProfile.State(driveSubsystem.getPose().getY(), driveSubsystem.getChassisSpeeds().vyMetersPerSecond);
     }
 
     @Override
