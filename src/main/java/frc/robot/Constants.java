@@ -31,6 +31,7 @@ public final class Constants {
         public static final int encoderMeasurementPeriod = 20;
         public static final int encoderAverageDepth = 8;
         public static final OptionalInt canTimeout = OptionalInt.empty();
+    }
     public static class MLConstants{
         public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
         public static final double noteHeight = Units.inchesToMeters(2);
