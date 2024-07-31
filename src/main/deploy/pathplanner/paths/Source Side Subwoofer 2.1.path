@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.379781113585739,
-        "y": 4.3979591437981105
+        "x": 7.087462049389147,
+        "y": 4.321298685393376
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.4453918836510984,
-        "y": 2.740335751712873
+        "x": 5.096619836606291,
+        "y": 6.5463576290918635
       },
       "prevControl": {
-        "x": 4.499367172771434,
-        "y": 3.817732713924771
+        "x": 7.778401405590257,
+        "y": 6.792285196553275
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.85,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -45,7 +45,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -53,7 +53,7 @@
             {
               "type": "named",
               "data": {
-                "name": "EnableAprilTags"
+                "name": "AutoShootRotation"
               }
             }
           ]
@@ -69,7 +69,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 136.8476102659946,
+    "rotation": -169.73,
     "rotateFast": false
   },
   "reversed": false,

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.36086297850199,
-      "y": 5.539225686154654
+      "x": 0.7450681568029801,
+      "y": 4.428212820389605
     },
-    "rotation": 180.0
+    "rotation": 121.61
   },
   "command": {
     "type": "sequential",
@@ -83,7 +83,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.35)"
+            "name": "RotCommand(.2)"
           }
         },
         {
@@ -152,7 +152,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.35)"
+            "name": "RotCommand(.2)"
           }
         }
       ]
