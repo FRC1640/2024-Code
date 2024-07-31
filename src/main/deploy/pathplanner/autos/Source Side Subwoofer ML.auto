@@ -33,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.35)"
           }
         },
         {
@@ -65,12 +65,6 @@
           "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeWait"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -108,7 +102,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.35)"
           }
         },
         {
@@ -140,12 +134,6 @@
           "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeWait"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -183,7 +171,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.35)"
           }
         }
       ]
