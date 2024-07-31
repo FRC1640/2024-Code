@@ -1,32 +1,19 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topLeftShooter = new CANSparkMax(ShooterConstants.topLeftCanID, MotorType.kBrushless); 
-        bottomLeftShooter = new CANSparkMax(ShooterConstants.bottomLeftCanID, MotorType.kBrushless);
-        topRightShooter = new CANSparkMax(ShooterConstants.topRightCanID, MotorType.kBrushless); 
-        bottomRightShooter = new CANSparkMax(ShooterConstants.bottomRightCanID, MotorType.kBrushless);
-
-
-        Constants.updateStatusFrames(topLeftShooter, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(topRightShooter, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(bottomLeftShooter, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(bottomRightShooter, 100, 200, 200, 500, 500, 500, 500);
-
-        topLeftShooter.setInverted(true);
-        bottomRightShooter.setInverted(true);
-        topRightShooter.setInverted(false);
-        bottomLeftShooter.setInverted(false);
+        topLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topLeftCanID, ShooterConstants.getSparkDefaultsShooter(true));
+        bottomLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomLeftCanID, ShooterConstants.getSparkDefaultsShooter(false));
+        topRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topRightCanID, ShooterConstants.getSparkDefaultsShooter(false));
+        bottomRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomRightCanID, ShooterConstants.getSparkDefaultsShooter(true));
     }
 
     @Override

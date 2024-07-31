@@ -2,13 +2,16 @@ package frc.robot.subsystems.climber;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.SparkMaxConfigurer;
+import frc.robot.util.motor.StatusFrames;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final CANSparkMax leftMotor;
@@ -19,22 +22,10 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
-        leftMotor = new CANSparkMax(ClimberConstants.leftCanID, MotorType.kBrushless);
-        rightMotor = new CANSparkMax(ClimberConstants.rightCanID, MotorType.kBrushless);
+        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID, ClimberConstants.sparkDefaultsClimber);
+        rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID, ClimberConstants.sparkDefaultsClimber);
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
-
-        leftMotor.setInverted(false);
-        rightMotor.setInverted(false);
-
-        leftMotor.setIdleMode(IdleMode.kBrake);
-        rightMotor.setIdleMode(IdleMode.kBrake);
-
-        leftMotor.setSmartCurrentLimit(80);
-        rightMotor.setSmartCurrentLimit(80);
-
-        Constants.updateStatusFrames(leftMotor, 100, 20, 20, 500, 500, 500, 500);
-        Constants.updateStatusFrames(rightMotor, 100, 20, 20, 500, 500, 500, 500);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);
         rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 3.637, 2.585, 11, 84); //note: to create resolver constants class for min/max
     }

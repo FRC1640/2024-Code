@@ -6,11 +6,12 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.RobotController;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import frc.robot.Constants;
+import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.SparkMaxConfigurer;
+import frc.robot.util.motor.StatusFrames;
 
 public class TargetingIOSparkMax implements TargetingIO {
     // private final CANSparkMax leftTargetingMotor;
@@ -22,10 +23,8 @@ public class TargetingIOSparkMax implements TargetingIO {
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
-        rightTargetingMotor = new CANSparkMax(TargetingConstants.rightAngleMotorId, MotorType.kBrushless);
-        rightTargetingMotor.setIdleMode(IdleMode.kBrake);
-        rightTargetingMotor.setInverted(true);
-        Constants.updateStatusFrames(rightTargetingMotor, 100, 20, 20, 500, 500, 500, 500);
+        rightTargetingMotor = SparkMaxConfigurer.configSpark(
+            TargetingConstants.rightAngleMotorId, TargetingConstants.sparkDefaultsAngler);
     }
 
     @Override
