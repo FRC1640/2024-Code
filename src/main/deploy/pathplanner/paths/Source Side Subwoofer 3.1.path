@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1,
-        "y": 6.55
+        "x": 3.69,
+        "y": 2.69
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.005486193568678,
-        "y": 6.710309340732804
+        "x": 5.0832340126218725,
+        "y": 4.568394521404429
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.375654069425114,
-        "y": 5.8788399459823175
+        "x": 8.240655712080656,
+        "y": 5.870830972431175
       },
       "prevControl": {
-        "x": 6.888377828110862,
-        "y": 4.766310474133075
+        "x": 6.888884546999863,
+        "y": 4.065180438053184
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.85,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -42,25 +42,7 @@
       }
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.05,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "DisableAprilTags"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.3,
     "maxAcceleration": 3.0,
@@ -69,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -143.58362148011398,
+    "rotation": -143.58,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": -169.73,
+    "rotation": 138.3,
     "velocity": 0
   },
   "useDefaultConstraints": false

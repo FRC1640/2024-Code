@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.087462049389147,
-        "y": 4.321298685393376
+        "x": 4.224809988081516,
+        "y": 5.0124069478908195
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.096619836606291,
-        "y": 6.5463576290918635
+        "x": 3.6919950762978466,
+        "y": 2.693675387350775
       },
       "prevControl": {
-        "x": 7.778401405590257,
-        "y": 6.792285196553275
+        "x": 4.49121744397335,
+        "y": 3.098220042593932
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.85,
+      "minWaypointRelativePos": 0.7,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -45,7 +45,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -54,6 +54,23 @@
               "type": "named",
               "data": {
                 "name": "AutoShootRotation"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableAprilTags"
               }
             }
           ]
@@ -69,7 +86,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -169.73,
+    "rotation": 138.30186567443502,
     "rotateFast": false
   },
   "reversed": false,

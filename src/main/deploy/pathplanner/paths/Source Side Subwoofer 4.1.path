@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.38,
-        "y": 5.88
+        "x": 8.24,
+        "y": 5.87
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.942353117231199,
-        "y": 7.518357062391729
+        "x": 7.802353117231198,
+        "y": 7.508357062391729
       },
       "isLocked": false,
       "linkedName": null
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.7,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -43,23 +43,6 @@
     }
   ],
   "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "EnableAprilTags"
-              }
-            }
-          ]
-        }
-      }
-    },
     {
       "name": "New Event Marker",
       "waypointRelativePos": 0.6,
@@ -92,7 +75,7 @@
   "reversed": false,
   "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": -137.6,
+    "rotation": -143.58,
     "velocity": 0
   },
   "useDefaultConstraints": false
