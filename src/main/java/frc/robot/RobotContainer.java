@@ -282,10 +282,7 @@ public class RobotContainer {
 		
 		
 		
-		new Trigger(() -> driveControllerHID.getYButton())
-				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(autoDriveWeight)));
-		new Trigger(() -> driveControllerHID.getYButton())
-				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(autoDriveWeight)));
+		new Trigger(() -> driveControllerHID.getYButton()).onTrue(manualShot(FieldConstants.NotePresetTargetAngle, FieldConstants.NotePresetRotation[1], FieldConstants.NotePresetRotation[0], () -> (!driveControllerHID.getYButton())));
 
 		// new Trigger(()->operatorControllerHID.getAButton())
 		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
@@ -567,7 +564,7 @@ public class RobotContainer {
 						0.0), "manualShot",
 					cancelCondition, driveSubsystem);
 			DriveWeightCommand.addWeight(weight);
-		}).alongWith(generateIntakeCommand()));
+		}).alongWith(generateIntakeCommand())).until(cancelCondition);
 	}
 
 	public double get3dDistance(Supplier<Pose2d> speakerPos) {
