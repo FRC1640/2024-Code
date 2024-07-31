@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.36,
-        "y": 5.54
+        "x": 0.7450681568029801,
+        "y": 4.428212820389605
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.2325709815477826,
-        "y": 5.691466561250646
+        "x": 2.6679664170139152,
+        "y": 1.9413876665591177
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.14198628397257,
-        "y": 4.090395958569695
+        "x": 8.297990650035354,
+        "y": 4.104648209296419
       },
       "prevControl": {
-        "x": 3.80842781657101,
-        "y": 3.1267933577244955
+        "x": 3.9714695645607505,
+        "y": 4.280297569604149
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,25 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.25,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "DisableAprilTags"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.3,
     "maxAcceleration": 3.0,
@@ -57,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.32,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 121.60750224624891,
     "velocity": 0
   },
   "useDefaultConstraints": false
