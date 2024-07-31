@@ -1,9 +1,10 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.OptionalInt;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.SparkLimitSwitch;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,12 +13,25 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
+import frc.robot.util.motor.LimitSwitchConfiguration;
+import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchDirection;
+import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.StatusFrames;
 
 public final class Constants {
     public static enum PivotId {
         FL, FR, BL, BR;
     }
-
+    public static class SparkMaxDefaults {
+        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final boolean inverted = false;
+        public static final LimitSwitchConfiguration limitSwitch =
+            new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false);
+        public static final int smartCurrentLimit = 60;
+        public static final int encoderMeasurementPeriod = 20;
+        public static final int encoderAverageDepth = 8;
+        public static final OptionalInt canTimeout = OptionalInt.empty();
+    }
     public static class MLConstants{
         public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
         public static final double noteHeight = Units.inchesToMeters(2);
@@ -110,6 +124,30 @@ public final class Constants {
                 true,
                 true,
                 Units.inchesToMeters(3.873 / 2));
+
+        public static SparkMaxConfiguration getSparkDefaultsDrive(boolean inverted) {
+            return new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                inverted,
+                80,
+                8,
+                2,
+                OptionalInt.of(250),
+                new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
+                    500, 500, 500, 500));
+        }
+        
+        public static SparkMaxConfiguration getSparkDefaultsSteer(boolean inverted) {
+            return new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                inverted,
+                40,
+                8,
+                2,
+                OptionalInt.of(250),
+                new StatusFrames(100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
+                    500, 500, 500, 500));
+        }
     }
 
     public static class IntakeConstants {
@@ -117,6 +155,26 @@ public final class Constants {
         public static final int indexerCanID = 19;
         public static final double proximityVoltageThreshold = 4.0;
         public static final int proximitySensorChannel = 9;
+        public static final SparkMaxConfiguration sparkDefaultsIntake =
+            new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                false,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 200, 200,
+                    500, 500, 500, 500));
+        public static final SparkMaxConfiguration sparkDefaultsIndexer =
+            new SparkMaxConfiguration(
+                IdleMode.kBrake,
+                true,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 200, 200,
+                    500, 500, 500, 500));
     }
 
     public static class ClimberConstants {
@@ -128,6 +186,16 @@ public final class Constants {
         public static final int rightClimberResolver = 5;
         public static final int leftProximityChannel = 8;
         public static final int rightProximityChannel = 7;
+        public static final SparkMaxConfiguration sparkDefaultsClimber = 
+            new SparkMaxConfiguration(
+                IdleMode.kBrake, 
+                false,
+                80,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 20, 20,
+                    500, 500, 500, 500));
     }
 
     public static class ShooterConstants {
@@ -136,6 +204,18 @@ public final class Constants {
         public static final int topRightCanID = 11;
         public static final int bottomRightCanID = 10;
         public static double waitTime = 1;
+        public static SparkMaxConfiguration getSparkDefaultsShooter(boolean inverted) {
+            return new SparkMaxConfiguration(
+                SparkMaxDefaults.idleMode,
+                inverted,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 200, 200,
+                    500, 500, 500, 500)
+            );
+        }
     }
 
     public static class PIDConstants {
@@ -215,18 +295,27 @@ public final class Constants {
         public static double extensionManualSpeed = 0.85;
 
         public static int resolverID = 4;
-    }
 
-    public static void updateStatusFrames(CANSparkMax motor, int status0, int status1, int status2,
-            int status3, int status4, int status5, int status6) {
-
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status0);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, status1);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, status2);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, status3);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, status4);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, status5);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, status6);
-
+        public static final SparkMaxConfiguration sparkDefaultsExtension =
+            new SparkMaxConfiguration(
+                IdleMode.kBrake,
+                true,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 20, 20,
+                    500, 500, 500, 500),
+                new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
+        public static final SparkMaxConfiguration sparkDefaultsAngler =
+            new SparkMaxConfiguration(
+                IdleMode.kBrake,
+                true,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                SparkMaxDefaults.canTimeout,
+                new StatusFrames(100, 20, 20,
+                    500, 500, 500, 500));
     }
 }

@@ -1,23 +1,23 @@
 package frc.lib.drive.Module;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
-import com.revrobotics.RelativeEncoder;
-
-import frc.lib.drive.SparkMaxOdometryThread;
-import frc.robot.Constants;
-import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.sensors.Resolvers.ResolverSlope;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
 import org.opencv.calib3d.StereoBM;
 
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.lib.drive.SparkMaxOdometryThread;
+import frc.robot.Constants;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.sensors.Resolvers.ResolverSlope;
+import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ModuleIOSparkMax implements ModuleIO {
     private final CANSparkMax driveMotor;
@@ -39,22 +39,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         
 
         this.id = id;
-        driveMotor = new CANSparkMax(id.driveChannel, MotorType.kBrushless);
-        steeringMotor = new CANSparkMax(id.steerChannel, MotorType.kBrushless);
-        driveMotor.setSmartCurrentLimit(80);
-        driveMotor.getEncoder().setMeasurementPeriod(8);
-        driveMotor.getEncoder().setAverageDepth(2);
-        steeringMotor.getEncoder().setMeasurementPeriod(8);
-        steeringMotor.getEncoder().setAverageDepth(2);
-
-        driveMotor.setCANTimeout(250);
-        steeringMotor.setCANTimeout(250);
-        steeringMotor.setIdleMode(IdleMode.kCoast);
-        steeringMotor.setSmartCurrentLimit(40);
-        driveMotor.setIdleMode(IdleMode.kCoast);
-
-        
-
+        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive));
+        steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel, ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
@@ -77,18 +63,9 @@ public class ModuleIOSparkMax implements ModuleIO {
                                 return OptionalDouble.empty();
                             }
                         });
-
-        Constants.updateStatusFrames(driveMotor, 100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency), 500,
-                500, 500, 500);
-        Constants.updateStatusFrames(steeringMotor, 100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency), 500, 500, 500, 500);
         driveEncoder = driveMotor.getEncoder();
         steeringEncoder = new ResolverSlope(id.resolverChannel, 3.125, 4.375,
                 180.0, 90.0, id.angleOffset);
-
-        
-
-        driveMotor.setInverted(id.reverseDrive);
-        steeringMotor.setInverted(id.reverseSteer);
     }
 
     @Override

@@ -2,12 +2,10 @@ package frc.robot.subsystems.intake;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final CANSparkMax intakeMotor;
@@ -26,14 +24,10 @@ public class IntakeIOSparkMax implements IntakeIO {
     public IntakeIOSparkMax(BooleanSupplier hasNote, BooleanSupplier clearCondition, BooleanSupplier startAuto) {
         this.clearCondition = clearCondition;
         this.startAuto = startAuto;
-        intakeMotor = new CANSparkMax(IntakeConstants.intakeCanID, MotorType.kBrushless);
-        indexerMotor = new CANSparkMax(IntakeConstants.indexerCanID, MotorType.kBrushless);
-        indexerMotor.setInverted(true);
-        intakeMotor.setInverted(false);
-        indexerMotor.setIdleMode(IdleMode.kBrake);
-
-        Constants.updateStatusFrames(intakeMotor, 100, 200, 200, 500, 500, 500, 500);
-        Constants.updateStatusFrames(indexerMotor, 100, 200, 200, 500, 500, 500, 500);
+        intakeMotor = SparkMaxConfigurer.configSpark(
+                IntakeConstants.intakeCanID, IntakeConstants.sparkDefaultsIntake);
+        indexerMotor = SparkMaxConfigurer.configSpark(
+                IntakeConstants.indexerCanID, IntakeConstants.sparkDefaultsIndexer);
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }
