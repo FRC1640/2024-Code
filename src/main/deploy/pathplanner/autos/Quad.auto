@@ -115,15 +115,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Quad 4"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Quad 4"
+                      }
+                    }
+                  ]
                 }
               },
               {

@@ -117,15 +117,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Amp Side Far 2"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Far 2"
+                      }
+                    }
+                  ]
                 }
               },
               {

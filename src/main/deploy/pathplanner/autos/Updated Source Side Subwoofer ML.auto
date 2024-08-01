@@ -22,15 +22,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Source Side Subwoofer 1.1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source Side Subwoofer 1.1"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -97,15 +104,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Source Side Subwoofer 3.1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source Side Subwoofer 3.1"
+                      }
+                    }
+                  ]
                 }
               },
               {

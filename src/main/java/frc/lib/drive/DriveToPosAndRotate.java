@@ -29,6 +29,7 @@ public class DriveToPosAndRotate extends Command{
     private IntakeSubsystem intakeSubsystem;
     Note note = null;
     long initTime;
+    boolean noteValid = false; 
 
     public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
         this.driveSubsystem = driveSubsystem;
@@ -106,11 +107,13 @@ public class DriveToPosAndRotate extends Command{
         lastNote = null;
         note = mlVision.getClosestNote();
         initTime = System.currentTimeMillis();
+        if ((!(mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1) || !(mlVision.getConfidence() > 0.65))){
+            noteValid = true;
+        }
     }
     @Override
     public boolean isFinished() {
-        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 2000 || note.confidence < 0.65||
-        mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) >= 1;
+        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 3000 || noteValid;
     }
     
 }
