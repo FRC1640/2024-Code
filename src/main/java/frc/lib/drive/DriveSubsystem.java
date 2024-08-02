@@ -272,14 +272,15 @@ public class DriveSubsystem extends SubsystemBase {
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 boolean mt1 = false;
-
-                 if ((vision.getDistance() < 5 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
+                double xy = 0.65;
+                double theta = Double.MAX_VALUE;
+                 if ((vision.getDistance() < 4 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
                     pose = vision.getAprilTagPose2dRot();
                     mt1 = true;
                  }
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
-                double xy = 0.65;
+                
                 // if (!Robot.inTeleop){
                 // xy = 2.5;
                 // if (poseDifference > 0.3){
@@ -294,7 +295,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // xy = 0.25;
                 // }
                 
-                double theta = Double.MAX_VALUE;
+                
                 boolean useEstimate = true;
 
                 // if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 &&
@@ -325,7 +326,7 @@ public class DriveSubsystem extends SubsystemBase {
                     swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    Robot.isDisabled || mt1 ? 0.00001:Double.MAX_VALUE));
+                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
 
                 }
             }
