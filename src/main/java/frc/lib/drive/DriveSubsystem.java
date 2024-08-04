@@ -417,6 +417,9 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 o = MathUtil.clamp(o, -1, 1);
 
+                // Logger.recordOutput("AutoRotateEnded", (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
+                //         angle)) < Math.toRadians(0.5)));
+
                 driveDoubleConePercent(0, 0, o, false, new Translation2d(), false);
 
             }

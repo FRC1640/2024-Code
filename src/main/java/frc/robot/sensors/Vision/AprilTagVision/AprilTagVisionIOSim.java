@@ -32,6 +32,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
         NetworkTable networkTable = NetworkTableInstance.getDefault().getTable(key);
         double[] emptyArray = { 0, 0, 0, 0, 0, 0, 0 };
         double[] botPose = networkTable.getEntry("botpose_wpiblue").getDoubleArray(emptyArray);
+        inputs.tagPoses = new Pose2d[]{};
         inputs.latency = Timer.getFPGATimestamp() - (botPose[6] / 1000.0);
         Translation2d aprilTagBotTran2d = new Translation2d(botPose[0], botPose[1]);
         Rotation2d aprilTagBotRotation2d = Rotation2d.fromDegrees(botPose[5]);

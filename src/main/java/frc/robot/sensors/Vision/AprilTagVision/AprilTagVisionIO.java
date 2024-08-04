@@ -22,7 +22,7 @@ public interface AprilTagVisionIO {
         public double cl;
         public double jl;
 
-        public Pose2d[] tagPoses;
+        public Pose2d[] tagPoses = {};
 
 
     }
