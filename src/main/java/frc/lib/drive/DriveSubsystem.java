@@ -274,9 +274,10 @@ public class DriveSubsystem extends SubsystemBase {
                 boolean mt1 = false;
                 double xy = 0.65;
                 double theta = Double.MAX_VALUE;
-                 if ((vision.getDistance() < 4 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
+                 if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
                     pose = vision.getAprilTagPose2dRot();
                     mt1 = true;
+                    xy = 0.8;
                  }
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
@@ -423,7 +424,7 @@ public class DriveSubsystem extends SubsystemBase {
             @Override
             public boolean isFinished() {
                 return (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
-                        angle)) < Math.toRadians(0.5));
+                        angle)) < Math.toRadians(1));
                 // return false;
             }
         };

@@ -45,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -76,7 +76,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -105,9 +105,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "RotCommand(.1)"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
+                }
+              }
+            ]
           }
         },
         {
@@ -183,7 +196,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.5)"
           }
         }
       ]
