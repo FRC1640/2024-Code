@@ -273,11 +273,14 @@ public class DriveSubsystem extends SubsystemBase {
 
                 boolean mt1 = false;
                 double xy = 0.65;
+                if (speed > 1.5){
+                    xy = 0.9;
+                }
                 double theta = Double.MAX_VALUE;
                  if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
                     pose = vision.getAprilTagPose2dRot();
                     mt1 = true;
-                    xy = 0.8;
+                    xy = 1.1;
                  }
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
@@ -408,6 +411,8 @@ public class DriveSubsystem extends SubsystemBase {
             public void execute() {
                 angle = angleSupplier.getAsDouble();
                 System.out.println(Math.toDegrees(angle));
+                
+                Logger.recordOutput("RotCommand", true);
 
                 double o;
                 o = pidr.calculate(-SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
