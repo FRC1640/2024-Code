@@ -148,28 +148,28 @@ public class TargetingSubsystem extends SubsystemBase {
      * Calculates the percent output of the angle motors needed
      * to reach the inputted angle as quickly as possible.
      * 
-     * @param targetPosition The angle to move to.
+     * @param goalPosition The angle to move to.
      * @return Percent output.
      */
-    private double getAnglePIDSpeed(double targetPosition) {
-        if (targetPosition <= TargetingConstants.angleLowerLimit) {
+    private double getAnglePIDSpeed(double goalPosition) {
+        if (goalPosition <= TargetingConstants.angleLowerLimit) {
             pidSmall.reset();
         }
         double speed = 0;
-        if (Math.abs(targetPosition - inputs.targetingPosition) < 1){
-            speed = pidSuperSmall.calculate(inputs.targetingPosition, targetPosition);
+        if (Math.abs(goalPosition - inputs.targetingPosition) < 1){
+            speed = pidSuperSmall.calculate(inputs.targetingPosition, goalPosition);
         }
-        else if (Math.abs(targetPosition - inputs.targetingPosition) < 6){
-            speed = pidSmall.calculate(inputs.targetingPosition, targetPosition);
+        else if (Math.abs(goalPosition - inputs.targetingPosition) < 6){
+            speed = pidSmall.calculate(inputs.targetingPosition, goalPosition);
         }
         else{
-            speed = pidLarge.calculate(inputs.targetingPosition, targetPosition);
+            speed = pidLarge.calculate(inputs.targetingPosition, goalPosition);
         }
         speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.01) {
             speed = 0;
         }
-        setpoint = targetPosition;
+        setpoint = goalPosition;
         return speed;
     }
 
