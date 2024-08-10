@@ -296,7 +296,7 @@ public class RobotContainer {
 		/*changing for test things CHANGE BACK LATER 
 		new Trigger(() -> driveControllerHID.getYButton()).onTrue(manualShot(FieldConstants.NotePresetTargetAngle, FieldConstants.NotePresetRotation[1], FieldConstants.NotePresetRotation[0], () -> (!driveControllerHID.getYButton())));
 		*/
-		new Trigger(()->driveControllerHID.getYButton()).onTrue(targetingSubsystem.upCommand());
+		new Trigger(()->driveControllerHID.getYButton()).whileTrue(targetingSubsystem.upCommand());
 
 		// new Trigger(()->operatorControllerHID.getAButton())
 		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
@@ -326,7 +326,7 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
 		*/
-		new Trigger(()->driveControllerHID.getAButton()).onTrue(targetingSubsystem.downCommand());
+		new Trigger(()->driveControllerHID.getAButton()).whileTrue(targetingSubsystem.downCommand());
 
 		new Trigger(() -> operatorControllerHID.getLeftTriggerAxis() > 0.1)
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
@@ -358,7 +358,7 @@ public class RobotContainer {
 					50,	() -> !driveControllerHID.getXButton(), true));
 		*/
 
-		new Trigger(()->driveControllerHID.getXButton()).onTrue(targetingSubsystem.midCommand());
+		new Trigger(()->driveControllerHID.getXButton()).whileTrue(targetingSubsystem.midCommand());
 
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));

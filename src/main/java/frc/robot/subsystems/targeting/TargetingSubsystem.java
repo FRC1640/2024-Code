@@ -441,33 +441,15 @@ public class TargetingSubsystem extends SubsystemBase {
 
     //testing thingies
     public Command upCommand(){
-        Command c = new Command () {
-            @Override
-            public void execute(){
-                setpoint = 65;
-            }
-        };
-        return c;
+        return anglePIDCommand(()->65);
     }
 
     public Command downCommand(){
-        Command c = new Command () {
-            @Override
-            public void execute(){
-                setpoint = 35;
-            }
-        };
-        return c;
+        return anglePIDCommand(()->35);
     }
 
     public Command midCommand(){
-        Command c = new Command () {
-            @Override
-            public void execute(){
-                setpoint = 50;
-            }
-        };
-        return c;
+        return anglePIDCommand(()->50);
     }
     
 }
