@@ -21,7 +21,7 @@ public interface TargetingIO {
         public double rightTargetingPositionDegrees = 0.0;
         public double rightRadiansPerSecond = 0.0;
 
-        public double targetingPositionAverage = 0.0;
+        public double targetingPosition = 0.0;
 
         public double targetingVoltage = 0;
     }

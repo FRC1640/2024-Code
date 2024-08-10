@@ -293,7 +293,10 @@ public class RobotContainer {
 		
 		
 		
+		/*changing for test things CHANGE BACK LATER 
 		new Trigger(() -> driveControllerHID.getYButton()).onTrue(manualShot(FieldConstants.NotePresetTargetAngle, FieldConstants.NotePresetRotation[1], FieldConstants.NotePresetRotation[0], () -> (!driveControllerHID.getYButton())));
+		*/
+		new Trigger(()->driveControllerHID.getYButton()).onTrue(targetingSubsystem.upCommand());
 
 		// new Trigger(()->operatorControllerHID.getAButton())
 		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
@@ -315,13 +318,16 @@ public class RobotContainer {
 		// 		// .alongWith(Commands.race(autoTarget(), new WaitCommand(ShooterConstants.waitTime))));
 
 		// moving while shooting robot rotation
-
+		/*CHANGE BACK changing for test thingie
 		new Trigger(() -> driveControllerHID.getAButton())
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5)))); // .alongWith(autoTarget()));
 		new Trigger(() -> driveControllerHID.getAButton())
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
+		*/
+		new Trigger(()->driveControllerHID.getAButton()).onTrue(targetingSubsystem.downCommand());
+
 		new Trigger(() -> operatorControllerHID.getLeftTriggerAxis() > 0.1)
 				.whileTrue(targetingSubsystem.setAnglePercentOutputCommand(-0.1));
 		new Trigger(() -> operatorControllerHID.getRightTriggerAxis() > 0.1)
@@ -346,10 +352,14 @@ public class RobotContainer {
 
 		
 		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand())
-
+		/* CHANGING FOR TEST THING CHANGE BACK
 		new Trigger(() -> driveControllerHID.getXButton())
 				.whileTrue(manualShotNoAngle(
 					50,	() -> !driveControllerHID.getXButton(), true));
+		*/
+
+		new Trigger(()->driveControllerHID.getXButton()).onTrue(targetingSubsystem.midCommand());
+
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)

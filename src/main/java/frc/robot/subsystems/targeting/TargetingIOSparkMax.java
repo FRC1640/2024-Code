@@ -59,7 +59,7 @@ public class TargetingIOSparkMax implements TargetingIO {
         // inputs.rightRadiansPerSecond = rightTargetingMotor.getEncoder().getVelocity() / 60 * 2 * Math.PI / 100;
         inputs.rightRadiansPerSecond = targetingEncoder.getVelocityRadians();
 
-        inputs.targetingPositionAverage = targetingEncoder.getD() + 1.5;
+        inputs.targetingPosition = targetingEncoder.getD() + 1.5;
     }
     @Override
     public void runBlower(double speed){

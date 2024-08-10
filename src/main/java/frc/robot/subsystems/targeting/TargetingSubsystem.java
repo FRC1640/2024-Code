@@ -58,7 +58,7 @@ public class TargetingSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Targeting", inputs);
-        angler.setAngle(inputs.targetingPositionAverage);
+        angler.setAngle(inputs.targetingPosition);
         // angler.setLength(inputs.extensionPosition / 40 * 2 * Math.PI );
         Logger.recordOutput("Targeting/mech", targetVisualization);
         // Logger.recordOutput("Targeting/velocity", inputs.);
@@ -156,14 +156,14 @@ public class TargetingSubsystem extends SubsystemBase {
             pidSmall.reset();
         }
         double speed = 0;
-        if (Math.abs(position - inputs.targetingPositionAverage) < 1){
-            speed = pidSuperSmall.calculate(inputs.targetingPositionAverage, position);
+        if (Math.abs(position - inputs.targetingPosition) < 1){
+            speed = pidSuperSmall.calculate(inputs.targetingPosition, position);
         }
-        else if (Math.abs(position - inputs.targetingPositionAverage) < 6){
-            speed = pidSmall.calculate(inputs.targetingPositionAverage, position);
+        else if (Math.abs(position - inputs.targetingPosition) < 6){
+            speed = pidSmall.calculate(inputs.targetingPosition, position);
         }
         else{
-            speed = pidLarge.calculate(inputs.targetingPositionAverage, position);
+            speed = pidLarge.calculate(inputs.targetingPosition, position);
         }
         speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.01) {
@@ -409,7 +409,7 @@ public class TargetingSubsystem extends SubsystemBase {
      *         as a boolean.
      */
     public boolean isAnglePositionAccurate(double error) {
-        return Math.abs(getAngleSetpoint() - inputs.targetingPositionAverage) < error;
+        return Math.abs(getAngleSetpoint() - inputs.targetingPosition) < error;
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -438,4 +438,36 @@ public class TargetingSubsystem extends SubsystemBase {
         return c;
     }
 
+
+    //testing thingies
+    public Command upCommand(){
+        Command c = new Command () {
+            @Override
+            public void execute(){
+                setpoint = 65;
+            }
+        };
+        return c;
+    }
+
+    public Command downCommand(){
+        Command c = new Command () {
+            @Override
+            public void execute(){
+                setpoint = 35;
+            }
+        };
+        return c;
+    }
+
+    public Command midCommand(){
+        Command c = new Command () {
+            @Override
+            public void execute(){
+                setpoint = 50;
+            }
+        };
+        return c;
+    }
+    
 }

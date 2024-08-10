@@ -277,7 +277,7 @@ public final class Constants {
     public static class TargetingConstants {
         public static int leftAngleMotorId = 200;
         public static int rightAngleMotorId = 15;
-        public static double angleLowerLimit = 28;
+        public static double angleLowerLimit = 28; //so i can find what i was using as reference for test commands
         public static double angleUpperLimit = 75;
         public static double angleManualSpeed = 0.05;
         public static double angleError = 0.5;

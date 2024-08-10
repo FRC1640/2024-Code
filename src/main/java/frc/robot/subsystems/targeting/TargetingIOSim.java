@@ -66,6 +66,6 @@ public class TargetingIOSim implements TargetingIO {
         inputs.rightTargetingPositionDegrees += rightTargetingMotorSimulated.getAngularVelocityRPM() / 60 * 360 * 0.02;
         rightPosition = inputs.rightTargetingPositionDegrees;
 
-        inputs.targetingPositionAverage = getPositionAverage(leftPositon, rightPosition);
+        inputs.targetingPosition = getPositionAverage(leftPositon, rightPosition);
     }
 }
