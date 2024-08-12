@@ -56,7 +56,7 @@ public final class Constants {
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
-        public static final double maxSpeed = 4.267;
+        public static final double maxSpeed = 3.904;
 
         public static final double odometryFrequency = 250.0;
 

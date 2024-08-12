@@ -41,6 +41,7 @@ public class Module {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Drive/Modules/" + id, inputs);
+        // Logger.recordOutput("Drive/Modules/" + id, );
     }
 
     public SwerveModuleState getState() {
@@ -117,6 +118,8 @@ public class Module {
         }
 
         io.setDriveVoltage(voltageLimiter.calculate(pidSpeed));
+        Logger.recordOutput("Drive/Modules/" + id + "NonLimitedSpeed", pidSpeed);
+        Logger.recordOutput("Drive/Modules/" + id + "LimitedSpeed", voltageLimiter.calculate(pidSpeed));
         io.setSteerPercentage(turnOutput);
     }
 
