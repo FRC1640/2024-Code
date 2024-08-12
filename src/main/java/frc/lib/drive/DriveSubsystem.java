@@ -240,10 +240,10 @@ public class DriveSubsystem extends SubsystemBase {
         for (AprilTagVision vision : visions) {
             Pose2d pose = new Pose2d();
             if (Robot.isDisabled){
-                pose = vision.getAprilTagPose2dRot();
+                pose = vision.getAprilTagPose2dMT1();
             }
             else{
-                pose = vision.getAprilTagPose2d();
+                pose = vision.getAprilTagPose2dMT2();
             }
             // pose = vision.getAprilTagPose2dRot();
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
@@ -264,7 +264,7 @@ public class DriveSubsystem extends SubsystemBase {
                 double posDifY = pose.getTranslation().getY() - getPose().getY();
 
                 double posDifTheta = Math.toDegrees(SwerveAlgorithms.angleDistance(
-                    vision.getAprilTagPose2dRot().getRotation().getRadians(), getPose().getRotation().getRadians()));
+                    vision.getAprilTagPose2dMT1().getRotation().getRadians(), getPose().getRotation().getRadians()));
 
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
@@ -278,7 +278,7 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 double theta = Double.MAX_VALUE;
                  if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
-                    pose = vision.getAprilTagPose2dRot();
+                    pose = vision.getAprilTagPose2dMT1();
                     mt1 = true;
                     xy = 1.1;
                  }
@@ -602,7 +602,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getAprilTagPose() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget()) {
-                return vision.getAprilTagPose2dRot();
+                return vision.getAprilTagPose2dMT1();
             }
         }
         return getPose();

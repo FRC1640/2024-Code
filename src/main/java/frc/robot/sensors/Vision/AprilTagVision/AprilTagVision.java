@@ -25,7 +25,7 @@ public class AprilTagVision extends PeriodicBase {
         return inputs.numVisibleTags;
     }
 
-    public Pose2d getAprilTagPose2d(){
+    public Pose2d getAprilTagPose2dMT2(){
         return inputs.aprilTagPose;
     }
     public double getLatency(){
@@ -41,7 +41,7 @@ public class AprilTagVision extends PeriodicBase {
         return inputs.aprilTagDistances;
     }
 
-    public Pose2d getAprilTagPose2dRot(){
+    public Pose2d getAprilTagPose2dMT1(){
         return inputs.aprilTagPoseRot;
     }
 
