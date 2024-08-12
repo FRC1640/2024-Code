@@ -247,7 +247,7 @@ public class DriveSubsystem extends SubsystemBase {
             }
             // pose = vision.getAprilTagPose2dRot();
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
-                    getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+                    getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0); //sends gyro to limelight for mt2
             if (vision.isPoseValid(pose)
                     && (Robot.inTeleop || aprilTagInAuto || Robot.isDisabled)
                     && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 100
