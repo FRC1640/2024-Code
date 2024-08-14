@@ -13,6 +13,7 @@ import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Robot;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.PivotId;
+import frc.robot.Constants.SwerveDriveDimensions;
 
 public class Module {
     ModuleIO io;
@@ -102,11 +103,15 @@ public class Module {
         final double targetSpeed = (flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond) * Math.abs(Math.cos(delta.getRadians()));
 
         // calculates drive speed with feedforward
-        double pidSpeed = (driveFeedforward.calculate(targetSpeed));
+        // double pidSpeed = (driveFeedforward.calculate(targetSpeed));
+        // pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed); // feedforward calc
+
+        double pidSpeed = targetSpeed / SwerveDriveDimensions.maxSpeed * 12;
+
         // if (!Robot.inTeleop) {
         //     pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
         // }
-        pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
+        
 
         // pid clamping and deadband
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
