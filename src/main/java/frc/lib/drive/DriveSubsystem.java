@@ -39,7 +39,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,14 +50,13 @@ import frc.lib.drive.Module.ModuleIOSparkMax;
 import frc.lib.sysid.SwerveDriveSysidRoutine;
 import frc.lib.vision.LimelightHelpers;
 import frc.robot.Constants;
-import frc.robot.DashboardInit;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.DashboardInit;
 import frc.robot.Robot;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
-import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.util.pathplanning.LocalADStarAK;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -98,6 +96,10 @@ public class DriveSubsystem extends SubsystemBase {
                     new SwerveModulePosition(),
                     new SwerveModulePosition()
             };
+
+
+
+    private Pose2d[] lastPoses = new Pose2d[2];
 
     
 
@@ -203,16 +205,143 @@ public class DriveSubsystem extends SubsystemBase {
         return desiredSwerveStates;
     }
 
+    /**
+     * Updates the robot's odometry position.
+     * Thanks to https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
+     * for many elements.
+     */
+    // private void updateOdometry() {
+    //     double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
+    //     Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
+    //     for (int i = 0; i < sampleTimestamps.length; i++) {
+    //         // Read wheel positions and deltas from each module
+    //         SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+    //         SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+    //         for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+    //             modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+    //             moduleDeltas[moduleIndex] = new SwerveModulePosition(
+    //                     modulePositions[moduleIndex].distanceMeters
+    //                             - lastModulePositions[moduleIndex].distanceMeters,
+    //                     modulePositions[moduleIndex].angle);
+    //             lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+    //         }
+    //         // Update gyro angle
+    //         if (gyro.isTrustworthy()) {
+    //             // Use the real gyro angle
+    //             rawGyroRotation = gyro.getOdometryPositions()[i];
+    //         } else {
+    //             // Use the angle delta from the kinematics and module deltas
+    //             Twist2d twist = SwerveDriveDimensions.kinematics.toTwist2d(moduleDeltas);
+    //             rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+    //         }
+
+    //         // Apply update
+    //         odometryPose = swervePoseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+    //     }
+    //     for (AprilTagVision vision : visions) {
+    //         Pose2d pose = new Pose2d();
+    //         if (Robot.isDisabled){
+    //             pose = vision.getAprilTagPose2dMT1();
+    //         }
+    //         else{
+    //             pose = vision.getAprilTagPose2dMT2();
+    //         }
+    //         // pose = vision.getAprilTagPose2dRot();
+    //         LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
+    //                 getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0); //sends gyro to limelight for mt2
+    //         if (vision.isPoseValid(pose)
+    //                 && (Robot.inTeleop || aprilTagInAuto || Robot.isDisabled)
+    //                 && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 100
+    //                 && vision.getDistance() < 7.3
+    //                 // && !(Robot.isDisabled && vision.getName() == "-back")
+    //                 ) {
+    //             double distanceToTag = vision.getDistance();
+               
+    //             double distConst = 1 + (distanceToTag * distanceToTag);
+    //             double poseDifference = pose.getTranslation()
+    //                     .getDistance(getPose().getTranslation());
+
+    //             double posDifX = pose.getTranslation().getX() - getPose().getX();
+    //             double posDifY = pose.getTranslation().getY() - getPose().getY();
+
+    //             double posDifTheta = Math.toDegrees(SwerveAlgorithms.angleDistance(
+    //                 vision.getAprilTagPose2dMT1().getRotation().getRadians(), getPose().getRotation().getRadians()));
+
+    //             double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
+    //                     getActualSwerveStates()).vxMetersPerSecond,
+    //                     SwerveDriveDimensions.kinematics
+    //                             .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
+
+    //             boolean mt1 = false;
+    //             double xy = 0.65;
+    //             if (speed > 1.5){
+    //                 xy = 0.9;
+    //             }
+    //             double theta = Double.MAX_VALUE;
+    //              if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
+    //                 pose = vision.getAprilTagPose2dMT1();
+    //                 mt1 = true;
+    //                 xy = 1.1;
+    //              }
+
+    //             // double xy = AprilTagVisionConstants.xyStdDev;
+                
+    //             // if (!Robot.inTeleop){
+    //             // xy = 2.5;
+    //             // if (poseDifference > 0.3){
+    //             // xy = 0.5;
+    //             // }
+    //             // }
+    //             // if ((speed > 1 && vision.getDistance() > 3.5)
+    //             //         || ((vision.getDistance() > 5 || speed > 1) && vision.getNumVisibleTags() == 1)) {
+    //             //     xy = 0.9;
+    //             // }
+    //             // if (vision.getNumVisibleTags() > 2){
+    //             // xy = 0.25;
+    //             // }
+                
+                
+    //             boolean useEstimate = true;
+
+    //             // if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 &&
+    //             // vision.getName() == "-back")
+    //             // || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1)
+    //             // || (vision.getDistance() > 6)) {
+    //             // useEstimate = false;
+    //             // }
+    //             // if (vision.getNumVisibleTags() >= 2 &&
+    //             // Arrays.stream(vision.getDistances()).max().getAsDouble() < 4) {
+    //             // xy = 0.25;
+    //             // } else {
+    //             // if (speed < 1 && vision.getDistance() < 2.75) {
+    //             // xy = 0.5;
+    //             // } else if (speed < 0.5 && vision.getDistance() < 4) {
+    //             // xy = 1.5;
+    //             // }
+    //             // }
+
+    //             for (int i = 0; i < vision.getTagPoses().length; i++) {
+    //                 Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
+    //                 Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
+    //                 Logger.recordOutput(vision.getName() + "/PosDifY" + i, posDifY);
+    //                 Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
+    //                 Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
+    //             }
+    //             if (useEstimate) {
+    //                 swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
+    //                         VecBuilder.fill(xy,
+    //                                 xy,
+    //                                 Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
+
+    //             }
+    //         }
+    //     }
+    // }
+
     private void updateOdometry() {
-        // update odometry, thanks to:
-        // https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
-
         double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
-        int sampleCount = sampleTimestamps.length;
-
         Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
-
-        for (int i = 0; i < sampleCount; i++) {
+        for (int i = 0; i < sampleTimestamps.length; i++) {
             // Read wheel positions and deltas from each module
             SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
             SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
@@ -239,30 +368,21 @@ public class DriveSubsystem extends SubsystemBase {
         }
         for (AprilTagVision vision : visions) {
             Pose2d pose = new Pose2d();
-            if (Robot.isDisabled){
+            if (Robot.isDisabled) {
                 pose = vision.getAprilTagPose2dMT1();
-            }
-            else{
+            } else {
                 pose = vision.getAprilTagPose2dMT2();
             }
-            // pose = vision.getAprilTagPose2dRot();
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
                     getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0); //sends gyro to limelight for mt2
             if (vision.isPoseValid(pose)
                     && (Robot.inTeleop || aprilTagInAuto || Robot.isDisabled)
                     && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 100
-                    && vision.getDistance() < 7.3
-                    // && !(Robot.isDisabled && vision.getName() == "-back")
-                    ) {
-                double distanceToTag = vision.getDistance();
-               
-                double distConst = 1 + (distanceToTag * distanceToTag);
-                double poseDifference = pose.getTranslation()
-                        .getDistance(getPose().getTranslation());
-
+                    && vision.getDistance() < 7.3) {
+                double distConst = (vision.getDistance() * vision.getDistance()) + 1;
+                double poseDifference = pose.getTranslation().getDistance(getPose().getTranslation());
                 double posDifX = pose.getTranslation().getX() - getPose().getX();
                 double posDifY = pose.getTranslation().getY() - getPose().getY();
-
                 double posDifTheta = Math.toDegrees(SwerveAlgorithms.angleDistance(
                     vision.getAprilTagPose2dMT1().getRotation().getRadians(), getPose().getRotation().getRadians()));
 
@@ -276,49 +396,14 @@ public class DriveSubsystem extends SubsystemBase {
                 if (speed > 1.5){
                     xy = 0.9;
                 }
-                double theta = Double.MAX_VALUE;
-                 if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
-                    pose = vision.getAprilTagPose2dMT1();
+                if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
+                    if () {
+                        pose = vision.getAprilTagPose2dMT1();
+                    }
                     mt1 = true;
                     xy = 1.1;
-                 }
-
-                // double xy = AprilTagVisionConstants.xyStdDev;
-                
-                // if (!Robot.inTeleop){
-                // xy = 2.5;
-                // if (poseDifference > 0.3){
-                // xy = 0.5;
-                // }
-                // }
-                // if ((speed > 1 && vision.getDistance() > 3.5)
-                //         || ((vision.getDistance() > 5 || speed > 1) && vision.getNumVisibleTags() == 1)) {
-                //     xy = 0.9;
-                // }
-                // if (vision.getNumVisibleTags() > 2){
-                // xy = 0.25;
-                // }
-                
-                
+                }
                 boolean useEstimate = true;
-
-                // if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 &&
-                // vision.getName() == "-back")
-                // || (vision.getDistance() > 3 && vision.getNumVisibleTags() == 1)
-                // || (vision.getDistance() > 6)) {
-                // useEstimate = false;
-                // }
-                // if (vision.getNumVisibleTags() >= 2 &&
-                // Arrays.stream(vision.getDistances()).max().getAsDouble() < 4) {
-                // xy = 0.25;
-                // } else {
-                // if (speed < 1 && vision.getDistance() < 2.75) {
-                // xy = 0.5;
-                // } else if (speed < 0.5 && vision.getDistance() < 4) {
-                // xy = 1.5;
-                // }
-                // }
-
                 for (int i = 0; i < vision.getTagPoses().length; i++) {
                     Logger.recordOutput(vision.getName() + "/PosDifference" + i, poseDifference);
                     Logger.recordOutput(vision.getName() + "/PosDifX" + i, posDifX);
@@ -331,7 +416,6 @@ public class DriveSubsystem extends SubsystemBase {
                             VecBuilder.fill(xy,
                                     xy,
                                     Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
-
                 }
             }
         }
