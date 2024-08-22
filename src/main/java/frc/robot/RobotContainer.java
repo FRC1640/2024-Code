@@ -398,9 +398,11 @@ public class RobotContainer {
 
 			// new Trigger(() -> driveControllerHID.getBButton())
 		
-		
-		new Trigger(() -> driveControllerHID.getBButton())
+		/*CHANGING FOR TEST CHANGE BACK 
+		 new Trigger(() -> driveControllerHID.getBButton())
 			.whileTrue(manualShotNoAngle(55, () -> !driveControllerHID.getBButton()));
+		*/
+		new Trigger(() -> driveControllerHID.getBButton()).whileTrue(targetingSubsystem.smallMidCommand());
 
 
 		// new Trigger(()->operatorControllerHID.getYButton())

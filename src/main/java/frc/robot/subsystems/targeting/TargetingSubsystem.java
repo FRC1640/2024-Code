@@ -152,7 +152,7 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Percent output.
      */
     private double getAnglePIDSpeed(double goalPosition) {
-        if (goalPosition <= TargetingConstants.angleLowerLimit) {
+        if (goalPosition <= TargetingConstants.angleLowerLimit) { //bookmark
             pidSmall.reset();
         }
         double speed = 0;
@@ -446,6 +446,10 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public Command downCommand(){
         return anglePIDCommand(()->35);
+    }
+
+    public Command smallMidCommand(){
+        return anglePIDCommand(()->50.9);
     }
 
     public Command midCommand(){
