@@ -29,7 +29,7 @@ public class Module {
     // public final PIDController turningPIDController = new PIDController(1,0,0);
     // //sim PID
 
-    public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.26124, 3.2144, 0.68367);
+    public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.21414, 2.5109, 0.25135);
 
     private double pidModuleTarget;
     SlewRateLimiter voltageLimiter = new SlewRateLimiter(120);
@@ -103,11 +103,10 @@ public class Module {
         final double targetSpeed = (flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond) * Math.abs(Math.cos(delta.getRadians()));
 
         // calculates drive speed with feedforward
-        // double pidSpeed = (driveFeedforward.calculate(targetSpeed));
-        // pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed); // feedforward calc
+        double pidSpeed = (driveFeedforward.calculate(targetSpeed));
+        pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed); // feedforward calc
 
-        double pidSpeed = targetSpeed / SwerveDriveDimensions.maxSpeed * 12;
-
+        // double pidSpeed = targetSpeed / SwerveDriveDimensions.maxSpeed * 12;
         // if (!Robot.inTeleop) {
         //     pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed);
         // }
@@ -130,6 +129,7 @@ public class Module {
 
     public void setDriveVoltage(double volts) {
         io.setDriveVoltage(voltageLimiter.calculate(volts));
+        // io.setDriveVoltage(volts);
     }
 
     public double getDriveVoltage() {

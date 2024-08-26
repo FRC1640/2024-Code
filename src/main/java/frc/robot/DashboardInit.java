@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -15,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.drive.DriveSubsystem;
@@ -63,6 +67,7 @@ public class DashboardInit {
         DashboardInit.driveSubsystem = driveSubsystem;
         DashboardInit.targetingSubsystem = targetingSubsystem;
         DashboardInit.controller = controller;
+        Logger.recordOutput("controllerDashboard", controller.getHID().getPort());
         DashboardInit.shooterSubsystem = shooterSubsystem;
         autonInit();
         matchInit(vision);
@@ -187,17 +192,17 @@ public class DashboardInit {
     private static void sysidInit() {
         ShuffleboardTab sysidTab = Shuffleboard.getTab("Sysid");
         sysidChooser.setDefaultOption("None!", new WaitCommand(0.1));
-        sysidChooser.addOption("AnglerSysID", CreateSysidCommand.createCommand(targetingSubsystem::sysIdQuasistatic, 
-        targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
+        // sysidChooser.addOption("AnglerSysID", CreateSysidCommand.createCommand(targetingSubsystem::sysIdQuasistatic, 
+        // targetingSubsystem::sysIdDynamic, "AnglerSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
         sysidChooser.addOption("SwerveSysID",
                 CreateSysidCommand.createCommand(driveSubsystem::sysIdQuasistatic, driveSubsystem::sysIdDynamic,
-                        "SwerveSysId", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
+                        "SwerveSysId",controller, ()->driveSubsystem.stopMotors()));
 
-        sysidChooser.addOption("ShooterSysID",
-            CreateSysidCommand.createCommand(
-                shooterSubsystem::sysIdQuasistatic, 
-                shooterSubsystem::sysIdDynamic, 
-                "ShooterSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
+        // sysidChooser.addOption("ShooterSysID",
+        //     CreateSysidCommand.createCommand(
+        //         shooterSubsystem::sysIdQuasistatic, 
+        //         shooterSubsystem::sysIdDynamic, 
+        //         "ShooterSysID", () -> controller.getHID().getAButton(), () -> controller.getHID().getBButton()));
         sysidTab.add(sysidChooser).withSize(5, 5).withPosition(1, 1);
         sysIdInit = true;
     }

@@ -1,5 +1,8 @@
 package frc.lib.drive;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volt;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,7 +136,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
         // create sysidroutine
         sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
-                new SysIdRoutine.Config());
+                new SysIdRoutine.Config(Volt.per(Second).of(2), Volt.of(8), Second.of(15)));
 
         // Create Pose Estimator
         swervePoseEstimator = new SwerveDrivePoseEstimator(
@@ -568,6 +571,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
+    }
+
+    public void stopMotors(){
+        frontLeft.setDriveVoltage(0);
+        frontRight.setDriveVoltage(0);
+        backLeft.setDriveVoltage(0);
+        backRight.setDriveVoltage(0);
     }
 
     public Command resetOdometryCommand(Pose2d newPose) {

@@ -90,7 +90,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2));
+                Units.inchesToMeters(1.9841));
 
         public static final ModuleInfo FR = new ModuleInfo(
                 PivotId.FR,
@@ -101,7 +101,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2));
+                Units.inchesToMeters(1.9841));
 
         public static final ModuleInfo BL = new ModuleInfo(
                 PivotId.BL,
@@ -112,7 +112,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2));
+                Units.inchesToMeters(1.9841));
 
         public static final ModuleInfo BR = new ModuleInfo(
                 PivotId.BR,
@@ -123,7 +123,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(3.873 / 2));
+                Units.inchesToMeters(1.9841));
 
         public static SparkMaxConfiguration getSparkDefaultsDrive(boolean inverted) {
             return new SparkMaxConfiguration(
@@ -249,7 +249,7 @@ public final class Constants {
 
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
 
-        public static PIDController drivePIDController = new PIDController(0.49677, 0.0, 0);
+        public static PIDController drivePIDController = new PIDController(0.50849, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005);
 

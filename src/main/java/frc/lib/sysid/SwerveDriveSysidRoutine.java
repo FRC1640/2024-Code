@@ -41,9 +41,9 @@ public class SwerveDriveSysidRoutine {
                 new SysIdRoutine.Mechanism(
                         (Measure<Voltage> volts) -> {
                             fl.setDriveVoltage(volts.in(Volts));
-                            fr.setDriveVoltage(volts.in(Volts));
+                            fr.setDriveVoltage(-volts.in(Volts));
                             bl.setDriveVoltage(volts.in(Volts));
-                            br.setDriveVoltage(volts.in(Volts));
+                            br.setDriveVoltage(-volts.in(Volts));
                         }, log -> {
                             log.motor("frontLeft")
                                     .voltage(appliedVoltage.mut_replace(
@@ -57,7 +57,7 @@ public class SwerveDriveSysidRoutine {
                                             MetersPerSecond));
                             log.motor("frontRight")
                                     .voltage(appliedVoltage.mut_replace(
-                                            fr.getDriveVoltage(),
+                                            -fr.getDriveVoltage(),
                                             Volts))
                                     .linearPosition(distance.mut_replace(
                                             fr.getPosition().distanceMeters,
@@ -77,7 +77,7 @@ public class SwerveDriveSysidRoutine {
                                             MetersPerSecond));
                             log.motor("backRight")
                                     .voltage(appliedVoltage.mut_replace(
-                                            br.getDriveVoltage(),
+                                            -br.getDriveVoltage(),
                                             Volts))
                                     .linearPosition(distance.mut_replace(
                                             br.getPosition().distanceMeters,
