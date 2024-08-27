@@ -18,12 +18,19 @@ public interface TargetingIO {
         public double rightTargetingAppliedVoltage = 0.0;
         public double rightTargetingCurrentAmps = 0.0;
         public double rightTargetingTempCelsius = 0.0;
-        public double rightTargetingPositionDegrees = 0.0;
+        public double rightTargetingPositionDegrees = 0.0; //graph
         public double rightRadiansPerSecond = 0.0;
 
-        public double targetingPosition = 0.0;
+        public double targetingPosition = 0.0; //graph
 
-        public double targetingVoltage = 0;
+        public double targetingVoltage = 0; //graph
+        /* Things labeled "graph" need to be graphed in advantageScope to see how the PID is working. I think. I know I needed
+         * Setpoint
+         * actual position
+         * voltage also (different axis)
+         * but i am gonna be so real i forgot which variables go with which. after review of code i think these are right
+         * but I guess we'll see on the robot
+         */
     }
 
     /**

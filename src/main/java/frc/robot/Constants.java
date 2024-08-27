@@ -233,7 +233,7 @@ public final class Constants {
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         // public static PIDController targetingPID = new PIDController(0.25, 0.025, 0.0007);
-        //public static PIDController targetingPIDSmall = new PIDController(0.25,0.004,0.003);
+        //public static PIDController targetingPIDSmall = new PIDController(0.25,0.004,0.003); see IO for advantageScope notes
         public static PIDController targetingPIDSmall = new PIDController(0.18,0.02,0.01);// being slow and weird >:(
         //public static PIDController targetingPIDSuperSmall = new PIDController(0.3,0.009,0.005); 
         public static PIDController targetingPIDSuperSmall = new PIDController(0.23,0.0001,0.01);//seems better now
