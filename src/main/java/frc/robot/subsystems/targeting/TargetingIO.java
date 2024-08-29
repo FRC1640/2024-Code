@@ -18,7 +18,7 @@ public interface TargetingIO {
         public double rightTargetingAppliedVoltage = 0.0;
         public double rightTargetingCurrentAmps = 0.0;
         public double rightTargetingTempCelsius = 0.0;
-        public double rightTargetingPositionDegrees = 0.0; //graph
+        public double rightTargetingPositionDegrees = 0.0; //the same as targetingPosition apparently // nvm if you look at them really close it seems slightly different i think i was right after all (maybe i dont believe that)
         public double rightRadiansPerSecond = 0.0;
 
         public double targetingPosition = 0.0; //graph
