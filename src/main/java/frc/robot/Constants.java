@@ -56,7 +56,7 @@ public final class Constants {
         public static final double steerGearRatio = 43.6;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
-        public static final double maxSpeed = 3.904;
+        public static final double maxSpeed = 4.15;
 
         public static final double odometryFrequency = 250.0;
 
@@ -90,7 +90,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(1.9841));
+                Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo FR = new ModuleInfo(
                 PivotId.FR,
@@ -101,18 +101,18 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(1.9841));
+                Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo BL = new ModuleInfo(
                 PivotId.BL,
-                5,
+                5, 
                 4,
                 1,
                 135,
                 true,
                 true,
                 true,
-                Units.inchesToMeters(1.9841));
+                Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo BR = new ModuleInfo(
                 PivotId.BR,
@@ -123,7 +123,7 @@ public final class Constants {
                 true,
                 true,
                 true,
-                Units.inchesToMeters(1.9841));
+                Units.inchesToMeters(1.8892));
 
         public static SparkMaxConfiguration getSparkDefaultsDrive(boolean inverted) {
             return new SparkMaxConfiguration(
@@ -249,7 +249,7 @@ public final class Constants {
 
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
 
-        public static PIDController drivePIDController = new PIDController(0.50849, 0.0, 0);
+        public static PIDController drivePIDController = new PIDController(0.1546, 0.0, 0);
 
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005);
 

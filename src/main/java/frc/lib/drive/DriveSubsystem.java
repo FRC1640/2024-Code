@@ -156,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(2.5, 0, 0),
                         new PIDConstants(2.5, 0, 0),
-                        4,
+                        4.2,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
                 () -> DriverStation.getAlliance().isPresent()

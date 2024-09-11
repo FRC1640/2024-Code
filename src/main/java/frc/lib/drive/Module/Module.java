@@ -29,10 +29,10 @@ public class Module {
     // public final PIDController turningPIDController = new PIDController(1,0,0);
     // //sim PID
 
-    public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.21414, 2.5109, 0.25135);
+    public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.21607, 2.6, 0.21035);//0.072213, 2.6368, 0.33881
 
     private double pidModuleTarget;
-    SlewRateLimiter voltageLimiter = new SlewRateLimiter(120);
+    SlewRateLimiter voltageLimiter = new SlewRateLimiter(60);
 
     public Module(ModuleIO io, PivotId id) {
         this.io = io;
@@ -105,6 +105,7 @@ public class Module {
         // calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
         pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed); // feedforward calc
+        Logger.recordOutput("Drive/Modules/" + id + "/pidVoltage", drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed));
 
         // double pidSpeed = targetSpeed / SwerveDriveDimensions.maxSpeed * 12;
         // if (!Robot.inTeleop) {
@@ -113,6 +114,9 @@ public class Module {
         
 
         // pid clamping and deadband
+        Logger.recordOutput("Drive/Modules/" + id + "/NonLimitedSpeed", pidSpeed);
+
+        Logger.recordOutput("Drive/Modules/" + id + "/error", Math.abs(targetSpeed + inputs.driveVelocityMetersPerSecond));
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
 
         
@@ -121,9 +125,11 @@ public class Module {
             turnOutput = 0;
         }
 
-        io.setDriveVoltage(voltageLimiter.calculate(pidSpeed));
-        Logger.recordOutput("Drive/Modules/" + id + "NonLimitedSpeed", pidSpeed);
-        Logger.recordOutput("Drive/Modules/" + id + "LimitedSpeed", voltageLimiter.calculate(pidSpeed));
+        pidSpeed = voltageLimiter.calculate(pidSpeed);
+
+        io.setDriveVoltage(pidSpeed);
+        
+        Logger.recordOutput("Drive/Modules/" + id + "/LimitedSpeed", pidSpeed);
         io.setSteerPercentage(turnOutput);
     }
 

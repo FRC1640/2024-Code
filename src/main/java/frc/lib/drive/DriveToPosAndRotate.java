@@ -93,8 +93,8 @@ public class DriveToPosAndRotate extends Command{
             s = 0;
         }
 
-        double xSpeed = (Math.cos(angle) * s) * 0.7;
-        double ySpeed = (Math.sin(angle) * s) * 0.7;
+        double xSpeed = (Math.cos(angle) * s) * 0.85;
+        double ySpeed = (Math.sin(angle) * s) * 0.85;
         double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
         ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
         ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
