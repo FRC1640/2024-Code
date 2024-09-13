@@ -33,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -41,15 +41,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Very Source 1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Very Source 1"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -102,7 +109,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.35)"
           }
         },
         {
@@ -110,15 +117,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Very Source 3"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Very Source 3"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -171,7 +185,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.35)"
           }
         }
       ]

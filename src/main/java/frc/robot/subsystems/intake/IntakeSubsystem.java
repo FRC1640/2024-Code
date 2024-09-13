@@ -20,6 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
+        Logger.recordOutput("Shooting", shooting);
     }
 
     public Command intakeCommand(double speedIntake, double speedIndexer, BooleanSupplier runIntake) {

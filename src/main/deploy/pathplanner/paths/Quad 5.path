@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "bro",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -43,6 +43,12 @@
               "data": {
                 "name": "EnableAprilTags"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShootRotation"
+              }
             }
           ]
         }
@@ -50,7 +56,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.3,
+    "maxVelocity": 4.15,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

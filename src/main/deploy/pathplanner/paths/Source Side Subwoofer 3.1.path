@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.45,
-        "y": 2.74
+        "x": 4.389321385277842,
+        "y": 4.911960534821543
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.487656336225653,
-        "y": 4.005106098657276
+        "x": 4.642214402912218,
+        "y": 7.508977292836102
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.246834867421518,
-        "y": 5.726599070887158
+        "x": 8.318889813135078,
+        "y": 5.80681275106626
       },
       "prevControl": {
-        "x": 7.099172885934929,
-        "y": 4.414985377759629
+        "x": 7.034971415914397,
+        "y": 6.059705768700637
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.8,
+      "minWaypointRelativePos": 0.7,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 1.5,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -45,11 +45,17 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.1,
       "command": {
         "type": "parallel",
         "data": {
           "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StandardRotation"
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -69,13 +75,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -137.6025622024998,
+    "rotation": 167.90524292298792,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 136.85,
+    "rotation": 161.22196677755454,
     "velocity": 0
   },
   "useDefaultConstraints": false

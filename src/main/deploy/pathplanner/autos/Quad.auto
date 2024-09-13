@@ -45,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.2)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -76,7 +76,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -105,9 +105,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "RotCommand(.1)"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Indexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
+                }
+              }
+            ]
           }
         },
         {
@@ -115,9 +128,41 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "race",
                 "data": {
-                  "pathName": "Quad 4"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Quad 4"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveToNote"
                 }
               },
               {
@@ -151,7 +196,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.1)"
+            "name": "RotCommand(.5)"
           }
         }
       ]

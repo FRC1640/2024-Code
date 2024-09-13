@@ -1,5 +1,8 @@
 package frc.lib.drive;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volt;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,7 +136,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
         // create sysidroutine
         sysIdRoutine = new SwerveDriveSysidRoutine().createNewRoutine(frontLeft, frontRight, backLeft, backRight, this,
-                new SysIdRoutine.Config());
+                new SysIdRoutine.Config(Volt.per(Second).of(2), Volt.of(8), Second.of(15)));
 
         // Create Pose Estimator
         swervePoseEstimator = new SwerveDrivePoseEstimator(
@@ -153,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(2.5, 0, 0),
                         new PIDConstants(2.5, 0, 0),
-                        4,
+                        4.2,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
                 () -> DriverStation.getAlliance().isPresent()
@@ -240,14 +243,14 @@ public class DriveSubsystem extends SubsystemBase {
         for (AprilTagVision vision : visions) {
             Pose2d pose = new Pose2d();
             if (Robot.isDisabled){
-                pose = vision.getAprilTagPose2dRot();
+                pose = vision.getAprilTagPose2dMT1();
             }
             else{
-                pose = vision.getAprilTagPose2d();
+                pose = vision.getAprilTagPose2dMT2();
             }
             // pose = vision.getAprilTagPose2dRot();
             LimelightHelpers.SetRobotOrientation("limelight" + vision.getName(),
-                    getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+                    getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0); //sends gyro to limelight for mt2
             if (vision.isPoseValid(pose)
                     && (Robot.inTeleop || aprilTagInAuto || Robot.isDisabled)
                     && vision.getNumVisibleTags() != 0 && Math.abs(gyro.getAngularVelDegreesPerSecond()) < 100
@@ -264,7 +267,7 @@ public class DriveSubsystem extends SubsystemBase {
                 double posDifY = pose.getTranslation().getY() - getPose().getY();
 
                 double posDifTheta = Math.toDegrees(SwerveAlgorithms.angleDistance(
-                    vision.getAprilTagPose2dRot().getRotation().getRadians(), getPose().getRotation().getRadians()));
+                    vision.getAprilTagPose2dMT1().getRotation().getRadians(), getPose().getRotation().getRadians()));
 
                 double speed = Math.hypot(SwerveDriveDimensions.kinematics.toChassisSpeeds(
                         getActualSwerveStates()).vxMetersPerSecond,
@@ -272,14 +275,19 @@ public class DriveSubsystem extends SubsystemBase {
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 boolean mt1 = false;
-
-                 if ((vision.getDistance() < 5 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
-                    pose = vision.getAprilTagPose2dRot();
+                double xy = 0.65;
+                if (speed > 1.5){
+                    xy = 0.9;
+                }
+                double theta = Double.MAX_VALUE;
+                 if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
+                    pose = vision.getAprilTagPose2dMT1();
                     mt1 = true;
+                    xy = 1.1;
                  }
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
-                double xy = 0.65;
+                
                 // if (!Robot.inTeleop){
                 // xy = 2.5;
                 // if (poseDifference > 0.3){
@@ -294,7 +302,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // xy = 0.25;
                 // }
                 
-                double theta = Double.MAX_VALUE;
+                
                 boolean useEstimate = true;
 
                 // if ((vision.getDistance() > 4 && vision.getNumVisibleTags() >= 2 &&
@@ -325,7 +333,7 @@ public class DriveSubsystem extends SubsystemBase {
                     swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    Robot.isDisabled || mt1 ? 0.00001:Double.MAX_VALUE));
+                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
 
                 }
             }
@@ -406,6 +414,8 @@ public class DriveSubsystem extends SubsystemBase {
             public void execute() {
                 angle = angleSupplier.getAsDouble();
                 System.out.println(Math.toDegrees(angle));
+                
+                Logger.recordOutput("RotCommand", true);
 
                 double o;
                 o = pidr.calculate(-SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
@@ -415,6 +425,9 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 o = MathUtil.clamp(o, -1, 1);
 
+                // Logger.recordOutput("AutoRotateEnded", (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
+                //         angle)) < Math.toRadians(0.5)));
+
                 driveDoubleConePercent(0, 0, o, false, new Translation2d(), false);
 
             }
@@ -422,7 +435,7 @@ public class DriveSubsystem extends SubsystemBase {
             @Override
             public boolean isFinished() {
                 return (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
-                        angle)) < Math.toRadians(0.5));
+                        angle)) < Math.toRadians(1));
                 // return false;
             }
         };
@@ -560,6 +573,13 @@ public class DriveSubsystem extends SubsystemBase {
         return sysIdRoutine.dynamic(direction);
     }
 
+    public void stopMotors(){
+        frontLeft.setDriveVoltage(0);
+        frontRight.setDriveVoltage(0);
+        backLeft.setDriveVoltage(0);
+        backRight.setDriveVoltage(0);
+    }
+
     public Command resetOdometryCommand(Pose2d newPose) {
         Command c = new InstantCommand(() -> resetOdometry(newPose));
         c.addRequirements(this);
@@ -592,7 +612,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getAprilTagPose() {
         for (AprilTagVision vision : visions) {
             if (vision.isTarget()) {
-                return vision.getAprilTagPose2dRot();
+                return vision.getAprilTagPose2dMT1();
             }
         }
         return getPose();

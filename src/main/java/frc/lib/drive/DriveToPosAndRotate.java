@@ -29,6 +29,7 @@ public class DriveToPosAndRotate extends Command{
     private IntakeSubsystem intakeSubsystem;
     Note note = null;
     long initTime;
+    boolean noteValid = false; 
 
     public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
         this.driveSubsystem = driveSubsystem;
@@ -92,8 +93,8 @@ public class DriveToPosAndRotate extends Command{
             s = 0;
         }
 
-        double xSpeed = (Math.cos(angle) * s) * 0.7;
-        double ySpeed = (Math.sin(angle) * s) * 0.7;
+        double xSpeed = (Math.cos(angle) * s) * 0.85;
+        double ySpeed = (Math.sin(angle) * s) * 0.85;
         double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
         ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
         ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
@@ -106,11 +107,13 @@ public class DriveToPosAndRotate extends Command{
         lastNote = null;
         note = mlVision.getClosestNote();
         initTime = System.currentTimeMillis();
+        if ((!(mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1) || !(mlVision.getConfidence() > 0.65))){
+            noteValid = true;
+        }
     }
-
     @Override
     public boolean isFinished() {
-        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 2000;
+        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 3000 || noteValid;
     }
     
 }

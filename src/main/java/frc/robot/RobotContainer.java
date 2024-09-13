@@ -288,8 +288,8 @@ public class RobotContainer {
 				.whileTrue(generateIntakeCommand());
 
 
-		new Trigger(()->climberSubsystem.getLeftAngle() > 5 || climberSubsystem.getRightAngle() > 5)
-			.onTrue(new InstantCommand(()->{autoTargetBool = false;}));
+		// new Trigger(()->climberSubsystem.getLeftAngle() > 5 || climberSubsystem.getRightAngle() > 5)
+		// 	.onTrue(new InstantCommand(()->{autoTargetBool = false;}));
 		
 		
 		
@@ -614,7 +614,7 @@ public class RobotContainer {
 			return movingWhileShooting.getAngleFromDistance();
 		} else if (intakeSubsystem.hasNote() && get3dDistance(() -> getSpeakerPos()) > FieldConstants.fullCourtShootingRadius && operatorControllerHID.getBButton()){
 			canShoot = true;
-			return 40;
+			return 43;
 		} else {
 			canShoot = false;
 			return 35;
@@ -670,6 +670,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotCommand(.2)", rotCommand(.2));
 		NamedCommands.registerCommand("RotCommand(.3)", rotCommand(.3));
 		NamedCommands.registerCommand("RotCommand(.35)", rotCommand(.35));
+		NamedCommands.registerCommand("RotCommand(.5)", rotCommand(.5));
 		// NamedCommands.registerCommand("IntakeWait", new WaitUntilCommand(()->intakeSubsystem.hasNote()).raceWith(new WaitCommand(2)));
 
 		NamedCommands.registerCommand("StopRobot", driveSubsystem.driveDoubleConeCommand(()->new ChassisSpeeds(), ()->new Translation2d(), ()->false));

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.36086297850199,
-      "y": 5.539225686154654
+      "x": 0.7450681568029801,
+      "y": 4.428212820389605
     },
-    "rotation": 180.0
+    "rotation": 121.61
   },
   "command": {
     "type": "sequential",
@@ -22,21 +22,34 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Source Side Subwoofer 1.1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source Side Subwoofer 1.1"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoTarget"
                 }
               }
             ]
@@ -83,7 +96,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.35)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -91,15 +104,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "NoteValid"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Source Side Subwoofer 3.1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NoteValid"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source Side Subwoofer 3.1"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -152,7 +172,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.35)"
+            "name": "RotCommand(.5)"
           }
         }
       ]
