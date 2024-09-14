@@ -26,9 +26,12 @@ import static edu.wpi.first.units.Units.Seconds;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
-    PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
-    PIDController pidSuperSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSuperSmall, "targetingPIDSuperSmall");
-    PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
+    // PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
+    // PIDController pidSuperSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSuperSmall, "targetingPIDSuperSmall");
+    // PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
+    PIDController pidUp = PIDConstants.constructPID(PIDConstants.targetingPIDUp, "targetingPIDUp");
+    PIDController pidMid = PIDConstants.constructPID(PIDConstants.targetingPIDMid, "targetingPIDMid");
+    PIDController pidDown = PIDConstants.constructPID(PIDConstants.targetingPIDDown, "targetingPIDDown");
     public double setpoint = 0.0;
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
@@ -152,23 +155,33 @@ public class TargetingSubsystem extends SubsystemBase {
      * @return Percent output.
      */
     private double getAnglePIDSpeed(double goalPosition) {
-        if (goalPosition <= TargetingConstants.angleLowerLimit) { //bookmark for pid calculation
-            pidSmall.reset();
-        }
         double speed = 0;
-        if (Math.abs(goalPosition - inputs.targetingPosition) < 1){
-            speed = pidSuperSmall.calculate(inputs.targetingPosition, goalPosition);
+        if (goalPosition <= TargetingConstants.angleLowerLimit) { //bookmark for pid calculation
+            pidDown.reset(); //maybe,,
         }
-        else if (Math.abs(goalPosition - inputs.targetingPosition) < 6){
-            speed = pidSmall.calculate(inputs.targetingPosition, goalPosition);
-        }
+        if (goalPosition < 40){//limits are 28 and 75
+            speed = pidDown.calculate(inputs.targetingPosition, goalPosition);
+        } 
+        if (goalPosition > 60){
+            speed = pidUp.calculate(inputs.targetingPosition, goalPosition);
+        } 
         else{
-            speed = pidLarge.calculate(inputs.targetingPosition, goalPosition);
-        }
-        speed = MathUtil.clamp(speed, -12, 12);
+            speed = pidDown.calculate(inputs.targetingPosition, goalPosition);
+        } 
+        // if (Math.abs(goalPosition - inputs.targetingPosition) < 1){
+        //     speed = pidSuperSmall.calculate(inputs.targetingPosition, goalPosition);
+        // }
+        // else if (Math.abs(goalPosition - inputs.targetingPosition) < 6){
+        //     speed = pidSmall.calculate(inputs.targetingPosition, goalPosition);
+        // }
+        // else{
+        //     speed = pidLarge.calculate(inputs.targetingPosition, goalPosition);
+        // }
+        // speed = MathUtil.clamp(speed, -12, 12);
         if (Math.abs(speed) < 0.01) {
             speed = 0;
         }
+        
         setpoint = goalPosition;
         return speed;
     }
@@ -441,19 +454,19 @@ public class TargetingSubsystem extends SubsystemBase {
 
     //testing thingies
     public Command upCommand(){
-        return anglePIDCommand(()->65);
+        return anglePIDCommand(()->70);
     }
 
     public Command downCommand(){
-        return anglePIDCommand(()->35);
+        return anglePIDCommand(()->30);
     }
 
     public Command smallMidCommand(){
-        return anglePIDCommand(()->50.9);
+        return anglePIDCommand(()->41);
     }
 
     public Command midCommand(){
-        return anglePIDCommand(()->50);
+        return anglePIDCommand(()->59);
     }
     
 }

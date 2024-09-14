@@ -234,11 +234,15 @@ public final class Constants {
         public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
         // public static PIDController targetingPID = new PIDController(0.25, 0.025, 0.0007);
         //public static PIDController targetingPIDSmall = new PIDController(0.25,0.004,0.003); 
-        public static PIDController targetingPIDSmall = new PIDController(0.18,0.02,0.03);//pkv prime: .18, .02, .01 lkv deux: .14, .02, .03 (kp broke canbus do not use)
-        //public static PIDController targetingPIDSuperSmall = new PIDController(0.3,0.009,0.005); ABSOLUTELY ATROCIOUS DO NOT USE
-        public static PIDController targetingPIDSuperSmall = new PIDController(0.2,0,0);//lkv prime: .23, .0001, .01 lkv deux: 0.19, .0001, .01 pkv prime: .1, .00007, .015 (BAD)
-        //public static PIDController targetingPIDLarge = new PIDController(0.17,0.003,0.002);
-        public static PIDController targetingPIDLarge = new PIDController(0.1,0.00055,0.0008);//pkv prime: .1, .0005, .0008 lkv deux: .1, .0005, .0008//reminder NOT TO GO OVER .002 FOR KD
+        // public static PIDController targetingPIDSmall = new PIDController(0.18,0.02,0.03);//pkv prime: .18, .02, .01 lkv deux: .14, .02, .03 (kp broke canbus do not use)
+        // //public static PIDController targetingPIDSuperSmall = new PIDController(0.3,0.009,0.005); ABSOLUTELY ATROCIOUS DO NOT USE
+        // public static PIDController targetingPIDSuperSmall = new PIDController(0.2,0,0);//lkv prime: .23, .0001, .01 lkv deux: 0.19, .0001, .01 pkv prime: .1, .00007, .015 (BAD)
+        // //public static PIDController targetingPIDLarge = new PIDController(0.17,0.003,0.002);
+        // public static PIDController targetingPIDLarge = new PIDController(0.1,0.00055,0.0008);//pkv prime: .1, .0005, .0008 lkv deux: .1, .0005, .0008//reminder NOT TO GO OVER .002 FOR KD
+        public static PIDController targetingPIDUp = new PIDController(0, 0, 0);
+        public static PIDController targetingPIDMid = new PIDController(0, 0, 0);
+        public static PIDController targetingPIDDown = new PIDController(0, 0, 0);
+        
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
