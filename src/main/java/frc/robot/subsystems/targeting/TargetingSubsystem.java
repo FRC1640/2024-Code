@@ -166,7 +166,7 @@ public class TargetingSubsystem extends SubsystemBase {
             speed = pidUp.calculate(inputs.targetingPosition, goalPosition);
         } 
         else{
-            speed = pidDown.calculate(inputs.targetingPosition, goalPosition);
+            speed = pidMid.calculate(inputs.targetingPosition, goalPosition);
         } 
         // if (Math.abs(goalPosition - inputs.targetingPosition) < 1){
         //     speed = pidSuperSmall.calculate(inputs.targetingPosition, goalPosition);
