@@ -1,4 +1,5 @@
 package frc.robot.subsystems.targeting;
+import java.lang.invoke.ConstantBootstraps;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.sysid.ArmSysidRoutine;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.TargetingConstants;
 
@@ -41,10 +43,12 @@ public class TargetingSubsystem extends SubsystemBase {
 
     PIDController radianAngle = PIDConstants.constructPID(PIDConstants.radianAngle, "radian angle");
     private DoubleSupplier angleOffset;
+    private BooleanSupplier blueAlliance;
 
-    public TargetingSubsystem(TargetingIO io, DoubleSupplier angleOffset) {
+    public TargetingSubsystem(TargetingIO io, DoubleSupplier angleOffset, BooleanSupplier blueAlliance) {
         this.io = io;
         this.angleOffset = angleOffset;
+        this.blueAlliance = blueAlliance;
         MechanismRoot2d root = targetVisualization.getRoot("targeter", 2, 2);
         root.append(angler);
 
@@ -103,7 +107,7 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public double equation(double v) {
 
-        return -2530.15 * Math.asin(-0.000478453 * (1 / (v-0.0742577))-0.999783) -3910.04 + angleOffset.getAsDouble() + 2.5 + 1;
+        return -2530.15 * Math.asin(-0.000478453 * (1 / (v-0.0742577))-0.999783) -3910.04 + angleOffset.getAsDouble() + 2;
     }
 
     public double getAngleVoltage() {

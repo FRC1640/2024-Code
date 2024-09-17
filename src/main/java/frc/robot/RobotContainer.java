@@ -151,7 +151,7 @@ public class RobotContainer {
 						new IntakeIOSparkMax(() -> driveControllerHID.getPOV() == 0, ()->intakeSubsystem.isShooting(), ()->startAuto));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSparkMax());
 				// intakeSubsystem = new IntakeSubsystem(new IntakeIO(){});
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset);
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSparkMax(), ()->angleOffset, ()->getAlliance() == Alliance.Blue);
 				// targetingSubsystem = new TargetingSubsystem(new TargetingIO() {});
 				break;
 			case SIM:
@@ -169,7 +169,7 @@ public class RobotContainer {
 
 				intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(() -> driveControllerHID.getPOV() == 0));
 				climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim(), ()->angleOffset);
+				targetingSubsystem = new TargetingSubsystem(new TargetingIOSim(), ()->angleOffset, ()->getAlliance() == Alliance.Blue);
 				break;
 
 			default:
@@ -188,7 +188,7 @@ public class RobotContainer {
 				intakeSubsystem = new IntakeSubsystem(new IntakeIO() {
 				});
 				targetingSubsystem = new TargetingSubsystem(new TargetingIO() {
-				},()->angleOffset);
+				},()->angleOffset, ()->getAlliance() == Alliance.Blue);
 				climberSubsystem = new ClimberSubsystem(new ClimberIO() {
 				});
 				mlVision = new MLVision(new MLVisionIO() {
@@ -592,7 +592,8 @@ public class RobotContainer {
 
 		
 		
-		return new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX(),
+		return new Translation3d(speakerPos.get().minus(driveSubsystem.getPose()).getX() + 
+			(FieldConstants.speakerOffset * (getAlliance() == Alliance.Blue ? 1:-1)),
 				speakerPos.get().minus(driveSubsystem.getPose()).getY(), 2.11).getNorm();
 
 	}

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.563724819757333,
-        "y": 1.8352513628104188
+        "x": 4.885380766022196,
+        "y": 1.4492715241354632
       },
       "isLocked": false,
       "linkedName": null
@@ -20,23 +20,29 @@
         "y": 0.7684057074275276
       },
       "prevControl": {
-        "x": 5.770506327742513,
-        "y": 0.6614125076591371
+        "x": 5.828866254888908,
+        "y": 0.7975856710007242
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.7,
+      "minWaypointRelativePos": 0.75,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 10.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
@@ -62,8 +68,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.15,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 9.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -75,8 +81,8 @@
   "reversed": false,
   "folder": "Very Source",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 141.3401917459098,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

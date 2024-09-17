@@ -1,5 +1,6 @@
 package frc.robot.util.drive;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
