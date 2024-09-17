@@ -50,6 +50,8 @@ public class JoystickDriveWeight implements DriveWeight {
     private CommandXboxController driverController;
     private Trigger leftTrigger;
 
+    SlewRateLimiter rotAcceleration = new SlewRateLimiter(1/0.2);
+
     Gyro gyro;
     public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro){
         this.driverController = driverController;
@@ -81,6 +83,8 @@ public class JoystickDriveWeight implements DriveWeight {
             ySpeed = -driverController.getLeftX();
             rot = -driverController.getRightX() * 0.8;
         }
+
+        rot = rotAcceleration.calculate(rot);
 
 
         /* Apply linear deadband */

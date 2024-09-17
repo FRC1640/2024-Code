@@ -32,7 +32,10 @@ public class Module {
     public final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.21607, 2.6, 0.21035);//0.072213, 2.6368, 0.33881
 
     private double pidModuleTarget;
-    SlewRateLimiter voltageLimiter = new SlewRateLimiter(60);
+    SlewRateLimiter accelLimiter = new SlewRateLimiter(20);
+    SlewRateLimiter deaccelLimiter = new SlewRateLimiter(11);
+    SlewRateLimiter voltLimiter = new SlewRateLimiter(99999);
+
 
     public Module(ModuleIO io, PivotId id) {
         this.io = io;
@@ -100,7 +103,20 @@ public class Module {
         double turnOutput = turningPIDController.calculate(sin, 0);
 
         // flips drive
-        final double targetSpeed = (flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond) * Math.abs(Math.cos(delta.getRadians()));
+        double targetSpeed = (flipDriveTeleop ? state.speedMetersPerSecond : -state.speedMetersPerSecond) * Math.abs(Math.cos(delta.getRadians()));
+
+        
+        
+
+        if (Math.signum(targetSpeed - inputs.driveVelocityMetersPerSecond) != Math.signum(targetSpeed) || targetSpeed==0){
+            targetSpeed = deaccelLimiter.calculate(targetSpeed);
+            accelLimiter.reset(targetSpeed);
+            // System.out.println(targetSpeed);
+        }
+        else{
+            targetSpeed = accelLimiter.calculate(targetSpeed);
+            deaccelLimiter.reset(targetSpeed);
+        }
 
         // calculates drive speed with feedforward
         double pidSpeed = (driveFeedforward.calculate(targetSpeed));
@@ -116,7 +132,10 @@ public class Module {
         // pid clamping and deadband
         Logger.recordOutput("Drive/Modules/" + id + "/NonLimitedSpeed", pidSpeed);
 
+        pidSpeed = voltLimiter.calculate(pidSpeed);
+
         Logger.recordOutput("Drive/Modules/" + id + "/error", Math.abs(targetSpeed + inputs.driveVelocityMetersPerSecond));
+        Logger.recordOutput("Drive/Modules/" + id + "/targetSpeed", targetSpeed);
         pidSpeed = MathUtil.clamp(pidSpeed, -12, 12);
 
         
@@ -125,7 +144,7 @@ public class Module {
             turnOutput = 0;
         }
 
-        pidSpeed = voltageLimiter.calculate(pidSpeed);
+        
 
         io.setDriveVoltage(pidSpeed);
         
@@ -134,7 +153,7 @@ public class Module {
     }
 
     public void setDriveVoltage(double volts) {
-        io.setDriveVoltage(voltageLimiter.calculate(volts));
+        io.setDriveVoltage(accelLimiter.calculate(volts));
         // io.setDriveVoltage(volts);
     }
 
