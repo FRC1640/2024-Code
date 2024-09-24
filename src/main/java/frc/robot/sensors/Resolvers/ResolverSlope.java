@@ -24,7 +24,6 @@ public class ResolverSlope {
     double v = 0;
 
     ArrayList<Double> average;
-
     public ResolverSlope(int channel, double v1, double v2, double angle1, double angle2, double offset) {
         this.channel = channel;
         this.v1 = v1;

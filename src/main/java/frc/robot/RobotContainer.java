@@ -223,7 +223,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.7, ()->0.7, ()->0.6, ()->0.6, ()->autoTargetBool));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.85, ()->0.85, ()->0.75, ()->0.75, ()->autoTargetBool));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 
@@ -291,10 +291,10 @@ public class RobotContainer {
 		// new Trigger(()->climberSubsystem.getLeftAngle() > 5 || climberSubsystem.getRightAngle() > 5)
 		// 	.onTrue(new InstantCommand(()->{autoTargetBool = false;}));
 		
-		
+		// new Trigger(() -> driveControllerHID.getYButton()).whileTrue(manualShotNoAngle(35, () -> (!driveControllerHID.getYButton())));
 		
 		new Trigger(() -> driveControllerHID.getYButton()).onTrue(manualShot(FieldConstants.NotePresetTargetAngle, FieldConstants.NotePresetRotation[1], FieldConstants.NotePresetRotation[0], () -> (!driveControllerHID.getYButton())));
-
+ 
 		// new Trigger(()->operatorControllerHID.getAButton())
 		// 	.whileTrue(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->true)
 		// 		.alongWith(generateIntakeCommandTrap()));
@@ -544,7 +544,7 @@ public class RobotContainer {
 	}
 
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition) {
-		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0, 0.8));
+		return targetingSubsystem.anglePIDCommand(targetAngle).alongWith(generateIntakeNoRobot(0, 0.8)).until(()->cancelCondition.getAsBoolean());
 	}
 	public Command manualShotNoAngle(double targetAngle, BooleanSupplier cancelCondition, boolean shotSpeeds) {
 		return targetingSubsystem.anglePIDCommand(targetAngle)

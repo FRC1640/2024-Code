@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Resolvers.ResolverSlope;
 import frc.robot.util.motor.SparkMaxConfigurer;
@@ -64,7 +65,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                             }
                         });
         driveEncoder = driveMotor.getEncoder();
-        steeringEncoder = new ResolverSlope(id.resolverChannel, 3.125, 4.375,
+        steeringEncoder = new ResolverSlope(id.resolverChannel, id.vSlope1,id.vSlope2,
                 180.0, 90.0, id.angleOffset);
     }
 

@@ -276,15 +276,20 @@ public class DriveSubsystem extends SubsystemBase {
 
                 boolean mt1 = false;
                 double xy = 0.65;
-                if (speed > 1.5){
-                    xy = 0.9;
+                if (speed > 3){
+                    xy = 1.5;
+                }
+                if (distanceToTag > 5.5){
+                    xy = 1.5;   
                 }
                 double theta = Double.MAX_VALUE;
                  if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
                     pose = vision.getAprilTagPose2dMT1();
                     mt1 = true;
-                    xy = 1.1;
+                    xy = 1.3;
                  }
+
+                Logger.recordOutput("AprilTags/mt1/" + vision.getName(), mt1);
 
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 

@@ -89,7 +89,7 @@ public final class Constants {
                 45,
                 true,
                 true,
-                true,
+                true, 1.914, 0.658,
                 Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo FR = new ModuleInfo(
@@ -100,7 +100,7 @@ public final class Constants {
                 -45,
                 true,
                 true,
-                true,
+                true, 3.125, 4.375,
                 Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo BL = new ModuleInfo(
@@ -111,7 +111,7 @@ public final class Constants {
                 135,
                 true,
                 true,
-                true,
+                true, 3.125, 4.375,
                 Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo BR = new ModuleInfo(
@@ -122,7 +122,7 @@ public final class Constants {
                 -135,
                 true,
                 true,
-                true,
+                true, 3.125, 4.375,
                 Units.inchesToMeters(1.8892));
 
         public static SparkMaxConfiguration getSparkDefaultsDrive(boolean inverted) {
