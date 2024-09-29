@@ -29,7 +29,6 @@ public class DriveToPosAndRotate extends Command{
     private IntakeSubsystem intakeSubsystem;
     Note note = null;
     long initTime;
-    boolean noteValid = false; 
 
     public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
         this.driveSubsystem = driveSubsystem;

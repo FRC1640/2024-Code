@@ -5,127 +5,100 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import frc.lib.drive.DriveSubsystem;
 import frc.lib.drive.DriveWeight;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.MLVision.MLVision;
+import frc.robot.sensors.Vision.MLVision.Note;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class MLVisionWeight implements DriveWeight {
 
-    // private PIDController angularController = new PIDController(0.006, 0, 0); //
-    // Constants.PIDConstants.rotPID;
-    // private PIDController horizontalController = new PIDController(0.006, 0, 0);
-    // // Constants.PIDConstants.rotPID;
-    private PIDController angularController = PIDConstants.constructPID(PIDConstants.rotMLVision, "mlrot"); // ;
-    private PIDController horizontalController = PIDConstants.constructPID(PIDConstants.horizontalMLVision, "mldrive"); // Constants.PIDConstants.rotPID;
 
-    private double angularVelocity = 0;
-    private double horizontalVelocity = 0;
-
-    private double verticalVelocity = 0; // ADD CONSTANT
-
-    private MLVision vision;
-    private Supplier<Rotation2d> angleSupplier;
-    // private Supplier<Rotation2d> correctedAngleSupplier;
-
-    private double deadband = 0; // 0.1;
-    private double distanceLim = 3; // angular tx disparity deadband idk if thats what i should call it
-
-    private ChassisSpeeds chassisSpeedsToTurn = new ChassisSpeeds(0, 0, 0);
-
-    private double previousTA = 0;
-    private double deltaTAlim = 2; // if delta ty > than this, enter drive straight to intake mode
-
-    private double previousTY = 0;
-    private double previousTYlim = -5;
-
-    private double previousTX = 0;
-
-    private boolean intakeMode;
-    private BooleanSupplier hasNote;
-
-    public MLVisionWeight(MLVision vision, Supplier<Rotation2d> angleSupplier,
-            BooleanSupplier hasNote) {
-        this.vision = vision;
-        this.angleSupplier = angleSupplier;
-        this.hasNote = hasNote;
-
-        intakeMode = false;
-
-        previousTA = vision.getTA();
-        previousTY = vision.getTY();
+    private DriveSubsystem driveSubsystem;
+    private Gyro gyro;
+    PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "rotlock1");
+    PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "rotlockmoving1");
+    Note lastNote = null;
+    private MLVision mlVision;
+    // private Translation2d pose;
+    PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID, "autodriveforward1");
+    // TrapezoidProfile profile;
+    // Constraints trapezoidConstraints;
+    private IntakeSubsystem intakeSubsystem;
+    Note note = null;
+    public MLVisionWeight(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
+        this.mlVision = mlVision;
+        this.driveSubsystem = driveSubsystem;
+        // this.endState = endState;
+        this.gyro = gyro;
+        // this.pose = pose;
+        // trapezoidConstraints = new Constraints(0.5, 0.5);
+        this.intakeSubsystem = intakeSubsystem;
     }
-
     @Override
     public ChassisSpeeds getSpeeds() {
-        horizontalVelocity = 0;
-        verticalVelocity = 0;
-        angularVelocity = 0;
+        note = null;
+        if (lastNote != null){
+            if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
+                note = mlVision.getClosestNote();
+            }
+            else{   
+                note = lastNote;
+            }
+        }
+        else{
+            note = mlVision.getClosestNote();
+        }
+        Logger.recordOutput("NotePosCommand", note.pose);
+        double angle = Math.atan2(note.pose.getY() - driveSubsystem.getPose().getY(),
+            note.pose.getX() - driveSubsystem.getPose().getX());
+        double o;
+        
+        o = pidr.calculate(-SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(),
+                    (angle + Math.PI)), 0);
 
-        if (hasNote.getAsBoolean()) {
+        if (Math.abs(o) < 0.005) {
+            o = 0;
+        }
+        
+        // double k;
+        // double linearRotSpeed = Math.abs(o * SwerveAlgorithms.maxNorm);
+        o = MathUtil.clamp(o, -1, 1);
+        // setAngle = angle + gyro.getOffset();
+        // o = MathUtil.clamp(o, -1, 1);
+        ChassisSpeeds rToAngle = new ChassisSpeeds(0, 0, o);
+        
+
+        // double angle1 = new Rotation2d(pose.getX() - driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY() - driveSubsystem.getPose().getY()).getRadians();
+        double dist = driveSubsystem.getPose().getTranslation().getDistance(note.pose);
+        double s = pid.calculate(dist, 0);
+        s = Math.abs(s);
+        s = MathUtil.clamp(s, -1, 1);
+        if (Math.abs(s) < 0.01) {
+            s = 0;
+        }
+
+        double xSpeed = (Math.cos(angle) * s) * 0.85;
+        double ySpeed = (Math.sin(angle) * s) * 0.85;
+        double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
+        ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
+        ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
+        lastNote = note;
+
+        if (intakeSubsystem.hasNote() || note.pose == new Translation2d()){
             return new ChassisSpeeds();
         }
-
-        if (!intakeMode) {
-
-            determineIntakeNoteMode();
-
-            if (!vision.isTarget()) { // If no target is visible, return no weight
-                chassisSpeedsToTurn = new ChassisSpeeds(0, horizontalController.calculate(previousTX), angularController.calculate(previousTX));
-
-            } else { // Otherwise enter horrizorntal strafe mode
-                previousTA = vision.getTA();
-                previousTY = vision.getTY();
-                previousTX = vision.getTX();
-
-
-                horizontalVelocity = horizontalController.calculate(vision.getTX());
-                horizontalVelocity = (Math.abs(horizontalVelocity) < deadband) ? 0 : horizontalVelocity;
-                horizontalVelocity = MathUtil.clamp(horizontalVelocity, -1, 1);
-
-                angularVelocity = angularController.calculate(vision.getTX());
-                angularVelocity = (Math.abs(angularVelocity) < deadband) ? 0 : angularVelocity;
-                angularVelocity = MathUtil.clamp(angularVelocity, -1, 1);
-
-
-                // verticalVelocity = verticalVelocityConstant;
-                verticalVelocity = 0.4;
-
-                chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                        new ChassisSpeeds(-verticalVelocity, -horizontalVelocity, angularVelocity),
-                        angleSupplier.get());
-            }
-        } else { // If the robot is IN intake mode
-            angularVelocity = angularController.calculate(previousTX);
-            verticalVelocity = 0.4;
-            chassisSpeedsToTurn = ChassisSpeeds.fromRobotRelativeSpeeds(
-                    new ChassisSpeeds(-verticalVelocity, 0, angularVelocity),
-                    angleSupplier.get());
-        }
-
-        return chassisSpeedsToTurn;
-    }
-
-    public void resetMode() {
-        intakeMode = false;
-        previousTA = vision.getTA();
-        previousTY = vision.getTY();
-        previousTX = vision.getTX();
-
-    }
-
-    private void determineIntakeNoteMode() {
-        if (previousTA - vision.getTA() > deltaTAlim && previousTY < previousTYlim) { // IF the ta makes a big jump and it used to be small
-            intakeMode = true;
-        } else {
-            intakeMode = false;
-        }
-
+        return finalSpeed;
     }
 }

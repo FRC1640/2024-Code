@@ -42,37 +42,6 @@ public class MLVision extends PeriodicBase {
         return inputs.isTarget;
     }
 
-    public double getTX() {
-        if (inputs.isTargetNote) {
-            return inputs.calculatedTx;
-        } else {
-            return inputs.tx;
-        }
-    }
-
-    public double getTY() {
-        if (inputs.isTargetNote) {
-            return inputs.calculatedTy;
-        } else {
-            return inputs.ty;
-        }
-    }
-
-    public double getTA() {
-        if (inputs.isTargetNote) {
-            return inputs.calculatedTa;
-        } else {
-            return inputs.ta;
-        }
-    }
-
-    public Command waitUntilMLCommand(double taMin, double txMax) {
-        // return new WaitUntilCommand(()->(getTA() > ta) && (getTX() > tx));
-        // return new WaitUntilCommand
-        return new WaitUntilCommand(() -> isTarget() && getTA() > taMin);
-
-    }
-
     public Note[] getCameraRelativeNotePos() {
         ArrayList<Note> posArray = new ArrayList<>();
 
