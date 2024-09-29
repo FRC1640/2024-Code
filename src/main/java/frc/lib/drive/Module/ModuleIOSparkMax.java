@@ -27,6 +27,7 @@ public class ModuleIOSparkMax implements ModuleIO {
     private final Queue<Double> timestampQueue;
     private final Queue<Double> drivePositionQueue;
     private final Queue<Double> turnPositionQueue;
+    private final Queue<Double> driveVelocityQueue;
 
     private RelativeEncoder driveEncoder;
     public ResolverSlope steeringEncoder;
@@ -59,6 +60,18 @@ public class ModuleIOSparkMax implements ModuleIO {
                         () -> {
                             double value = steeringMotor.getEncoder().getPosition();
                             if (steeringMotor.getLastError() == REVLibError.kOk) {
+                                return OptionalDouble.of(value);
+                            } else {
+                                return OptionalDouble.empty();
+                            }
+                        });
+                       
+                        
+        driveVelocityQueue = SparkMaxOdometryThread.getInstance()
+                .registerSignal(
+                        () -> {
+                            double value = driveEncoder.getVelocity();
+                            if (driveMotor.getLastError() == REVLibError.kOk) {
                                 return OptionalDouble.of(value);
                             } else {
                                 return OptionalDouble.empty();
@@ -140,11 +153,17 @@ public class ModuleIOSparkMax implements ModuleIO {
                     360 - (value / SwerveDriveDimensions.steerGearRatio * 360)))
                 .toArray(Rotation2d[]::new);
 
+
+        inputs.driveVelocities = driveVelocityQueue.stream()
+                .mapToDouble((Double value) ->  -(value / kDriveGearRatio) / 60 * id.wheelRadius * 2 * Math.PI)
+                .toArray();
+
         // inputs.accel = inputs.driveVelocityMetersPerSecond - lastV)
 
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();
+        driveVelocityQueue.clear();
 
         inputs.rawEncoderValue = steeringEncoder.getRawValue();
         inputs.offset = steeringEncoder.getOffset();

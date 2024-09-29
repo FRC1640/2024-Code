@@ -223,7 +223,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.85, ()->0.85, ()->0.75, ()->0.75, ()->autoTargetBool));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.7, ()->0.7, ()->0.6, ()->0.6, ()->autoTargetBool));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 

@@ -7,14 +7,24 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.sensors.Gyro.Imported.AHRS;
+import lombok.val;
 
 public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     double offset = 0;
     private final Queue<Double> yawPositionQueue;
     private final Queue<Double> yawTimestampQueue;
+    private final Queue<Double> rate;
 
     public GyroIONavX() {
+        rate = SparkMaxOdometryThread.getInstance().registerSignal(() -> {
+            boolean valid = gyro.isConnected() && !gyro.isCalibrating();
+            if (valid) {
+                return OptionalDouble.of(gyro.getRate());
+            } else {
+                return OptionalDouble.empty();
+            }
+        });
         yawTimestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         yawPositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
@@ -39,13 +49,14 @@ public class GyroIONavX implements GyroIO {
 
         inputs.displacementX = gyro.getDisplacementX();
         inputs.displacementY = gyro.getDisplacementY();
-
+        inputs.odometryRate = rate.stream().mapToDouble((Double value)->value).toArray();
         inputs.odometryYawTimestamps = yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
         inputs.odometryYawPositions = yawPositionQueue.stream()
                 .map((Double value) -> Rotation2d.fromRadians(value))
                 .toArray(Rotation2d[]::new);
         yawTimestampQueue.clear();
         yawPositionQueue.clear();
+        rate.clear();
     }
 
     @Override

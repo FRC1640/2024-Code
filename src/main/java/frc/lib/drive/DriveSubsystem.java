@@ -29,6 +29,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,6 +39,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -218,15 +220,29 @@ public class DriveSubsystem extends SubsystemBase {
         for (int i = 0; i < sampleCount; i++) {
             // Read wheel positions and deltas from each module
             SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+            SwerveModuleState[] states = new SwerveModuleState[4];
             SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+            for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++){
+                states[moduleIndex] = modules[moduleIndex].getModuleStates()[i];
+            }
+            // find state required to achieve gyro rate
+            ChassisSpeeds s = SwerveDriveDimensions.kinematics.toChassisSpeeds(states);
+            double errorRadiansPerSecond = s.omegaRadiansPerSecond - gyro.getRates()[i];
+            ChassisSpeeds withError = new ChassisSpeeds(s.vxMetersPerSecond, s.vyMetersPerSecond, s.omegaRadiansPerSecond + errorRadiansPerSecond);
+            SwerveModuleState[] newStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(withError);
+
             for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-                modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+                // angle of new state is used to account for calibration errors
+                modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions(newStates[moduleIndex], i);
                 moduleDeltas[moduleIndex] = new SwerveModulePosition(
                         modulePositions[moduleIndex].distanceMeters
                                 - lastModulePositions[moduleIndex].distanceMeters,
                         modulePositions[moduleIndex].angle);
                 lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+                
             }
+
+            
             // Update gyro angle
             if (gyro.isTrustworthy()) {
                 // Use the real gyro angle

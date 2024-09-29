@@ -29,6 +29,7 @@ public interface ModuleIO extends AutoCloseable {
         public double[] odometryTimestamps = new double[] {};
         public double[] odometryDrivePositionsMeters = new double[] {};
         public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
+        public double[] driveVelocities = new double[]{};
 
         public int rawEncoderValue;
         public int offset;
