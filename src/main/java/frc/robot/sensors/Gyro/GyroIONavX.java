@@ -20,7 +20,7 @@ public class GyroIONavX implements GyroIO {
         rate = SparkMaxOdometryThread.getInstance().registerSignal(() -> {
             boolean valid = gyro.isConnected() && !gyro.isCalibrating();
             if (valid) {
-                return OptionalDouble.of(gyro.getRate());
+                return OptionalDouble.of(Math.toRadians(gyro.getRate()));
             } else {
                 return OptionalDouble.empty();
             }

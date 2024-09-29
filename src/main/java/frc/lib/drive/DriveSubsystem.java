@@ -226,9 +226,8 @@ public class DriveSubsystem extends SubsystemBase {
                 states[moduleIndex] = modules[moduleIndex].getModuleStates()[i];
             }
             // find state required to achieve gyro rate
-            ChassisSpeeds s = SwerveDriveDimensions.kinematics.toChassisSpeeds(states);
-            double errorRadiansPerSecond = s.omegaRadiansPerSecond - gyro.getRates()[i];
-            ChassisSpeeds withError = new ChassisSpeeds(s.vxMetersPerSecond, s.vyMetersPerSecond, s.omegaRadiansPerSecond + errorRadiansPerSecond);
+            ChassisSpeeds s = SwerveDriveDimensions.kinematics.toChassisSpeeds(states);;
+            ChassisSpeeds withError = new ChassisSpeeds(s.vxMetersPerSecond, s.vyMetersPerSecond, gyro.getRates()[i]);
             SwerveModuleState[] newStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(withError);
 
             for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
