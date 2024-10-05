@@ -1,5 +1,8 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -10,7 +13,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveWeight;
 import frc.lib.drive.JoystickCleaner;
+import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
+import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 
 public class JoystickDriveWeight implements DriveWeight {
@@ -20,7 +25,7 @@ public class JoystickDriveWeight implements DriveWeight {
     private final double SLOW_LINEAR_SPEED = 0.5;
     private final double SLOW_ROTATIONAL_SPEED = 0.3;
 
-    private final double LOWER_DB = 0.1; 
+    private final double LOWER_DB = 0.1;
     private final double UPPER_DB = 0.1;
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -49,43 +54,46 @@ public class JoystickDriveWeight implements DriveWeight {
     private boolean firstRun = true;
     private CommandXboxController driverController;
     private Trigger leftTrigger;
+    private Trigger pressJoystick;
 
-    SlewRateLimiter rotAcceleration = new SlewRateLimiter(1/0.2);
+    SlewRateLimiter rotAcceleration = new SlewRateLimiter(1 / 0.2);
+    double iXSpeed, iYSpeed, offset, angle;
 
     Gyro gyro;
-    public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro){
+
+    public JoystickDriveWeight(CommandXboxController driverController, Gyro gyro) {
         this.driverController = driverController;
         this.gyro = gyro;
         lastAngle = gyro.getRawAngleRadians();
-        leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1);
-        new Trigger(() -> driverController.getHID().getBackButton()).onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
-        // Trigger rightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.1);
+        leftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.1 || driverController.rightBumper().getAsBoolean());
+        new Trigger(() -> driverController.getHID().getBackButton())
+                .onTrue(new InstantCommand(() -> fieldRelative = !fieldRelative));
+        // Trigger rightTrigger = new Trigger(() ->
+        // driverController.getRightTriggerAxis() > 0.1);
     }
+
     @Override
     public ChassisSpeeds getSpeeds() {
-        if (firstRun){
+        if (firstRun) {
             lastAngle = gyro.getRawAngleRadians();
             firstRun = false;
         }
 
-        if (driverController.getHID().getRightBumper()) {
-            xSpeed = -driverController.getLeftY() * 0.3;
-            ySpeed = -driverController.getLeftX() * 0.3;
-            rot = -driverController.getRightX() * 0.2;
-        }
-        else if (!leftTrigger.getAsBoolean()) {
+        // if (driverController.getHID().getRightBumper()) {
+        //     xSpeed = -driverController.getLeftY() * 0.3;
+        //     ySpeed = -driverController.getLeftX() * 0.3;
+        //     rot = -driverController.getRightX() * 0.2;
+        if (!leftTrigger.getAsBoolean()) {
             xSpeed = -driverController.getLeftY() * SLOW_LINEAR_SPEED;
             ySpeed = -driverController.getLeftX() * SLOW_LINEAR_SPEED;
             rot = -driverController.getRightX() * SLOW_ROTATIONAL_SPEED;
-        } 
-        else {
+        } else {
             xSpeed = -driverController.getLeftY();
             ySpeed = -driverController.getLeftX();
             rot = -driverController.getRightX() * 0.8;
         }
 
         rot = rotAcceleration.calculate(rot);
-
 
         /* Apply linear deadband */
         joystickCleaner.setX(xSpeed);
@@ -100,74 +108,80 @@ public class JoystickDriveWeight implements DriveWeight {
         /* Increase rotational sensitivity */
         rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 2.0);
 
-        /* Gyro correction */
-        // if (Math.abs(rot) == 0 && DriveWeightCommand.getWeightsSize() == 1 && 
-        //     (Math.abs(xSpeed) > 0 || Math.abs(ySpeed) > 0)){
-        //     rot = rotPID.calculate(-SwerveAlgorithms.angleDistance(gyro.getRawAngleRadians(),
-        //         lastAngle), 0);
+        boolean hold = false;
+        
+        if (!hold && driverController.getHID().getRightBumper()) {
+            iXSpeed = xSpeed;
+            iYSpeed = ySpeed;
+            offset = -gyro.getAngleRotation2d().getRadians();
+            hold = true;
+        }
+        if (!driverController.getHID().getRightBumper()) {
+            hold = false;
+        }
+        angle = (Math.atan2(iYSpeed, iXSpeed) + offset); // add gyro offset to angle
+        if (driverController.getHID().getRightBumper()) { // drive with center of rot around closest pivot
+            Translation2d a = Arrays.stream(SwerveDriveDimensions.positions)
+                    .reduce((best,
+                            current) -> Math.abs((SwerveAlgorithms
+                                    .angleDistance(Math.atan2(current.getY(), current.getX()), angle))) < Math
+                                            .abs((SwerveAlgorithms.angleDistance(
+                                                    Math.atan2(best.getY(), best.getX()), angle)))
+                                                            ? current
+                                                            : best)
+                    .orElseThrow(() -> new NoSuchElementException("No closest pivot."));
+            centerOfRot = a;
+            return new ChassisSpeeds(xSpeed, ySpeed, rot);
 
-        //     double k;
-        //     double linearRotSpeed = Math.abs(rot * SwerveAlgorithms.maxNorm);
-        //     rot = MathUtil.clamp(rot, -1, 1);
-        //     if (Math.hypot(xSpeed, ySpeed) == 0 || rot ==0){
-        //         k = 1;
-        //     }
-        //     else{
-        //         k = 1+Math.min(Math.hypot(xSpeed, ySpeed) / linearRotSpeed, linearRotSpeed / Math.hypot(xSpeed, ySpeed));
-        //     }
-        //     rot = rot * k;
-        //     rot = MathUtil.clamp(rot, -1, 1);
-            
-        //     if (Math.abs(rot) < 0.01){
-        //         rot = 0;
-        //     }
+        } else {
+            centerOfRot = new Translation2d(0, 0);
+            return new ChassisSpeeds(xSpeed, ySpeed, rot);
+
+        }
+
+        /* Gyro correction */
+        // if (Math.abs(rot) == 0 && DriveWeightCommand.getWeightsSize() == 1 &&
+        // (Math.abs(xSpeed) > 0 || Math.abs(ySpeed) > 0)){
+        // rot =
+        // rotPID.calculate(-SwerveAlgorithms.angleDistance(gyro.getRawAngleRadians(),
+        // lastAngle), 0);
+
+        // double k;
+        // double linearRotSpeed = Math.abs(rot * SwerveAlgorithms.maxNorm);
+        // rot = MathUtil.clamp(rot, -1, 1);
+        // if (Math.hypot(xSpeed, ySpeed) == 0 || rot ==0){
+        // k = 1;
         // }
         // else{
-        //     lastAngle = gyro.getRawAngleRadians();
+        // k = 1+Math.min(Math.hypot(xSpeed, ySpeed) / linearRotSpeed, linearRotSpeed /
+        // Math.hypot(xSpeed, ySpeed));
         // }
-        return new ChassisSpeeds(xSpeed, ySpeed, rot);
+        // rot = rot * k;
+        // rot = MathUtil.clamp(rot, -1, 1);
 
-        // if (!hold && leftTrigger.getAsBoolean()) {
-        //     iXSpeed = xSpeed;
-        //     iYSpeed = ySpeed;
-        //     offset = -gyro.getAngleRotation2d().getRadians();
-        //     hold = true;
+        // if (Math.abs(rot) < 0.01){
+        // rot = 0;
         // }
-        // if (!leftTrigger.getAsBoolean()) {
-        //     hold = false;
         // }
-        // angle = (Math.atan2(iYSpeed, iXSpeed) + offset); // add gyro offset to angle
-        // if (leftTrigger.getAsBoolean()) { // drive with center of rot around closest pivot
-        //     Translation2d a = Arrays.stream(SwerveDriveDimensions.positions)
-        //             .reduce((best,
-        //                     current) -> Math.abs((SwerveAlgorithms
-        //                             .angleDistance(Math.atan2(current.getY(), current.getX()), angle))) < Math
-        //                                     .abs((SwerveAlgorithms.angleDistance(
-        //                                             Math.atan2(best.getY(), best.getX()), angle)))
-        //                                                     ? current
-        //                                                     : best)
-        //             .orElseThrow(() -> new NoSuchElementException("No closest pivot."));
-        //     Logger.recordOutput("Drive/CoR", a);
-        //     centerOfRot = a;
-        //     return new ChassisSpeeds(xSpeed, ySpeed, rot);
-            
-        // } else {
-        //     centerOfRot = new Translation2d(0,0);
-        //     return new ChassisSpeeds(xSpeed, ySpeed, rot);
-            
+        // else{
+        // lastAngle = gyro.getRawAngleRadians();
         // }
+        // return new ChassisSpeeds(xSpeed, ySpeed, rot);
+
     }
+
     @Override
     public Translation2d getCenterOfRot() {
         return centerOfRot;
     }
 
     @Override
-    public void setWeight(double weight){
+    public void setWeight(double weight) {
         this.weight = weight;
     }
-    @Override 
-    public double getWeight(){
+
+    @Override
+    public double getWeight() {
         return weight;
     }
 }

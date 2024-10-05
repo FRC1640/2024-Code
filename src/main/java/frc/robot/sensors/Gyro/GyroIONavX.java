@@ -54,6 +54,10 @@ public class GyroIONavX implements GyroIO {
         inputs.odometryYawPositions = yawPositionQueue.stream()
                 .map((Double value) -> Rotation2d.fromRadians(value))
                 .toArray(Rotation2d[]::new);
+
+        inputs.accelX = gyro.getWorldLinearAccelX();
+        inputs.accelY = gyro.getWorldLinearAccelY();
+        inputs.accelZ = gyro.getWorldLinearAccelZ();
         yawTimestampQueue.clear();
         yawPositionQueue.clear();
         rate.clear();

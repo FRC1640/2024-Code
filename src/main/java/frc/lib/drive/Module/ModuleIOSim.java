@@ -1,7 +1,10 @@
 package frc.lib.drive.Module;
 
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Queue;
+
+import com.revrobotics.REVLibError;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,6 +14,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
+import lombok.val;
 
 public class ModuleIOSim implements ModuleIO {
 
@@ -28,6 +32,7 @@ public class ModuleIOSim implements ModuleIO {
     private final Queue<Double> timestampQueue;
     private final Queue<Double> drivePositionQueue;
     private final Queue<Double> turnPositionQueue;
+    private final Queue<Double> driveVelocityQueue;
 
     double drivePos = 0;
     double steerPos = 0;
@@ -41,6 +46,12 @@ public class ModuleIOSim implements ModuleIO {
         turnPositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
                         () -> OptionalDouble.of(steerPos));
+        driveVelocityQueue = SparkMaxOdometryThread.getInstance()
+                .registerSignal(
+                        () -> {
+                            double value = driveSim.getAngularVelocityRadPerSec();
+                            return OptionalDouble.of(value);
+                        });
     }
 
     @Override
@@ -108,9 +119,13 @@ public class ModuleIOSim implements ModuleIO {
                     value))
                 .toArray(Rotation2d[]::new);
 
+        inputs.driveVelocities = driveVelocityQueue.stream().
+        mapToDouble((Double value) -> value * 2 * Math.PI * Units.inchesToMeters(3.7432661290322 / 2)).toArray();
+
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();
+        driveVelocityQueue.clear();
 
     }
 

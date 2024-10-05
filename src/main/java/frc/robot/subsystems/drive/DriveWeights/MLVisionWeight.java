@@ -29,7 +29,6 @@ public class MLVisionWeight implements DriveWeight {
     private Gyro gyro;
     PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "rotlock1");
     PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "rotlockmoving1");
-    Note lastNote = null;
     private MLVision mlVision;
     // private Translation2d pose;
     PIDController pid = PIDConstants.constructPID(PIDConstants.driveForwardPID, "autodriveforward1");
@@ -48,18 +47,7 @@ public class MLVisionWeight implements DriveWeight {
     }
     @Override
     public ChassisSpeeds getSpeeds() {
-        note = null;
-        if (lastNote != null){
-            if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
-                note = mlVision.getClosestNote();
-            }
-            else{   
-                note = lastNote;
-            }
-        }
-        else{
-            note = mlVision.getClosestNote();
-        }
+        note = mlVision.getClosestNote();
         Logger.recordOutput("NotePosCommand", note.pose);
         double angle = Math.atan2(note.pose.getY() - driveSubsystem.getPose().getY(),
             note.pose.getX() - driveSubsystem.getPose().getX());
@@ -94,11 +82,12 @@ public class MLVisionWeight implements DriveWeight {
         double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
         ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
         ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
-        lastNote = note;
+        
 
-        if (intakeSubsystem.hasNote() || note.pose == new Translation2d()){
+        if (intakeSubsystem.hasNote() || note.pose == new Translation2d() || note.confidence < 0.6){
             return new ChassisSpeeds();
         }
+        
         return finalSpeed;
     }
 }

@@ -76,7 +76,6 @@ public final class Constants {
         public static final double roomTempCelsius = 23;
 
     }
-
     public static class ModuleConstants {
         public static final double minVoltage = 0.05;
         public static final double maxVoltage = 4.95;

@@ -67,6 +67,10 @@ public class ModuleIOSparkMax implements ModuleIO {
                         });
                        
                         
+        
+        driveEncoder = driveMotor.getEncoder();
+        steeringEncoder = new ResolverSlope(id.resolverChannel, id.vSlope1,id.vSlope2,
+                180.0, 90.0, id.angleOffset);
         driveVelocityQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
                         () -> {
@@ -77,9 +81,6 @@ public class ModuleIOSparkMax implements ModuleIO {
                                 return OptionalDouble.empty();
                             }
                         });
-        driveEncoder = driveMotor.getEncoder();
-        steeringEncoder = new ResolverSlope(id.resolverChannel, id.vSlope1,id.vSlope2,
-                180.0, 90.0, id.angleOffset);
     }
 
     @Override
