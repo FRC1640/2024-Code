@@ -36,6 +36,10 @@ public class MLVisionWeight implements DriveWeight {
     // Constraints trapezoidConstraints;
     private IntakeSubsystem intakeSubsystem;
     Note note = null;
+    boolean useLast;
+    boolean end;
+    long otherInitTime;
+    Note lastNote;
     public MLVisionWeight(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
         this.mlVision = mlVision;
         this.driveSubsystem = driveSubsystem;
@@ -48,6 +52,29 @@ public class MLVisionWeight implements DriveWeight {
     @Override
     public ChassisSpeeds getSpeeds() {
         note = mlVision.getClosestNote();
+
+        if (note.confidence < 0.5 && !useLast){
+            otherInitTime = System.currentTimeMillis();
+            useLast = true;
+        }
+        if (note.confidence > 0.5 && driveSubsystem.getPose().getTranslation().getDistance(note.pose) < 1.5){
+            useLast = false;
+            otherInitTime = 0;
+            lastNote = null;
+        }
+        
+        if ((note.confidence < 0.5 || driveSubsystem.getPose().getTranslation().getDistance(note.pose) > 1.5
+            ) && System.currentTimeMillis() - otherInitTime < 500 && lastNote != null) {
+                note = lastNote;
+                Logger.recordOutput("UseLastNote", true);
+            }
+        else{
+            otherInitTime = 0;
+            note = mlVision.getClosestNote();
+            Logger.recordOutput("UseLastNote", false);
+            lastNote = note;
+            useLast = false;
+        }
         Logger.recordOutput("NotePosCommand", note.pose);
         double angle = Math.atan2(note.pose.getY() - driveSubsystem.getPose().getY(),
             note.pose.getX() - driveSubsystem.getPose().getX());
@@ -77,14 +104,14 @@ public class MLVisionWeight implements DriveWeight {
             s = 0;
         }
 
-        double xSpeed = (Math.cos(angle) * s) * 0.85;
-        double ySpeed = (Math.sin(angle) * s) * 0.85;
+        double xSpeed = (Math.cos(angle) * s) * 0.95;
+        double ySpeed = (Math.sin(angle) * s) * 0.95;
         double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
         ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
         ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
+    
         
-
-        if (intakeSubsystem.hasNote() || note.pose == new Translation2d() || note.confidence < 0.6){
+        if (intakeSubsystem.hasNote() || note.pose == new Translation2d() || note.confidence < 0.5){
             return new ChassisSpeeds();
         }
         

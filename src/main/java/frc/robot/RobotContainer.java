@@ -510,7 +510,7 @@ public class RobotContainer {
 	}
 
     private Command generateIntakeCommandAuto() {
-			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.1))
+			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.3))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.3) 
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
@@ -665,7 +665,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotateToSpeaker", driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()));
 
 		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
-
+		NamedCommands.registerCommand("TargetNoBounce", targetingSubsystem.anglePIDCommand(()->30, 60, ()->true).repeatedly());
 		NamedCommands.registerCommand("Full Speaker Shot", fullSpeakerShot());
 		NamedCommands.registerCommand("RotCommand(0)", rotCommand());
 		NamedCommands.registerCommand("RotCommand(.1)", rotCommand(.1));
@@ -682,7 +682,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("DriveToNote", new DriveToPosAndRotate(driveSubsystem, mlVision, gyro, intakeSubsystem));
 
 		NamedCommands.registerCommand("NoteValid", new WaitUntilCommand(()->
-			mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1 && mlVision.getConfidence() > 0.65));
+			mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1.5 && mlVision.getConfidence() > 0.55));
 
 		NamedCommands.registerCommand("Print", new PrintCommand("print").repeatedly());
 		NamedCommands.registerCommand("AutoShootRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto(() -> (Rotation2d.fromRadians(movingWhileShooting.getNewRobotAngle())))));

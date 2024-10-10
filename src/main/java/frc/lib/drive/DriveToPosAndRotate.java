@@ -14,7 +14,7 @@ import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.Note;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class DriveToPosAndRotate extends Command{
+public class DriveToPosAndRotate extends Command {
 
     private DriveSubsystem driveSubsystem;
     private Gyro gyro;
@@ -29,8 +29,12 @@ public class DriveToPosAndRotate extends Command{
     private IntakeSubsystem intakeSubsystem;
     Note note = null;
     long initTime;
+    boolean useLast;
+    boolean end;
+    long otherInitTime;
 
-    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro, IntakeSubsystem intakeSubsystem){
+    public DriveToPosAndRotate(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro,
+            IntakeSubsystem intakeSubsystem) {
         this.driveSubsystem = driveSubsystem;
         this.mlVision = mlVision;
         // this.endState = endState;
@@ -38,7 +42,7 @@ public class DriveToPosAndRotate extends Command{
         // this.pose = pose;
         // trapezoidConstraints = new Constraints(0.5, 0.5);
         this.intakeSubsystem = intakeSubsystem;
-        
+
         // profile = new TrapezoidProfile(trapezoidConstraints);
 
         addRequirements(driveSubsystem);
@@ -51,39 +55,62 @@ public class DriveToPosAndRotate extends Command{
 
     @Override
     public void execute() {
-        note = null;
-        if (lastNote != null){
-            if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
-                note = mlVision.getClosestNote();
-            }
-            else{   
+        note = mlVision.getClosestNote();
+        
+        if (note.confidence < 0.5 && !useLast){
+            otherInitTime = System.currentTimeMillis();
+            useLast = true;
+        }
+        if (note.confidence > 0.5 && driveSubsystem.getPose().getTranslation().getDistance(note.pose) < 1.5){
+            useLast = false;
+            otherInitTime = 0;
+            lastNote = null;
+        }
+        
+        if ((note.confidence < 0.5 || driveSubsystem.getPose().getTranslation().getDistance(note.pose) > 1.5
+            ) && System.currentTimeMillis() - otherInitTime < 500 && lastNote != null) {
                 note = lastNote;
             }
-        }
         else{
+            if (System.currentTimeMillis() - otherInitTime > 500)
+            otherInitTime = 0;
             note = mlVision.getClosestNote();
+            lastNote = note;
+            useLast = false;
         }
+        // if (lastNote != null){
+        // if (mlVision.getClosestNote().pose.getDistance(lastNote.pose) < 0.25){
+        // note = mlVision.getClosestNote();
+        // }
+        // else{
+        // note = lastNote;
+        // }
+        // }
+        // else{
+        // note = mlVision.getClosestNote();
+        // }
         Logger.recordOutput("NotePosCommand", note.pose);
         double angle = Math.atan2(note.pose.getY() - driveSubsystem.getPose().getY(),
-            note.pose.getX() - driveSubsystem.getPose().getX());
+                note.pose.getX() - driveSubsystem.getPose().getX());
         double o;
-        
+
         o = pidr.calculate(-SwerveAlgorithms.angleDistance(driveSubsystem.getPose().getRotation().getRadians(),
-                    (angle + Math.PI)), 0);
+                (angle + Math.PI)), 0);
 
         if (Math.abs(o) < 0.005) {
             o = 0;
         }
-        
+
         // double k;
         // double linearRotSpeed = Math.abs(o * SwerveAlgorithms.maxNorm);
         o = MathUtil.clamp(o, -1, 1);
         // setAngle = angle + gyro.getOffset();
         // o = MathUtil.clamp(o, -1, 1);
         ChassisSpeeds rToAngle = new ChassisSpeeds(0, 0, o);
-        
 
-        // double angle1 = new Rotation2d(pose.getX() - driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY() - driveSubsystem.getPose().getY()).getRadians();
+        // double angle1 = new Rotation2d(pose.getX() - driveSubsystem.getPose().getX(),
+        // driveSubsystem.getPose().getY() -
+        // driveSubsystem.getPose().getY()).getRadians();
         double dist = driveSubsystem.getPose().getTranslation().getDistance(note.pose);
         double s = pid.calculate(dist, 0);
         s = Math.abs(s);
@@ -92,12 +119,15 @@ public class DriveToPosAndRotate extends Command{
             s = 0;
         }
 
-        double xSpeed = (Math.cos(angle) * s) * 0.85;
-        double ySpeed = (Math.sin(angle) * s) * 0.85;
-        double offset = gyro.getOffset() - gyro.getRawAngleRadians() + driveSubsystem.getPose().getRotation().getRadians();
-        ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed*Math.cos(offset)+ySpeed*Math.sin(offset), ySpeed*Math.cos(offset)-xSpeed*Math.sin(offset),0);
+        double xSpeed = (Math.cos(angle) * s) * 0.95;
+        double ySpeed = (Math.sin(angle) * s) * 0.95;
+        double offset = gyro.getOffset() - gyro.getRawAngleRadians()
+                + driveSubsystem.getPose().getRotation().getRadians();
+        ChassisSpeeds cspeeds = new ChassisSpeeds(xSpeed * Math.cos(offset) + ySpeed * Math.sin(offset),
+                ySpeed * Math.cos(offset) - xSpeed * Math.sin(offset), 0);
         ChassisSpeeds finalSpeed = rToAngle.plus(cspeeds);
-        driveSubsystem.driveDoubleConePercent(finalSpeed.vxMetersPerSecond, finalSpeed.vyMetersPerSecond, finalSpeed.omegaRadiansPerSecond, true, new Translation2d(), false);
+        driveSubsystem.driveDoubleConePercent(finalSpeed.vxMetersPerSecond, finalSpeed.vyMetersPerSecond,
+                finalSpeed.omegaRadiansPerSecond, true, new Translation2d(), false);
         lastNote = note;
     }
 
@@ -106,13 +136,18 @@ public class DriveToPosAndRotate extends Command{
         lastNote = null;
         note = mlVision.getClosestNote();
         initTime = System.currentTimeMillis();
-        // if ((!(mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1) || !(mlVision.getConfidence() > 0.65))){
-        //     noteValid = true;
+        // if
+        // ((!(mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation())
+        // < 1) || !(mlVision.getConfidence() > 0.65))){
+        // noteValid = true;
         // }
     }
+
     @Override
     public boolean isFinished() {
-        return note.pose == new Translation2d() || intakeSubsystem.hasNote() || System.currentTimeMillis() - initTime > 3000;
+        return note.pose == new Translation2d() || intakeSubsystem.hasNote()
+                || System.currentTimeMillis() - initTime > 3000
+                || driveSubsystem.getPose().getTranslation().getDistance(note.pose) > 1.5 || end;
     }
-    
+
 }

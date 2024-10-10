@@ -95,7 +95,7 @@ public class MLVision extends PeriodicBase {
         if (getClosestNote(robotPos.get().getTranslation()).isPresent()){
             return getClosestNote(robotPos.get().getTranslation()).get();
         }
-        return new Note(new Translation2d(), 0);
+        return new Note(new Translation2d(), -1);
     }
 
     public double getConfidence(){
