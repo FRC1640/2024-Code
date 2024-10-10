@@ -67,4 +67,7 @@ public class Gyro {
     public double[] getOdometryTimestamps(){
         return inputs.odometryYawTimestamps;
     }
+    public double[] getRates(){
+        return inputs.odometryRate;
+    }
 }

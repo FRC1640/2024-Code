@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoTarget"
+                  "name": "TargetNoBounce"
                 }
               }
             ]

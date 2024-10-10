@@ -53,7 +53,7 @@ public final class Constants {
     public static class SwerveDriveDimensions {
         
         public static final double driveGearRatio = 116/15;
-        public static final double steerGearRatio = 43.6;
+        public static final double steerGearRatio = 480/11;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
         public static final double maxSpeed = 4.15;
@@ -76,7 +76,6 @@ public final class Constants {
         public static final double roomTempCelsius = 23;
 
     }
-
     public static class ModuleConstants {
         public static final double minVoltage = 0.05;
         public static final double maxVoltage = 4.95;
@@ -89,7 +88,7 @@ public final class Constants {
                 45,
                 true,
                 true,
-                true, 1.914, 0.658,
+                true, 1.25, 0,
                 Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo FR = new ModuleInfo(
@@ -231,7 +230,7 @@ public final class Constants {
         public static PIDController rotPID = new PIDController(0.3, 0.001, 0.0001);
         public static PIDController rotMovingPID = new PIDController(0.5, 0.0001, 0);
         public static PIDController gyroCorrectPid = new PIDController(0.1, 0, 0);
-        public static PIDController driveForwardPID = new PIDController(0.5, 0, 0);
+        public static PIDController driveForwardPID = new PIDController(0.6, 0, 0);
         // public static PIDController targetingPID = new PIDController(0.25, 0.025, 0.0007);
         public static PIDController targetingPIDSmall = new PIDController(0.25,0.004,0.003);
         public static PIDController targetingPIDSuperSmall = new PIDController(0.3,0.009,0.005);

@@ -20,13 +20,6 @@ public interface MLVisionIO {
         public int numVisibleNotes;
 
 
-        // prioretized values
-        public boolean isTargetNote;
-        public double calculatedTx;
-        public double calculatedTy;
-        public double calculatedTa;
-
-
         public double[] allTx;
         public double[] allTy;
 

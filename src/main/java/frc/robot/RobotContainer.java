@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Gram;
+
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -223,7 +225,7 @@ public class RobotContainer {
 		// targetingSubsystem.setDefaultCommand(
 			// targetingSubsystem.anglePIDCommand(()->movingWhileShooting.getNewTargetingAngle()));
 		// shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.05, ()->0.1, ()->0.05, ()->0.1, ()->get3dDistance(()->getSpeakerPos()) < 999999));
-		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.85, ()->0.85, ()->0.75, ()->0.75, ()->autoTargetBool));
+		shooterSubsystem.setDefaultCommand(shooterSubsystem.setSpeedPercentPID(()->0.7, ()->0.7, ()->0.6, ()->0.6, ()->autoTargetBool));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedCommand(movingWhileShooting.speedToPercentOutput()));
 
@@ -252,7 +254,7 @@ public class RobotContainer {
 						: new Pose2d(FieldConstants.ampPositionRed, new Rotation2d(Math.PI / 2))),
 				driveSubsystem::getPose, gyro);
 
-		mlVisionWeight = new MLVisionWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote()); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
+		mlVisionWeight = new MLVisionWeight(driveSubsystem, mlVision, gyro, intakeSubsystem); //new MLVisionAngularAndHorizDriveWeight(mlVision, gyro::getAngleRotation2d, ()->intakeSubsystem.hasNote());
 
 		rotateToStageWeight = new RotateToAngleWeight(
 			() -> (getNearestStage().getRotation().getRadians()), 
@@ -354,8 +356,7 @@ public class RobotContainer {
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 		 		.onFalse(Commands.parallel(
-					new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight)),
-					new InstantCommand(() -> mlVisionWeight.resetMode())));
+					new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight))));
 		new Trigger(() -> operatorControllerHID.getRightBumper())
 				.whileTrue(
 					extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
@@ -502,14 +503,14 @@ public class RobotContainer {
 	private Command generateIntakeCommand() {
 		return intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.05) && targetingSubsystem.isAnglePositionAccurate(
-					(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? TargetingConstants.angleError:3))
+					(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? TargetingConstants.angleError:4))
 						&& Math.toDegrees(Math.abs(SwerveAlgorithms.angleDistance(
 								DriveWeightCommand.getAngle(), driveSubsystem.getPose().getRotation().getRadians()))) < 
-								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 2.5: 8)) && canShoot);
+								(get3dDistance(() -> getSpeakerPos()) < FieldConstants.fullCourtShootingRadius ? 4: 8)) && canShoot);
 	}
 
     private Command generateIntakeCommandAuto() {
-			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.1))
+			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.3))
 				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.3) 
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
@@ -664,7 +665,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotateToSpeaker", driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()));
 
 		NamedCommands.registerCommand("AutoTarget", targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly());
-
+		NamedCommands.registerCommand("TargetNoBounce", targetingSubsystem.anglePIDCommand(()->30, 60, ()->true).repeatedly());
 		NamedCommands.registerCommand("Full Speaker Shot", fullSpeakerShot());
 		NamedCommands.registerCommand("RotCommand(0)", rotCommand());
 		NamedCommands.registerCommand("RotCommand(.1)", rotCommand(.1));
@@ -681,7 +682,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("DriveToNote", new DriveToPosAndRotate(driveSubsystem, mlVision, gyro, intakeSubsystem));
 
 		NamedCommands.registerCommand("NoteValid", new WaitUntilCommand(()->
-			mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1 && mlVision.getConfidence() > 0.65));
+			mlVision.getClosestNotePos().getDistance(driveSubsystem.getPose().getTranslation()) < 1.5 && mlVision.getConfidence() > 0.55));
 
 		NamedCommands.registerCommand("Print", new PrintCommand("print").repeatedly());
 		NamedCommands.registerCommand("AutoShootRotation", new InstantCommand(()->driveSubsystem.setRotationTargetAuto(() -> (Rotation2d.fromRadians(movingWhileShooting.getNewRobotAngle())))));

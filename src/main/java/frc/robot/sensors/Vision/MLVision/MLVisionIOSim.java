@@ -54,11 +54,6 @@ public class MLVisionIOSim implements MLVisionIO {
 
         inputs.isTarget = networkTable.getEntry("tv").getDouble(0) > 0;
 
-        inputs.isTargetNote = networkTable.getEntry("isTargetNote").getDouble(0)> 0;
-        inputs.calculatedTx = networkTable.getEntry("calculatedTx").getDouble(0);
-        inputs.calculatedTy = networkTable.getEntry("calculatedTy").getDouble(0);
-        inputs.calculatedTa = networkTable.getEntry("calculatedTa").getDouble(0);
-
 
         inputs.allTx = networkTable.getEntry("alltx").getDoubleArray(new double[]{0});
         inputs.allTy = networkTable.getEntry("allty").getDoubleArray(new double[]{0});

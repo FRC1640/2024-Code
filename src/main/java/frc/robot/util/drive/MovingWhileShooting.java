@@ -43,7 +43,7 @@ public class MovingWhileShooting {
     }
 
     public double getSpeedFromDistance(){
-        return 15;
+        return 12;
     }
     
 
