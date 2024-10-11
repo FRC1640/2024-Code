@@ -56,12 +56,11 @@ public class SwerveAlgorithms {
         } else {
             k = Math.max(linearRotSpeed, translationalSpeed) / (linearRotSpeed + translationalSpeed);
         }
-        double scale = 1 / (1 + k);
         var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
                 fieldRelative
-                        ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, scale * rot,
+                        ? ChassisSpeeds.fromFieldRelativeSpeeds(k * xSpeed, k * ySpeed, k * rot,
                                 new Rotation2d(currentAngleRadians))
-                        : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot * scale));
+                        : new ChassisSpeeds(xSpeed * k, ySpeed * k, rot * k));
         return swerveModuleStates;
     }
 
