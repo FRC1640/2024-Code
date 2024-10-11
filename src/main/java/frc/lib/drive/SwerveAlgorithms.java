@@ -69,19 +69,22 @@ public class SwerveAlgorithms {
 
         double translationalSpeed = Math.hypot(xSpeed, ySpeed);
 
-        double linearRotSpeed = Math.abs(rot * computeMaxNorm(SwerveDriveDimensions.positions, centerOfRotation));
+        double linearRotSpeed = Math.abs(rot * maxNorm);
         double k;
-
-        // determine scaling factor for double cone map
         if (linearRotSpeed == 0 || translationalSpeed == 0) {
             k = 0;
         } else {
-            k = Math.min(translationalSpeed / linearRotSpeed, linearRotSpeed / translationalSpeed);
+            k = Math.max(linearRotSpeed, translationalSpeed) / (linearRotSpeed + translationalSpeed);
         }
+        var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
+                fieldRelative
+                        ? ChassisSpeeds.fromFieldRelativeSpeeds(k * xSpeed, k * ySpeed, k * rot,
+                                new Rotation2d(currentAngleRadians))
+                        : new ChassisSpeeds(xSpeed * k, ySpeed * k, rot * k));
         if (lockRotation) {
             double scale = Math.abs((1 - Math.abs(linearRotSpeed) / (SwerveDriveDimensions.maxSpeed)));
             Logger.recordOutput("ScaleDriveWeight", scale);
-            var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
+            swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
                     fieldRelative
                             ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, rot,
                                     new Rotation2d(currentAngleRadians))
@@ -89,13 +92,6 @@ public class SwerveAlgorithms {
                     centerOfRotation);
             return swerveModuleStates;
         } else {
-            double scale = 1 / (1 + k);
-            var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
-                    fieldRelative
-                            ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, scale * rot,
-                                    new Rotation2d(currentAngleRadians))
-                            : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot * scale),
-                    centerOfRotation);
             return swerveModuleStates;
         }
 
