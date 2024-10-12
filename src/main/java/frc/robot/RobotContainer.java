@@ -570,7 +570,7 @@ public class RobotContainer {
 	}
 
 	public Command rotCommand(double wait){
-		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), new WaitCommand(wait), generateIntakeCommandAuto());
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle(), wait), generateIntakeCommandAuto());
 		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
 		return new ParallelDeadlineGroup(s, c);
 	}

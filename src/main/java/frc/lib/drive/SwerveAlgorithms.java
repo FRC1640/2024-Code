@@ -52,7 +52,7 @@ public class SwerveAlgorithms {
         double linearRotSpeed = Math.abs(rot * maxNorm);
         double k;
         if (linearRotSpeed == 0 || translationalSpeed == 0) {
-            k = 0;
+            k = 1;
         } else {
             k = Math.max(linearRotSpeed, translationalSpeed) / (linearRotSpeed + translationalSpeed);
         }
@@ -72,7 +72,7 @@ public class SwerveAlgorithms {
         double linearRotSpeed = Math.abs(rot * maxNorm);
         double k;
         if (linearRotSpeed == 0 || translationalSpeed == 0) {
-            k = 0;
+            k = 1;
         } else {
             k = Math.max(linearRotSpeed, translationalSpeed) / (linearRotSpeed + translationalSpeed);
         }

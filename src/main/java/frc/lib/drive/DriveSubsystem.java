@@ -464,6 +464,56 @@ public class DriveSubsystem extends SubsystemBase {
         c.addRequirements(this);
         return c;
     }
+    public Command rotateToAngleCommand(DoubleSupplier angleSupplier, double wait) {
+        Command c = new Command() {
+            double angle;
+            double initTime;
+
+            @Override
+            public void initialize() {
+                angle = angleSupplier.getAsDouble();
+                initTime = System.currentTimeMillis();
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                System.out.println("end");
+                driveDoubleConePercent(0, 0, 0, false, new Translation2d(), false);
+            }
+
+            @Override
+            public void execute() {
+                angle = angleSupplier.getAsDouble();
+                System.out.println(Math.toDegrees(angle));
+                
+                Logger.recordOutput("RotCommand", true);
+
+                double o;
+                o = pidr.calculate(-SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
+                        angle), 0);
+                if (Math.abs(o) < 0.005) {
+                    o = 0;
+                }
+                o = MathUtil.clamp(o, -1, 1);
+
+                // Logger.recordOutput("AutoRotateEnded", (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
+                //         angle)) < Math.toRadians(0.5)));
+
+                driveDoubleConePercent(0, 0, o, false, new Translation2d(), false);
+
+            }
+
+            @Override
+            public boolean isFinished() {
+                return (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
+                        angle)) < Math.toRadians(1)) && System.currentTimeMillis() - initTime > wait;
+                // return false;
+            }
+        };
+        c.addRequirements(this);
+        return c;
+    }
+    
 
     public ChassisSpeeds getChassisSpeeds() {
         Logger.recordOutput("Drive/Actual Chassis Speeds",

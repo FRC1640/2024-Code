@@ -145,9 +145,9 @@ public class DriveToPosAndRotate extends Command {
 
     @Override
     public boolean isFinished() {
-        return note.pose == new Translation2d() || intakeSubsystem.hasNote()
+        return intakeSubsystem.hasNote()
                 || System.currentTimeMillis() - initTime > 3000
-                || driveSubsystem.getPose().getTranslation().getDistance(note.pose) > 1.5 || end;
+                || driveSubsystem.getPose().getTranslation().getDistance(note.pose) > 1.5 || note.confidence < 0.5;
     }
 
 }

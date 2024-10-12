@@ -30,15 +30,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 156.16,
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 147.72,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "combranb",
-      "minWaypointRelativePos": 0.5,
+      "minWaypointRelativePos": 0.55,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
@@ -68,14 +68,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 6.0,
+    "maxVelocity": 3.9,
     "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 156.16,
+    "rotation": 147.72,
     "rotateFast": false
   },
   "reversed": false,
