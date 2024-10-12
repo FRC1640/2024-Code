@@ -506,7 +506,7 @@ public class DriveSubsystem extends SubsystemBase {
             @Override
             public boolean isFinished() {
                 return (Math.abs(SwerveAlgorithms.angleDistance(odometryPose.getRotation().getRadians(),
-                        angle)) < Math.toRadians(1)) && System.currentTimeMillis() - initTime > wait;
+                        angle)) < Math.toRadians(1)) && System.currentTimeMillis() - initTime > wait * 1000;
                 // return false;
             }
         };
