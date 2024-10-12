@@ -159,7 +159,7 @@ public class TargetingSubsystem extends SubsystemBase {
         if (goalPosition <= TargetingConstants.angleLowerLimit) { //bookmark for pid calculation
             pidDown.reset(); //maybe,,
         }
-        if (inputs.targetingPosition < 45){//limits are 28 and 75
+        if (inputs.targetingPosition < 37){//limits are 28 and 75
             speed = pidDown.calculate(inputs.targetingPosition, goalPosition);
         } 
         if (inputs.targetingPosition > 65){
@@ -458,11 +458,11 @@ public class TargetingSubsystem extends SubsystemBase {
     }
 
     public Command downCommand(){
-        return anglePIDCommand(()->30);
+        return anglePIDCommand(()->29);
     }
 
     public Command smallMidCommand(){
-        return anglePIDCommand(()->46);
+        return anglePIDCommand(()->35);
     }
 
     public Command midCommand(){
