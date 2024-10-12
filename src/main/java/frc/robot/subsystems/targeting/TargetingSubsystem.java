@@ -28,9 +28,12 @@ import static edu.wpi.first.units.Units.Seconds;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
-    PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
-    PIDController pidSuperSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSuperSmall, "targetingPIDSuperSmall");
-    PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
+    // PIDController pidSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSmall, "targetingPIDSmall");
+    // PIDController pidSuperSmall = PIDConstants.constructPID(PIDConstants.targetingPIDSuperSmall, "targetingPIDSuperSmall");
+    // PIDController pidLarge = PIDConstants.constructPID(PIDConstants.targetingPIDLarge, "targetingPIDLarge");
+    PIDController pidDown = PIDConstants.constructPID(PIDConstants.targetingPIDDown, "targetingPIDDown");
+    PIDController pidMid = PIDConstants.constructPID(PIDConstants.targetingPIDMid, "targetingPIDMid");
+    PIDController pidUp = PIDConstants.constructPID(PIDConstants.targetingPIDUp, "targetingPIDUp");
     public double setpoint = 0.0;
 
     private Mechanism2d targetVisualization = new Mechanism2d(4, 4);
@@ -155,24 +158,39 @@ public class TargetingSubsystem extends SubsystemBase {
      * @param position The angle to move to.
      * @return Percent output.
      */
-    private double getAnglePIDSpeed(double position) {
-        if (position <= TargetingConstants.angleLowerLimit) {
-            pidSmall.reset();
-        }
+    private double getAnglePIDSpeed(double goalPosition) {
+
         double speed = 0;
-        if (Math.abs(position - inputs.targetingPositionAverage) < 1){
-            speed = pidSuperSmall.calculate(inputs.targetingPositionAverage, position);
+        if (goalPosition <= TargetingConstants.angleLowerLimit) { //bookmark for pid calculation
+            pidDown.reset(); //maybe,,
         }
-        else if (Math.abs(position - inputs.targetingPositionAverage) < 6){
-            speed = pidSmall.calculate(inputs.targetingPositionAverage, position);
-        }
+        if (inputs.rightTargetingPositionDegrees < 37){//limits are 28 and 75
+            speed = pidDown.calculate(inputs.rightTargetingPositionDegrees, goalPosition);
+        } 
+        if (inputs.rightTargetingPositionDegrees > 65){
+            speed = pidUp.calculate(inputs.rightTargetingPositionDegrees, goalPosition);
+        } 
         else{
-            speed = pidLarge.calculate(inputs.targetingPositionAverage, position);
-        }
-        speed = MathUtil.clamp(speed, -12, 12);
-        if (Math.abs(speed) < 0.01) {
-            speed = 0;
-        }
+            speed = pidMid.calculate(inputs.rightTargetingPositionDegrees, goalPosition);
+        } 
+
+        // if (position <= TargetingConstants.angleLowerLimit) {
+        //     pidSmall.reset();
+        // }
+        // double speed = 0;
+        // if (Math.abs(position - inputs.targetingPositionAverage) < 1){
+        //     speed = pidSuperSmall.calculate(inputs.targetingPositionAverage, position);
+        // }
+        // else if (Math.abs(position - inputs.targetingPositionAverage) < 6){
+        //     speed = pidSmall.calculate(inputs.targetingPositionAverage, position);
+        // }
+        // else{
+        //     speed = pidLarge.calculate(inputs.targetingPositionAverage, position);
+        // }
+        // speed = MathUtil.clamp(speed, -12, 12);
+        // if (Math.abs(speed) < 0.01) {
+        //     speed = 0;
+        // }
         setpoint = position;
         return speed;
     }
