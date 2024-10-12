@@ -191,7 +191,7 @@ public class TargetingSubsystem extends SubsystemBase {
         // if (Math.abs(speed) < 0.01) {
         //     speed = 0;
         // }
-        setpoint = position;
+        setpoint = goalPosition;
         return speed;
     }
 
