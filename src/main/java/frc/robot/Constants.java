@@ -239,9 +239,9 @@ public final class Constants {
         // public static PIDController targetingPIDSuperSmall = new PIDController(0.2,0,0);//lkv prime: .23, .0001, .01 lkv deux: 0.19, .0001, .01 pkv prime: .1, .00007, .015 (BAD)
         // //public static PIDController targetingPIDLarge = new PIDController(0.17,0.003,0.002);
         // public static PIDController targetingPIDLarge = new PIDController(0.1,0.00055,0.0008);//pkv prime: .1, .0005, .0008 lkv deux: .1, .0005, .0008//reminder NOT TO GO OVER .002 FOR KD
-        public static PIDController targetingPIDUp = new PIDController(.16, 0, .02); //this is the only one that **WAS oscillating after its stopping
-        public static PIDController targetingPIDMid = new PIDController(.19, .00015, .025);
-        public static PIDController targetingPIDDown = new PIDController(.1, 0, .025);
+        public static PIDController targetingPIDUp = new PIDController(.17, .000015, .18); 
+        public static PIDController targetingPIDMid = new PIDController(.19, .000215, .02);
+        public static PIDController targetingPIDDown = new PIDController(.1, 0, .032);
         
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
