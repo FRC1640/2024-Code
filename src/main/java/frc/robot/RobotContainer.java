@@ -215,7 +215,7 @@ public class RobotContainer {
 		movingWhileShooting = new MovingWhileShooting(gyro, ()->getSpeakerPos(), driveSubsystem::getPose, 
 		driveSubsystem::getChassisSpeeds, targetingSubsystem);
 		// targetingSubsystem.setDefaultCommand(targetingSubsystem.anglePIDCommand(()->60));
-		targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
+		// targetingSubsystem.setDefaultCommand(autoTargetMovingWhileShooting());
 
 		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(()->60, ()->20));
 
@@ -436,7 +436,7 @@ public class RobotContainer {
 		// climberSubsystem.setDefaultCommand(climberSubsystem.climberPIDCommandVoltage(() -> PIDUpdate.getSetpoint(), () -> 0.0));
 		//extensionSubsystem.setDefaultCommand(extensionSubsystem.extensionPIDCommand(()->PIDUpdate.getSetpoint()));
 		targetingSubsystem.setDefaultCommand(
-			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("targetingPIDSmall")));
+			targetingSubsystem.anglePIDCommand(()->PIDUpdate.getSetpoint(),()->PIDUpdate.getPID() == PIDConstants.map.get("targetingPIDMid")));
 		// shooterSubsystem.setDefaultCommand(
 		// 	shooterSubsystem.setSpeedPercentPID(()->0, ()->PIDUpdate.getSetpoint(), ()->0, ()->0, 
 		// 	()->PIDUpdate.getPID() == PIDConstants.map.get("bottomLeftShooter"))

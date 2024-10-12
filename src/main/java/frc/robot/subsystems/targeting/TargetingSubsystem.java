@@ -159,10 +159,10 @@ public class TargetingSubsystem extends SubsystemBase {
         if (goalPosition <= TargetingConstants.angleLowerLimit) { //bookmark for pid calculation
             pidDown.reset(); //maybe,,
         }
-        if (goalPosition < 45){//limits are 28 and 75
+        if (inputs.targetingPosition < 45){//limits are 28 and 75
             speed = pidDown.calculate(inputs.targetingPosition, goalPosition);
         } 
-        if (goalPosition > 65){
+        if (inputs.targetingPosition > 65){
             speed = pidUp.calculate(inputs.targetingPosition, goalPosition);
         } 
         else{
