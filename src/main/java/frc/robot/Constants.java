@@ -81,13 +81,16 @@ public final class Constants {
         public static final double maxVoltage = 4.95;
 
         public static final ModuleInfo FL = new ModuleInfo(
-                PivotId.FL,
-                3,
-                2,
-                0,
-                45,
-                true,
-                true,
+                PivotId.FL, // id
+                3,          //dc
+                2,          // sc
+                1,          
+                0x70,
+                0x06,       
+                0,          // rc
+                45,         //angle offset
+                true,       //revdrive
+                true,       //revsteer
                 true, 1.25, 0,
                 Units.inchesToMeters(1.8892));
 
@@ -95,6 +98,9 @@ public final class Constants {
                 PivotId.FR,
                 9, // 2023: and dew 1: 2
                 8, // 2023: 1, dew 1: 5
+                1,          
+                0x70,
+                0x06,       
                 2,
                 -45,
                 true,
@@ -106,6 +112,9 @@ public final class Constants {
                 PivotId.BL,
                 5, 
                 4,
+                1,          
+                0x70,
+                0x06,       
                 1,
                 135,
                 true,
@@ -117,6 +126,9 @@ public final class Constants {
                 PivotId.BR,
                 7,
                 6,
+                1,          
+                0x70,
+                0x06,       
                 3,
                 -135,
                 true,

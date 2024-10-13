@@ -17,6 +17,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
+import frc.robot.sensors.I2CResolvers.I2CMuxResolver;
 import frc.robot.sensors.Resolvers.ResolverSlope;
 import frc.robot.util.motor.SparkMaxConfigurer;
 
@@ -30,7 +31,8 @@ public class ModuleIOSparkMax implements ModuleIO {
     private final Queue<Double> driveVelocityQueue;
 
     private RelativeEncoder driveEncoder;
-    public ResolverSlope steeringEncoder;
+    public I2CMuxResolver steeringEncoder;
+
     // private final double kWheelRadius =
     // Constants.SwerveDriveDimensions.wheelRadius;
     private final double kDriveGearRatio = Constants.SwerveDriveDimensions.driveGearRatio;
@@ -38,11 +40,11 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     public ModuleIOSparkMax(ModuleInfo id) {
 
-        
-
         this.id = id;
-        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive));
-        steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel, ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
+        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel,
+                ModuleConstants.getSparkDefaultsDrive(id.reverseDrive));
+        steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel,
+                ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
@@ -56,7 +58,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                         });
 
         turnPositionQueue = SparkMaxOdometryThread.getInstance()
-                        .registerSignal(
+                .registerSignal(
                         () -> {
                             double value = steeringMotor.getEncoder().getPosition();
                             if (steeringMotor.getLastError() == REVLibError.kOk) {
@@ -65,12 +67,12 @@ public class ModuleIOSparkMax implements ModuleIO {
                                 return OptionalDouble.empty();
                             }
                         });
-                       
-                        
-        
+
         driveEncoder = driveMotor.getEncoder();
-        steeringEncoder = new ResolverSlope(id.resolverChannel, id.vSlope1,id.vSlope2,
+        steeringEncoder = new I2CMuxResolver(id.resolverMuxChannel, id.resolverAddress, id.muxPort, id.muxAddress,
+                id.vSlope1, id.vSlope2,
                 180.0, 90.0, id.angleOffset);
+
         driveVelocityQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
                         () -> {
@@ -88,9 +90,10 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveMotor.setIdleMode(brake ? IdleMode.kBrake : IdleMode.kCoast);
     }
 
-    @Override 
-    public void resetSteer(){
-        steeringMotor.getEncoder().setPosition((360-steeringEncoder.getD()) / 360 * SwerveDriveDimensions.steerGearRatio);
+    @Override
+    public void resetSteer() {
+        steeringMotor.getEncoder()
+                .setPosition((360 - steeringEncoder.getD()) / 360 * SwerveDriveDimensions.steerGearRatio);
     }
 
     @Override
@@ -131,32 +134,33 @@ public class ModuleIOSparkMax implements ModuleIO {
         // driveMotor.getIdleMode().equals(IdleMode.kBrake);
 
         // inputs.steerAngleDegrees = steeringEncoder.getD();
-        inputs.steerAngleDegrees = 360 - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
+        inputs.steerAngleDegrees = 360
+                - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
         inputs.steerAppliedVoltage = steeringMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.steerCurrentAmps = steeringMotor.getOutputCurrent();
         inputs.steerTempCelsius = steeringMotor.getMotorTemperature();
         // inputs.steerIdleModeIsBrake =
         // steeringMotor.getIdleMode().equals(IdleMode.kBrake);
         inputs.steerAngleRadians = Math.toRadians(inputs.steerAngleDegrees);
-        inputs.steerAngleVoltage = steeringEncoder.getV();
+        // inputs.steerAngleVoltage = steeringEncoder.getV();
         inputs.steerAngleAbsolute = (steeringEncoder.getD());
 
-        inputs.steerAngleRelative = 360 - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
+        inputs.steerAngleRelative = 360
+                - (steeringMotor.getEncoder().getPosition() / SwerveDriveDimensions.steerGearRatio * 360);
 
         inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
 
         inputs.odometryDrivePositionsMeters = drivePositionQueue.stream()
-                .mapToDouble((Double value) ->  -(value / kDriveGearRatio) * id.wheelRadius * 2 * Math.PI)
+                .mapToDouble((Double value) -> -(value / kDriveGearRatio) * id.wheelRadius * 2 * Math.PI)
                 .toArray();
 
         inputs.odometryTurnPositions = turnPositionQueue.stream()
                 .map((Double value) -> Rotation2d.fromDegrees(
-                    360 - (value / SwerveDriveDimensions.steerGearRatio * 360)))
+                        360 - (value / SwerveDriveDimensions.steerGearRatio * 360)))
                 .toArray(Rotation2d[]::new);
 
-
         inputs.driveVelocities = driveVelocityQueue.stream()
-                .mapToDouble((Double value) ->  -(value / kDriveGearRatio) / 60 * id.wheelRadius * 2 * Math.PI)
+                .mapToDouble((Double value) -> -(value / kDriveGearRatio) / 60 * id.wheelRadius * 2 * Math.PI)
                 .toArray();
 
         // inputs.accel = inputs.driveVelocityMetersPerSecond - lastV)
@@ -167,8 +171,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveVelocityQueue.clear();
 
         inputs.rawEncoderValue = steeringEncoder.getRawValue();
-        inputs.offset = steeringEncoder.getOffset();
-        inputs.LSBWeight = steeringEncoder.getLSBWeight();
+        // inputs.offset = steeringEncoder.getOffset();
+        // inputs.LSBWeight = steeringEncoder.getLSBWeight();
     }
 
 }

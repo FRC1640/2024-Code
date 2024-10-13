@@ -21,7 +21,7 @@ public interface ModuleIO extends AutoCloseable {
         public double steerTempCelsius;
         public boolean steerIdleModeIsBrake;
         public double steerAngleRadians;
-        public double steerAngleVoltage;
+        //public double steerAngleVoltage; TODO: ask Justin
         public double steerAngleRelative;
         public double steerAngleAbsolute;
         public double accel;
@@ -33,7 +33,7 @@ public interface ModuleIO extends AutoCloseable {
 
         public int rawEncoderValue;
         public int offset;
-        public long LSBWeight;
+        //public long LSBWeight; TODO: Ask Justin
     }
 
     public default void updateInputs(ModuleIOInputs inputs) {

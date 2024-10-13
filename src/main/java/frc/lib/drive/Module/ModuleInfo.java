@@ -7,7 +7,10 @@ public class ModuleInfo{
     PivotId id;
     int driveChannel;
     int steerChannel;
-    int resolverChannel;
+    int muxPort;
+    int muxAddress;
+    int resolverAddress;
+    int resolverMuxChannel;
     double angleOffset;
     boolean reverseDrive;
     boolean reverseSteer;
@@ -16,10 +19,14 @@ public class ModuleInfo{
     double vSlope1;
     double vSlope2;
     
-    public ModuleInfo(PivotId id,
+    public ModuleInfo(
+        PivotId id,
         int driveChannel,
         int steerChannel,
-        int resolverChannel,
+        int muxPort,
+        int muxAddress,
+        int resolverAddress,
+        int resolverMuxChannel,
         double angleOffset,
         boolean reverseDrive,
         boolean reverseSteer,
@@ -29,7 +36,10 @@ public class ModuleInfo{
         double wheelRadius){
             this.driveChannel = driveChannel;
             this.steerChannel = steerChannel;
-            this.resolverChannel = resolverChannel;
+            this.muxPort = muxPort;
+            this.muxAddress = muxAddress;
+            this.resolverAddress = resolverAddress;
+            this.resolverMuxChannel = resolverMuxChannel;
             this.angleOffset = angleOffset;
             this.reverseDrive = reverseDrive;
             this.reverseSteer = reverseSteer;
