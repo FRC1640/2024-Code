@@ -19,25 +19,20 @@ public class I2CMuxResolver extends I2C {
     
     ArrayList<Double> average;
 
-    public I2CMuxResolver(int channel, int deviceAddress, int muxPort, int muxAddress, double v1, double v2, double angle1, double angle2,
+    public I2CMuxResolver(int channel, int deviceAddress, int muxPort, int muxAddress,
             double offset) {
         super(Port.values()[muxPort], deviceAddress);
         this.mux = new I2C(Port.values()[muxPort], muxAddress);
         m_channel = channel;
         m_deviceAddress = deviceAddress;
-
-        this.v1 = v1;
-        this.v2 = v2;
-        this.angle1 = angle1;
-        this.angle2 = angle2;
         this.offset = offset;
         
         average = new ArrayList<>(20);
     }
 
-    public String toString() {
-        return String.format("%f, %f"); // TODO: ask justin
-    }
+    // public String toString() {
+    //     return String.format("%f, %f"); // TODO: ask justin
+    // }
 
     
 
@@ -56,10 +51,10 @@ public class I2CMuxResolver extends I2C {
      * @return Angle in radians
      */
     public double get () {
-    return Math.toRadians(getD());
+        return Math.toRadians(this.getD());
     }
 
     public double getD() {
-        return this.getRawValue() / 16384 * 360;
+        return (this.getRawValue() / 16384 * 360) + offset;
     }
 }

@@ -69,9 +69,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                         });
 
         driveEncoder = driveMotor.getEncoder();
-        steeringEncoder = new I2CMuxResolver(id.resolverMuxChannel, id.resolverAddress, id.muxPort, id.muxAddress,
-                id.vSlope1, id.vSlope2,
-                180.0, 90.0, id.angleOffset);
+        steeringEncoder = new I2CMuxResolver(id.resolverMuxChannel, id.resolverAddress, id.muxPort, id.muxAddress,id.angleOffset);
 
         driveVelocityQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(
