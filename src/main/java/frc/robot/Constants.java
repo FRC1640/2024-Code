@@ -53,10 +53,10 @@ public final class Constants {
     public static class SwerveDriveDimensions {
         
         public static final double driveGearRatio = 116/15;
-        public static final double steerGearRatio = 480/11;
+        public static final double steerGearRatio = (480/11) / 0.97;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
-        public static final double maxSpeed = 4.15;
+        public static final double maxSpeed = 4.6;
 
         public static final double odometryFrequency = 250.0;
 

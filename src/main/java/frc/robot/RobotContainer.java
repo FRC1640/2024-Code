@@ -320,7 +320,7 @@ public class RobotContainer {
 
 		new Trigger(() -> driveControllerHID.getAButton())
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5)))); // .alongWith(autoTarget()));
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))); // .alongWith(autoTarget()));
 		new Trigger(() -> driveControllerHID.getAButton())
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
@@ -349,9 +349,11 @@ public class RobotContainer {
 		
 		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand())
 
-		new Trigger(() -> driveControllerHID.getXButton())
-				.whileTrue(manualShotNoAngle(
-					50,	() -> !driveControllerHID.getXButton(), true));
+		// new Trigger(() -> driveControllerHID.getXButton())
+		// 		.whileTrue(manualShotNoAngle(
+		// 			50,	() -> !driveControllerHID.getXButton(), true));
+
+		new Trigger(()->driveControllerHID.getXButton()).whileTrue(driveSubsystem.driveOnePivot(0));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)

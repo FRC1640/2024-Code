@@ -201,4 +201,8 @@ public class Module {
     public double[] getOdometryTimestamps() {
         return inputs.odometryTimestamps;
     }
+
+    public void setSteerVoltage(double volts){
+        io.setSteerVoltage(volts);
+    }
 }
