@@ -33,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(0.5)"
+            "name": "RotCommand(1)"
           }
         },
         {

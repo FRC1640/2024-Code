@@ -659,7 +659,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Command driveOnePivot(int id){
-        return new RunCommand(()->frontRight.setSteerVoltage(6), this);
+        return new RunCommand(()->{
+        frontRight.setSteerVoltage(2);
+        frontRight.setSteerVoltage(2);
+        backLeft.setSteerVoltage(2);
+        backRight.setSteerVoltage(2);}, this);
     }
 
     public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot,
