@@ -320,7 +320,7 @@ public class RobotContainer {
 
 		new Trigger(() -> driveControllerHID.getAButton())
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(movingWhileShootingWeight))
-				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(0.5)))); // .alongWith(autoTarget()));
+				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1)))); // .alongWith(autoTarget()));
 		new Trigger(() -> driveControllerHID.getAButton())
 				.onFalse(new InstantCommand(() -> DriveWeightCommand.removeWeight(movingWhileShootingWeight))
 				.andThen(new InstantCommand(() -> joystickDriveWeight.setWeight(1))));
@@ -349,9 +349,11 @@ public class RobotContainer {
 		
 		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand())
 
-		new Trigger(() -> driveControllerHID.getXButton())
-				.whileTrue(manualShotNoAngle(
-					50,	() -> !driveControllerHID.getXButton(), true));
+		// new Trigger(() -> driveControllerHID.getXButton())
+		// 		.whileTrue(manualShotNoAngle(
+		// 			50,	() -> !driveControllerHID.getXButton(), true));
+
+		new Trigger(()->driveControllerHID.getXButton()).whileTrue(driveSubsystem.driveOnePivot(0));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
@@ -570,7 +572,7 @@ public class RobotContainer {
 	}
 
 	public Command rotCommand(double wait){
-		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle()), new WaitCommand(wait), generateIntakeCommandAuto());
+		SequentialCommandGroup s = new SequentialCommandGroup(driveSubsystem.rotateToAngleCommand(()->movingWhileShooting.getNewRobotAngle(), wait), generateIntakeCommandAuto());
 		Command c = targetingSubsystem.anglePIDCommand(()->determineTargetingAngle(), 60, ()->true).repeatedly();
 		return new ParallelDeadlineGroup(s, c);
 	}
@@ -673,6 +675,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("RotCommand(.3)", rotCommand(.3));
 		NamedCommands.registerCommand("RotCommand(.35)", rotCommand(.35));
 		NamedCommands.registerCommand("RotCommand(.5)", rotCommand(.5));
+		NamedCommands.registerCommand("RotCommand(4)", rotCommand(4));	
+		NamedCommands.registerCommand("RotCommand(1)", rotCommand(1));
 		// NamedCommands.registerCommand("IntakeWait", new WaitUntilCommand(()->intakeSubsystem.hasNote()).raceWith(new WaitCommand(2)));
 
 		NamedCommands.registerCommand("StopRobot", driveSubsystem.driveDoubleConeCommand(()->new ChassisSpeeds(), ()->new Translation2d(), ()->false));

@@ -49,6 +49,7 @@ public class Module {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Drive/Modules/" + id, inputs);
+        Logger.recordOutput("Drive/Modules/" + id + "/Error", Math.abs(Math.toDegrees(SwerveAlgorithms.angleDistance(Math.toRadians(inputs.steerAngleAbsolute), Math.toRadians(inputs.steerAngleDegrees)))));
         // Logger.recordOutput("Drive/Modules/" + id, );
     }
 
@@ -200,5 +201,9 @@ public class Module {
     /** Returns the timestamps of the samples received this cycle. */
     public double[] getOdometryTimestamps() {
         return inputs.odometryTimestamps;
+    }
+
+    public void setSteerVoltage(double volts){
+        io.setSteerVoltage(volts);
     }
 }
