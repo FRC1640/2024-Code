@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C;
 import frc.lib.drive.Module.ModuleInfo;
 import frc.robot.util.motor.LimitSwitchConfiguration;
 import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchDirection;
@@ -80,12 +81,16 @@ public final class Constants {
         public static final double minVoltage = 0.05;
         public static final double maxVoltage = 4.95;
 
+        public static final I2C.Port muxPort = I2C.Port.kOnboard;
+        public static final int muxAddress = 0x70;
+
+        public static final I2C mux = new I2C(muxPort, muxAddress);
+
         public static final ModuleInfo FL = new ModuleInfo(
                 PivotId.FL, // id
                 3,          //dc
                 2,          // sc
-                1,          
-                0x70,
+                mux,
                 0x06,       
                 0,          // rc
                 45,         //angle offset
@@ -98,8 +103,7 @@ public final class Constants {
                 PivotId.FR,
                 9, // 2023: and dew 1: 2
                 8, // 2023: 1, dew 1: 5
-                1,          
-                0x70,
+                mux,
                 0x06,       
                 2,
                 -45,
@@ -112,8 +116,7 @@ public final class Constants {
                 PivotId.BL,
                 5, 
                 4,
-                1,          
-                0x70,
+                mux,
                 0x06,       
                 1,
                 135,
@@ -126,8 +129,7 @@ public final class Constants {
                 PivotId.BR,
                 7,
                 6,
-                1,          
-                0x70,
+                mux,
                 0x06,       
                 3,
                 -135,

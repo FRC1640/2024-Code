@@ -31,7 +31,7 @@ public class ModuleIOSparkMax implements ModuleIO {
     private final Queue<Double> driveVelocityQueue;
 
     private RelativeEncoder driveEncoder;
-    public I2CMuxResolver steeringEncoder;
+    private I2CMuxResolver steeringEncoder;
 
     // private final double kWheelRadius =
     // Constants.SwerveDriveDimensions.wheelRadius;
@@ -69,7 +69,8 @@ public class ModuleIOSparkMax implements ModuleIO {
                         });
 
         driveEncoder = driveMotor.getEncoder();
-        steeringEncoder = new I2CMuxResolver(id.resolverMuxChannel, id.resolverAddress, id.muxPort, id.muxAddress,id.angleOffset);
+        steeringEncoder = new I2CMuxResolver(id.mux, id.resolverAddress, id.resolverMuxChannel,
+                id.angleOffset);
 
         driveVelocityQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(

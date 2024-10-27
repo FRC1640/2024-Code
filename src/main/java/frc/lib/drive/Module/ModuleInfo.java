@@ -1,5 +1,6 @@
 package frc.lib.drive.Module;
 
+import edu.wpi.first.wpilibj.I2C;
 import frc.robot.Constants.PivotId;
 //class to store constants for a module
 public class ModuleInfo{
@@ -7,8 +8,7 @@ public class ModuleInfo{
     PivotId id;
     int driveChannel;
     int steerChannel;
-    int muxPort;
-    int muxAddress;
+    I2C mux;
     int resolverAddress;
     int resolverMuxChannel;
     double angleOffset;
@@ -23,8 +23,7 @@ public class ModuleInfo{
         PivotId id,
         int driveChannel,
         int steerChannel,
-        int muxPort,
-        int muxAddress,
+        I2C mux,
         int resolverAddress,
         int resolverMuxChannel,
         double angleOffset,
@@ -36,8 +35,7 @@ public class ModuleInfo{
         double wheelRadius){
             this.driveChannel = driveChannel;
             this.steerChannel = steerChannel;
-            this.muxPort = muxPort;
-            this.muxAddress = muxAddress;
+            this.mux = mux;
             this.resolverAddress = resolverAddress;
             this.resolverMuxChannel = resolverMuxChannel;
             this.angleOffset = angleOffset;
