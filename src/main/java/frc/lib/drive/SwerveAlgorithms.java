@@ -67,33 +67,7 @@ public class SwerveAlgorithms {
     public static SwerveModuleState[] doubleCone(double xSpeed, double ySpeed, double rot,
             double currentAngleRadians, boolean fieldRelative, Translation2d centerOfRotation, boolean lockRotation) {
 
-        double translationalSpeed = Math.hypot(xSpeed, ySpeed);
-
-        double linearRotSpeed = Math.abs(rot * maxNorm);
-        double k;
-        if (linearRotSpeed == 0 || translationalSpeed == 0) {
-            k = 1;
-        } else {
-            k = Math.max(linearRotSpeed, translationalSpeed) / (linearRotSpeed + translationalSpeed);
-        }
-        var swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
-                fieldRelative
-                        ? ChassisSpeeds.fromFieldRelativeSpeeds(k * xSpeed, k * ySpeed, k * rot,
-                                new Rotation2d(currentAngleRadians))
-                        : new ChassisSpeeds(xSpeed * k, ySpeed * k, rot * k));
-        if (lockRotation) {
-            double scale = Math.abs((1 - Math.abs(linearRotSpeed) / (SwerveDriveDimensions.maxSpeed)));
-            Logger.recordOutput("ScaleDriveWeight", scale);
-            swerveModuleStates = SwerveDriveDimensions.kinematics.toSwerveModuleStates(
-                    fieldRelative
-                            ? ChassisSpeeds.fromFieldRelativeSpeeds(scale * xSpeed, scale * ySpeed, rot,
-                                    new Rotation2d(currentAngleRadians))
-                            : new ChassisSpeeds(xSpeed * scale, ySpeed * scale, rot),
-                    centerOfRotation);
-            return swerveModuleStates;
-        } else {
-            return swerveModuleStates;
-        }
+        return doubleCone(xSpeed, ySpeed, rot, currentAngleRadians, fieldRelative);
 
     }
 

@@ -3,52 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7450681568029801,
-        "y": 4.428212820389605
+        "x": 0.7418259386281802,
+        "y": 4.425627808601589
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.698728914045506,
-        "y": 2.1301373408434023
+        "x": 3.5301335689559217,
+        "y": 1.4272332032986503
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.914560729595394,
-        "y": 3.8420285371376424
-      },
-      "prevControl": {
-        "x": 4.029435167875076,
-        "y": 3.515387775142094
-      },
-      "nextControl": {
-        "x": 5.612414013204399,
-        "y": 4.099559601855855
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.504473271428711,
+        "x": 4.895107420546595,
         "y": 4.051949444840401
       },
       "prevControl": {
-        "x": 6.743171780182424,
+        "x": 4.43897556256559,
+        "y": 3.45505807761469
+      },
+      "nextControl": {
+        "x": 5.254993637949362,
+        "y": 4.522894353845579
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.299436504086279,
         "y": 4.163008136442813
+      },
+      "prevControl": {
+        "x": 6.393012217304056,
+        "y": 4.036561627625624
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.65,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.65,
+      "minWaypointRelativePos": 1.5,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.5,
@@ -60,8 +66,8 @@
   ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.3,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -73,7 +79,7 @@
   "reversed": false,
   "folder": "Source Side Subwoofer",
   "previewStartingState": {
-    "rotation": 121.61,
+    "rotation": 120.3432488842395,
     "velocity": 0
   },
   "useDefaultConstraints": false

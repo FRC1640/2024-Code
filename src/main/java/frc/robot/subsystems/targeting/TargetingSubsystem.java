@@ -110,7 +110,7 @@ public class TargetingSubsystem extends SubsystemBase {
 
     public double equation(double v) {
 
-        return -2530.15 * Math.asin(-0.000478453 * (1 / (v-0.0742577))-0.999783) -3910.04 + angleOffset.getAsDouble() + 2;
+        return -2530.15 * Math.asin(-0.000478453 * (1 / (v-0.0742577))-0.999783) -3910.04 + angleOffset.getAsDouble() + 3.5;
     }
 
     public double getAngleVoltage() {

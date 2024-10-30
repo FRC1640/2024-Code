@@ -33,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.5)"
+            "name": "RotCommand(1)"
           }
         },
         {
@@ -102,6 +102,12 @@
                 "data": {
                   "name": "AutoTarget"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
               }
             ]
           }
@@ -109,7 +115,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.3)"
+            "name": "RotCommand(.5)"
           }
         },
         {
@@ -178,6 +184,12 @@
                 "data": {
                   "name": "AutoTarget"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
               }
             ]
           }
@@ -185,7 +197,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RotCommand(.3)"
+            "name": "RotCommand(.5)"
           }
         }
       ]

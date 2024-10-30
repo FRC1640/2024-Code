@@ -30,7 +30,7 @@ public final class Constants {
         public static final int smartCurrentLimit = 60;
         public static final int encoderMeasurementPeriod = 20;
         public static final int encoderAverageDepth = 8;
-        public static final OptionalInt canTimeout = OptionalInt.empty();
+        public static final OptionalInt canTimeout = OptionalInt.empty(); //hi
     }
     public static class MLConstants{
         public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
@@ -53,10 +53,10 @@ public final class Constants {
     public static class SwerveDriveDimensions {
         
         public static final double driveGearRatio = 116/15;
-        public static final double steerGearRatio = 480/11;
+        public static final double steerGearRatio = ((480/11)) * 1.0166667 * 0.99790377777778;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
-        public static final double maxSpeed = 4.15;
+        public static final double maxSpeed = 4.6;
 
         public static final double odometryFrequency = 250.0;
 

@@ -158,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(2.5, 0, 0),
                         new PIDConstants(2.5, 0, 0),
-                        4.2,
+                        4.6,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
                 () -> DriverStation.getAlliance().isPresent()
@@ -428,14 +428,14 @@ public class DriveSubsystem extends SubsystemBase {
 
             @Override
             public void end(boolean interrupted) {
-                System.out.println("end");
+                // System.out.println("end");
                 driveDoubleConePercent(0, 0, 0, false, new Translation2d(), false);
             }
 
             @Override
             public void execute() {
                 angle = angleSupplier.getAsDouble();
-                System.out.println(Math.toDegrees(angle));
+                // System.out.println(Math.toDegrees(angle));
                 
                 Logger.recordOutput("RotCommand", true);
 
@@ -477,14 +477,14 @@ public class DriveSubsystem extends SubsystemBase {
 
             @Override
             public void end(boolean interrupted) {
-                System.out.println("end");
+                // System.out.println("end");
                 driveDoubleConePercent(0, 0, 0, false, new Translation2d(), false);
             }
 
             @Override
             public void execute() {
                 angle = angleSupplier.getAsDouble();
-                System.out.println(Math.toDegrees(angle));
+                // System.out.println(Math.toDegrees(angle));
                 
                 Logger.recordOutput("RotCommand", true);
 
@@ -658,6 +658,14 @@ public class DriveSubsystem extends SubsystemBase {
         return c;
     }
 
+    public Command driveOnePivot(int id){
+        return new RunCommand(()->{
+        frontRight.setSteerVoltage(2);
+        frontRight.setSteerVoltage(2);
+        backLeft.setSteerVoltage(2);
+        backRight.setSteerVoltage(2);}, this);
+    }
+
     public Command driveDoubleConeCommand(Supplier<ChassisSpeeds> speeds, Supplier<Translation2d> centerOfRot,
             BooleanSupplier lockRotation) {
         return new RunCommand(() -> driveDoubleConePercent(speeds.get().vxMetersPerSecond,
@@ -716,7 +724,7 @@ public class DriveSubsystem extends SubsystemBase {
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(2.5, 0, 0),
                         new PIDConstants(2.5, 0, 0),
-                        4,
+                        4.6,
                         SwerveAlgorithms.computeMaxNorm(SwerveDriveDimensions.positions, new Translation2d(0, 0)),
                         new ReplanningConfig()),
                 () -> DriverStation.getAlliance().isPresent()
