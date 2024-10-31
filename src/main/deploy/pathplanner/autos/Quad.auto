@@ -183,6 +183,12 @@
                 "data": {
                   "name": "AutoTarget"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
               }
             ]
           }
