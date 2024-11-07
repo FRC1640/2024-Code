@@ -349,11 +349,11 @@ public class RobotContainer {
 		
 		// driveController.rightTrigger().whileTrue(new MLVisionAutoCommand2(()->intakeSubsystem.hasNote(), mlVision, driveSubsystem,()->gyro.getAngleRotation2d()).getCommand())
 
-		// new Trigger(() -> driveControllerHID.getXButton())
-		// 		.whileTrue(manualShotNoAngle(
-		// 			50,	() -> !driveControllerHID.getXButton(), true));
+		new Trigger(() -> driveControllerHID.getXButton())
+				.whileTrue(manualShotNoAngle(
+					50,	() -> !driveControllerHID.getXButton(), true));
 
-		new Trigger(()->driveControllerHID.getXButton()).whileTrue(driveSubsystem.driveOnePivot(0));
+		// new Trigger(()->driveControllerHID.getXButton()).whileTrue(driveSubsystem.driveOnePivot(0));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 				.onTrue(new InstantCommand(() -> DriveWeightCommand.addWeight(mlVisionWeight)));
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
