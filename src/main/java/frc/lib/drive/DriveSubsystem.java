@@ -212,7 +212,7 @@ public class DriveSubsystem extends SubsystemBase {
         // update odometry, thanks to:
         // https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive
 
-        double[] sampleTimestamps = frontLeft.getOdometryTimestamps();
+        double[] sampleTimestamps = frontLeft.getOdometryTimestamps(); //IGNORE
         int sampleCount = sampleTimestamps.length;
 
         Module[] modules = new Module[] { frontLeft, frontRight, backLeft, backRight };
@@ -292,7 +292,7 @@ public class DriveSubsystem extends SubsystemBase {
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 boolean mt1 = false;
-                double xy = 0.65;
+                double xy = 0.65; //CALCULATE STANDARD DEV
                 if (speed > 3){
                     xy = 1.5;
                 }
@@ -300,7 +300,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xy = 1.5;   
                 }
                 double theta = Double.MAX_VALUE;
-                 if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){
+                 if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){  //MT1?
                     pose = vision.getAprilTagPose2dMT1();
                     mt1 = true;
                     xy = 1.3;
