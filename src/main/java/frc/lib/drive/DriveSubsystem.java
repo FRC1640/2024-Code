@@ -276,7 +276,7 @@ public class DriveSubsystem extends SubsystemBase {
                     ) {
                 double distanceToTag = vision.getDistance();
                
-                double distConst = 1 + (distanceToTag * distanceToTag);
+                double distConst = 1 + (distanceToTag * distanceToTag); //the heck?
                 double poseDifference = pose.getTranslation()
                         .getDistance(getPose().getTranslation());
 
@@ -295,13 +295,16 @@ public class DriveSubsystem extends SubsystemBase {
                 double xy = 0.65; //CALCULATE STANDARD DEV
                 if (speed > 3){
                     xy = 1.5;
+                } //TO BE TUNED
+                else if (2.35 <= speed){
+                    xy = 1;
                 }
                 if (distanceToTag > 5.5){
                     xy = 1.5;   
                 }
                 double theta = Double.MAX_VALUE;
                  if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){  //MT1?
-                    pose = vision.getAprilTagPose2dMT1();
+                    pose = vision.getAprilTagPose2dMT1(); //the 2.5 seems reasonable based on observations but i think it could be tuned
                     mt1 = true;
                     xy = 1.3;
                  }
@@ -351,11 +354,11 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                if (useEstimate) {
+                if (useEstimate) { //is this necessary?
                     swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
+                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE)); //clarify
 
                 }
             }
