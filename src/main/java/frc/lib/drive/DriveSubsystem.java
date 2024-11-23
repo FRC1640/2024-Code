@@ -293,6 +293,7 @@ public class DriveSubsystem extends SubsystemBase {
 
                 boolean mt1 = false;
                 double xy = 1; //CALCULATE STANDARD DEV
+                //VALUES ARE COMPLETELY VIBES are we even gonna use this?
                 double c = 1;
 
                 if(speed <= 1.5 && distanceToTag < 4.5){
