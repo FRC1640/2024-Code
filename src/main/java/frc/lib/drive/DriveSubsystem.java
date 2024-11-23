@@ -299,7 +299,7 @@ public class DriveSubsystem extends SubsystemBase {
                 else if (2.35 <= speed){
                     xy = 1;
                 }
-                if (distanceToTag > 5.5){
+                if (distanceToTag > 5.5){ //change? negates speed gradient
                     xy = 1.5;   
                 }
                 double theta = Double.MAX_VALUE;
