@@ -292,7 +292,29 @@ public class DriveSubsystem extends SubsystemBase {
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
                 boolean mt1 = false;
-                double xy = 0.65; //CALCULATE STANDARD DEV
+                double xy = 1; //CALCULATE STANDARD DEV
+                double c = 1;
+
+                if(speed <= 1.5 && distanceToTag < 4.5){
+                    c = .6;
+                }
+                else if(speed <= 1.5 && distanceToTag >= 4.5){
+                    c = .8;
+                }
+                else if(speed > 1.5 && distanceToTag < 4.5){
+                    c = 1;
+                }
+                else if(speed > 1.5 && distanceToTag >= 4.5){
+                    c = 1.1;
+                }
+                else if(speed > 2.5 && distanceToTag >= 4.5){
+                    c = 1.5;
+                }
+                
+                xy = xy*c;
+                /* this was the old logic!
+
+                double xy = .65;
                 if (speed > 3){
                     xy = 1.5;
                 } //TO BE TUNED
@@ -307,7 +329,7 @@ public class DriveSubsystem extends SubsystemBase {
                     pose = vision.getAprilTagPose2dMT1(); //the 2.5 seems reasonable based on observations but i think it could be tuned
                     mt1 = true;
                     xy = 1.3;
-                 }
+                 } */
 
                 Logger.recordOutput("AprilTags/mt1/" + vision.getName(), mt1);
 
