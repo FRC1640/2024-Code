@@ -18,10 +18,12 @@ public class Dashboard {
         dashboardTable = NetworkTableInstance.getDefault().getTable("Dashboard");
         metadata = dashboardTable.getSubTable("/Metadata");
         data = dashboardTable.getSubTable("/Values");
+        widgets = new ArrayList<>();
     }
     
     public static DashboardBooleanWidget addBoolean(String title, BooleanSupplier valueSupplier) {
         DashboardBooleanWidget newWidget = new DashboardBooleanWidget(title, metadata, data, valueSupplier);
+        widgets.add(newWidget);
         return newWidget;
     }
 

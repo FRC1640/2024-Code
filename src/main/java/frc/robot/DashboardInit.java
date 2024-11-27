@@ -30,6 +30,7 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
+import frc.robot.util.dashboard.Dashboard;
 import frc.robot.util.dashboard.PIDUpdate;
 
 /**
@@ -72,6 +73,9 @@ public class DashboardInit {
         autonInit();
         matchInit(vision);
         testInit();
+
+        // testing dashboard
+        Dashboard.addBoolean("test", () -> true);
     }
 
     private static void autonInit() {

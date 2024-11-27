@@ -12,6 +12,7 @@ public class DashboardBooleanWidget implements DashboardWidget {
     private BooleanPublisher publisher;
     private BooleanSupplier valueSupplier;
 
+    // I'm ignoring configuration options for now and setting the name of the widget through name in the constructor.
     public DashboardBooleanWidget(String name, NetworkTable metadata, NetworkTable data, BooleanSupplier valueSupplier) {
         metadataSubtable = metadata.getSubTable("/" + name);
         dataSubtable = data.getSubTable("/" + name);
