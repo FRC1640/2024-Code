@@ -7,7 +7,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Dashboard {
-    private static Dashboard instance;
+    private static Dashboard instance = new Dashboard();
     private static NetworkTable dashboardTable;
     private static NetworkTable metadata;
     private static NetworkTable data;
@@ -16,8 +16,8 @@ public class Dashboard {
     public Dashboard() {
         instance = this;
         dashboardTable = NetworkTableInstance.getDefault().getTable("Dashboard");
-        metadata = dashboardTable.getSubTable("/Metadata");
-        data = dashboardTable.getSubTable("/Values");
+        metadata = dashboardTable.getSubTable("Metadata");
+        data = dashboardTable.getSubTable("Values");
         widgets = new ArrayList<>();
     }
     
