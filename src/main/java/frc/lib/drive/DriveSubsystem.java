@@ -298,6 +298,8 @@ public class DriveSubsystem extends SubsystemBase {
                 // scaler based of amount of tags
                 double tagsMulti = 1;
                 switch (vision.getNumVisibleTags()) {
+                    case 0:
+                        tagsMulti = 10;
                     case 1:
                         tagsMulti = 1.25;
                         break;
@@ -312,10 +314,10 @@ public class DriveSubsystem extends SubsystemBase {
                     tagsMulti=0.4;
                 }
 
-                double speedWeightConstant = 1/(4.7444*distanceToTag+2.44355)+0.5;
-                double distanceWeightConstant = 1-1/(4.7444*distanceToTag+2.44355)+0.5;
+                double speedWeightConstant = 1/(4.7444*distanceToTag+3.3)+0.5;
+                double distanceWeightConstant = 1-speedWeightConstant;
 
-                double scale = 1;
+                double scale = 1.3;
                 xy = tagsMulti*scale*(speedWeightConstant*speed + distanceWeightConstant*distanceToTag);
                 // work in progress zoe solution
                 // if (speed > 3){
@@ -384,6 +386,7 @@ public class DriveSubsystem extends SubsystemBase {
                                     Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
 
                 }
+                // Logger.recordOutput("Gyro/SwervePosition", swervePoseEstimator.getEstimatedPosition());
             }
         }
     }

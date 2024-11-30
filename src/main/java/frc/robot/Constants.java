@@ -88,7 +88,7 @@ public final class Constants {
                 45,
                 true,
                 true,
-                true, 1.25, 0,
+                true, 3.125, 4.375,
                 Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo FR = new ModuleInfo(
