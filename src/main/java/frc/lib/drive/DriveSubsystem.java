@@ -296,20 +296,20 @@ public class DriveSubsystem extends SubsystemBase {
                 //VALUES ARE COMPLETELY VIBES are we even gonna use this?
                 double c = 1;
 
-                if(speed <= 1.5 && distanceToTag < 4.5){
-                    c = .6;
+                if(speed > 2.5 && distanceToTag >= 4.5){
+                    c = 1.5;
+                }
+                else if(speed > 1.5 && distanceToTag >= 4.5){
+                    c = 1.1;
+                } 
+                else if(speed > 1.5 && distanceToTag < 4.5){
+                    c = 1;
                 }
                 else if(speed <= 1.5 && distanceToTag >= 4.5){
                     c = .8;
                 }
-                else if(speed > 1.5 && distanceToTag < 4.5){
-                    c = 1;
-                }
-                else if(speed > 1.5 && distanceToTag >= 4.5){
-                    c = 1.1;
-                }
-                else if(speed > 2.5 && distanceToTag >= 4.5){
-                    c = 1.5;
+                else if(speed <= 1.5 && distanceToTag < 4.5){
+                    c = .6;
                 }
                 
                 xy = xy*c;
@@ -324,13 +324,13 @@ public class DriveSubsystem extends SubsystemBase {
                 }
                 if (distanceToTag > 5.5){ //change? negates speed gradient
                     xy = 1.5;   
-                }
+                } */
                 double theta = Double.MAX_VALUE;
                  if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){  //MT1?
                     pose = vision.getAprilTagPose2dMT1(); //the 2.5 seems reasonable based on observations but i think it could be tuned
                     mt1 = true;
-                    xy = 1.3;
-                 } */
+                   // xy = 1.3;
+                 } 
 
                 Logger.recordOutput("AprilTags/mt1/" + vision.getName(), mt1);
 
@@ -377,11 +377,11 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                if (useEstimate) { //is this necessary?
+                if (useEstimate) { 
                     swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE)); //clarify
+                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
 
                 }
             }
