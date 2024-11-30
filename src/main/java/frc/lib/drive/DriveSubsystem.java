@@ -276,7 +276,7 @@ public class DriveSubsystem extends SubsystemBase {
                     ) {
                 double distanceToTag = vision.getDistance();
                
-                double distConst = 1 + (distanceToTag * distanceToTag); //the heck?
+                double distConst = 1 + (distanceToTag * distanceToTag);
                 double poseDifference = pose.getTranslation()
                         .getDistance(getPose().getTranslation());
 
@@ -291,49 +291,49 @@ public class DriveSubsystem extends SubsystemBase {
                         SwerveDriveDimensions.kinematics
                                 .toChassisSpeeds(getActualSwerveStates()).vyMetersPerSecond);
 
+                // peter weird formula solution
                 boolean mt1 = false;
-                double xy = 1; //CALCULATE STANDARD DEV
-                //VALUES ARE COMPLETELY VIBES are we even gonna use this?
-                double c = 1;
+                double xy = 0.65; //CALCULATE STANDARD DEV
 
-                if(speed <= 1.5 && distanceToTag < 4.5){
-                    c = .6;
+                // scaler based of amount of tags
+                double tagsMulti = 1;
+                switch (vision.getNumVisibleTags()) {
+                    case 1:
+                        tagsMulti = 1.25;
+                        break;
+                    case 2:
+                        tagsMulti = 1;
+                        break;
+                    case 3:
+                        tagsMulti = 0.5;
+                        break;
                 }
-                else if(speed <= 1.5 && distanceToTag >= 4.5){
-                    c = .8;
+                if (vision.getNumVisibleTags()>3) {
+                    tagsMulti=0.4;
                 }
-                else if(speed > 1.5 && distanceToTag < 4.5){
-                    c = 1;
-                }
-                else if(speed > 1.5 && distanceToTag >= 4.5){
-                    c = 1.1;
-                }
-                else if(speed > 2.5 && distanceToTag >= 4.5){
-                    c = 1.5;
-                }
-                
-                xy = xy*c;
-                /* this was the old logic!
 
-                double xy = .65;
-                if (speed > 3){
-                    xy = 1.5;
-                } //TO BE TUNED
-                else if (2.35 <= speed){
-                    xy = 1;
-                }
-                if (distanceToTag > 5.5){ //change? negates speed gradient
-                    xy = 1.5;   
-                }
-                double theta = Double.MAX_VALUE;
+                double speedWeightConstant = 1/(4.7444*distanceToTag+2.44355)+0.5;
+                double distanceWeightConstant = 1-1/(4.7444*distanceToTag+2.44355)+0.5;
+
+                double scale = 1;
+                xy = tagsMulti*scale*(speedWeightConstant*speed + distanceWeightConstant*distanceToTag);
+                // work in progress zoe solution
+                // if (speed > 3){
+                //     xy = 1.5;
+                // }
+                // if (distanceToTag > 5.5){
+                //     xy = 1.5;   
+                // }
+                // double theta = Double.MAX_VALUE;
                  if ((vision.getDistance() < 3.75 && speed < 2.5 && vision.getNumVisibleTags() > 1)){  //MT1?
-                    pose = vision.getAprilTagPose2dMT1(); //the 2.5 seems reasonable based on observations but i think it could be tuned
+                    pose = vision.getAprilTagPose2dMT1();
                     mt1 = true;
-                    xy = 1.3;
-                 } */
+                    // xy = 1.3;
+                 }
 
                 Logger.recordOutput("AprilTags/mt1/" + vision.getName(), mt1);
 
+                // old justin solution
                 // double xy = AprilTagVisionConstants.xyStdDev;
                 
                 // if (!Robot.inTeleop){
@@ -377,11 +377,11 @@ public class DriveSubsystem extends SubsystemBase {
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                     Logger.recordOutput(vision.getName() + "/DynamicThreshold" + i, dynamicThreshold);
                 }
-                if (useEstimate) { //is this necessary?
+                if (useEstimate) {
                     swervePoseEstimator.addVisionMeasurement(pose, vision.getLatency(),
                             VecBuilder.fill(xy,
                                     xy,
-                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE)); //clarify
+                                    Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
 
                 }
             }
