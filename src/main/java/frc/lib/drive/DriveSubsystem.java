@@ -384,6 +384,7 @@ public class DriveSubsystem extends SubsystemBase {
                                     Robot.isDisabled || mt1?0.00001:Double.MAX_VALUE));
 
                 }
+                //Logger.recordOutput("swerve pos?", swervePoseEstimator.getEstimatedPosition());
             }
         }
     }

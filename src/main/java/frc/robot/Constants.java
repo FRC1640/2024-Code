@@ -88,8 +88,8 @@ public final class Constants {
                 45,
                 true,
                 true,
-                true, 1.25, 0,
-                Units.inchesToMeters(1.8892));
+                true, 3.125, 4.375,
+                Units.inchesToMeters(1.8892)); //changed from vSlope1: 1.25 vSlope2: 0-- old pivot
 
         public static final ModuleInfo FR = new ModuleInfo(
                 PivotId.FR,
