@@ -3,6 +3,7 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -211,16 +212,19 @@ public final class Constants {
         public static int resolverID = 4;
     }
 
-    public static void updateStatusFrames(SparkMax motor, int status0, int status1, int status2,
-            int status3, int status4, int status5, int status6) {
+    // public static void updateStatusFrames(SparkMax motor, int status0, int status1, int status2,
+    //         int status3, int status4, int status5, int status6) {
 
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status0);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, status1);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, status2);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, status3);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, status4);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, status5);
-        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, status6);
+    //             SparkMaxConfig config = new SparkMaxConfig();
+    //             config.signals.
 
-    }
+    //     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status0);
+    //     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, status1);
+    //     motor.primaryEncoderPositionPeriodMs(status2);
+    //     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, status3);
+    //     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, status4);
+    //     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, status5);
+    //     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, status6);
+
+    // }
 }

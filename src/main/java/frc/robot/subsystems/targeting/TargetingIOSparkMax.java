@@ -4,14 +4,15 @@ import java.util.function.IntUnaryOperator;
 
 import javax.imageio.plugins.tiff.ExifTIFFTagSet;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkLimitSwitch;
-import com.revrobotics.CANSparkBase.IdleMode;
+
+//import com.revrobotics.LimitSwitch;
+import com.revrobotics.spark.SparkMax;
+//import com.revrobotics.SparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.RobotController;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
+//import com.revrobotics.SparkLowLevel.MotorType;
 
 import frc.robot.Constants;
 import frc.robot.Constants.TargetingConstants;
@@ -19,7 +20,7 @@ import frc.robot.sensors.Resolvers.ResolverPointSlope;
 
 public class TargetingIOSparkMax implements TargetingIO {
     // private final CANSparkMax leftTargetingMotor;
-    private final CANSparkMax rightTargetingMotor;
+    private final SparkMax rightTargetingMotor;
    
     private final ResolverPointSlope targetingEncoder = new ResolverPointSlope(TargetingConstants.resolverID, 1.375,2.0703,28,64);
 
@@ -27,7 +28,7 @@ public class TargetingIOSparkMax implements TargetingIO {
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
-        rightTargetingMotor = new CANSparkMax(TargetingConstants.rightAngleMotorId, MotorType.kBrushless);
+        rightTargetingMotor = new SparkMax(TargetingConstants.rightAngleMotorId, MotorType.kBrushless);
         rightTargetingMotor.setIdleMode(IdleMode.kBrake);
         rightTargetingMotor.setInverted(true);
         Constants.updateStatusFrames(rightTargetingMotor, 100, 20, 20, 500, 500, 500, 500);
