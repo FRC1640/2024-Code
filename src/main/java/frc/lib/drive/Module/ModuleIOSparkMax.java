@@ -5,10 +5,9 @@ import java.util.Queue;
 
 import org.opencv.calib3d.StereoBM;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
@@ -21,8 +20,8 @@ import frc.robot.sensors.Resolvers.ResolverSlope;
 import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ModuleIOSparkMax implements ModuleIO {
-    private final CANSparkMax driveMotor;
-    private final CANSparkMax steeringMotor;
+    private final SparkMax driveMotor;
+    private final SparkMax steeringMotor;
 
     private final Queue<Double> timestampQueue;
     private final Queue<Double> drivePositionQueue;
@@ -37,11 +36,8 @@ public class ModuleIOSparkMax implements ModuleIO {
     private ModuleInfo id;
 
     public ModuleIOSparkMax(ModuleInfo id) {
-
-        
-
         this.id = id;
-        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive));
+        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive)); 
         steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel, ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
