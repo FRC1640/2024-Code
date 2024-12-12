@@ -37,7 +37,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     public ModuleIOSparkMax(ModuleInfo id) {
         this.id = id;
-        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive)); 
+        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive)); //TODO: new jake method
         steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel, ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
@@ -81,7 +81,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     @Override
     public void setDriveIdleMode(boolean brake) {
-        driveMotor.setIdleMode(brake ? IdleMode.kBrake : IdleMode.kCoast);
+        driveMotor.setIdleMode(brake ? IdleMode.kBrake : IdleMode.kCoast); // TODO: jake somehow implement this with the new config stuff
     }
 
     @Override 
@@ -97,11 +97,6 @@ public class ModuleIOSparkMax implements ModuleIO {
     @Override
     public void setDriveVoltage(double voltage) {
         driveMotor.setVoltage(voltage);
-    }
-
-    @Override
-    public void setSteerIdleMode(boolean brake) {
-        steeringMotor.setIdleMode(brake ? IdleMode.kBrake : IdleMode.kCoast);
     }
 
     @Override

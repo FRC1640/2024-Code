@@ -1,15 +1,16 @@
 package frc.robot.subsystems.intake;
 import java.util.function.BooleanSupplier;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class IntakeIOSparkMax implements IntakeIO {
-    private final CANSparkMax intakeMotor;
-    private final CANSparkMax indexerMotor;
+    private final SparkMax intakeMotor;
+    private final SparkMax indexerMotor;
     private DigitalInput proximityDigitalInput;
     BooleanSupplier hasNote;
 
@@ -25,7 +26,7 @@ public class IntakeIOSparkMax implements IntakeIO {
         this.clearCondition = clearCondition;
         this.startAuto = startAuto;
         intakeMotor = SparkMaxConfigurer.configSpark(
-                IntakeConstants.intakeCanID, IntakeConstants.sparkDefaultsIntake);
+                IntakeConstants.intakeCanID, IntakeConstants.sparkDefaultsIntake); //TODO: Jake
         indexerMotor = SparkMaxConfigurer.configSpark(
                 IntakeConstants.indexerCanID, IntakeConstants.sparkDefaultsIndexer);
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);

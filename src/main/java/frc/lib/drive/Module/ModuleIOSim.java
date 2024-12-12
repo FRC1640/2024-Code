@@ -8,18 +8,17 @@ import com.revrobotics.REVLibError;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants.SimulationConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
-import lombok.val;
 
 public class ModuleIOSim implements ModuleIO {
 
     private static final double LOOP_PERIOD_SECS = 0.02;
-
     private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1),
             SwerveDriveDimensions.driveGearRatio, 0.00019125); // Drive motor sim using moi
 

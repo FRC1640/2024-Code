@@ -1,9 +1,6 @@
 package frc.robot.sensors.Resolvers;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import lombok.Getter;
-
-@Getter
 public class Resolver {
 
     public double minV;

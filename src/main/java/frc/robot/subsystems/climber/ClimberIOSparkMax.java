@@ -1,7 +1,6 @@
 package frc.robot.subsystems.climber;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -14,15 +13,15 @@ import frc.robot.util.motor.SparkMaxConfigurer;
 import frc.robot.util.motor.StatusFrames;
 
 public class ClimberIOSparkMax implements ClimberIO {
-    private final CANSparkMax leftMotor;
-    private final CANSparkMax rightMotor;
+    private final SparkMax leftMotor;
+    private final SparkMax rightMotor;
     private final DigitalInput leftProximitySensor;
     private final DigitalInput rightProximitySensor;
     private final ResolverPointSlope leftEncoder;
     private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
-        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID, ClimberConstants.sparkDefaultsClimber);
+        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID, ClimberConstants.sparkDefaultsClimber); //TODO: Jake
         rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID, ClimberConstants.sparkDefaultsClimber);
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);

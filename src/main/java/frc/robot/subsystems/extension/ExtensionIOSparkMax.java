@@ -1,17 +1,18 @@
 package frc.robot.subsystems.extension;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkLimitSwitch;
+
+import com.revrobotics.spark.SparkLimitSwitch;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.TargetingConstants;
 import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ExtensionIOSparkMax implements ExtensionIO{
-    private final CANSparkMax extensionMotor;
+    private final SparkMax extensionMotor;
     public ExtensionIOSparkMax(){
         extensionMotor = SparkMaxConfigurer.configSpark(
-                TargetingConstants.extensionMotorId, TargetingConstants.sparkDefaultsExtension);
+                TargetingConstants.extensionMotorId, TargetingConstants.sparkDefaultsExtension); //TODO: Jake
     }
 
     @Override
@@ -22,7 +23,7 @@ public class ExtensionIOSparkMax implements ExtensionIO{
         inputs.extensionCurrentAmps = extensionMotor.getOutputCurrent();
         inputs.extensionTempCelsius = extensionMotor.getMotorTemperature();
         inputs.extensionPosition = extensionMotor.getEncoder().getPosition();
-        inputs.extensionLimitSwitch = extensionMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
+        inputs.extensionLimitSwitch = extensionMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed(); //TODO something changed here with REV.
     }
 
     

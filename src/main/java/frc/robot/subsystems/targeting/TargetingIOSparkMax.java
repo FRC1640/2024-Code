@@ -1,7 +1,7 @@
 package frc.robot.subsystems.targeting;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
+
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.RobotController;
@@ -15,7 +15,7 @@ import frc.robot.util.motor.StatusFrames;
 
 public class TargetingIOSparkMax implements TargetingIO {
     // private final CANSparkMax leftTargetingMotor;
-    private final CANSparkMax rightTargetingMotor;
+    private final SparkMax rightTargetingMotor;
    
     private final ResolverPointSlope targetingEncoder = new ResolverPointSlope(TargetingConstants.resolverID, 1.375,2.0703,28,64);
 
@@ -24,7 +24,7 @@ public class TargetingIOSparkMax implements TargetingIO {
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
         rightTargetingMotor = SparkMaxConfigurer.configSpark(
-            TargetingConstants.rightAngleMotorId, TargetingConstants.sparkDefaultsAngler);
+            TargetingConstants.rightAngleMotorId, TargetingConstants.sparkDefaultsAngler); //TODO: jake
     }
 
     @Override

@@ -2,9 +2,6 @@ package frc.robot.sensors.Resolvers;
 
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AnalogInput;
-import lombok.Getter;
-
-@Getter
 public class ResolverPointSlope {
 
     private AnalogInput resolver;

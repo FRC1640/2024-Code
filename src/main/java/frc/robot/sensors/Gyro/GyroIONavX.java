@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.sensors.Gyro.Imported.AHRS;
-import lombok.val;
 
 public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
