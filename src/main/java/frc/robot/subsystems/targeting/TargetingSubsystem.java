@@ -9,16 +9,17 @@ import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.sysid.ArmSysidRoutine;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.TargetingConstants;
+import static edu.wpi.first.units.Units.*;
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;
@@ -45,11 +46,6 @@ public class TargetingSubsystem extends SubsystemBase {
         this.blueAlliance = blueAlliance;
         MechanismRoot2d root = targetVisualization.getRoot("targeter", 2, 2);
         root.append(angler);
-
-        sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
-                this::setAngleVoltage, this::getAngleVoltage, this::getAnglePosition,
-                this::getAngleVelocity, this, new SysIdRoutine.Config(mutable(Volts.of(0.05)).per(Seconds.of(1)),
-                        mutable(Volts.of(0.75)), mutable(Second.of(60))));
     }
 
     @Override
@@ -78,21 +74,6 @@ public class TargetingSubsystem extends SubsystemBase {
     // speed.getAsDouble()));
     // }
 
-    public Command pidFeedForwardCommand(DoubleSupplier pos) {
-        return setAngleVoltageCommand(() -> feedforward.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees),
-                getRadianPIDSpeed(() -> pos.getAsDouble()))
-                + ffPID.calculate(inputs.rightRadiansPerSecond, getRadianPIDSpeed(() -> pos.getAsDouble())));
-    }
-
-    private double getRadianPIDSpeed(DoubleSupplier pos) {
-
-        double speed = radianAngle.calculate(Math.toRadians(inputs.rightTargetingPositionDegrees), pos.getAsDouble());
-        if (Math.abs(speed) < 0.01) {
-            speed = 0;
-        }
-        setpoint = Math.toDegrees(pos.getAsDouble());
-        return speed;
-    }
 
     public double distToAngle(DoubleSupplier dist) {
         Logger.recordOutput("AutoTargetAngle", dist.getAsDouble() < 2.4 ? 60 : equation(dist.getAsDouble()));

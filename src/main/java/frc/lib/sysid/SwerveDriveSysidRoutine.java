@@ -1,28 +1,18 @@
 package frc.lib.sysid;
 
-import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
+import edu.wpi.first.units.VelocityUnit;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.drive.Module.Module;
+import static edu.wpi.first.units.Units.*;
+
+import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 
 public class SwerveDriveSysidRoutine {
-    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    private final MutableMeasure<Voltage> appliedVoltage = mutable(Volts.of(0));
-    // Mutable holder for unit-safe linear distance values, persisted to avoid
-    // reallocation.
-    private final MutableMeasure<Distance> distance = mutable(Meters.of(0));
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid
-    // reallocation.
-    private final MutableMeasure<Velocity<Distance>> velocity = mutable(MetersPerSecond.of(0));
 
     /**
      * Creates a new sysid routine with swerve modules
@@ -39,52 +29,28 @@ public class SwerveDriveSysidRoutine {
         return new SysIdRoutine(
                 config,
                 new SysIdRoutine.Mechanism(
-                        (Measure<Voltage> volts) -> {
+                        (Voltage volts) -> {
                             fl.setDriveVoltage(volts.in(Volts));
                             fr.setDriveVoltage(-volts.in(Volts));
                             bl.setDriveVoltage(volts.in(Volts));
                             br.setDriveVoltage(-volts.in(Volts));
                         }, log -> {
                             log.motor("frontLeft")
-                                    .voltage(appliedVoltage.mut_replace(
-                                            fl.getDriveVoltage(),
-                                            Volts))
-                                    .linearPosition(distance.mut_replace(
-                                            fl.getPosition().distanceMeters,
-                                            Meters))
-                                    .linearVelocity(velocity.mut_replace(
-                                            fl.getVelocity(),
-                                            MetersPerSecond));
+                                .voltage(Volts.of(fl.getDriveVoltage()))
+                                .linearPosition(Meters.of(fl.getPosition().distanceMeters))
+                                .linearVelocity(MetersPerSecond.of(fl.getVelocity()));
                             log.motor("frontRight")
-                                    .voltage(appliedVoltage.mut_replace(
-                                            -fr.getDriveVoltage(),
-                                            Volts))
-                                    .linearPosition(distance.mut_replace(
-                                            fr.getPosition().distanceMeters,
-                                            Meters))
-                                    .linearVelocity(velocity.mut_replace(
-                                            fr.getVelocity(),
-                                            MetersPerSecond));
+                                .voltage(Volts.of(-fr.getDriveVoltage()))
+                                .linearPosition(Meters.of(fr.getPosition().distanceMeters))
+                                .linearVelocity(MetersPerSecond.of(fr.getVelocity()));
                             log.motor("backLeft")
-                                    .voltage(appliedVoltage.mut_replace(
-                                            bl.getDriveVoltage(),
-                                            Volts))
-                                    .linearPosition(distance.mut_replace(
-                                            bl.getPosition().distanceMeters,
-                                            Meters))
-                                    .linearVelocity(velocity.mut_replace(
-                                            bl.getVelocity(),
-                                            MetersPerSecond));
+                                .voltage(Volts.of(bl.getDriveVoltage()))
+                                .linearPosition(Meters.of(bl.getPosition().distanceMeters))
+                                .linearVelocity(MetersPerSecond.of(bl.getVelocity()));
                             log.motor("backRight")
-                                    .voltage(appliedVoltage.mut_replace(
-                                            -br.getDriveVoltage(),
-                                            Volts))
-                                    .linearPosition(distance.mut_replace(
-                                            br.getPosition().distanceMeters,
-                                            Meters))
-                                    .linearVelocity(velocity.mut_replace(
-                                            br.getVelocity(),
-                                            MetersPerSecond));
+                                .voltage(Volts.of(-br.getDriveVoltage()))
+                                .linearPosition(Meters.of(br.getPosition().distanceMeters))
+                                .linearVelocity(MetersPerSecond.of(br.getVelocity()));
                         }, subsystem));
     }
 }
