@@ -1,14 +1,24 @@
 package frc.robot.subsystems.climber;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class ClimberIOSim implements ClimberIO{
-    DCMotorSim leftClimbingMotorSimulated= new DCMotorSim(DCMotor.getNEO(1), 
-    50, 0.00019125);
-    DCMotorSim rightClimbingMotorSimulated= new DCMotorSim(DCMotor.getNEO(1), 
-    50, 0.00019125);
+    double measurementStandardDevs = 0;
+        //LinearSystem<N2, N1, N2> plant = LinearSystem.createDCMotorSystem(DCMotor.getNEO(1), 0.00019125, 50.0);
+        LinearSystem<N2, N1, N2> plant = LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.00019125, 50.0);
+    DCMotorSim leftClimbingMotorSimulated = new DCMotorSim(plant, DCMotor.getNEO(1), measurementStandardDevs);
+    DCMotorSim rightClimbingMotorSimulated = new DCMotorSim(plant, DCMotor.getNEO(1), measurementStandardDevs);
+
+    // DCMotorSim leftClimbingMotorSimulated= new DCMotorSim(DCMotor.getNEO(1), 
+    // 50, 0.00019125);
+    // DCMotorSim rightClimbingMotorSimulated= new DCMotorSim(DCMotor.getNEO(1), 
+    // 50, 0.00019125);
     
     private double leftMotorVoltage = 0.0;
     private double rightMotorVoltage = 0.0;
