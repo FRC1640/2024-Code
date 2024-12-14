@@ -3,13 +3,14 @@ package frc.robot.sensors.Gyro;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.SPI;
 import frc.lib.drive.SparkMaxOdometryThread;
-import frc.robot.sensors.Gyro.Imported.AHRS;
 
 public class GyroIONavX implements GyroIO {
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
     double offset = 0;
     private final Queue<Double> yawPositionQueue;
     private final Queue<Double> yawTimestampQueue;

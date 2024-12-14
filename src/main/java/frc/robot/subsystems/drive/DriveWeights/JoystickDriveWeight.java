@@ -1,8 +1,5 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -13,9 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveWeight;
 import frc.lib.drive.JoystickCleaner;
-import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.PIDConstants;
-import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Gyro.Gyro;
 
 public class JoystickDriveWeight implements DriveWeight {
@@ -28,9 +23,6 @@ public class JoystickDriveWeight implements DriveWeight {
     private final double LOWER_DB = 0.1;
     private final double UPPER_DB = 0.1;
 
-    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
     private boolean fieldRelative = true;
 
     // private double iXSpeed;
@@ -54,7 +46,7 @@ public class JoystickDriveWeight implements DriveWeight {
     private boolean firstRun = true;
     private CommandXboxController driverController;
     private Trigger leftTrigger;
-    private Trigger pressJoystick;
+
 
     SlewRateLimiter rotAcceleration = new SlewRateLimiter(1 / 0.2);
     double iXSpeed, iYSpeed, offset, angle;
@@ -79,7 +71,7 @@ public class JoystickDriveWeight implements DriveWeight {
             firstRun = false;
         }
 
-        if (driverController.getHID().getRightBumper()) {
+        if (driverController.getHID().getRightBumperButton()) {
             xSpeed = -driverController.getLeftY() * 0.3;
             ySpeed = -driverController.getLeftX() * 0.3;
             rot = -driverController.getRightX() * 0.2;
@@ -109,8 +101,6 @@ public class JoystickDriveWeight implements DriveWeight {
 
         /* Increase rotational sensitivity */
         rot = Math.signum(rot) * Math.pow(Math.abs(rot), 1.0 / 2.0);
-
-        boolean hold = false;
         
         // if (!hold && driverController.getHID().getRightBumper()) {
         //     iXSpeed = xSpeed;

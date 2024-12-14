@@ -1,6 +1,4 @@
 package frc.robot.util.drive;
-
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -8,7 +6,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.subsystems.targeting.TargetingSubsystem;
 

@@ -1,8 +1,5 @@
 package frc.robot.subsystems.drive.DriveWeights;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 import frc.lib.drive.DriveSubsystem;
@@ -12,11 +9,8 @@ import frc.robot.Constants.PIDConstants;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.BooleanSubscriber;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.Note;

@@ -79,11 +79,6 @@ public class ModuleIOSparkMax implements ModuleIO {
                         });
     }
 
-    @Override
-    public void setDriveIdleMode(boolean brake) {
-        driveMotor.setIdleMode(brake ? IdleMode.kBrake : IdleMode.kCoast); // TODO: jake somehow implement this with the new config stuff
-    }
-
     @Override 
     public void resetSteer(){
         steeringMotor.getEncoder().setPosition((360-steeringEncoder.getD()) / 360 * SwerveDriveDimensions.steerGearRatio);
@@ -111,7 +106,6 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-        double lastV = inputs.driveVelocityMetersPerSecond;
         inputs.drivePositionMeters = -(driveEncoder.getPosition() / kDriveGearRatio) * id.wheelRadius * 2 * Math.PI;
         inputs.driveVelocityMetersPerSecond = -((driveEncoder.getVelocity() / kDriveGearRatio) / 60) * 2 * Math.PI
                 * id.wheelRadius;

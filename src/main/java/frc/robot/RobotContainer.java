@@ -4,15 +4,11 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Gram;
-
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-
-import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -37,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drive.DriveSubsystem;
 import frc.lib.drive.DriveToPosAndRotate;
-import frc.lib.drive.DriveToPosAndRotateCurve;
 import frc.lib.drive.DriveWeightCommand;
 import frc.lib.drive.SwerveAlgorithms;
 import frc.robot.Constants.FieldConstants;
@@ -52,7 +46,6 @@ import frc.robot.sensors.Vision.AprilTagVision.AprilTagVision;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIO;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOLimelight;
 import frc.robot.sensors.Vision.AprilTagVision.AprilTagVisionIOSim;
-import frc.robot.sensors.Vision.MLVision.DriveToNoteCommand;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.MLVisionIO;
 import frc.robot.sensors.Vision.MLVision.MLVisionIOLimelight;
@@ -286,7 +279,7 @@ public class RobotContainer {
 				.onTrue(driveSubsystem.resetGyroCommand());
 		new Trigger(() -> driveControllerHID.getBackButton())
 				.onTrue(driveSubsystem.resetOdometryAprilTag());
-		new Trigger(() -> driveControllerHID.getLeftBumper())
+		new Trigger(() -> driveControllerHID.getLeftBumperButton())
 				.whileTrue(generateIntakeCommand());
 
 
@@ -359,10 +352,10 @@ public class RobotContainer {
 		new Trigger(() -> driveControllerHID.getRightTriggerAxis() > 0.1)
 		 		.onFalse(Commands.parallel(
 					new InstantCommand(() -> DriveWeightCommand.removeWeight(mlVisionWeight))));
-		new Trigger(() -> operatorControllerHID.getRightBumper())
+		new Trigger(() -> operatorControllerHID.getRightBumperButton())
 				.whileTrue(
 					extensionSubsystem.setExtensionPercentOutputCommand(TargetingConstants.extensionManualSpeed));
-		new Trigger(() -> operatorControllerHID.getLeftBumper())
+		new Trigger(() -> operatorControllerHID.getLeftBumperButton())
 				.whileTrue(
 					extensionSubsystem.setExtensionPercentOutputCommand(-TargetingConstants.extensionManualSpeed));
 
@@ -513,7 +506,7 @@ public class RobotContainer {
 
     private Command generateIntakeCommandAuto() {
 			return new SequentialCommandGroup(new WaitUntilCommand(() -> !intakeSubsystem.hasNote()), new WaitCommand(0.3))
-				.deadlineWith(intakeSubsystem.intakeCommand(0, 0.8,
+				.deadlineFor(intakeSubsystem.intakeCommand(0, 0.8,
 				() -> (shooterSubsystem.isSpeedAccurate(0.3) 
 					&& targetingSubsystem.isAnglePositionAccurate(2))).repeatedly());
 	}

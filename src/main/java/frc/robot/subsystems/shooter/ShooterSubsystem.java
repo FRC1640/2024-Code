@@ -1,5 +1,8 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -10,7 +13,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.sysid.ArmSysidRoutine;
 import frc.robot.Constants.PIDConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -32,9 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
         bottomLeftPID.setIntegratorRange(-3, 3);
         topRightPID.setIntegratorRange(-3, 3);
         bottomRightPID.setIntegratorRange(-3, 3);
-        sysIdRoutine = new ArmSysidRoutine().createNewRoutine(
-            this::setVoltageFL, this::getVoltageFL, this::getPosRadians, 
-            this::getSpeedRadians, this, new SysIdRoutine.Config());
     }
 
     @Override
@@ -70,10 +69,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setSpeedPercentPID(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition){
         return setVoltageCommand(
-            ()->topLeftPID.calculate(inputs.topLeftVelocity,topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI), 
-            ()->bottomLeftPID.calculate(inputs.bottomLeftVelocity,bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
-            ()->topRightPID.calculate(inputs.topRightVelocity,topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
-            ()->bottomRightPID.calculate(inputs.bottomRightVelocity,bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
+            ()->topLeftPID.calculate(inputs.topLeftVelocity,topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts), 
+            ()->bottomLeftPID.calculate(inputs.bottomLeftVelocity,bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts),
+            ()->topRightPID.calculate(inputs.topRightVelocity,topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts),
+            ()->bottomRightPID.calculate(inputs.bottomRightVelocity,bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts),
             condition, new double[]{topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble()});
     }
 
