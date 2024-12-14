@@ -1,15 +1,8 @@
 package frc.lib.drive;
-
-import java.util.function.Supplier;
-
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -17,14 +10,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.SwerveDriveDimensions;
-import frc.robot.sensors.Gyro.Gyro;
 import frc.robot.sensors.Vision.MLVision.MLVision;
 import frc.robot.sensors.Vision.MLVision.Note;
 
 public class DriveToPosAndRotateCurve extends Command{
 
     private DriveSubsystem driveSubsystem;
-    private Gyro gyro;
     PIDController pidr = PIDConstants.constructPID(PIDConstants.rotPID, "rotlock1");
     PIDController pidMoving = PIDConstants.constructPID(PIDConstants.rotMovingPID, "rotlockmoving1");
     Note lastNote = null;
@@ -40,11 +31,9 @@ public class DriveToPosAndRotateCurve extends Command{
     TrapezoidProfile.State ySpeed;
 
     double lastTime = 0;
-    public DriveToPosAndRotateCurve(DriveSubsystem driveSubsystem, MLVision mlVision, Gyro gyro){
+    public DriveToPosAndRotateCurve(DriveSubsystem driveSubsystem, MLVision mlVision){
         this.driveSubsystem = driveSubsystem;
         this.mlVision = mlVision;
-        // this.endState = endState;
-        this.gyro = gyro;
         // this.pose = pose;
         trapezoidConstraintsX = new Constraints(0.25, 0.25);
         

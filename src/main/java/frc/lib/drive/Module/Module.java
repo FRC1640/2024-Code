@@ -1,22 +1,20 @@
 package frc.lib.drive.Module;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N2;
 import frc.lib.drive.SwerveAlgorithms;
-import frc.robot.Robot;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.PivotId;
-import frc.robot.Constants.SwerveDriveDimensions;
 
 public class Module {
     ModuleIO io;
@@ -121,7 +119,7 @@ public class Module {
         }
 
         // calculates drive speed with feedforward
-        double pidSpeed = (driveFeedforward.calculate(targetSpeed));
+        double pidSpeed = (driveFeedforward.calculate(MetersPerSecond.of(targetSpeed))).in(Volts);
         pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed); // feedforward calc
         Logger.recordOutput("Drive/Modules/" + id + "/pidVoltage",
                 drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed));

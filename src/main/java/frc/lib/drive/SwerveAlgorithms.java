@@ -3,8 +3,6 @@ package frc.lib.drive;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

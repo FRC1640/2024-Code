@@ -1,12 +1,9 @@
 package frc.robot.sensors.Vision.MLVision;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.lib.vision.LimelightHelpers;
-import frc.lib.vision.LimelightHelpers.LimelightResults;
 
 public class MLVisionIOLimelight implements MLVisionIO {
 

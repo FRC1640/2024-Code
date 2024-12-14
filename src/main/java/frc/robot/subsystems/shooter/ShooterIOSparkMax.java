@@ -1,13 +1,13 @@
 package frc.robot.subsystems.shooter;
+import com.revrobotics.spark.SparkMax;
 
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ShooterIOSparkMax implements ShooterIO {
-    private final CANSparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
+    private final SparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
         topLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topLeftCanID, ShooterConstants.getSparkDefaultsShooter(true));
