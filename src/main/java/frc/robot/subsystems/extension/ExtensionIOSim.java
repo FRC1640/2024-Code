@@ -4,11 +4,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+
 public class ExtensionIOSim implements ExtensionIO{
 
     private double extensionMotorVoltage = 0.0;
-    private DCMotorSim extensionMotorSimulated = new DCMotorSim(DCMotor.getNEO(1),
-        50, 0.00019125);
+    LinearSystem<N2,N1,N2> plant = LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1),.00019125,50);
+    private DCMotorSim extensionMotorSimulated = new DCMotorSim(plant, DCMotor.getNEO(1), 0);
 
     private double extensionPosition;
     
