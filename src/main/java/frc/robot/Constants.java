@@ -3,8 +3,9 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.OptionalInt;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.SparkLimitSwitch;
+import com.revrobotics.spark.config.LimitSwitchConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +17,7 @@ import frc.lib.drive.Module.ModuleInfo;
 import frc.robot.util.motor.LimitSwitchConfiguration;
 import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchDirection;
 import frc.robot.util.motor.SparkMaxConfiguration;
+import frc.robot.util.motor.SparkMaxConfigurer;
 import frc.robot.util.motor.StatusFrames;
 
 public final class Constants {
@@ -203,14 +205,13 @@ public final class Constants {
         public static final int topRightCanID = 11;
         public static final int bottomRightCanID = 10;
         public static double waitTime = 1;
-        public static SparkMaxConfiguration getSparkDefaultsShooter(boolean inverted) {
-            return new SparkMaxConfiguration(
+        public static SparkMaxConfig getSparkDefaultsShooter(boolean inverted) {
+            return SparkMaxConfigurer.getConfig(
                 SparkMaxDefaults.idleMode,
                 inverted,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500)
             );
@@ -296,17 +297,26 @@ public final class Constants {
 
         public static int resolverID = 4;
 
-        public static final SparkMaxConfiguration sparkDefaultsExtension =
-            new SparkMaxConfiguration(
-                IdleMode.kBrake,
-                true,
-                SparkMaxDefaults.smartCurrentLimit,
-                SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
-                new StatusFrames(100, 20, 20,
-                    500, 500, 500, 500),
-                new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
+        public static SparkMaxConfig sparkDefaultsExtension = new SparkMaxConfig();
+
+        static {
+            sparkDefaultsExtension
+                .idleMode(IdleMode.kBrake)
+                .inverted(true)
+                .smartCurrentLimit(SparkMaxDefaults.smartCurrentLimit)
+                .limitSwitch.
+        }
+        
+            // new SparkMaxConfiguration(
+            //     IdleMode.kBrake,
+            //     true,
+            //     SparkMaxDefaults.smartCurrentLimit,
+            //     SparkMaxDefaults.encoderMeasurementPeriod,
+            //     SparkMaxDefaults.encoderAverageDepth,
+            //     SparkMaxDefaults.canTimeout,
+            //     new StatusFrames(100, 20, 20,
+            //         500, 500, 500, 500),
+            //     new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
         public static final SparkMaxConfiguration sparkDefaultsAngler =
             new SparkMaxConfiguration(
                 IdleMode.kBrake,

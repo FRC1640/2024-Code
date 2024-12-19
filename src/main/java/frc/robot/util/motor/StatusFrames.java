@@ -1,36 +1,79 @@
 package frc.robot.util.motor;
 
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.config.SignalsConfig;
 
 public class StatusFrames {
-    
-    private int status0;
-    private int status1;
-    private int status2;
-    private int status3;
-    private int status4;
-    private int status5;
-    private int status6;
+    int faults, absEnPos, absEnVel,
+        analPos, analVel, analVolt,
+        motorTemp, applOutput, busVolt,
+        altEnPos, altEnVel, iAccum,
+        limits, outCurr, primEnPos,
+        primEnVel, warnings;
 
     public StatusFrames(int status0, int status1, int status2,
-            int status3, int status4, int status5, int status6) {
-        this.status0 = status0;
-        this.status1 = status1;
-        this.status2 = status2;
-        this.status3 = status3;
-        this.status4 = status4;
-        this.status5 = status5;
-        this.status6 = status6;
+            int status3, int status4, int status5, int status6,
+            int busVolt, int iAccum, int limits, int primEnPos,
+            int primEnVel, int warnings) {
+        this.faults = status0;
+        this.absEnPos = status5;
+        this.absEnVel = status6;
+        this.analPos = status3;
+        this.analVel = status3;
+        this.analVolt = status3;
+        this.motorTemp = status1;
+        this.applOutput = status0;
+        this.altEnPos = status4;
+        this.altEnVel = status4;
+        this.outCurr = status1;
+        this.busVolt = busVolt;
+        this.iAccum = iAccum;
+        this.limits = limits;
+        this.primEnPos = primEnPos;
+        this.primEnVel = primEnVel;
+        this.warnings = warnings;
     }
 
-    public void updateStatusFrames(CANSparkMax spark) {                
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, status0);
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, status1);
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, status2);
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, status3);
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, status4);
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, status5);
-        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, status6);
+    public StatusFrames(int faults, int absEnPos, int absEnVel,
+            int analPos, int analVal, int analVolt, int motorTemp,
+            int applOutput, int busVolt, int altEnPos, int altEnVel,
+            int iAccum, int limits, int outCurr, int primEnPos,
+            int primEnVel, int warnings) {
+        this.faults = faults;
+        this.absEnPos = absEnPos;
+        this.absEnVel = absEnVel;
+        this.analPos = analPos;
+        this.analVel = analVal;
+        this.analVolt = analVolt;
+        this.motorTemp = motorTemp;
+        this.applOutput = applOutput;
+        this.busVolt = busVolt;
+        this.altEnPos = altEnPos;
+        this.altEnVel = altEnVel;
+        this.iAccum = iAccum;
+        this.limits = limits;
+        this.outCurr = outCurr;
+        this.primEnPos = primEnPos;
+        this.primEnVel = primEnVel;
+        this.warnings = warnings;
+    }
+
+    public void apply(SignalsConfig signals) {
+        signals.faultsPeriodMs(faults);
+        signals.absoluteEncoderPositionPeriodMs(absEnPos);
+        signals.absoluteEncoderVelocityPeriodMs(absEnVel);
+        signals.analogPositionPeriodMs(analPos);
+        signals.analogVelocityPeriodMs(analVel);
+        signals.analogVoltagePeriodMs(analVolt);
+        signals.motorTemperaturePeriodMs(motorTemp);
+        signals.appliedOutputPeriodMs(applOutput);
+        signals.busVoltagePeriodMs(busVolt);
+        signals.externalOrAltEncoderPosition(altEnPos);
+        signals.externalOrAltEncoderVelocity(altEnVel);
+        signals.iAccumulationPeriodMs(iAccum);
+        signals.limitsPeriodMs(limits);
+        signals.outputCurrentPeriodMs(outCurr);
+        signals.primaryEncoderPositionPeriodMs(primEnPos);
+        signals.primaryEncoderVelocityPeriodMs(primEnVel);
+        signals.warningsPeriodMs(warnings);
     }
 }

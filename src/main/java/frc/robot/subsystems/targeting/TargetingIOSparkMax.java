@@ -1,7 +1,15 @@
 package frc.robot.subsystems.targeting;
 
+import java.util.function.IntUnaryOperator;
 
+import javax.imageio.plugins.tiff.ExifTIFFTagSet;
+
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+//import com.revrobotics.LimitSwitch;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+//import com.revrobotics.SparkBase.IdleMode;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.RobotController;
@@ -23,8 +31,10 @@ public class TargetingIOSparkMax implements TargetingIO {
 
     public TargetingIOSparkMax() {
         // leftTargetingMotor = new CANSparkMax(TargetingConstants.leftAngleMotorId, MotorType.kBrushless);
-        rightTargetingMotor = SparkMaxConfigurer.configSpark(
-            TargetingConstants.rightAngleMotorId, TargetingConstants.sparkDefaultsAngler); //TODO: jake
+        rightTargetingMotor = new SparkMax(TargetingConstants.rightAngleMotorId, MotorType.kBrushless);
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kBrake);
+        rightTargetingMotor.setInverted(true);
     }
 
     @Override
