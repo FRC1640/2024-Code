@@ -1,5 +1,6 @@
 package frc.robot.util.motor;
 
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SignalsConfig;
 
 public class StatusFrames {
@@ -75,5 +76,27 @@ public class StatusFrames {
         signals.primaryEncoderPositionPeriodMs(primEnPos);
         signals.primaryEncoderVelocityPeriodMs(primEnVel);
         signals.warningsPeriodMs(warnings);
+    }
+
+    public boolean getFlashNecessary(SparkMax spark) {
+        return (
+            (spark.configAccessor.signals.getFaultsPeriodMs() != faults) ||
+            (spark.configAccessor.signals.getAbsoluteEncoderPositionPeriodMs() != absEnPos) ||
+            (spark.configAccessor.signals.getAbsoluteEncoderVelocityPeriodMs() != absEnVel) ||
+            (spark.configAccessor.signals.getAnalogPositionPeriodMs() != analPos) ||
+            (spark.configAccessor.signals.getAnalogVelocityPeriodMs() != analVel) ||
+            (spark.configAccessor.signals.getAnalogVelocityPeriodMs() != analVolt) ||
+            (spark.configAccessor.signals.getMotorTemperaturePeriodMs() != motorTemp) ||
+            (spark.configAccessor.signals.getAppliedOutputPeriodMs() != applOutput) ||
+            (spark.configAccessor.signals.getBusVoltagePeriodMs() != busVolt) ||
+            (spark.configAccessor.signals.getExternalOrAltEncoderPositionPeriodMs() != altEnPos) ||
+            (spark.configAccessor.signals.getExternalOrAltEncoderVelocityPeriodMs() != altEnVel) ||
+            (spark.configAccessor.signals.getIAccumulationPeriodMs() != iAccum) ||
+            (spark.configAccessor.signals.getLimitsPeriodMs() != limits) ||
+            (spark.configAccessor.signals.getOutputCurrentPeriodMs() != outCurr) ||
+            (spark.configAccessor.signals.getPrimaryEncoderPositionPeriodMs() != primEnPos) ||
+            (spark.configAccessor.signals.getPrimaryEncoderVelocityPeriodMs() != primEnVel) ||
+            (spark.configAccessor.signals.getWarningsPeriodMs() != warnings)
+        );
     }
 }
