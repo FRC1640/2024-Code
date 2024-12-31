@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final SparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
