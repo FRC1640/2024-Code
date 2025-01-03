@@ -3,6 +3,8 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.LimitSwitchConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -23,8 +25,6 @@ public final class Constants {
     public static class SparkMaxDefaults {
         public static final IdleMode idleMode = IdleMode.kCoast;
         public static final boolean inverted = false;
-        // public static final LimitSwitchConfiguration limitSwitch =
-            // new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false); // TODO limits
         public static final int smartCurrentLimit = 60;
         public static final int encoderMeasurementPeriod = 20;
         public static final int encoderAverageDepth = 8;
@@ -299,6 +299,10 @@ public final class Constants {
         public static int resolverID = 4;
 
         public static SparkMax getExtensionSpark(int id) {
+            LimitSwitchConfig limitSwitchConfig = new LimitSwitchConfig();
+            limitSwitchConfig.reverseLimitSwitchEnabled(true)
+                .reverseLimitSwitchType(Type.kNormallyOpen)
+                .setSparkMaxDataPortConfig(); // TODO necessary? Justin review: will this break things?
             return SparkMaxConfigurer.configSpark(
                 id,
                 IdleMode.kBrake,
@@ -307,9 +311,10 @@ public final class Constants {
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
                 new StatusFrames(100, 20, 20,
-                    500, 500, 500, 500)
+                    500, 500, 500, 500),
+                limitSwitchConfig
             );
-        } // TODO new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
+        }
 
         public static SparkMax getAnglerSpark(int id) {
             return SparkMaxConfigurer.configSpark(
