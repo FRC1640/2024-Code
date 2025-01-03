@@ -1,11 +1,9 @@
 package frc.robot;
 
 import java.util.HashMap;
-import java.util.OptionalInt;
 
-import com.revrobotics.spark.config.LimitSwitchConfig;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,9 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
-import frc.robot.util.motor.LimitSwitchConfiguration;
-import frc.robot.util.motor.LimitSwitchConfiguration.LimitSwitchDirection;
-import frc.robot.util.motor.SparkMaxConfiguration;
 import frc.robot.util.motor.SparkMaxConfigurer;
 import frc.robot.util.motor.StatusFrames;
 
@@ -24,16 +19,18 @@ public final class Constants {
     public static enum PivotId {
         FL, FR, BL, BR;
     }
+
     public static class SparkMaxDefaults {
         public static final IdleMode idleMode = IdleMode.kCoast;
         public static final boolean inverted = false;
-        public static final LimitSwitchConfiguration limitSwitch =
-            new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false);
+        // public static final LimitSwitchConfiguration limitSwitch =
+            // new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, false); // TODO limits
         public static final int smartCurrentLimit = 60;
         public static final int encoderMeasurementPeriod = 20;
         public static final int encoderAverageDepth = 8;
-        public static final OptionalInt canTimeout = OptionalInt.empty(); //hi
+        // previously included can timeout property
     }
+
     public static class MLConstants{
         public static final double cameraHeight = Units.inchesToMeters(15 + 3/16);
         public static final double noteHeight = Units.inchesToMeters(2);
@@ -53,9 +50,8 @@ public final class Constants {
     }
 
     public static class SwerveDriveDimensions {
-        
-        public static final double driveGearRatio = 116/15;
-        public static final double steerGearRatio = ((480/11)) * 1.0166667 * 0.99790377777778;
+        public static final double driveGearRatio = 116 / 15;
+        public static final double steerGearRatio = ((480 / 11)) * 1.0166667 * 0.99790377777778;
         public static final double wheelYPos = Units.inchesToMeters(22.75 / 2);
         public static final double wheelXPos = Units.inchesToMeters(22.75 / 2);
         public static final double maxSpeed = 4.6;
@@ -67,11 +63,11 @@ public final class Constants {
         public static final Translation2d backLeftLocation = new Translation2d(-wheelXPos, wheelYPos);
         public static final Translation2d backRightLocation = new Translation2d(-wheelXPos, -wheelYPos);
 
-        public static final Translation2d[] positions = new Translation2d[] { frontLeftLocation, frontRightLocation,
-                backLeftLocation, backRightLocation };
+        public static final Translation2d[] positions = new Translation2d[] {
+            frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation };
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
+            frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
     }
 
     public static class SimulationConstants {
@@ -83,71 +79,73 @@ public final class Constants {
         public static final double maxVoltage = 4.95;
 
         public static final ModuleInfo FL = new ModuleInfo(
-                PivotId.FL,
-                3,
-                2,
-                0,
-                45,
-                true,
-                true,
-                true, 1.25, 0,
-                Units.inchesToMeters(1.8892));
+            PivotId.FL,
+            3,
+            2,
+            0,
+            45,
+            true,
+            true,
+            true, 1.25, 0,
+            Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo FR = new ModuleInfo(
-                PivotId.FR,
-                9, // 2023: and dew 1: 2
-                8, // 2023: 1, dew 1: 5
-                2,
-                -45,
-                true,
-                true,
-                true, 3.125, 4.375,
-                Units.inchesToMeters(1.8892));
+            PivotId.FR,
+            9, // 2023: and dew 1: 2
+            8, // 2023: 1, dew 1: 5
+            2,
+            -45,
+            true,
+            true,
+            true, 3.125, 4.375,
+            Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo BL = new ModuleInfo(
-                PivotId.BL,
-                5, 
-                4,
-                1,
-                135,
-                true,
-                true,
-                true, 3.125, 4.375,
-                Units.inchesToMeters(1.8892));
+            PivotId.BL,
+            5, 
+            4,
+            1,
+            135,
+            true,
+            true,
+            true, 3.125, 4.375,
+            Units.inchesToMeters(1.8892));
 
         public static final ModuleInfo BR = new ModuleInfo(
-                PivotId.BR,
-                7,
-                6,
-                3,
-                -135,
-                true,
-                true,
-                true, 3.125, 4.375,
-                Units.inchesToMeters(1.8892));
+            PivotId.BR,
+            7,
+            6,
+            3,
+            -135,
+            true,
+            true,
+            true, 3.125, 4.375,
+            Units.inchesToMeters(1.8892));
 
-        public static SparkMaxConfiguration getSparkDefaultsDrive(boolean inverted) {
-            return new SparkMaxConfiguration(
+        public static SparkMax getDriveSpark(int id, boolean inverted) {
+            return SparkMaxConfigurer.configSpark( // can timout was 250 ms
+                id,
                 SparkMaxDefaults.idleMode,
                 inverted,
                 80,
                 8,
                 2,
-                OptionalInt.of(250),
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500));
+                    500, 500, 500, 500)
+            );
         }
         
-        public static SparkMaxConfiguration getSparkDefaultsSteer(boolean inverted) {
-            return new SparkMaxConfiguration(
+        public static SparkMax getSteeringSpark(int id, boolean inverted) {
+            return SparkMaxConfigurer.configSpark( // can timeout was 250 ms
+                id,
                 SparkMaxDefaults.idleMode,
                 inverted,
                 40,
                 8,
                 2,
-                OptionalInt.of(250),
                 new StatusFrames(100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
-                    500, 500, 500, 500));
+                    500, 500, 500, 500)
+            );
         }
     }
 
@@ -156,26 +154,32 @@ public final class Constants {
         public static final int indexerCanID = 19;
         public static final double proximityVoltageThreshold = 4.0;
         public static final int proximitySensorChannel = 9;
-        public static final SparkMaxConfiguration sparkDefaultsIntake =
-            new SparkMaxConfiguration(
+
+        public static SparkMax getIntakeSpark(int id) {
+            return SparkMaxConfigurer.configSpark(
+                id,
                 SparkMaxDefaults.idleMode,
                 false,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500));
-        public static final SparkMaxConfiguration sparkDefaultsIndexer =
-            new SparkMaxConfiguration(
+                    500, 500, 500, 500)
+            );
+        }
+
+        public static SparkMax getIndexerSpark(int id) {
+            return SparkMaxConfigurer.configSpark(
+                id,
                 IdleMode.kBrake,
                 true,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
-                SparkMaxDefaults.encoderAverageDepth, 
-                SparkMaxDefaults.canTimeout,
+                SparkMaxDefaults.encoderAverageDepth,
                 new StatusFrames(100, 200, 200,
-                    500, 500, 500, 500));
+                    500, 500, 500, 500)
+            );
+        }
     }
 
     public static class ClimberConstants {
@@ -187,16 +191,19 @@ public final class Constants {
         public static final int rightClimberResolver = 5;
         public static final int leftProximityChannel = 8;
         public static final int rightProximityChannel = 7;
-        public static final SparkMaxConfiguration sparkDefaultsClimber = 
-            new SparkMaxConfiguration(
-                IdleMode.kBrake, 
+        
+        public static SparkMax getClimberSpark(int id) {
+            return SparkMaxConfigurer.configSpark(
+                id,
+                IdleMode.kBrake,
                 false,
                 80,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 20, 20,
-                    500, 500, 500, 500));
+                    500, 500, 500, 500)
+            );
+        }
     }
 
     public static class ShooterConstants {
@@ -205,8 +212,9 @@ public final class Constants {
         public static final int topRightCanID = 11;
         public static final int bottomRightCanID = 10;
         public static double waitTime = 1;
-        public static SparkMaxConfig getSparkDefaultsShooter(boolean inverted) {
-            return SparkMaxConfigurer.getConfig(
+        public static SparkMax getShooterSpark(int id, boolean inverted) {
+            return SparkMaxConfigurer.configSpark(
+                id,
                 SparkMaxDefaults.idleMode,
                 inverted,
                 SparkMaxDefaults.smartCurrentLimit,
@@ -239,20 +247,13 @@ public final class Constants {
         public static PIDController horizontalMLVision = new PIDController(0.006, 0, 0);
         public static PIDController horizontalMLVisionDrive = new PIDController(0.008, 0, 0);
         public static PIDController rotMLVision = new PIDController(0.0045, 0, 0);
-        
         public static PIDController extensionPID = new PIDController(0.5, 0.00, 0.00); // values from sim: 3, 1, 0
         public static PIDController climberPID = new PIDController(1.6, 0, 0);
-        
         public static PIDController radianAngle = new PIDController(0.1, 0, 0);
-
         public static PIDController rotToSpeaker = new PIDController(0.001, 0.0001, 0.0001);
-
         public static PIDController shooterVelocityPID = new PIDController(0.01, 0.06, 0.00005);
-
         public static PIDController drivePIDController = new PIDController(0.1546, 0.0, 0);
-
         public static PIDController turningPIDController = new PIDController(0.725, 0.0, 0.005);
-
     }
 
     public static class FieldConstants {
@@ -297,35 +298,30 @@ public final class Constants {
 
         public static int resolverID = 4;
 
-        public static SparkMaxConfig sparkDefaultsExtension = new SparkMaxConfig();
-
-        static {
-            sparkDefaultsExtension
-                .idleMode(IdleMode.kBrake)
-                .inverted(true)
-                .smartCurrentLimit(SparkMaxDefaults.smartCurrentLimit)
-                .limitSwitch.
-        }
-        
-            // new SparkMaxConfiguration(
-            //     IdleMode.kBrake,
-            //     true,
-            //     SparkMaxDefaults.smartCurrentLimit,
-            //     SparkMaxDefaults.encoderMeasurementPeriod,
-            //     SparkMaxDefaults.encoderAverageDepth,
-            //     SparkMaxDefaults.canTimeout,
-            //     new StatusFrames(100, 20, 20,
-            //         500, 500, 500, 500),
-            //     new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
-        public static final SparkMaxConfiguration sparkDefaultsAngler =
-            new SparkMaxConfiguration(
+        public static SparkMax getExtensionSpark(int id) {
+            return SparkMaxConfigurer.configSpark(
+                id,
                 IdleMode.kBrake,
                 true,
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                SparkMaxDefaults.canTimeout,
                 new StatusFrames(100, 20, 20,
-                    500, 500, 500, 500));
+                    500, 500, 500, 500)
+            );
+        } // TODO new LimitSwitchConfiguration(LimitSwitchDirection.kReverse, SparkLimitSwitch.Type.kNormallyOpen, true));
+
+        public static SparkMax getAnglerSpark(int id) {
+            return SparkMaxConfigurer.configSpark(
+                id,
+                IdleMode.kBrake,
+                true,
+                SparkMaxDefaults.smartCurrentLimit,
+                SparkMaxDefaults.encoderMeasurementPeriod,
+                SparkMaxDefaults.encoderAverageDepth,
+                new StatusFrames(100, 20, 20,
+                    500, 500, 500, 500)
+            );
+        }
     }
 }

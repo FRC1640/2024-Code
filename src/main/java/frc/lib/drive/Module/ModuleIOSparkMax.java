@@ -3,8 +3,6 @@ package frc.lib.drive.Module;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
-import org.opencv.calib3d.StereoBM;
-
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -14,10 +12,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.lib.drive.SparkMaxOdometryThread;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.PivotId;
 import frc.robot.Constants.SwerveDriveDimensions;
 import frc.robot.sensors.Resolvers.ResolverSlope;
-import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ModuleIOSparkMax implements ModuleIO {
     private final SparkMax driveMotor;
@@ -37,8 +33,8 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     public ModuleIOSparkMax(ModuleInfo id) {
         this.id = id;
-        driveMotor = SparkMaxConfigurer.configSpark(id.driveChannel, ModuleConstants.getSparkDefaultsDrive(id.reverseDrive)); //TODO: new jake method
-        steeringMotor = SparkMaxConfigurer.configSpark(id.steerChannel, ModuleConstants.getSparkDefaultsSteer(id.reverseSteer));
+        driveMotor = ModuleConstants.getDriveSpark(id.driveChannel, id.reverseDrive);
+        steeringMotor = ModuleConstants.getSteeringSpark(id.steerChannel, id.reverseSteer);
         timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
         drivePositionQueue = SparkMaxOdometryThread.getInstance()
                 .registerSignal(

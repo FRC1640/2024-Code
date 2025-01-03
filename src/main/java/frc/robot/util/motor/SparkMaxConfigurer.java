@@ -2,17 +2,20 @@ package frc.robot.util.motor;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class SparkMaxConfigurer {
 
+    /*
+     * May later necessitate can timeout parameter.
+     */
     public static SparkMax configSpark(int id, IdleMode idleMode, boolean inverted, int smartCurrentLimit,
-            int encoderMeasurementPeriod, int encoderAverageDepth, int canTimeout, /* what is can timeout? something to do with status frames */ StatusFrames statusFrames) {
+            int encoderMeasurementPeriod, int encoderAverageDepth, StatusFrames statusFrames) {
         SparkMax spark = new SparkMax(id, MotorType.kBrushless); // need to remember: the parameters are NOT blank! they come from the physical spark.
         boolean flash = // determining whether or not to flash the spark by comparing current settings to those passed in
             (inverted != spark.getInverted()) ||
@@ -22,7 +25,7 @@ public class SparkMaxConfigurer {
             (encoderAverageDepth != spark.configAccessor.encoder.getQuadratureAverageDepth()) ||
             (statusFrames.getFlashNecessary(spark));
         SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(idleMode).inverted(inverted).smartCurrentLimit(smartCurrentLimit).absoluteEncoder.;
+        config.idleMode(idleMode).inverted(inverted).smartCurrentLimit(smartCurrentLimit);
         config.encoder.quadratureAverageDepth(encoderAverageDepth).quadratureMeasurementPeriod(encoderMeasurementPeriod); // TODO types of encoders
         statusFrames.apply(config.signals);
         spark.configure(

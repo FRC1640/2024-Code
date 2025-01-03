@@ -1,11 +1,9 @@
 package frc.robot.util.motor;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 
 public class LimitSwitchConfiguration {

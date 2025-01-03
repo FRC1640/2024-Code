@@ -1,19 +1,19 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class ShooterIOSparkMax implements ShooterIO {
     private final SparkMax topLeftShooter, bottomLeftShooter,topRightShooter, bottomRightShooter;
 
     public ShooterIOSparkMax() {
-        topLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topLeftCanID, ShooterConstants.getSparkDefaultsShooter(true)); // top left can id, spark defaults shooter from constants, inverted
-        bottomLeftShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomLeftCanID, ShooterConstants.getSparkDefaultsShooter(false)); // bottom left can id, spark defaults shooter from constants, not inverted
-        topRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.topRightCanID, ShooterConstants.getSparkDefaultsShooter(false)); // top right can id, spark defaults shooter from constants, not inverted
-        bottomRightShooter = SparkMaxConfigurer.configSpark(ShooterConstants.bottomRightCanID, ShooterConstants.getSparkDefaultsShooter(true)); // bottom right can id, spark defaults shooter from constants, inverted
+        topLeftShooter = ShooterConstants.getShooterSpark(ShooterConstants.topLeftCanID, true); // top left can id, spark defaults shooter from constants, inverted
+        bottomLeftShooter = ShooterConstants.getShooterSpark(ShooterConstants.bottomLeftCanID, false); // bottom left can id, spark defaults shooter from constants, not inverted
+        topRightShooter = ShooterConstants.getShooterSpark(ShooterConstants.topRightCanID, false); // top right can id, spark defaults shooter from constants, not inverted
+        bottomRightShooter = ShooterConstants.getShooterSpark(ShooterConstants.bottomRightCanID, true); // bottom right can id, spark defaults shooter from constants, inverted
     }
 
     @Override

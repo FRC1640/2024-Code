@@ -16,7 +16,7 @@
      * smart current limit √
      * encoder measurement period √
      * encoder average depth √
-     * can timeout
+     * can timeout √
      * limit switches (through configuration? what about limit switch stuff in status frames?) 
      * status frames √
      * burn flash...
