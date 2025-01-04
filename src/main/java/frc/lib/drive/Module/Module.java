@@ -119,7 +119,7 @@ public class Module {
         }
 
         // calculates drive speed with feedforward
-        double pidSpeed = (driveFeedforward.calculate(MetersPerSecond.of(targetSpeed))).in(Volts);
+        double pidSpeed = driveFeedforward.calculate(targetSpeed);
         pidSpeed += drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed); // feedforward calc
         Logger.recordOutput("Drive/Modules/" + id + "/pidVoltage",
                 drivePIDController.calculate(inputs.driveVelocityMetersPerSecond, targetSpeed));

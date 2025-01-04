@@ -69,10 +69,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setSpeedPercentPID(DoubleSupplier topLeft, DoubleSupplier bottomLeft, DoubleSupplier topRight, DoubleSupplier bottomRight, BooleanSupplier condition){
         return setVoltageCommand(
-            ()->topLeftPID.calculate(inputs.topLeftVelocity,topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts), 
-            ()->bottomLeftPID.calculate(inputs.bottomLeftVelocity,bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts),
-            ()->topRightPID.calculate(inputs.topRightVelocity,topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts),
-            ()->bottomRightPID.calculate(inputs.bottomRightVelocity,bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(RadiansPerSecond.of(bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI)).in(Volts),
+            ()->topLeftPID.calculate(inputs.topLeftVelocity,topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(topLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI), 
+            ()->bottomLeftPID.calculate(inputs.bottomLeftVelocity,bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomLeft.getAsDouble() * 5676 / 60 * 2 * Math.PI),
+            ()->topRightPID.calculate(inputs.topRightVelocity,topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(topRight.getAsDouble() * 5676 / 60 * 2 * Math.PI),
+            ()->bottomRightPID.calculate(inputs.bottomRightVelocity,bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI) + ff.calculate(bottomRight.getAsDouble() * 5676 / 60 * 2 * Math.PI),
             condition, new double[]{topLeft.getAsDouble(), bottomLeft.getAsDouble(), topRight.getAsDouble(), bottomRight.getAsDouble()});
     }
 

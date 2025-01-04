@@ -136,12 +136,13 @@ public class DriveSubsystem extends SubsystemBase {
                 new Pose2d(),
                 VecBuilder.fill(0.1, 0.1, 0.00001),
                 VecBuilder.fill(2, 2, 9999999));
-        RobotConfig config = new RobotConfig(null, null, null, null);
+        RobotConfig config;
         try {
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
             // Handle exception as needed
             e.printStackTrace();
+            config = null;
         }
         // Configure pathplanner
         AutoBuilder.configure(
