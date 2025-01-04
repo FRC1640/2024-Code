@@ -11,20 +11,20 @@ import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class SparkMaxConfigurer {
-    public enum EncoderType {
+    /* public enum EncoderType {
         ABSOLUTE,
         ALTERNATE,
         QUADRATURE;
-    }
+    } */
 
     /*
      * May later necessitate can timeout parameter.
      */
     public static SparkMax configSpark(int id, IdleMode idleMode, boolean inverted, int smartCurrentLimit,
-            int encoderMeasurementPeriod, int encoderAverageDepth, EncoderType encoderType, StatusFrames statusFrames) {
+            int encoderMeasurementPeriod, int encoderAverageDepth, StatusFrames statusFrames) {
         SparkMax spark = new SparkMax(id, MotorType.kBrushless);
         SparkMaxConfig config = buildConfig(idleMode, inverted, smartCurrentLimit,
-            encoderMeasurementPeriod, encoderAverageDepth, encoderType, statusFrames);
+            encoderMeasurementPeriod, encoderAverageDepth, statusFrames);
         boolean flash =
             (inverted != spark.getInverted()) ||
             (idleMode != spark.configAccessor.getIdleMode()) ||
@@ -40,11 +40,11 @@ public class SparkMaxConfigurer {
     }
 
     public static SparkMax configSpark(int id, IdleMode idleMode, boolean inverted, int smartCurrentLimit,
-            int encoderMeasurementPeriod, int encoderAverageDepth, EncoderType encoderType, StatusFrames statusFrames,
+            int encoderMeasurementPeriod, int encoderAverageDepth, StatusFrames statusFrames,
             LimitSwitchConfig limitSwitch) {
         SparkMax spark = new SparkMax(id, MotorType.kBrushless);
         SparkMaxConfig config = buildConfig(idleMode, inverted, smartCurrentLimit,
-            encoderMeasurementPeriod, encoderAverageDepth, encoderType, statusFrames);
+            encoderMeasurementPeriod, encoderAverageDepth, statusFrames);
         config.apply(limitSwitch);
         boolean flash =
             (inverted != spark.getInverted()) ||
@@ -64,10 +64,13 @@ public class SparkMaxConfigurer {
     }
 
     private static SparkMaxConfig buildConfig(IdleMode idleMode, boolean inverted, int smartCurrentLimit,
-            int encoderMeasurementPeriod, int encoderAverageDepth, EncoderType encoderType, StatusFrames statusFrames) {
+            int encoderMeasurementPeriod, int encoderAverageDepth, StatusFrames statusFrames) {
         SparkMaxConfig config = new SparkMaxConfig();
         config.idleMode(idleMode).inverted(inverted).smartCurrentLimit(smartCurrentLimit);
-        switch (encoderType) {
+        config.absoluteEncoder.averageDepth(encoderAverageDepth);
+        config.alternateEncoder.averageDepth(encoderAverageDepth).measurementPeriod(encoderMeasurementPeriod);
+        config.encoder.quadratureAverageDepth(encoderAverageDepth).quadratureMeasurementPeriod(encoderMeasurementPeriod);
+        /* switch (encoderType) {
             case ABSOLUTE:
                 config.absoluteEncoder.averageDepth(encoderAverageDepth);
                 break;
@@ -77,7 +80,7 @@ public class SparkMaxConfigurer {
             default:
                 config.encoder.quadratureAverageDepth(encoderAverageDepth).quadratureMeasurementPeriod(encoderMeasurementPeriod);
                 break;
-        }
+        } */
         statusFrames.apply(config.signals);
         return config;
     }

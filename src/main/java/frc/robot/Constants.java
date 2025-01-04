@@ -16,7 +16,6 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.drive.Module.ModuleInfo;
 import frc.robot.util.motor.SparkMaxConfigurer;
 import frc.robot.util.motor.StatusFrames;
-import frc.robot.util.motor.SparkMaxConfigurer.EncoderType;
 
 public final class Constants {
     public static enum PivotId {
@@ -131,7 +130,6 @@ public final class Constants {
                 80,
                 8,
                 2,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 20, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
                     500, 500, 500, 500)
             );
@@ -145,7 +143,6 @@ public final class Constants {
                 40,
                 8,
                 2,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 200, (int) (1000 / SwerveDriveDimensions.odometryFrequency),
                     500, 500, 500, 500)
             );
@@ -166,7 +163,6 @@ public final class Constants {
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500)
             );
@@ -180,7 +176,6 @@ public final class Constants {
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500)
             );
@@ -205,7 +200,6 @@ public final class Constants {
                 80,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 20, 20,
                     500, 500, 500, 500)
             );
@@ -226,7 +220,6 @@ public final class Constants {
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 200, 200,
                     500, 500, 500, 500)
             );
@@ -317,7 +310,6 @@ public final class Constants {
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 20, 20,
                     500, 500, 500, 500),
                 limitSwitchConfig
@@ -332,7 +324,6 @@ public final class Constants {
                 SparkMaxDefaults.smartCurrentLimit,
                 SparkMaxDefaults.encoderMeasurementPeriod,
                 SparkMaxDefaults.encoderAverageDepth,
-                EncoderType.ALTERNATE, // TODO is this correct?
                 new StatusFrames(100, 20, 20,
                     500, 500, 500, 500)
             );
