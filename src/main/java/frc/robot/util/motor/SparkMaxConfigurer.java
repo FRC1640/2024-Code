@@ -53,9 +53,6 @@ public class SparkMaxConfigurer {
             (encoderMeasurementPeriod != spark.configAccessor.encoder.getQuadratureMeasurementPeriod()) ||
             (encoderAverageDepth != spark.configAccessor.encoder.getQuadratureAverageDepth()) ||
             (statusFrames.getFlashNecessary(spark));
-            // TODO Justin review: there does not appear to be a way to get the properties stored in the LimitSwitch config.
-            // It might be necessary to take the approach we took in the old version of motor config and just not check this setting
-            // when determining flashing.
         spark.configure(
             config, ResetMode.kResetSafeParameters, flash
                 ? PersistMode.kPersistParameters : PersistMode.kNoPersistParameters);

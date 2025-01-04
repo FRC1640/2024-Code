@@ -302,7 +302,7 @@ public final class Constants {
             LimitSwitchConfig limitSwitchConfig = new LimitSwitchConfig();
             limitSwitchConfig.reverseLimitSwitchEnabled(true)
                 .reverseLimitSwitchType(Type.kNormallyOpen)
-                .setSparkMaxDataPortConfig(); // TODO necessary? Justin review: will this break things?
+                .setSparkMaxDataPortConfig(); // TODO necessary?
             return SparkMaxConfigurer.configSpark(
                 id,
                 IdleMode.kBrake,
