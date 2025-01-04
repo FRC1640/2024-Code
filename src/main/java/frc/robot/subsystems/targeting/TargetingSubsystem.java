@@ -5,7 +5,6 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -16,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.PIDConstants;
 import frc.robot.Constants.TargetingConstants;
+
 public class TargetingSubsystem extends SubsystemBase {
     TargetingIOInputsAutoLogged inputs = new TargetingIOInputsAutoLogged();
     TargetingIO io;

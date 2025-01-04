@@ -6,18 +6,15 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.util.motor.SparkMaxConfigurer;
 
 public class IntakeIOSparkMax implements IntakeIO {
     private final SparkMax intakeMotor;
     private final SparkMax indexerMotor;
     private DigitalInput proximityDigitalInput;
     BooleanSupplier hasNote;
-
     long initTime;
     boolean first = false;
     private BooleanSupplier clearCondition;
-
     private boolean autoStarted;
     private BooleanSupplier startAuto;
     
@@ -25,10 +22,8 @@ public class IntakeIOSparkMax implements IntakeIO {
     public IntakeIOSparkMax(BooleanSupplier hasNote, BooleanSupplier clearCondition, BooleanSupplier startAuto) {
         this.clearCondition = clearCondition;
         this.startAuto = startAuto;
-        intakeMotor = SparkMaxConfigurer.configSpark(
-                IntakeConstants.intakeCanID, IntakeConstants.sparkDefaultsIntake); //TODO: Jake
-        indexerMotor = SparkMaxConfigurer.configSpark(
-                IntakeConstants.indexerCanID, IntakeConstants.sparkDefaultsIndexer);
+        intakeMotor = IntakeConstants.getIntakeSpark(IntakeConstants.intakeCanID);
+        indexerMotor = IntakeConstants.getIndexerSpark(IntakeConstants.indexerCanID);
         proximityDigitalInput = new DigitalInput(IntakeConstants.proximitySensorChannel);
         this.hasNote = hasNote;
     }
@@ -64,14 +59,16 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.indexerAppliedVoltage = indexerMotor.getAppliedOutput() * RobotController.getBatteryVoltage();
         inputs.indexerCurrentAmps = indexerMotor.getOutputCurrent();
         inputs.indexerTempCelsius = indexerMotor.getMotorTemperature();
-        // inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold;
-        // if (autoStarted){
-        //     autoStarted = !autoStarted;
-        // }
-        // if (startAuto.getAsBoolean()){
-        //     autoStarted = true;
-        // }
-        // inputs.hasNote = noteDelay(!proximityDigitalInput.get() || autoStarted, clearCondition.getAsBoolean());
+        /*
+         * inputs.hasNote = proximityAnalogOutput.getVoltage() > IntakeConstants.proximityVoltageThreshold;
+         * if (autoStarted){
+         *     autoStarted = !autoStarted;
+         * }
+         * if (startAuto.getAsBoolean()){
+         *     autoStarted = true;
+         * }
+        */
+        inputs.hasNote = noteDelay(!proximityDigitalInput.get() || autoStarted, clearCondition.getAsBoolean());
         inputs.hasNote = !proximityDigitalInput.get();
 
 

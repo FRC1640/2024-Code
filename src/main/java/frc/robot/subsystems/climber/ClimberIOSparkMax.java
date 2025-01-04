@@ -4,13 +4,8 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.SparkMaxDefaults;
 import frc.robot.sensors.Resolvers.ResolverPointSlope;
-import frc.robot.util.motor.SparkMaxConfiguration;
-import frc.robot.util.motor.SparkMaxConfigurer;
-import frc.robot.util.motor.StatusFrames;
 
 public class ClimberIOSparkMax implements ClimberIO {
     private final SparkMax leftMotor;
@@ -21,12 +16,12 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final ResolverPointSlope rightEncoder;
 
     public ClimberIOSparkMax() {
-        leftMotor = SparkMaxConfigurer.configSpark(ClimberConstants.leftCanID, ClimberConstants.sparkDefaultsClimber); //TODO: Jake
-        rightMotor = SparkMaxConfigurer.configSpark(ClimberConstants.rightCanID, ClimberConstants.sparkDefaultsClimber);
+        leftMotor = ClimberConstants.getClimberSpark(ClimberConstants.leftCanID);
+        rightMotor = ClimberConstants.getClimberSpark(ClimberConstants.rightCanID);
         leftProximitySensor = new DigitalInput(ClimberConstants.leftProximityChannel);
         rightProximitySensor = new DigitalInput(ClimberConstants.rightProximityChannel);
         leftEncoder = new ResolverPointSlope(ClimberConstants.leftClimberResolver, 1.327, 2.356, 1, 76);
-        rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 3.637, 2.585, 11, 84); //note: to create resolver constants class for min/max
+        rightEncoder = new ResolverPointSlope(ClimberConstants.rightClimberResolver, 3.637, 2.585, 11, 84); // note: to create resolver constants class for min/max
     }
 
     @Override
