@@ -26,7 +26,7 @@ public class SparkMaxConfigurer {
         SparkMaxConfig config = buildConfig(idleMode, inverted, smartCurrentLimit,
             encoderMeasurementPeriod, encoderAverageDepth, statusFrames);
         boolean flash =
-            (inverted != spark.getInverted()) ||
+            (inverted != spark.configAccessor.getInverted()) ||
             (idleMode != spark.configAccessor.getIdleMode()) ||
             (smartCurrentLimit != spark.configAccessor.getSmartCurrentLimit()) ||
             (encoderMeasurementPeriod != spark.configAccessor.encoder.getQuadratureMeasurementPeriod()) ||
@@ -47,7 +47,7 @@ public class SparkMaxConfigurer {
             encoderMeasurementPeriod, encoderAverageDepth, statusFrames);
         config.apply(limitSwitch);
         boolean flash =
-            (inverted != spark.getInverted()) ||
+            (inverted != spark.configAccessor.getInverted()) ||
             (idleMode != spark.configAccessor.getIdleMode()) ||
             (smartCurrentLimit != spark.configAccessor.getSmartCurrentLimit()) ||
             (encoderMeasurementPeriod != spark.configAccessor.encoder.getQuadratureMeasurementPeriod()) ||
